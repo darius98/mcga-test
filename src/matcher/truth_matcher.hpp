@@ -3,6 +3,7 @@
 
 #include "matcher.hpp"
 
+
 namespace matcher {
 
 template<bool b>
@@ -12,20 +13,19 @@ public:
         return object == b;
     }
 
-    void
-    describe(const bool& object, std::stringstream* description) const;
+    void describe(const bool& object, Description* description) const override;
 };
 
 template<>
 void TruthMatcher<true>::describe(const bool& object,
-                                  std::stringstream* description) const {
-    (*description) << "expected true, got false";
+                                  Description* description) const {
+    description->append("expected true, got false");
 }
 
 template<>
 void TruthMatcher<false>::describe(const bool& object,
-                                   std::stringstream* description) const {
-    (*description) << "expected false, got true";
+                                   Description* description) const {
+    description->append("expected false, got true");
 }
 
 } // namespace matcher

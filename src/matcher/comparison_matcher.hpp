@@ -2,10 +2,8 @@
 #define EQUALITY_TRUTH_MATCHER_H_
 
 #include <functional>
-#include <set>
 
 #include "matcher.hpp"
-#include "../utils/has_operator.hpp"
 
 namespace matcher {
 
@@ -24,29 +22,21 @@ public:
     }
 
     void describe(const T& object,
-                  std::stringstream* description) const override {
-        (*description) << this->expectation << " '";
-        if (ComparisonMatcher<T>::canPrintObj::value) {
-            (*description) << this->target;
-        } else {
-            (*description) << "value at " << (void*)(&this->target);
-        }
-        (*description) << "', got '";
-        if (ComparisonMatcher<T>::canPrintObj::value) {
-            (*description) << object;
-        } else {
-            (*description) << "value at " << (void*)(&object);
-        }
-        (*description) << "'";
+                  Description* description) const override {
+        description->append(
+            this->expectation,
+            " '",
+            this->target,
+            "', got '",
+            object,
+            "'"
+        );
     }
 
 private:
     Comparator comparator;
-    const T &target;
+    const T& target;
     const char* expectation;
-
-    typedef testing::utils::hasLeftShift<std::stringstream, const T&>
-            canPrintObj;
 };
 
 } // namespace matcher
