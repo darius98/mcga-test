@@ -3,7 +3,6 @@
 
 #include <sstream>
 
-namespace testing {
 namespace matcher {
 
 /// Basic interface that all matchers in this library implement.
@@ -22,6 +21,5 @@ public:
 };
 
 } // namespace matcher
-} // namespace testing
 
 #endif

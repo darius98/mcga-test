@@ -3,7 +3,6 @@
 
 #include "matcher.hpp"
 
-namespace testing {
 namespace matcher {
 
 template<bool b>
@@ -29,12 +28,6 @@ void TruthMatcher<false>::describe(const bool& object,
     (*description) << "expected false, got true";
 }
 
-
-static const Matcher<bool>* isTrue = new TruthMatcher<true>();
-
-static const Matcher<bool>* isFalse = new TruthMatcher<false>();
-
 } // namespace matcher
-} // namespace testing
 
 #endif

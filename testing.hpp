@@ -2,8 +2,7 @@
 #define TESTING_TESTING_H_
 
 #include "src/matcher/matcher.hpp"
-#include "src/matcher/truth_matcher.hpp"
-#include "src/matcher/equality_matcher.hpp"
+#include "src/matcher/core_matchers.hpp"
 
 #include "src/testing/expect.hpp"
 

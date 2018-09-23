@@ -1,9 +1,9 @@
-#include "../../src/matcher/truth_matcher.hpp"
+#include "../../src/matcher/core_matchers.hpp"
 
 #include <iostream>
 
 using namespace std;
-using namespace testing::matcher;
+using namespace matcher;
 
 int main() {
     bool isTrueMatchesTrue = isTrue->matches(true);
