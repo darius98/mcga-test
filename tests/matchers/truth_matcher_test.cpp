@@ -7,13 +7,9 @@ using namespace matcher;
 
 int main() {
     int failed = 0;
-    cout << "isTrue called on 'true': ";
-    failed += !expectMatch(true, isTrue);
-    cout << "isTrue called on 'false': ";
-    failed += !expectMatch(false, isTrue, false, "true, got false");
-    cout << "isFalse called on 'true': ";
-    failed += !expectMatch(true, isFalse, false, "false, got true");
-    cout << "isFalse called on 'false': ";
-    failed += !expectMatch(false, isFalse);
+    test("isTrue called on 'true'", true, isTrue);
+    test("isTrue called on 'false'", false, isTrue, false, "true, got false");
+    test("isFalse called on 'true'", true, isFalse, false, "false, got true");
+    test("isFalse called on 'false'", false, isFalse);
     return failed;
 }

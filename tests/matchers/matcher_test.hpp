@@ -5,6 +5,8 @@
 
 #include "../../src/matcher/matcher.hpp"
 
+int numFailedTests;
+
 template<class T>
 bool expectMatch(const T& value,
                  matcher::Matcher<T>* matcher,
@@ -34,6 +36,17 @@ bool expectMatch(const T& value,
         std::cout << "\tActual description: " << actualDescription << "\n";
     }
     return ret;
+}
+
+template<class T>
+void test(const std::string& message,
+          const T& value,
+          matcher::Matcher<T>* matcher,
+          bool shouldMatch=true,
+          const std::string& expectedDescription="") {
+    std::cout << message << ": ";
+    numFailedTests +=
+            !expectMatch(value, matcher, shouldMatch, expectedDescription);
 }
 
 #endif
