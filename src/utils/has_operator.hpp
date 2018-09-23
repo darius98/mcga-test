@@ -6,6 +6,9 @@
 namespace testing {
 namespace utils {
 
+// This code is taken (and adapted) from an answer to this question:
+// https://stackoverflow.com/questions/6534041
+
 namespace __internal {
 
 template<class LHS, class RHS, class OP>

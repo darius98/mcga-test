@@ -6,15 +6,22 @@ using namespace std;
 using namespace testing::matcher;
 
 int main() {
-    cout << "Testing isTrue matcher:\n" << boolalpha;
     bool isTrueMatchesTrue = isTrue->matches(true);
-    cout << "\tisTrue called on 'true': " << isTrueMatchesTrue << "\n";
+    cout << "isTrue called on 'true': "
+         << (isTrueMatchesTrue ? "passed" : "failed")
+         << ".\n";
     bool isTrueMatchesFalse = isTrue->matches(false);
-    cout << "\tisTrue called on 'false': " << isTrueMatchesFalse << "\n";
+    cout << "isTrue called on 'false': "
+         << (isTrueMatchesFalse ? "failed" : "passed")
+         << ".\n";
     bool isFalseMatchesTrue = isFalse->matches(true);
-    cout << "\tisFalse called on 'true': " << isFalseMatchesTrue << "\n";
+    cout << "isFalse called on 'true': "
+         << (isFalseMatchesTrue ? "failed" : "passed")
+         << ".\n";
     bool isFalseMatchesFalse = isFalse->matches(false);
-    cout << "\tisFalse called on 'false': " << isFalseMatchesFalse << "\n";
+    cout << "isFalse called on 'false': "
+         << (isFalseMatchesFalse ? "passed" : "failed")
+         << ".\n";
     return (!isTrueMatchesTrue)
            + (!isFalseMatchesFalse)
            + isTrueMatchesFalse
