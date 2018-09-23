@@ -1,64 +1,77 @@
 #include "../../src/matcher/core_matchers.hpp"
 
-#include <iostream>
+#include "matcher_test.hpp"
 
 using namespace std;
 using namespace matcher;
 
-int numFailed = 0;
-
-string status(bool ok) {
-    if (ok) {
-        return "passed.\n";
-    }
-    numFailed += 1;
-    return "failed.\n";
+template<class T>
+string S(const T& t) {
+    stringstream s;
+    s << t;
+    return s.str();
 }
+
+int numFailed = 0;
 
 /// Note: `a` must be "less than" `c`, which must be "less than" `d`.
 template<class T>
 void testOnType(T a, T c, T d) {
     T b = a;
     auto matcher = equal(a);
-    cout << "equality between equal values: "
-         << status(matcher->matches(b));
-    cout << "equality between unequal values: "
-         << status(!matcher->matches(c));
+    cout << "equality between equal values: ";
+    numFailed += !expectMatch(b, matcher);
+    cout << "equality between unequal values: ";
+    numFailed += !expectMatch(c, matcher, false,
+            "'" + S(a) + "', got '" + S(c) + "'"
+    );
     matcher = identical(a);
-    cout << "identity between variable and itself: "
-         << status(matcher->matches(a));
-    cout << "identity between variable and equal variable: "
-         << status(!matcher->matches(b));
-    cout << "identity between variable and unequal variable: "
-         << status(!matcher->matches(c));
+    cout << "identity between variable and itself: ";
+    numFailed += !expectMatch(a, matcher);
+    cout << "identity between variable and equal variable: ";
+    numFailed += !expectMatch(b, matcher, false);
+    cout << "identity between variable and unequal variable: ";
+    numFailed += !expectMatch(c, matcher, false);
     matcher = lessThan(c);
-    cout << "lessThan when strictly less: "
-         << status(matcher->matches(a));
-    cout << "lessThan when equal: "
-         << status(!matcher->matches(c));
-    cout << "lessThan when strictly greater: "
-         << status(!matcher->matches(d));
+    cout << "lessThan when strictly less: ";
+    numFailed += !expectMatch(a, matcher);
+    cout << "lessThan when equal: ";
+    numFailed += !expectMatch(c, matcher, false,
+            "less than '" + S(c) + "', got '" + S(c) + "'"
+    );
+    cout << "lessThan when strictly greater: ";
+    numFailed += !expectMatch(d, matcher, false,
+            "less than '" + S(c) + "', got '" + S(d) + "'"
+    );
     matcher = lessThanOrEqualTo(c);
-    cout << "lessThanOrEqualTo when strictly less: "
-         << status(matcher->matches(a));
-    cout << "lessThanOrEqualTo when equal: "
-         << status(matcher->matches(c));
-    cout << "lessThanOrEqualTo when strictly greater: "
-         << status(!matcher->matches(d));
+    cout << "lessThanOrEqualTo when strictly less: ";
+    numFailed += !expectMatch(a, matcher);
+    cout << "lessThanOrEqualTo when equal: ";
+    numFailed += !expectMatch(c, matcher);
+    cout << "lessThanOrEqualTo when strictly greater: ";
+    numFailed += !expectMatch(d, matcher, false,
+            "less than or equal to '" + S(c) + "', got '" + S(d) + "'"
+    );
     matcher = greaterThan(c);
-    cout << "greaterThan when strictly less: "
-         << status(!matcher->matches(a));
-    cout << "greaterThan when equal: "
-         << status(!matcher->matches(c));
-    cout << "greaterThan when strictly greater: "
-         << status(matcher->matches(d));
+    cout << "greaterThan when strictly less: ";
+    numFailed += !expectMatch(a, matcher, false,
+            "greater than '" + S(c) + "', got '" + S(a) + "'"
+    );
+    cout << "greaterThan when equal: ";
+    numFailed += !expectMatch(c, matcher, false,
+            "greater than '" + S(c) + "', got '" + S(c) + "'"
+    );
+    cout << "greaterThan when strictly greater: ";
+    numFailed += !expectMatch(d, matcher);
     matcher = greaterThanOrEqualTo(c);
-    cout << "greaterThanOrEqualTo when strictly less: "
-         << status(!matcher->matches(a));
-    cout << "greaterThanOrEqualTo when equal: "
-         << status(matcher->matches(c));
-    cout << "greaterThanOrEqualTo when strictly greater: "
-         << status(matcher->matches(d));
+    cout << "greaterThanOrEqualTo when strictly less: ";
+    numFailed += !expectMatch(a, matcher, false,
+            "greater than or equal to '" + S(c) + "', got '" + S(a) + "'"
+    );
+    cout << "greaterThanOrEqualTo when equal: ";
+    numFailed += !expectMatch(c, matcher);
+    cout << "greaterThanOrEqualTo when strictly greater: ";
+    numFailed += !expectMatch(d, matcher);
 }
 
 int main() {
@@ -66,9 +79,9 @@ int main() {
     testOnType<long>(3l, 4l, 5l);
     testOnType<long long>(3ll, 4ll, 5ll);
     testOnType<string>("a", "b", "c");
-    testOnType<float>(2.717281f, 3.141529f, 6.234f);
-    testOnType<double>(2.71728182, 3.14152965, 6.234);
-    testOnType<long double>(2.71728182, 3.14152965, 6.234);
+    testOnType<float>(2.71f, 3.14f, 6.2f);
+    testOnType<double>(2.71, 3.14, 6.2);
+    testOnType<long double>(2.71, 3.14, 6.2);
     testOnType<char>('x', 'y', 'z');
     return numFailed;
 }

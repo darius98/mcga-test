@@ -1,29 +1,19 @@
 #include "../../src/matcher/core_matchers.hpp"
 
-#include <iostream>
+#include "matcher_test.hpp"
 
 using namespace std;
 using namespace matcher;
 
 int main() {
-    bool isTrueMatchesTrue = isTrue->matches(true);
-    cout << "isTrue called on 'true': "
-         << (isTrueMatchesTrue ? "passed" : "failed")
-         << ".\n";
-    bool isTrueMatchesFalse = isTrue->matches(false);
-    cout << "isTrue called on 'false': "
-         << (isTrueMatchesFalse ? "failed" : "passed")
-         << ".\n";
-    bool isFalseMatchesTrue = isFalse->matches(true);
-    cout << "isFalse called on 'true': "
-         << (isFalseMatchesTrue ? "failed" : "passed")
-         << ".\n";
-    bool isFalseMatchesFalse = isFalse->matches(false);
-    cout << "isFalse called on 'false': "
-         << (isFalseMatchesFalse ? "passed" : "failed")
-         << ".\n";
-    return (!isTrueMatchesTrue)
-           + (!isFalseMatchesFalse)
-           + isTrueMatchesFalse
-           + isFalseMatchesTrue;
+    int failed = 0;
+    cout << "isTrue called on 'true': ";
+    failed += !expectMatch(true, isTrue);
+    cout << "isTrue called on 'false': ";
+    failed += !expectMatch(false, isTrue, false, "true, got false");
+    cout << "isFalse called on 'true': ";
+    failed += !expectMatch(true, isFalse, false, "false, got true");
+    cout << "isFalse called on 'false': ";
+    failed += !expectMatch(false, isFalse);
+    return failed;
 }

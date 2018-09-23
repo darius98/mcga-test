@@ -9,10 +9,12 @@ file(GLOB AllSrc ${MatchersSrc} ${TestingSrc} ${UtilsSrc})
 
 add_executable(TestTruthMatchers
         tests/matchers/truth_matcher_test.cpp
+        tests/matchers/matcher_test.hpp
         ${MatchersSrc}
 )
 
 add_executable(TestComparisonMatchers
         tests/matchers/comparison_matcher_test.cpp
+        tests/matchers/matcher_test.hpp
         ${MatchersSrc}
 )

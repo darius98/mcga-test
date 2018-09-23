@@ -9,47 +9,47 @@
 
 namespace matcher {
 
-static const Matcher<bool>* isTrue = new TruthMatcher<true>();
+static Matcher<bool>* isTrue = new TruthMatcher<true>();
 
-static const Matcher<bool>* isFalse = new TruthMatcher<false>();
+static Matcher<bool>* isFalse = new TruthMatcher<false>();
 
 template<class T>
 Matcher<T>* equal(const T& object) {
-    return new ComparisonMatcher<T>(object, std::equal_to<T>(), "expected");
+    return new ComparisonMatcher<T>(object, std::equal_to<T>(), "");
 }
 
 template<class T>
 Matcher<T>* identical(const T& object) {
     return new ComparisonMatcher<T>(object, [](const T& a, const T& b) -> bool {
         return &a == &b;
-    }, "expected variable at address");
+    }, "variable at address ");
 }
 
 template<class T>
 Matcher<T>* lessThan(const T& object) {
     return new ComparisonMatcher<T>(
-            object, std::less<T>(), "expected less than"
+            object, std::less<T>(), "less than "
     );
 }
 
 template<class T>
 Matcher<T>* lessThanOrEqualTo(const T& object) {
     return new ComparisonMatcher<T>(
-            object, std::less_equal<T>(), "expected less than or equal to"
+            object, std::less_equal<T>(), "less than or equal to "
     );
 }
 
 template<class T>
 Matcher<T>* greaterThan(const T& object) {
     return new ComparisonMatcher<T>(
-            object, std::greater<T>(), "expected greater than"
+            object, std::greater<T>(), "greater than "
     );
 }
 
 template<class T>
 Matcher<T>* greaterThanOrEqualTo(const T& object) {
     return new ComparisonMatcher<T>(
-            object, std::greater_equal<T>(), "expected greater than or equal to"
+            object, std::greater_equal<T>(), "greater than or equal to "
     );
 }
 

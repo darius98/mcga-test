@@ -25,7 +25,7 @@ public:
                   Description* description) const override {
         description->append(
             this->expectation,
-            " '",
+            "'",
             this->target,
             "', got '",
             object,

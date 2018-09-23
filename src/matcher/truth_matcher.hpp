@@ -19,13 +19,13 @@ public:
 template<>
 void TruthMatcher<true>::describe(const bool& object,
                                   Description* description) const {
-    description->append("expected true, got false");
+    description->append("true, got false");
 }
 
 template<>
 void TruthMatcher<false>::describe(const bool& object,
                                    Description* description) const {
-    description->append("expected false, got true");
+    description->append("false, got true");
 }
 
 } // namespace matcher

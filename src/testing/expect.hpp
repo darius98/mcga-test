@@ -20,6 +20,7 @@ void expect(const T& object, matcher::Matcher<T>* matcher) {
         return;
     }
     auto description = new matcher::Description();
+    description->append("expected ");
     matcher->describe(object, description);
     std::string stringDescription = description->toString();
     delete description;
