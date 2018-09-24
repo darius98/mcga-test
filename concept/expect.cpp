@@ -4,7 +4,7 @@
 
 #include <runtime_testing>
 
-using namespace testing;
+using namespace runtime_testing;
 using namespace matcher;
 using namespace std;
 
@@ -33,12 +33,11 @@ int main() {
     expect(v, either(isEmpty, isNotEmpty));
 
     try {
-        expect(v, hasSize(isGreaterThanOrEqualTo(5)));
+        expect(v, hasSize(isGreaterThan(5)));
     } catch(const ExpectationFailed& failure) {
         assert(
             failure.getMessage() ==
-            "expected container of size greater than or equal to '5', got '3': "
-            "'[1, 2, 3]'"
+            "expected container of size greater than '5', got '3': '[1, 2, 3]'"
         );
     }
 

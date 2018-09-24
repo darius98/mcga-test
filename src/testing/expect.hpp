@@ -4,14 +4,17 @@
 #include <stdexcept>
 
 #include "../matcher/matcher.hpp"
+#include "test.hpp"
 
 
-namespace testing {
+namespace runtime_testing {
 
 class ExpectationFailed: std::runtime_error {
 public:
     explicit ExpectationFailed(const std::string& str):
             std::runtime_error(str) {}
+    ExpectationFailed(const ExpectationFailed& other) noexcept:
+            ExpectationFailed(other.getMessage()) {}
 
     std::string getMessage() const { return this->what(); }
 };
@@ -19,6 +22,9 @@ public:
 /// Main function for expecting something during a test.
 template<class T, class PseudoMatcher>
 void expect(const T& object, PseudoMatcher* matcher) {
+    if (!isDuringTest()) {
+        throw std::runtime_error("'expect' can only be called inside tests!");
+    }
     if (matcher->matches(object)) {
         return;
     }
@@ -30,6 +36,6 @@ void expect(const T& object, PseudoMatcher* matcher) {
     throw ExpectationFailed(stringDescription);
 }
 
-} // namespace testing
+} // namespace runtime_testing
 
 #endif
