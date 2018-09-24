@@ -42,5 +42,5 @@ int main() {
         });
     });
 
-    return getTestReport();
+    return numFailedTests();
 }

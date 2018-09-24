@@ -11,18 +11,28 @@ struct Test {
     string description;
 
     ExpectationFailed* failure = nullptr;
+
+    void print(ostream& report, const std::string& currentGroupFullName) {
+        report << currentGroupFullName
+               << " > "
+               << this->description
+               << ": "
+               << (this->failure != nullptr ? "FAILED" : "PASSED")
+               << "\n";
+        if (this->failure != nullptr) {
+            report << "\t" << this->failure->getMessage() << "\n";
+        }
+    }
 };
 
 struct Group {
     string description;
 
     bool hasSetUp = false;
-    function<void()> setUp;
+    function<void()> setUpFunc;
 
     bool hasTearDown = false;
-    function<void()> tearDown;
-
-    bool startedTests = false;
+    function<void()> tearDownFunc;
 
     vector<Group*> subGroups;
     vector<Test*> tests;
@@ -31,15 +41,8 @@ struct Group {
             stringstream& report,
             const std::string& currentGroupFullName=__FILENAME__) {
         for (Test* test: this->tests) {
-            report << currentGroupFullName
-                   << " > "
-                   << test->description
-                   << ": "
-                   << (test->failure != nullptr ? "FAILED" : "PASSED")
-                   << "\n";
-            if (test->failure != nullptr) {
-                report << "\t" << test->failure->getMessage() << "\n";
-            }
+            test->print(report, currentGroupFullName);
+            delete test->failure;
             delete test;
         }
         for (Group* group: this->subGroups) {
@@ -49,6 +52,17 @@ struct Group {
             );
             delete group;
         }
+    }
+
+    int getNumFailedTests() {
+        int num = 0;
+        for (Test* test: this->tests) {
+            num += (test->failure != nullptr);
+        }
+        for (Group* group: this->subGroups) {
+            num += group->getNumFailedTests();
+        }
+        return num;
     }
 };
 
@@ -67,64 +81,88 @@ bool isDuringTest() {
     return testStarted;
 }
 
-void test(const string& description, function<void()> testFunc) {
+void _test(const string& description,
+           function<void()> testFunc,
+           const char* fileName,
+           const int& lineNumber) {
     initGlobal();
     auto currentTest = new Test();
     currentTest->description = description;
     groupStack.back()->tests.push_back(currentTest);
-    groupStack.back()->startedTests = true;
+    string groupStackFullName = fileName + string(":") + to_string(lineNumber);
     for (Group* group: groupStack) {
         if (group->hasSetUp) {
-            group->setUp();
+            group->setUpFunc();
+        }
+        if (group != globalGroup) {
+            groupStackFullName += " > " + group->description;
         }
     }
+    groupStackFullName += " > " + currentTest->description;
+    cerr << groupStackFullName << ": "; cerr.flush();
     testStarted = true;
     try {
         testFunc();
+        cerr << "PASSED\n";
+        cerr.flush();
     } catch(ExpectationFailed& failure) {
         currentTest->failure = new ExpectationFailed(failure);
+        cerr << "FAILED\n\t" << currentTest->failure->getMessage();
+        cerr.flush();
     }
     testStarted = false;
     for (int i = (int)groupStack.size() - 1; i >= 0; -- i) {
         if (groupStack[i]->hasTearDown) {
-            groupStack[i]->tearDown();
+            groupStack[i]->tearDownFunc();
         }
     }
 }
 
-void group(const string& description, function<void()> groupFunc) {
+void _group(const string& description,
+            const function<void()>& groupFunc,
+            const char* fileName,
+            const int& lineNumber) {
     initGlobal();
     auto currentGroup = new Group();
     currentGroup->description = description;
     groupStack.back()->subGroups.push_back(currentGroup);
-    groupStack.back()->startedTests = true;
     groupStack.push_back(currentGroup);
     groupFunc();
     groupStack.pop_back();
 }
 
-void setUp(function<void()> setUpFunc) {
+void _setUp(function<void()> setUpFunc,
+            const char* fileName,
+            const int& lineNumber) {
     initGlobal();
     auto lastGroup = groupStack.back();
     if (lastGroup->hasSetUp) {
         throw std::runtime_error(
-                "Group '" + lastGroup->description + "' already has a setUp!"
+                string("Group ")
+                + "'" + lastGroup->description + "'"
+                + " already has a setUp!"
+                + " (" + fileName + ":" + to_string(lineNumber) + ")"
         );
     }
     lastGroup->hasSetUp = true;
-    lastGroup->setUp = std::move(setUpFunc);
+    lastGroup->setUpFunc = std::move(setUpFunc);
 }
 
-void tearDown(function<void()> tearDownFunc) {
+void _tearDown(function<void()> tearDownFunc,
+               const char* fileName,
+               const int& lineNumber) {
     initGlobal();
     auto lastGroup = groupStack.back();
     if (lastGroup->hasTearDown) {
         throw std::runtime_error(
-                "Group '" + lastGroup->description + "' already has a tearDown!"
+                string("Group ")
+                + "'" + lastGroup->description + "'"
+                + " already has a tearDown!"
+                + " (" + fileName + ":" + to_string(lineNumber) + ")"
         );
     }
     lastGroup->hasTearDown = true;
-    lastGroup->tearDown = std::move(tearDownFunc);
+    lastGroup->tearDownFunc = std::move(tearDownFunc);
 }
 
 int getTestReport() {
@@ -136,6 +174,10 @@ int getTestReport() {
     globalGroup = nullptr;
     std::cout << report.str();
     return 0;
+}
+
+int numFailedTests() {
+    return globalGroup->getNumFailedTests();
 }
 
 }
