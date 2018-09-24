@@ -14,8 +14,9 @@ public:
             std::runtime_error(str) {}
 };
 
-template<class T>
-void expect(const T& object, matcher::Matcher<T>* matcher) {
+/// Main function for expecting something during a test.
+template<class T, class PseudoMatcher>
+void expect(const T& object, PseudoMatcher* matcher) {
     if (matcher->matches(object)) {
         return;
     }

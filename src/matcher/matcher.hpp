@@ -6,7 +6,7 @@
 
 namespace matcher {
 
-/// Basic interface that all matchers in this library implement.
+/// Basic interface that most matchers in this library implement.
 ///
 /// The `matches` method is the core method, called with the `expect` top-level
 /// function of the library, while

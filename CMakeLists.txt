@@ -10,3 +10,7 @@ file(GLOB AllSrc ${MatchersSrc} ${TestingSrc} ${UtilsSrc})
 file(GLOB AllTests tests/all_tests.cpp tests/**/*.cpp tests/**/*.hpp)
 
 add_executable(TestAll ${AllTests} ${AllSrc})
+
+include_directories(.)
+
+add_executable(MatcherConcept concept/expect.cpp runtime_testing ${AllSrc})

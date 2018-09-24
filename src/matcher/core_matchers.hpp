@@ -54,19 +54,18 @@ Matcher<T>* greaterThanOrEqualTo(const T& object) {
     );
 }
 
-template<class T>
-Matcher<T>* isEmpty() {
-    return new IsEmptyMatcher<T>();
+static IsEmptyMatcher* isEmpty = new IsEmptyMatcher();
+
+static IsNotEmptyMatcher* isNotEmpty = new IsNotEmptyMatcher();
+
+template<class SizeMatcher>
+CollectionSizeMatcher<SizeMatcher>* hasSize(SizeMatcher* sizeMatcher) {
+    return new CollectionSizeMatcher<SizeMatcher>(sizeMatcher);
 }
 
 template<class T>
-Matcher<T>* hasSize(Matcher<typename T::size_type>* sizeMatcher) {
-    return new SizeMatcher<T>(sizeMatcher);
-}
-
-template<class T>
-Matcher<T>* hasSize(const typename T::size_type& size) {
-    return hasSize<T>(equal(size));
+CollectionSizeMatcher<Matcher<T>>* hasSize(const T& object) {
+    return new CollectionSizeMatcher<Matcher<T>>(equal(object));
 }
 
 } // namespace matcher

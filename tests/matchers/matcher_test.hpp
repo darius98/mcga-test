@@ -7,9 +7,9 @@
 
 static int numFailedTests;
 
-template<class T>
+template<class T, class Matcher>
 bool expectMatch(const T& value,
-                 matcher::Matcher<T>* matcher,
+                 Matcher* matcher,
                  bool shouldMatch=true,
                  const std::string& expectedDescription="") {
     bool matches = matcher->matches(value);
@@ -38,10 +38,10 @@ bool expectMatch(const T& value,
     return ret;
 }
 
-template<class T>
+template<class T, class Matcher>
 void test(const std::string& message,
           const T& value,
-          matcher::Matcher<T>* matcher,
+          Matcher* matcher,
           bool shouldMatch=true,
           const std::string& expectedDescription="") {
     std::cout << message << ": ";

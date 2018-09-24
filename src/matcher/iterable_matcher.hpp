@@ -1,44 +1,56 @@
 #ifndef RUNTIME_TESTING_MATCHER_ITERABLE_MATCHER_H_
 #define RUNTIME_TESTING_MATCHER_ITERABLE_MATCHER_H_
 
-#include "matcher.hpp"
+#include "description.hpp"
 
 
 namespace matcher {
 
-template<class T>
-class IsEmptyMatcher: public Matcher<T> {
+class IsEmptyMatcher {
 public:
-    bool matches(const T& object) override {
+    template<class T>
+    bool matches(const T& object) {
         return object.empty();
     }
 
-    void describe(const T& object, Description* description) override {
+    template<class T>
+    void describe(const T& object, Description* description) {
         description->append("empty container, got '", object, "'");
     }
 };
 
-template<class T>
-class SizeMatcher: public Matcher<T> {
+class IsNotEmptyMatcher {
 public:
-    typedef typename T::size_type SizeType;
-
-    explicit SizeMatcher(Matcher<SizeType>* sizeMatcher):
-            sizeMatcher(sizeMatcher) {}
-
-    bool matches(const T& object) override {
-        this->objectSize = object.size();
-        return this->sizeMatcher->matches(this->objectSize);
+    template<class T>
+    bool matches(const T& object) {
+        return !object.empty();
     }
 
-    void describe(const T& object, Description* description) override {
+    template<class T>
+    void describe(const T& object, Description* description) {
+        description->append("non-empty container, got '", object, "'");
+    }
+};
+
+template<class SizeMatcher>
+class CollectionSizeMatcher {
+public:
+    explicit CollectionSizeMatcher(SizeMatcher* sizeMatcher):
+            sizeMatcher(sizeMatcher) {}
+
+    template<class T>
+    bool matches(const T& object) {
+        return this->sizeMatcher->matches(object.size());
+    }
+
+    template<class T>
+    void describe(const T& object, Description* description) {
         description->append("container of size ");
-        this->sizeMatcher->describe(this->objectSize, description);
+        this->sizeMatcher->describe(object.size(), description);
         description->append(": '", object, "'");
     }
 private:
-    SizeType objectSize = static_cast<SizeType>(-1);
-    Matcher<SizeType>* sizeMatcher;
+    SizeMatcher* sizeMatcher;
 };
 
 }
