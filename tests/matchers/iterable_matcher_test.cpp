@@ -38,9 +38,9 @@ void iterableMatcherTest() {
 
     vec = vector<int>{1, 2, 3}; // size 3
     test("hasSize(3) called on vector w size 3", vec, hasSize(3));
-    test("hasSize(greaterThan(2)) called on vector w size 3", vec,
-         hasSize(greaterThan(2)));
-    test("hasSize(greaterThan(4)) called on vector w size 3", vec,
-         hasSize(greaterThan(4)),
+    test("hasSize(isGreaterThan(2)) called on vector w size 3", vec,
+         hasSize(isGreaterThan(2)));
+    test("hasSize(isGreaterThan(4)) called on vector w size 3", vec,
+         hasSize(isGreaterThan(4)),
          false, "container of size greater than '4', got '3': '[1, 2, 3]'");
 }

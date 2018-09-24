@@ -16,24 +16,24 @@ int main() {
 
     expect(1 + 2 == 3, isNot(isFalse));
     expect(1 + 2 == 4, isNot(isTrue));
-    expect(1 + 2, both(equal(3), greaterThanOrEqualTo(2)));
+    expect(1 + 2, both(isEqualTo(3), isGreaterThanOrEqualTo(2)));
 
     expect(v, isNotEmpty);
     expect(v, hasSize(3));
-    expect(v, hasSize(greaterThan(2)));
-    expect(v, hasSize(greaterThanOrEqualTo(2)));
-    expect(v, hasSize(greaterThanOrEqualTo(3)));
-    expect(v, hasSize(lessThan(4)));
-    expect(v, hasSize(lessThanOrEqualTo(4)));
-    expect(v, hasSize(lessThanOrEqualTo(3)));
+    expect(v, hasSize(isGreaterThan(2)));
+    expect(v, hasSize(isGreaterThanOrEqualTo(2)));
+    expect(v, hasSize(isGreaterThanOrEqualTo(3)));
+    expect(v, hasSize(isLessThan(4)));
+    expect(v, hasSize(isLessThanOrEqualTo(4)));
+    expect(v, hasSize(isLessThanOrEqualTo(3)));
 
-    expect(v, equal(vector<int>{1, 2, 3}));
-    expect(v, identical(v));
+    expect(v, isEqualTo(vector<int>{1, 2, 3}));
+    expect(v, isIdenticalTo(v));
 
     expect(v, either(isEmpty, isNotEmpty));
 
     try {
-        expect(v, hasSize(greaterThanOrEqualTo(5)));
+        expect(v, hasSize(isGreaterThanOrEqualTo(5)));
     } catch(const ExpectationFailed& failure) {
         assert(
             failure.getMessage() ==
