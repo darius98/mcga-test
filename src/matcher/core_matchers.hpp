@@ -4,6 +4,7 @@
 #include <set>
 
 #include "comparison_matcher.hpp"
+#include "iterable_matcher.hpp"
 #include "truth_matcher.hpp"
 
 
@@ -51,6 +52,21 @@ Matcher<T>* greaterThanOrEqualTo(const T& object) {
     return new ComparisonMatcher<T>(
             object, std::greater_equal<T>(), "greater than or equal to "
     );
+}
+
+template<class T>
+Matcher<T>* isEmpty() {
+    return new IsEmptyMatcher<T>();
+}
+
+template<class T>
+Matcher<T>* hasSize(Matcher<typename T::size_type>* sizeMatcher) {
+    return new SizeMatcher<T>(sizeMatcher);
+}
+
+template<class T>
+Matcher<T>* hasSize(const typename T::size_type& size) {
+    return hasSize<T>(equal(size));
 }
 
 } // namespace matcher

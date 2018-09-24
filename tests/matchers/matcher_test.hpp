@@ -33,7 +33,7 @@ bool expectMatch(const T& value,
     std::cout << (ret ? "passed." : "failed.") << std::endl;
     if (!ret) {
         std::cout << "\tExpected description: " << expectedDescription << "\n";
-        std::cout << "\tActual description: " << actualDescription << "\n";
+        std::cout << "\t Actual  description: " << actualDescription << "\n";
     }
     return ret;
 }

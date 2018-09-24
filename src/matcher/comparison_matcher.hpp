@@ -17,12 +17,11 @@ public:
                       const char* expectation) :
             target(target), comparator(comparator), expectation(expectation) {}
 
-    bool matches(const T& object) const override {
+    bool matches(const T& object) override {
         return this->comparator(object, this->target);
     }
 
-    void describe(const T& object,
-                  Description* description) const override {
+    void describe(const T& object, Description* description) override {
         description->append(
             this->expectation,
             "'",

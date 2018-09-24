@@ -14,10 +14,10 @@ template<class T>
 class Matcher {
 public:
     /// Check if `object` matches this matcher.
-    virtual bool matches(const T& object) const = 0;
+    virtual bool matches(const T& object) = 0;
 
     /// Describe the way `object` does not match.
-    virtual void describe(const T& object, Description* description) const = 0;
+    virtual void describe(const T& object, Description* description) = 0;
 };
 
 } // namespace matcher

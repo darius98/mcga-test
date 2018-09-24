@@ -18,3 +18,9 @@ add_executable(TestComparisonMatchers
         tests/matchers/matcher_test.hpp
         ${MatchersSrc}
 )
+
+add_executable(TestIterableMatchers
+        tests/matchers/iterable_matcher_test.cpp
+        tests/matchers/matcher_test.hpp
+        ${MatchersSrc}
+)
