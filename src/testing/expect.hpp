@@ -1,5 +1,5 @@
-#ifndef TESTING_EXPECT_H_
-#define TESTING_EXPECT_H_
+#ifndef RUNTIME_TESTING_TESTING_EXPECT_H_
+#define RUNTIME_TESTING_TESTING_EXPECT_H_
 
 #include <stdexcept>
 

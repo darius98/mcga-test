@@ -1,5 +1,5 @@
-#ifndef MATCHER_DESCRIPTION_H_
-#define MATCHER_DESCRIPTION_H_
+#ifndef RUNTIME_TESTING_MATCHER_DESCRIPTION_H_
+#define RUNTIME_TESTING_MATCHER_DESCRIPTION_H_
 
 #include <sstream>
 #include <string>

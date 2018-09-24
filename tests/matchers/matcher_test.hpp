@@ -1,11 +1,11 @@
-#ifndef MATCHERS_MATCHER_TEST_HPP
-#define MATCHERS_MATCHER_TEST_HPP
+#ifndef RUNTIME_TESTING_TESTS_MATCHERS_MATCHER_TEST_H_
+#define RUNTIME_TESTING_TESTS_MATCHERS_MATCHER_TEST_H_
 
 #include <iostream>
 
 #include "../../src/matcher/matcher.hpp"
 
-int numFailedTests;
+static int numFailedTests;
 
 template<class T>
 bool expectMatch(const T& value,
@@ -48,5 +48,9 @@ void test(const std::string& message,
     numFailedTests +=
             !expectMatch(value, matcher, shouldMatch, expectedDescription);
 }
+
+void iterableMatcherTest();
+void comparisonMatcherTest();
+void truthMatcherTest();
 
 #endif

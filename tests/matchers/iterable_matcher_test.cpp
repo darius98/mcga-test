@@ -9,7 +9,7 @@
 using namespace std;
 using namespace matcher;
 
-int main() {
+void iterableMatcherTest() {
     auto vec = vector<int>{};
     test("isEmpty called on empty vector", vec, isEmpty<vector<int>>());
     vec.push_back(3);
@@ -35,6 +35,4 @@ int main() {
     test("hasSize(greaterThan(4)) called on vector w size 3", vec,
          hasSize<vector<int>>(greaterThan<vector<int>::size_type>(4)),
          false, "container of size greater than '4', got '3': '[1, 2, 3]'");
-
-    return numFailedTests;
 }

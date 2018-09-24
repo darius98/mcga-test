@@ -1,5 +1,5 @@
-#ifndef MATCHER_TRUTH_MATCHER_H_
-#define MATCHER_TRUTH_MATCHER_H_
+#ifndef RUNTIME_TESTING_MATCHER_TRUTH_MATCHER_H_
+#define RUNTIME_TESTING_MATCHER_TRUTH_MATCHER_H_
 
 #include "matcher.hpp"
 
@@ -13,20 +13,14 @@ public:
         return object == b;
     }
 
-    void describe(const bool& object, Description* description) override;
+    void describe(const bool& object, Description* description) override {
+        if (b) {
+            description->append("true, got false");
+        } else {
+            description->append("false, got true");
+        }
+    }
 };
-
-template<>
-void TruthMatcher<true>::describe(const bool& object,
-                                  Description* description) {
-    description->append("true, got false");
-}
-
-template<>
-void TruthMatcher<false>::describe(const bool& object,
-                                   Description* description) {
-    description->append("false, got true");
-}
 
 } // namespace matcher
 

@@ -5,11 +5,9 @@
 using namespace std;
 using namespace matcher;
 
-int main() {
-    int failed = 0;
+void truthMatcherTest() {
     test("isTrue called on 'true'", true, isTrue);
     test("isTrue called on 'false'", false, isTrue, false, "true, got false");
     test("isFalse called on 'true'", true, isFalse, false, "false, got true");
     test("isFalse called on 'false'", false, isFalse);
-    return failed;
 }

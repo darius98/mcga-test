@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.8)
 project(RuntimeTesting)
 set(CMAKE_CXX_STANDARD 14)
 
@@ -7,20 +7,6 @@ file(GLOB TestingSrc src/testing/*.hpp src/testing/*.cpp)
 file(GLOB UtilsSrc src/utils/*.hpp src/utils/*.cpp)
 file(GLOB AllSrc ${MatchersSrc} ${TestingSrc} ${UtilsSrc})
 
-add_executable(TestTruthMatchers
-        tests/matchers/truth_matcher_test.cpp
-        tests/matchers/matcher_test.hpp
-        ${MatchersSrc}
-)
+file(GLOB AllTests tests/all_tests.cpp tests/**/*.cpp tests/**/*.hpp)
 
-add_executable(TestComparisonMatchers
-        tests/matchers/comparison_matcher_test.cpp
-        tests/matchers/matcher_test.hpp
-        ${MatchersSrc}
-)
-
-add_executable(TestIterableMatchers
-        tests/matchers/iterable_matcher_test.cpp
-        tests/matchers/matcher_test.hpp
-        ${MatchersSrc}
-)
+add_executable(TestAll ${AllTests} ${AllSrc})

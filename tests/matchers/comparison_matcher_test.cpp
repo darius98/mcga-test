@@ -19,7 +19,7 @@ void testOnType(T a, T c, T d) {
     auto matcher = equal(a);
     test("equality between equal values", b, matcher);
     test("equality between unequal values", c, matcher, false,
-            "'" + S(a) + "', got '" + S(c) + "'"
+         "'" + S(a) + "', got '" + S(c) + "'"
     );
     matcher = identical(a);
     test("identity between variable and itself", a, matcher);
@@ -28,34 +28,34 @@ void testOnType(T a, T c, T d) {
     matcher = lessThan(c);
     test("lessThan when strictly less", a, matcher);
     test("lessThan when equal", c, matcher, false,
-            "less than '" + S(c) + "', got '" + S(c) + "'"
+         "less than '" + S(c) + "', got '" + S(c) + "'"
     );
     test("lessThan when strictly greater", d, matcher, false,
-            "less than '" + S(c) + "', got '" + S(d) + "'"
+         "less than '" + S(c) + "', got '" + S(d) + "'"
     );
     matcher = lessThanOrEqualTo(c);
     test("lessThanOrEqualTo when strictly less", a, matcher);
     test("lessThanOrEqualTo when equal", c, matcher);
     test("lessThanOrEqualTo when strictly greater", d, matcher, false,
-            "less than or equal to '" + S(c) + "', got '" + S(d) + "'"
+         "less than or equal to '" + S(c) + "', got '" + S(d) + "'"
     );
     matcher = greaterThan(c);
     test("greaterThan when strictly less", a, matcher, false,
-            "greater than '" + S(c) + "', got '" + S(a) + "'"
+         "greater than '" + S(c) + "', got '" + S(a) + "'"
     );
     test("greaterThan when equal", c, matcher, false,
-            "greater than '" + S(c) + "', got '" + S(c) + "'"
+         "greater than '" + S(c) + "', got '" + S(c) + "'"
     );
     test("greaterThan when strictly greater", d, matcher);
     matcher = greaterThanOrEqualTo(c);
     test("greaterThanOrEqualTo when strictly less", a, matcher, false,
-            "greater than or equal to '" + S(c) + "', got '" + S(a) + "'"
+         "greater than or equal to '" + S(c) + "', got '" + S(a) + "'"
     );
     test("greaterThanOrEqualTo when equal", c, matcher);
     test("greaterThanOrEqualTo when strictly greater", d, matcher);
 }
 
-int main() {
+void comparisonMatcherTest() {
     testOnType<int>(3, 4, 5);
     testOnType<long>(3l, 4l, 5l);
     testOnType<long long>(3ll, 4ll, 5ll);
@@ -64,5 +64,4 @@ int main() {
     testOnType<double>(2.71, 3.14, 6.2);
     testOnType<long double>(2.71, 3.14, 6.2);
     testOnType<char>('x', 'y', 'z');
-    return numFailedTests;
 }

@@ -1,5 +1,5 @@
-#ifndef MATCHER_MATCHER_H_
-#define MATCHER_MATCHER_H_
+#ifndef RUNTIME_TESTING_MATCHER_MATCHER_H_
+#define RUNTIME_TESTING_MATCHER_MATCHER_H_
 
 #include "description.hpp"
 
