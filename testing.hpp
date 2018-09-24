@@ -6,6 +6,4 @@
 
 #include "src/testing/expect.hpp"
 
-#include "src/utils/has_operator.hpp"
-
 #endif
