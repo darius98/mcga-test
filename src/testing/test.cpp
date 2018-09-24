@@ -2,11 +2,8 @@
 
 #include "expect.hpp"
 
-#define __FILENAME__ (__builtin_strrchr(__FILE__, '/') ?                       \
-                      __builtin_strrchr(__FILE__, '/') + 1 :                   \
-                      __FILE__)
-
 using namespace std;
+
 
 namespace runtime_testing {
 
