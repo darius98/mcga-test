@@ -12,6 +12,8 @@ class ExpectationFailed: std::runtime_error {
 public:
     explicit ExpectationFailed(const std::string& str):
             std::runtime_error(str) {}
+
+    std::string getMessage() const { return this->what(); }
 };
 
 /// Main function for expecting something during a test.

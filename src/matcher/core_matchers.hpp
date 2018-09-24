@@ -4,6 +4,7 @@
 #include <set>
 
 #include "comparison_matcher.hpp"
+#include "composite_matchers.hpp"
 #include "iterable_matcher.hpp"
 #include "truth_matcher.hpp"
 
@@ -66,6 +67,21 @@ CollectionSizeMatcher<SizeMatcher>* hasSize(SizeMatcher* sizeMatcher) {
 template<class T>
 CollectionSizeMatcher<Matcher<T>>* hasSize(const T& object) {
     return new CollectionSizeMatcher<Matcher<T>>(equal(object));
+}
+
+template<class M1, class M2>
+AndMatcher<M1, M2>* both(M1* m1, M2* m2) {
+    return new AndMatcher<M1, M2>(m1, m2);
+};
+
+template<class M1, class M2>
+OrMatcher<M1, M2>* either(M1* m1, M2* m2) {
+    return new OrMatcher<M1, M2>(m1, m2);
+};
+
+template<class Matcher>
+NotMatcher<Matcher>* isNot(Matcher* matcher) {
+    return new NotMatcher<Matcher>(matcher);
 }
 
 } // namespace matcher
