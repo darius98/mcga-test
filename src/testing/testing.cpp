@@ -67,6 +67,6 @@ int numFailedTests() {
 void group(const string& description, const function<void()>& groupFunc) {
     auto driver = runtime_testing::getDriver();
     driver->validateStartGroup();
-    auto group = new runtime_testing::Group(description);
-    driver->addGroup(group, groupFunc);
+    auto currentGroup = new runtime_testing::Group(description);
+    driver->addGroup(currentGroup, groupFunc);
 }
