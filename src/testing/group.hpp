@@ -23,6 +23,8 @@ struct Group {
     std::vector<Group*> subGroups;
     std::vector<Test*> tests;
 
+    explicit Group(const std::string& description="");
+
     void generateTestReport(std::ostream& report,
                             const std::string& currentGroupFullName);
 

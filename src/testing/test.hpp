@@ -14,6 +14,8 @@ struct Test {
 
     ExpectationFailed* failure = nullptr;
 
+    explicit Test(const std::string& description);
+
     void report(std::ostream& report, const std::string& currentGroupFullName);
 };
 

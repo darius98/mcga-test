@@ -4,6 +4,8 @@ using namespace std;
 
 namespace runtime_testing {
 
+Group::Group(const std::string &description): description(description) {}
+
 void Group::generateTestReport(ostream& report,
                                const string& currentGroupFullName) {
     for (Test* test: this->tests) {
