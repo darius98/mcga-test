@@ -6,6 +6,10 @@ namespace runtime_testing {
 
 Test::Test(const std::string &description): description(description) {}
 
+Test::~Test() {
+    delete this->failure;
+}
+
 void Test::report(ostream &report, const string &currentGroupFullName) {
     report << currentGroupFullName
            << " > "

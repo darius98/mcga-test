@@ -10,7 +10,9 @@ namespace runtime_testing {
 
 class TestingDriver {
 public:
-    explicit TestingDriver(std::ostream& log);
+    explicit TestingDriver(std::ostream* log);
+
+    ~TestingDriver();
 
     bool isDuringTest();
 
@@ -47,7 +49,7 @@ private:
 
     std::vector<Group*> groupStack;
     std::stack<DriverState> state;
-    std::ostream& log;
+    std::ostream* log;
 };
 
 }

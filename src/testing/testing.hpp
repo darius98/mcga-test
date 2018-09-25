@@ -2,10 +2,15 @@
 #define RUNTIME_TESTING_TESTING_TESTING_H_
 
 #include <functional>
+#include <iostream>
 #include <string>
 
 
 namespace runtime_testing {
+
+void initializeTestingDriver(std::ostream& log=std::cerr);
+
+void destroyTestingDriver();
 
 void setUp(const std::function<void()>& func);
 

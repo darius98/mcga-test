@@ -16,6 +16,8 @@ struct Test {
 
     explicit Test(const std::string& description);
 
+    ~Test();
+
     void report(std::ostream& report, const std::string& currentGroupFullName);
 };
 

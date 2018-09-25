@@ -5,9 +5,13 @@ using namespace std;
 
 namespace runtime_testing {
 
-TestingDriver::TestingDriver(ostream& log): log(log) {
+TestingDriver::TestingDriver(ostream* log): log(log) {
     this->groupStack = {new Group()};
     this->state.push(DriverState::TOP_LEVEL);
+}
+
+TestingDriver::~TestingDriver() {
+    delete this->groupStack[0];
 }
 
 bool TestingDriver::isDuringTest() {
@@ -77,14 +81,16 @@ void TestingDriver::addTest(Test *currentTest,
         groupStackFullName += "::";
     }
     groupStackFullName += currentTest->description;
-    this->log << groupStackFullName << ": ";
+    (*this->log) << groupStackFullName << ": ";
     this->state.push(DriverState::TEST);
     try {
         func();
-        this->log << "PASSED\n";
+        (*this->log) << "PASSED\n";
     } catch(ExpectationFailed& failure) {
         currentTest->failure = new ExpectationFailed(failure);
-        this->log << "FAILED\n\t" << currentTest->failure->getMessage() << "\n";
+        (*this->log) << "FAILED\n\t"
+                     << currentTest->failure->getMessage()
+                     << "\n";
     }
     BaseMatcher::cleanup();
     this->state.pop();

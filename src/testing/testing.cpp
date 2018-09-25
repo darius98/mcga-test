@@ -8,13 +8,26 @@ using namespace std;
 
 namespace runtime_testing {
 
+static TestingDriver* testingDriver = nullptr;
 
 TestingDriver* getDriver() {
-    static TestingDriver* driver = nullptr;
-    if (driver == nullptr) {
-        driver = new TestingDriver(cout);
+    if (testingDriver == nullptr) {
+        testingDriver = new TestingDriver(&cerr);
     }
-    return driver;
+    return testingDriver;
+}
+
+void initializeTestingDriver(std::ostream& log) {
+    if (testingDriver != nullptr) {
+        throw runtime_error("Testing driver cannot be initialized: "
+                            "it already exists.");
+    }
+    testingDriver = new TestingDriver(&log);
+}
+
+void destroyTestingDriver() {
+    delete testingDriver;
+    testingDriver = nullptr;
 }
 
 bool isDuringTest() {

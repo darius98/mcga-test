@@ -28,6 +28,8 @@ struct Group {
 
     explicit Group(const std::string& description="");
 
+    ~Group();
+
     int generateTestReport(std::ostream& report,
                            const std::string& currentGroupFullName="");
 };
