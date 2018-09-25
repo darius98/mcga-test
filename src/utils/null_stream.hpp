@@ -17,7 +17,7 @@ private:
 
 class NullStream: public NullStreamBuffer, public std::ostream {
 public:
-    NullStream();
+    NullStream() noexcept;
 };
 
 extern NullStream nullStream;

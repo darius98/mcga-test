@@ -12,9 +12,9 @@
 
 namespace matcher {
 
-static Matcher<bool>* isTrue = new TruthMatcher<true>();
+extern IsTrueMatcher* isTrue;
 
-static Matcher<bool>* isFalse = new TruthMatcher<false>();
+extern IsFalseMatcher* isFalse;
 
 template<class T>
 Matcher<T>* isEqualTo(const T& object) {
@@ -56,9 +56,9 @@ Matcher<T>* isGreaterThanOrEqualTo(const T &object) {
     );
 }
 
-static IsEmptyMatcher* isEmpty = new IsEmptyMatcher();
+extern IsEmptyMatcher* isEmpty;
 
-static IsNotEmptyMatcher* isNotEmpty = new IsNotEmptyMatcher();
+extern IsNotEmptyMatcher* isNotEmpty;
 
 template<class SizeMatcher>
 CollectionSizeMatcher<SizeMatcher>* hasSize(SizeMatcher* sizeMatcher) {
@@ -85,9 +85,9 @@ NotMatcher<Matcher>* isNot(Matcher* matcher) {
     return new NotMatcher<Matcher>(matcher);
 }
 
-static Matcher<void*>* isNull = new IsNullptrMatcher();
+extern Matcher<void*>* isNull;
 
-static Matcher<void*>* isNotNull = new IsNotNullptrMatcher();
+extern Matcher<void*>* isNotNull;
 
 } // namespace matcher
 

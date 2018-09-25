@@ -8,7 +8,7 @@ int NullStreamBuffer::overflow(int c) {
     return (c == EOF) ? '\0' : c;
 }
 
-NullStream::NullStream() : std::ostream(this) {}
+NullStream::NullStream() noexcept: std::ostream(this) {}
 
 NullStream nullStream;
 

@@ -6,20 +6,18 @@
 
 namespace matcher {
 
-template<bool b>
-class TruthMatcher : public Matcher<bool> {
+class IsTrueMatcher: public BaseMatcher {
 public:
-    bool matches(const bool& object) override {
-        return object == b;
-    }
+    bool matches(const bool& object);
 
-    void describe(const bool& object, Description* description) override {
-        if (b) {
-            description->append("true, got false");
-        } else {
-            description->append("false, got true");
-        }
-    }
+    void describe(const bool& object, Description* description);
+};
+
+class IsFalseMatcher: public BaseMatcher {
+public:
+    bool matches(const bool& object);
+
+    void describe(const bool& object, Description* description);
 };
 
 } // namespace matcher

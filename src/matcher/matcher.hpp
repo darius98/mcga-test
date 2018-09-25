@@ -9,8 +9,8 @@ namespace matcher {
 
 class BaseMatcher {
 public:
-    void* operator new(std::size_t size);
-    void operator delete(void* obj);
+    void* operator new(std::size_t size) noexcept;
+    void operator delete(void* obj) noexcept;
 
     static void cleanup();
 private:

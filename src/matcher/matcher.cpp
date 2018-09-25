@@ -2,7 +2,7 @@
 
 namespace matcher {
 
-void* BaseMatcher::operator new(std::size_t size) {
+void* BaseMatcher::operator new(std::size_t size) noexcept {
     void* p = malloc(size);
     if (runtime_testing::isDuringTest()) {
         BaseMatcher::matchersAllocatedDuringTests.insert(p);
@@ -10,7 +10,7 @@ void* BaseMatcher::operator new(std::size_t size) {
     return p;
 }
 
-void BaseMatcher::operator delete(void* obj) {
+void BaseMatcher::operator delete(void* obj) noexcept {
     BaseMatcher::matchersAllocatedDuringTests.erase(obj);
     free(obj);
 }
