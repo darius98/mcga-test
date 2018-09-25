@@ -52,12 +52,12 @@ void test(const string& description,
     return getDriver()->addTest(new Test(description), func);
 }
 
-int getTestReport(ostream& report) {
-    return getDriver()->generateTestReport(report);
-}
-
 int numFailedTests() {
     return getDriver()->getNumFailedTests();
+}
+
+int getTestSuiteReport(ostream& report) {
+    return getDriver()->generateTestReport(report);
 }
 
 }

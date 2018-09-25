@@ -10,16 +10,23 @@ Test::~Test() {
     delete this->failure;
 }
 
-void Test::report(ostream &report, const string &currentGroupFullName) {
-    report << currentGroupFullName
-           << " > "
-           << this->description
-           << ": "
-           << (this->failure != nullptr ? "FAILED" : "PASSED")
-           << "\n";
+void Test::generateTestReport(std::ostream &report, std::size_t spaces) {
+    string prefix(spaces + 2, ' ');
+    report << "{\n";
+    report << prefix << R"("description": ")" << this->description << "\",\n";
+    report << prefix
+           << R"("passed": )"
+           << (this->failure == nullptr ? "true" : "false");
     if (this->failure != nullptr) {
-        report << "\t" << this->failure->getMessage() << "\n";
+        report << ",\n";
+        report << prefix
+               << R"("failureMessage": ")"
+               << this->failure->getMessage()
+               << "\"\n";
+    } else {
+        report << "\n";
     }
+    report << string(spaces, ' ') << "}";
 }
 
 }

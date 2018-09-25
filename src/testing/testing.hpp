@@ -24,7 +24,7 @@ bool isDuringTest();
 
 int numFailedTests();
 
-int getTestReport(std::ostream& report);
+int getTestSuiteReport(std::ostream& report);
 
 }
 

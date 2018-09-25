@@ -30,8 +30,7 @@ struct Group {
 
     ~Group();
 
-    int generateTestReport(std::ostream& report,
-                           const std::string& currentGroupFullName="");
+    int generateTestReport(std::ostream& report, std::size_t spaces);
 };
 
 }

@@ -120,7 +120,7 @@ void TestingDriver::addTearDown(const function<void()> &func) {
 }
 
 int TestingDriver::generateTestReport(ostream& report) {
-    return this->groupStack[0]->generateTestReport(report);
+    return this->groupStack[0]->generateTestReport(report, 0u);
 }
 
 int TestingDriver::getNumFailedTests() {

@@ -15,17 +15,44 @@ Group::~Group() {
     }
 }
 
-int Group::generateTestReport(ostream& report,
-                              const string& currentGroupFullName) {
-    for (Test* test: this->tests) {
-        test->report(report, currentGroupFullName);
+int Group::generateTestReport(ostream& report, size_t spaces) {
+    string prefix(spaces + 2, ' ');
+    report << "{\n";
+    if (!this->description.empty()) {
+        report << prefix
+               << R"("description": ")"
+               << this->description
+               << "\",\n";
     }
-    for (Group* group: this->subGroups) {
-        group->generateTestReport(
-            report,
-            currentGroupFullName + " > " + group->description
-        );
+    report << prefix << "\"numTests\": " << this->numTests << ",\n";
+    report << prefix << "\"numFailedTests\": " << this->numFailedTests << ",\n";
+    report << prefix << "\"tests\": [";
+    for (size_t i = 0; i < this->tests.size(); ++ i) {
+        if (i == 0) {
+            report << "\n" << prefix;
+        }
+        report << "  ";
+        this->tests[i]->generateTestReport(report, spaces + 4);
+        if (i + 1 != this->tests.size()) {
+            report << ",";
+        }
+        report << "\n" << prefix;
     }
+    report << "],\n";
+    report << prefix << "\"subGroups\": [";
+    for (size_t i = 0; i < this->subGroups.size(); ++ i) {
+        if (i == 0) {
+            report << "\n" << prefix;
+        }
+        report << "  ";
+        this->subGroups[i]->generateTestReport(report, spaces + 4);
+        if (i + 1 != this->subGroups.size()) {
+            report << ",";
+        }
+        report << "\n" << prefix;
+    }
+    report << "]\n";
+    report << string(spaces, ' ') << "}";
     return this->numFailedTests;
 }
 

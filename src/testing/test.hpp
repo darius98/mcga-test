@@ -18,7 +18,7 @@ struct Test {
 
     ~Test();
 
-    void report(std::ostream& report, const std::string& currentGroupFullName);
+    void generateTestReport(std::ostream& report, std::size_t spaces);
 };
 
 }

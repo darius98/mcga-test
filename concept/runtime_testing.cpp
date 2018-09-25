@@ -39,6 +39,7 @@ int main() {
 
         test("back() returns added element", [&]() {
             expect(v.back() == 3);
+            expect(v.back() == 5);
             expectMatches(v.back(), isEqualTo(3));
         });
 
@@ -46,6 +47,7 @@ int main() {
             v.push_back(4);
 
             expect(!v.empty());
+            expect(v.empty());
             expectMatches(v, isNotEmpty);
 
             expect(v.back() == 4);
@@ -78,8 +80,8 @@ int main() {
         });
     });
 
-    ofstream f("report.txt");
-    int status = getTestReport(f);
+    ofstream f("report.json");
+    int status = getTestSuiteReport(f);
     destroyTestingDriver();
     return status;
 }
