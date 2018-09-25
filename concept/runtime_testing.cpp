@@ -9,6 +9,8 @@ using namespace std;
 
 
 int main() {
+    initializeTestingDriver(cout);
+
     vector<int> v;
 
     setUp([&]() {
@@ -52,5 +54,7 @@ int main() {
     });
 
     ofstream f("report.txt");
-    return getTestReport(f);
+    int status = getTestReport(f);
+    destroyTestingDriver();
+    return status;
 }

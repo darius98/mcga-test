@@ -2,6 +2,7 @@
 
 #include "expect.hpp"
 #include "driver.hpp"
+#include "null_stream.hpp"
 
 using namespace std;
 
@@ -12,7 +13,7 @@ static TestingDriver* testingDriver = nullptr;
 
 TestingDriver* getDriver() {
     if (testingDriver == nullptr) {
-        testingDriver = new TestingDriver(&cerr);
+        testingDriver = new TestingDriver(&nullStream);
     }
     return testingDriver;
 }
@@ -31,7 +32,7 @@ void destroyTestingDriver() {
 }
 
 bool isDuringTest() {
-    return getDriver()->isDuringTest();
+    return testingDriver != nullptr && testingDriver->isDuringTest();
 }
 
 void setUp(const function<void()>& func) {

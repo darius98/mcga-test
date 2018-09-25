@@ -8,7 +8,7 @@
 
 namespace runtime_testing {
 
-void initializeTestingDriver(std::ostream& log=std::cerr);
+void initializeTestingDriver(std::ostream& log);
 
 void destroyTestingDriver();
 
