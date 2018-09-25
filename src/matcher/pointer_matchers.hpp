@@ -7,24 +7,16 @@ namespace matcher {
 
 class IsNullptrMatcher: public Matcher<void*> {
 public:
-    bool matches(void*const& obj) override {
-        return obj == nullptr;
-    }
+    bool matches(void*const& obj) override;
 
-    void describe(void*const& obj, Description* description) override {
-        description->append("nullptr, got '", obj, "'");
-    }
+    void describe(void*const& obj, Description* description) override;
 };
 
 class IsNotNullptrMatcher: public Matcher<void*> {
 public:
-    bool matches(void*const& obj) override {
-        return obj != nullptr;
-    }
+    bool matches(void*const& obj) override;
 
-    void describe(void*const& obj, Description* description) override {
-        description->append("non-null pointer, got nullptr");
-    }
+    void describe(void*const& obj, Description* description) override;
 };
 
 }
