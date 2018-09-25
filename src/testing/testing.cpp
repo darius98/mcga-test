@@ -1,6 +1,7 @@
 #include "testing.hpp"
 
 #include "expect.hpp"
+#include "group.hpp"
 
 using namespace std;
 
@@ -14,66 +15,6 @@ enum UnittestState {
     TEST,
     SET_UP,
     TEAR_DOWN,
-};
-
-
-struct Test {
-    string description;
-
-    ExpectationFailed* failure = nullptr;
-
-    void print(ostream& report, const std::string& currentGroupFullName) {
-        report << currentGroupFullName
-               << " > "
-               << this->description
-               << ": "
-               << (this->failure != nullptr ? "FAILED" : "PASSED")
-               << "\n";
-        if (this->failure != nullptr) {
-            report << "\t" << this->failure->getMessage() << "\n";
-        }
-    }
-};
-
-struct Group {
-    string description;
-
-    bool hasSetUp = false;
-    function<void()> setUpFunc;
-
-    bool hasTearDown = false;
-    function<void()> tearDownFunc;
-
-    vector<Group*> subGroups;
-    vector<Test*> tests;
-
-    void generateTestReport(
-            stringstream& report,
-            const string& currentGroupFullName) {
-        for (Test* test: this->tests) {
-            test->print(report, currentGroupFullName);
-            delete test->failure;
-            delete test;
-        }
-        for (Group* group: this->subGroups) {
-            group->generateTestReport(
-                    report,
-                    currentGroupFullName + " > " + group->description
-            );
-            delete group;
-        }
-    }
-
-    int getNumFailedTests() {
-        int num = 0;
-        for (Test* test: this->tests) {
-            num += (test->failure != nullptr);
-        }
-        for (Group* group: this->subGroups) {
-            num += group->getNumFailedTests();
-        }
-        return num;
-    }
 };
 
 Group* globalGroup = nullptr;

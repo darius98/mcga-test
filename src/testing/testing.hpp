@@ -1,5 +1,5 @@
-#ifndef RUNTIME_TESTING_TESTING_TEST_H_
-#define RUNTIME_TESTING_TESTING_TEST_H_
+#ifndef RUNTIME_TESTING_TESTING_TESTING_H_
+#define RUNTIME_TESTING_TESTING_TESTING_H_
 
 #include <functional>
 #include <string>
