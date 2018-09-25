@@ -39,15 +39,13 @@ int main() {
 
         test("back() returns added element", [&]() {
             expect(v.back() == 3);
-            expectMatches(v.back(), isEqualTo(5));
-            expectMatches(v.back(), isEqualTo(3));
+            expectMatches(v.back(), isEqualTo(5)); // This will fail!
         });
 
         test("A second push_back() works as expected", [&]() {
             v.push_back(4);
 
-            expect(!v.empty());
-            expect(v.empty());
+            expect(v.empty()); // This will fail!
             expectMatches(v, isNotEmpty);
 
             expect(v.back() == 4);
