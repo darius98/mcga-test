@@ -5,6 +5,6 @@
 #include "src/matcher/core_matchers.hpp"
 
 #include "src/testing/expect.hpp"
-#include "src/testing/test.hpp"
+#include "src/testing/testing.hpp"
 
 #endif
