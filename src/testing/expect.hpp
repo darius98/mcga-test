@@ -71,8 +71,9 @@ void _expectMatches(const T& object,
     throwExpectationFailed(description);
 }
 
-#define expect(expr) \
-    runtime_testing::_expectMatches(expr, isTrue, __FILENAME__, __LINE__, #expr)
+#define expect(expr)                                                           \
+    runtime_testing::_expectMatches(                                           \
+            expr, isTrue, __FILENAME__, __LINE__, #expr", which is not true")
 
 #define expectMatches(expr, matcher) \
     runtime_testing::_expectMatches(expr, matcher, __FILENAME__, __LINE__)

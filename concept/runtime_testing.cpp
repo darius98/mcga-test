@@ -39,7 +39,7 @@ int main() {
 
         test("back() returns added element", [&]() {
             expect(v.back() == 3);
-            expect(v.back() == 5);
+            expectMatches(v.back(), isEqualTo(5));
             expectMatches(v.back(), isEqualTo(3));
         });
 
