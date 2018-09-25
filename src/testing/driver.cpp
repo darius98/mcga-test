@@ -1,5 +1,6 @@
 #include "driver.hpp"
 
+using namespace matcher;
 using namespace std;
 
 namespace runtime_testing {
@@ -85,6 +86,7 @@ void TestingDriver::addTest(Test *currentTest,
         currentTest->failure = new ExpectationFailed(failure);
         this->log << "FAILED\n\t" << currentTest->failure->getMessage() << "\n";
     }
+    BaseMatcher::cleanup();
     this->state.pop();
     this->state.push(DriverState::TEAR_DOWN);
     for (int i = (int)groupStack.size() - 1; i >= 0; -- i) {

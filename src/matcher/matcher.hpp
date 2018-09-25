@@ -2,9 +2,20 @@
 #define RUNTIME_TESTING_MATCHER_MATCHER_H_
 
 #include "description.hpp"
+#include "../testing/testing.hpp"
 
 
 namespace matcher {
+
+class BaseMatcher {
+public:
+    void* operator new(std::size_t size);
+    void operator delete(void* obj);
+
+    static void cleanup();
+private:
+    static std::set<void*> matchersAllocatedDuringTests;
+};
 
 /// Basic matcher interface.
 ///
@@ -15,7 +26,7 @@ namespace matcher {
 /// template methods, in which case it is not possible to make a pure-virtual
 /// interface.
 template<class T>
-class Matcher {
+class Matcher: public BaseMatcher {
 public:
     /// Check if `object` matches this matcher.
     virtual bool matches(const T& object) = 0;

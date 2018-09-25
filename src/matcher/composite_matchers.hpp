@@ -2,12 +2,13 @@
 #define RUNTIME_TESTING_MATCHER_COMPOSITE_MATCHERS_H_
 
 #include "description.hpp"
+#include "matcher.hpp"
 
 
 namespace matcher {
 
 template<class M1, class M2>
-class AndMatcher {
+class AndMatcher: public BaseMatcher {
 public:
     AndMatcher(M1* _m1, M2* _m2): m1(_m1), m2(_m2) {}
 
@@ -38,7 +39,7 @@ private:
 };
 
 template<class M1, class M2>
-class OrMatcher {
+class OrMatcher: public BaseMatcher {
 public:
     OrMatcher(M1* _m1, M2* _m2): m1(_m1), m2(_m2) {}
 
@@ -69,7 +70,7 @@ private:
 };
 
 template<class Matcher>
-class NotMatcher {
+class NotMatcher: public BaseMatcher {
 public:
     explicit NotMatcher(Matcher* matcher): matcher(matcher) {}
 

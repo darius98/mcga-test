@@ -6,7 +6,7 @@
 
 namespace matcher {
 
-class IsEmptyMatcher {
+class IsEmptyMatcher: public BaseMatcher {
 public:
     template<class T>
     bool matches(const T& object) {
@@ -19,7 +19,7 @@ public:
     }
 };
 
-class IsNotEmptyMatcher {
+class IsNotEmptyMatcher: public BaseMatcher {
 public:
     template<class T>
     bool matches(const T& object) {
@@ -33,7 +33,7 @@ public:
 };
 
 template<class SizeMatcher>
-class CollectionSizeMatcher {
+class CollectionSizeMatcher: public BaseMatcher {
 public:
     explicit CollectionSizeMatcher(SizeMatcher* sizeMatcher):
             sizeMatcher(sizeMatcher) {}
