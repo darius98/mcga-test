@@ -5,6 +5,7 @@
 
 #include "comparison_matcher.hpp"
 #include "composite_matchers.hpp"
+#include "iterable_matchers.hpp"
 #include "pointer_matchers.hpp"
 #include "size_matchers.hpp"
 #include "truth_matcher.hpp"
@@ -68,6 +69,16 @@ CollectionSizeMatcher<SizeMatcher>* hasSize(SizeMatcher* sizeMatcher) {
 template<class T>
 CollectionSizeMatcher<Matcher<T>>* hasSize(const T& object) {
     return new CollectionSizeMatcher<Matcher<T>>(isEqualTo(object));
+}
+
+template<class EachMatcher>
+CollectionEachMatcher<EachMatcher>* eachElement(EachMatcher *eachMatcher) {
+    return new CollectionEachMatcher<EachMatcher>(eachMatcher);
+}
+
+template<class T>
+CollectionEachMatcher<Matcher<T>>* eachElement(const T &object) {
+    return new CollectionEachMatcher<Matcher<T>>(isEqualTo(object));
 }
 
 template<class M1, class M2>

@@ -45,6 +45,9 @@ int main() {
         test("A second push_back() works as expected", [&]() {
             v.push_back(4);
 
+            expectMatches(v, eachElement(isGreaterThan(2)));
+            expectMatches(v, eachElement(2));
+
             expect(v.empty()); // This will fail!
             expectMatches(v, isNotEmpty);
 
