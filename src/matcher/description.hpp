@@ -11,6 +11,8 @@ namespace matcher {
 
 class Description {
 public:
+    static Description* createForExpectation();
+
     template<class T>
     Description* append(T obj) {
         DescriptionStreamer<T>::send(this->stream, obj);
@@ -24,9 +26,7 @@ public:
         return this;
     }
 
-    std::string toString() const {
-        return this->stream.str();
-    }
+    std::string toString() const;
 private:
     std::stringstream stream;
 };

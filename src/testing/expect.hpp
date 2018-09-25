@@ -11,38 +11,48 @@ namespace runtime_testing {
 
 class ExpectationFailed: std::runtime_error {
 public:
-    explicit ExpectationFailed(const std::string& str):
-            std::runtime_error(str) {}
-    ExpectationFailed(const ExpectationFailed& other) noexcept:
-            ExpectationFailed(other.getMessage()) {}
+    explicit ExpectationFailed(const std::string& str);
+    ExpectationFailed(const ExpectationFailed& other) noexcept;
 
-    std::string getMessage() const { return this->what(); }
+    std::string getMessage() const;
 };
+
+void checkDuringTest(const char* fileName, const int& lineNumber);
+
+void throwExpectationFailed(
+        matcher::Description* description,
+        const char* fileName,
+        const int& lineNumber);
+
+/// Specialization for matcher::Matcher interface, for faster compile-time on
+/// basic matchers.
+template<class T>
+void _expectMatches(const T& object,
+                    matcher::Matcher<T>* matcher,
+                    const char* fileName="UNKNOWN_FILE",
+                    int lineNumber=0) {
+    checkDuringTest(fileName, lineNumber);
+    if (matcher->matches(object)) {
+        return;
+    }
+    auto description = matcher::Description::createForExpectation();
+    matcher->describe(object, description);
+    throwExpectationFailed(description, fileName, lineNumber);
+}
 
 /// Main function for expecting something during a test.
 template<class T, class PseudoMatcher>
 void _expectMatches(const T& object,
                     PseudoMatcher* matcher,
-                    const char* filename = "NO_FILENAME",
+                    const char* fileName = "NO_FILENAME",
                     int lineNumber = 0) {
-    if (!isDuringTest()) {
-        throw std::runtime_error(
-                std::string("'expect' can only be called inside tests! ") +
-                "(" + filename + ":" + std::to_string(lineNumber) + ")"
-        );
-    }
+    checkDuringTest(fileName, lineNumber);
     if (matcher->matches(object)) {
         return;
     }
-    auto description = new matcher::Description();
-    description->append("expected ");
+    auto description = matcher::Description::createForExpectation();
     matcher->describe(object, description);
-    description->append(
-        std::string(" (") + filename + ":" + std::to_string(lineNumber) + ")"
-    );
-    std::string stringDescription = description->toString();
-    delete description;
-    throw ExpectationFailed(stringDescription);
+    throwExpectationFailed(description, fileName, lineNumber);
 }
 
 #define expect(expr) \
