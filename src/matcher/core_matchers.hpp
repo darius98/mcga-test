@@ -5,8 +5,8 @@
 
 #include "comparison_matcher.hpp"
 #include "composite_matchers.hpp"
-#include "iterable_matcher.hpp"
 #include "pointer_matchers.hpp"
+#include "size_matchers.hpp"
 #include "truth_matcher.hpp"
 
 
