@@ -6,18 +6,18 @@
 
 namespace matcher {
 
-class IsTrueMatcher: public BaseMatcher {
+class IsTrueMatcher: public Matcher<bool> {
 public:
-    bool matches(const bool& object);
+    bool matches(const bool& object) override;
 
-    void describe(const bool& object, Description* description);
+    void describe(const bool& object, Description* description) override;
 };
 
-class IsFalseMatcher: public BaseMatcher {
+class IsFalseMatcher: public Matcher<bool> {
 public:
-    bool matches(const bool& object);
+    bool matches(const bool& object) override;
 
-    void describe(const bool& object, Description* description);
+    void describe(const bool& object, Description* description) override;
 };
 
 } // namespace matcher

@@ -32,16 +32,20 @@ template<class T>
 void _expectMatches(const T& object,
                     matcher::Matcher<T>* matcher,
                     const char* fileName="UNKNOWN_FILE",
-                    int lineNumber=0) {
+                    int lineNumber=0,
+                    const char* descriptionSuppression=nullptr) {
     checkDuringTest(fileName, lineNumber);
     if (matcher->matches(object)) {
         return;
     }
     auto description = matcher::Description::createForExpectation(
         fileName,
-        lineNumber
+        lineNumber,
+        descriptionSuppression
     );
-    matcher->describe(object, description);
+    if (descriptionSuppression == nullptr) {
+        matcher->describe(object, description);
+    }
     throwExpectationFailed(description);
 }
 
@@ -50,21 +54,25 @@ template<class T, class PseudoMatcher>
 void _expectMatches(const T& object,
                     PseudoMatcher* matcher,
                     const char* fileName="NO_FILENAME",
-                    int lineNumber=0) {
+                    int lineNumber=0,
+                    const char* descriptionSuppression=nullptr) {
     checkDuringTest(fileName, lineNumber);
     if (matcher->matches(object)) {
         return;
     }
     auto description = matcher::Description::createForExpectation(
         fileName,
-        lineNumber
+        lineNumber,
+        descriptionSuppression
     );
-    matcher->describe(object, description);
+    if (descriptionSuppression == nullptr) {
+        matcher->describe(object, description);
+    }
     throwExpectationFailed(description);
 }
 
 #define expect(expr) \
-    runtime_testing::_expectMatches(expr, isTrue, __FILENAME__, __LINE__)
+    runtime_testing::_expectMatches(expr, isTrue, __FILENAME__, __LINE__, #expr)
 
 #define expectMatches(expr, matcher) \
     runtime_testing::_expectMatches(expr, matcher, __FILENAME__, __LINE__)

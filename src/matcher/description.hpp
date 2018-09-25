@@ -13,7 +13,8 @@ class Description {
 public:
     static Description* createForExpectation(
             const char* fileName,
-            const int& lineNumber);
+            const int& lineNumber,
+            const char* extra);
 
     template<class T>
     Description* append(T obj) {
