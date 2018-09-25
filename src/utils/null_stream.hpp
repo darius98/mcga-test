@@ -6,6 +6,7 @@
 
 
 namespace runtime_testing {
+namespace utils {
 
 class NullStreamBuffer: public std::streambuf {
 protected:
@@ -21,6 +22,7 @@ public:
 
 extern NullStream nullStream;
 
+}
 }
 
 #endif

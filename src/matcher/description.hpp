@@ -4,7 +4,7 @@
 #include <sstream>
 #include <string>
 
-#include "description_streamer.hpp"
+#include "src/utils/streamer.hpp"
 
 
 namespace matcher {
@@ -15,7 +15,7 @@ public:
 
     template<class T>
     Description* append(T obj) {
-        DescriptionStreamer<T>::send(this->stream, obj);
+        runtime_testing::utils::Streamer<T>::send(this->stream, obj);
         return this;
     }
 

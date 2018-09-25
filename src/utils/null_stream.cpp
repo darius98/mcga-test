@@ -1,6 +1,7 @@
 #include "null_stream.hpp"
 
 namespace runtime_testing {
+namespace utils {
 
 int NullStreamBuffer::overflow(int c) {
     this->setp(this->buffer, this->buffer + 64);
@@ -11,4 +12,5 @@ NullStream::NullStream() : std::ostream(this) {}
 
 NullStream nullStream;
 
+}
 }

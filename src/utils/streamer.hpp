@@ -10,12 +10,13 @@
 #include <vector>
 
 
-namespace matcher {
+namespace runtime_testing {
+namespace utils {
 
 template<class S, class=void>
-struct DescriptionStreamer {
+struct Streamer {
     static void send(std::stringstream& stream, S obj) {
-        DescriptionStreamer<S, void>::format(stream, obj);
+        format(stream, obj);
     }
 
 private:
@@ -54,7 +55,7 @@ private:
             if (it != obj.begin()) {
                 s << ", ";
             }
-            DescriptionStreamer<I>::send(s, *it);
+            Streamer<I>::send(s, *it);
         }
         s << finish;
     }
@@ -67,13 +68,14 @@ private:
 };
 
 template<class S>
-struct DescriptionStreamer
+struct Streamer
         <S, std::void_t<decltype(std::cout << std::declval<S>())>> {
     static void send(std::stringstream& s, S obj) {
         s << obj;
     }
 };
 
+}
 }
 
 #endif

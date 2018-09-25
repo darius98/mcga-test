@@ -2,7 +2,7 @@
 
 #include "expect.hpp"
 #include "driver.hpp"
-#include "null_stream.hpp"
+#include "src/utils/null_stream.hpp"
 
 using namespace std;
 
@@ -13,7 +13,7 @@ static TestingDriver* testingDriver = nullptr;
 
 TestingDriver* getDriver() {
     if (testingDriver == nullptr) {
-        testingDriver = new TestingDriver(&nullStream);
+        testingDriver = new TestingDriver(&runtime_testing::utils::nullStream);
     }
     return testingDriver;
 }
