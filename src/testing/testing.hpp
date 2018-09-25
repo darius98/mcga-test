@@ -5,11 +5,11 @@
 #include <string>
 
 
-#define __FILENAME__ (__builtin_strrchr(__FILE__, '/') ?                       \
-                      __builtin_strrchr(__FILE__, '/') + 1 :                   \
-                      __FILE__)
+namespace runtime_testing {
 
+void setUp(const std::function<void()>& setUpFunc);
 
+void tearDown(const std::function<void()>& tearDownFunc);
 
 void test(
         const std::string& description,
@@ -19,32 +19,11 @@ void group(
         const std::string& description,
         const std::function<void()>& groupFunc);
 
-#define setUp(func) \
-        runtime_testing::_setUp(func, __FILENAME__, __LINE__)
-#define tearDown(func) \
-        runtime_testing::_tearDown(func, __FILENAME__, __LINE__)
-
-#define getTestReport() \
-        runtime_testing::_getTestReport(__FILENAME__)
-
-
-namespace runtime_testing {
-
 bool isDuringTest();
 
 int numFailedTests();
 
-void _setUp(
-        std::function<void()> setUpFunc,
-        const char* fileName,
-        const int& lineNumber);
-
-void _tearDown(
-        std::function<void()> tearDownFunc,
-        const char* fileName,
-        const int& lineNumber);
-
-int _getTestReport(const char* fileName);
+int getTestReport();
 
 }
 

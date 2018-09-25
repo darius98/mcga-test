@@ -14,16 +14,6 @@ public:
 
     bool isDuringTest();
 
-    void validateStartGroup();
-
-    void validateStartTest();
-
-    void validateStartSetUp(const char* fileName=nullptr,
-                            const int& lineNumber=0);
-
-    void validateStartTearDown(const char* fileName=nullptr,
-                               const int& lineNumber=0);
-
     void addGroup(Group* currentGroup, const std::function<void()>& func);
 
     void addTest(Test* currentTest, const std::function<void()>& func);
@@ -32,7 +22,7 @@ public:
 
     void addTearDown(const std::function<void()>& func);
 
-    void generateTestReport(std::ostream& report, const char* fileName);
+    void generateTestReport(std::ostream& report);
 
     int getNumFailedTests();
 
@@ -45,9 +35,15 @@ private:
         TEAR_DOWN,
     };
 
-    void validate(const std::string& methodName,
-                  const char* fileName=nullptr,
-                  const int& lineNumber=0);
+    void validate(const std::string& methodName);
+
+    void validateStartGroup();
+
+    void validateStartTest();
+
+    void validateStartSetUp();
+
+    void validateStartTearDown();
 
     std::vector<Group*> groupStack;
     std::stack<DriverState> state;

@@ -26,7 +26,7 @@ struct Group {
     explicit Group(const std::string& description="");
 
     void generateTestReport(std::ostream& report,
-                            const std::string& currentGroupFullName);
+                            const std::string& currentGroupFullName="");
 
     int getNumFailedTests();
 };

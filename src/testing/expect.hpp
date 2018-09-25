@@ -7,6 +7,11 @@
 #include "testing.hpp"
 
 
+#define __FILENAME__ (__builtin_strrchr(__FILE__, '/') ?                       \
+                      __builtin_strrchr(__FILE__, '/') + 1 :                   \
+                      __FILE__)
+
+
 namespace runtime_testing {
 
 class ExpectationFailed: std::runtime_error {

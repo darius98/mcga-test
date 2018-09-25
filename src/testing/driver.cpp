@@ -2,13 +2,6 @@
 
 using namespace std;
 
-string formatFileName(const char *fileName, const int &lineNumber) {
-    if (fileName != nullptr) {
-        return " (" + string(fileName) + ":" + to_string(lineNumber) + ")";
-    }
-    return "";
-}
-
 namespace runtime_testing {
 
 TestingDriver::TestingDriver(ostream& log): log(log) {
@@ -28,32 +21,31 @@ void TestingDriver::validateStartTest() {
     this->validate("test");
 }
 
-void TestingDriver::validateStartSetUp(const char* fileName,
-                                       const int& lineNumber) {
-    this->validate("setUp", fileName, lineNumber);
+void TestingDriver::validateStartSetUp() {
+    this->validate("setUp");
     auto lastGroup = this->groupStack.back();
     if (lastGroup->hasSetUp) {
         throw runtime_error(
-            string("Group ") + "'" + lastGroup->description + "'"
-            + " already has a setUp!" + formatFileName(fileName, lineNumber)
+            string("Group '") + lastGroup->description
+            + "' already has a setUp!"
         );
     }
 }
 
-void TestingDriver::validateStartTearDown(const char* fileName,
-                                          const int& lineNumber) {
-    this->validate("tearDown", fileName, lineNumber);
+void TestingDriver::validateStartTearDown() {
+    this->validate("tearDown");
     auto lastGroup = this->groupStack.back();
     if (lastGroup->hasTearDown) {
         throw runtime_error(
-            string("Group ") + "'" + lastGroup->description + "'"
-            + " already has a tearDown!" + formatFileName(fileName, lineNumber)
+            string("Group '") + lastGroup->description
+            + "' already has a tearDown!"
         );
     }
 }
 
 void TestingDriver::addGroup(Group* currentGroup,
                              const function<void()> &func) {
+    this->validateStartGroup();
     this->groupStack.back()->subGroups.push_back(currentGroup);
     this->groupStack.push_back(currentGroup);
     this->state.push(DriverState::GROUP);
@@ -64,6 +56,7 @@ void TestingDriver::addGroup(Group* currentGroup,
 
 void TestingDriver::addTest(Test *currentTest,
                             const function<void()> &func) {
+    this->validateStartTest();
     groupStack.back()->tests.push_back(currentTest);
     string groupStackFullName;
     this->state.push(DriverState::SET_UP);
@@ -103,20 +96,21 @@ void TestingDriver::addTest(Test *currentTest,
 }
 
 void TestingDriver::addSetUp(const function<void()> &func) {
+    this->validateStartSetUp();
     auto lastGroup = this->groupStack.back();
     lastGroup->hasSetUp = true;
     lastGroup->setUpFunc = func;
 }
 
 void TestingDriver::addTearDown(const function<void()> &func) {
+    this->validateStartTearDown();
     auto lastGroup = this->groupStack.back();
     lastGroup->hasTearDown = true;
     lastGroup->tearDownFunc = func;
 }
 
-void TestingDriver::generateTestReport(ostream& report,
-                                       const char* fileName) {
-    this->groupStack[0]->generateTestReport(report, fileName);
+void TestingDriver::generateTestReport(ostream& report) {
+    this->groupStack[0]->generateTestReport(report);
     delete groupStack[0];
     groupStack.pop_back();
 }
@@ -125,27 +119,15 @@ int TestingDriver::getNumFailedTests() {
     return this->groupStack[0]->getNumFailedTests();
 }
 
-void TestingDriver::validate(
-        const string& methodName,
-        const char* fileName,
-        const int& lineNumber) {
+void TestingDriver::validate(const string& methodName) {
     if (this->state.top() == DriverState::TEST) {
-        throw runtime_error(
-            "Cannot create " + methodName + " within test!"
-            + formatFileName(fileName, lineNumber)
-        );
+        throw runtime_error("Cannot call " + methodName + " within test!");
     }
     if (this->state.top() == DriverState::SET_UP) {
-        throw runtime_error(
-                "Cannot create " + methodName + " within setUp!"
-                + formatFileName(fileName, lineNumber)
-        );
+        throw runtime_error("Cannot call " + methodName + " within setUp!");
     }
     if (this->state.top() == DriverState::TEAR_DOWN) {
-        throw runtime_error(
-                "Cannot create " + methodName + " within tearDown!"
-                + formatFileName(fileName, lineNumber)
-        );
+        throw runtime_error("Cannot call " + methodName + " within tearDown!");
     }
 }
 
