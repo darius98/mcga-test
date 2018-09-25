@@ -24,10 +24,7 @@ public:
 
 void checkDuringTest(const char* fileName, const int& lineNumber);
 
-void throwExpectationFailed(
-        matcher::Description* description,
-        const char* fileName,
-        const int& lineNumber);
+void throwExpectationFailed(matcher::Description* description);
 
 /// Specialization for matcher::Matcher interface, for faster compile-time on
 /// basic matchers.
@@ -40,24 +37,30 @@ void _expectMatches(const T& object,
     if (matcher->matches(object)) {
         return;
     }
-    auto description = matcher::Description::createForExpectation();
+    auto description = matcher::Description::createForExpectation(
+        fileName,
+        lineNumber
+    );
     matcher->describe(object, description);
-    throwExpectationFailed(description, fileName, lineNumber);
+    throwExpectationFailed(description);
 }
 
 /// Main function for expecting something during a test.
 template<class T, class PseudoMatcher>
 void _expectMatches(const T& object,
                     PseudoMatcher* matcher,
-                    const char* fileName = "NO_FILENAME",
-                    int lineNumber = 0) {
+                    const char* fileName="NO_FILENAME",
+                    int lineNumber=0) {
     checkDuringTest(fileName, lineNumber);
     if (matcher->matches(object)) {
         return;
     }
-    auto description = matcher::Description::createForExpectation();
+    auto description = matcher::Description::createForExpectation(
+        fileName,
+        lineNumber
+    );
     matcher->describe(object, description);
-    throwExpectationFailed(description, fileName, lineNumber);
+    throwExpectationFailed(description);
 }
 
 #define expect(expr) \

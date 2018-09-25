@@ -11,7 +11,9 @@ namespace matcher {
 
 class Description {
 public:
-    static Description* createForExpectation();
+    static Description* createForExpectation(
+            const char* fileName,
+            const int& lineNumber);
 
     template<class T>
     Description* append(T obj) {

@@ -24,13 +24,7 @@ void checkDuringTest(const char* fileName, const int& lineNumber) {
     }
 }
 
-void throwExpectationFailed(
-        Description* description,
-        const char* fileName,
-        const int& lineNumber) {
-    description->append(
-            string(" (") + fileName + ":" + to_string(lineNumber) + ")"
-    );
+void throwExpectationFailed(Description* description) {
     string stringDescription = description->toString();
     delete description;
     throw ExpectationFailed(stringDescription);
