@@ -89,9 +89,11 @@ void TestingDriver::addTest(Test *currentTest,
     BaseMatcher::cleanup();
     this->state.pop();
     this->state.push(DriverState::TEAR_DOWN);
-    for (int i = (int)groupStack.size() - 1; i >= 0; -- i) {
-        if (groupStack[i]->hasTearDown) {
-            groupStack[i]->tearDownFunc();
+    for (int i = (int)this->groupStack.size() - 1; i >= 0; -- i) {
+        this->groupStack[i]->numTests += 1;
+        this->groupStack[i]->numFailedTests += currentTest->failure != nullptr;
+        if (this->groupStack[i]->hasTearDown) {
+            this->groupStack[i]->tearDownFunc();
         }
     }
     this->state.pop();
@@ -116,7 +118,7 @@ int TestingDriver::generateTestReport(ostream& report) {
 }
 
 int TestingDriver::getNumFailedTests() {
-    return this->groupStack[0]->getNumFailedTests();
+    return this->groupStack[0]->numFailedTests;
 }
 
 void TestingDriver::validate(const string& methodName) {

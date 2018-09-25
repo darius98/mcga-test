@@ -23,12 +23,13 @@ struct Group {
     std::vector<Group*> subGroups;
     std::vector<Test*> tests;
 
+    int numFailedTests = 0;
+    int numTests = 0;
+
     explicit Group(const std::string& description="");
 
     int generateTestReport(std::ostream& report,
                            const std::string& currentGroupFullName="");
-
-    int getNumFailedTests();
 };
 
 }
