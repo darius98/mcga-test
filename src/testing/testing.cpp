@@ -12,7 +12,7 @@ namespace runtime_testing {
 TestingDriver* getDriver() {
     static TestingDriver* driver = nullptr;
     if (driver == nullptr) {
-        driver = new TestingDriver();
+        driver = new TestingDriver(cout);
     }
     return driver;
 }

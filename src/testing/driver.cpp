@@ -11,7 +11,7 @@ string formatFileName(const char *fileName, const int &lineNumber) {
 
 namespace runtime_testing {
 
-TestingDriver::TestingDriver() {
+TestingDriver::TestingDriver(ostream& log): log(log) {
     this->groupStack = {new Group()};
     this->state.push(DriverState::TOP_LEVEL);
 }
@@ -33,7 +33,7 @@ void TestingDriver::validateStartSetUp(const char* fileName,
     this->validate("setUp", fileName, lineNumber);
     auto lastGroup = this->groupStack.back();
     if (lastGroup->hasSetUp) {
-        throw std::runtime_error(
+        throw runtime_error(
             string("Group ") + "'" + lastGroup->description + "'"
             + " already has a setUp!" + formatFileName(fileName, lineNumber)
         );
@@ -45,7 +45,7 @@ void TestingDriver::validateStartTearDown(const char* fileName,
     this->validate("tearDown", fileName, lineNumber);
     auto lastGroup = this->groupStack.back();
     if (lastGroup->hasTearDown) {
-        throw std::runtime_error(
+        throw runtime_error(
             string("Group ") + "'" + lastGroup->description + "'"
             + " already has a tearDown!" + formatFileName(fileName, lineNumber)
         );
@@ -53,7 +53,7 @@ void TestingDriver::validateStartTearDown(const char* fileName,
 }
 
 void TestingDriver::addGroup(Group* currentGroup,
-                             const std::function<void()> &func) {
+                             const function<void()> &func) {
     this->groupStack.back()->subGroups.push_back(currentGroup);
     this->groupStack.push_back(currentGroup);
     this->state.push(DriverState::GROUP);
@@ -63,7 +63,7 @@ void TestingDriver::addGroup(Group* currentGroup,
 }
 
 void TestingDriver::addTest(Test *currentTest,
-                            const std::function<void()> &func) {
+                            const function<void()> &func) {
     groupStack.back()->tests.push_back(currentTest);
     string groupStackFullName;
     this->state.push(DriverState::SET_UP);
@@ -83,14 +83,14 @@ void TestingDriver::addTest(Test *currentTest,
         groupStackFullName += "::";
     }
     groupStackFullName += currentTest->description;
-    cerr << groupStackFullName << ": ";
+    this->log << groupStackFullName << ": ";
     this->state.push(DriverState::TEST);
     try {
         func();
-        cerr << "PASSED\n";
+        this->log << "PASSED\n";
     } catch(ExpectationFailed& failure) {
         currentTest->failure = new ExpectationFailed(failure);
-        cerr << "FAILED\n\t" << currentTest->failure->getMessage() << "\n";
+        this->log << "FAILED\n\t" << currentTest->failure->getMessage() << "\n";
     }
     this->state.pop();
     this->state.push(DriverState::TEAR_DOWN);
@@ -102,19 +102,19 @@ void TestingDriver::addTest(Test *currentTest,
     this->state.pop();
 }
 
-void TestingDriver::addSetUp(const std::function<void()> &func) {
+void TestingDriver::addSetUp(const function<void()> &func) {
     auto lastGroup = this->groupStack.back();
     lastGroup->hasSetUp = true;
     lastGroup->setUpFunc = func;
 }
 
-void TestingDriver::addTearDown(const std::function<void()> &func) {
+void TestingDriver::addTearDown(const function<void()> &func) {
     auto lastGroup = this->groupStack.back();
     lastGroup->hasTearDown = true;
     lastGroup->tearDownFunc = func;
 }
 
-void TestingDriver::generateTestReport(std::ostream& report,
+void TestingDriver::generateTestReport(ostream& report,
                                        const char* fileName) {
     this->groupStack[0]->generateTestReport(report, fileName);
     delete groupStack[0];
@@ -130,19 +130,19 @@ void TestingDriver::validate(
         const char* fileName,
         const int& lineNumber) {
     if (this->state.top() == DriverState::TEST) {
-        throw std::runtime_error(
+        throw runtime_error(
             "Cannot create " + methodName + " within test!"
             + formatFileName(fileName, lineNumber)
         );
     }
     if (this->state.top() == DriverState::SET_UP) {
-        throw std::runtime_error(
+        throw runtime_error(
                 "Cannot create " + methodName + " within setUp!"
                 + formatFileName(fileName, lineNumber)
         );
     }
     if (this->state.top() == DriverState::TEAR_DOWN) {
-        throw std::runtime_error(
+        throw runtime_error(
                 "Cannot create " + methodName + " within tearDown!"
                 + formatFileName(fileName, lineNumber)
         );

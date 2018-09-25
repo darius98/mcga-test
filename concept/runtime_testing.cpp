@@ -15,7 +15,7 @@ int main() {
     });
 
     test("Vector is initially empty", [&]() {
-        expect(!v.empty());
+        expect(v.empty());
         expectMatches(v, isEmpty);
     });
 

@@ -1,6 +1,7 @@
 #ifndef RUNTIME_TESTING_TESTING_DRIVER_H_
 #define RUNTIME_TESTING_TESTING_DRIVER_H_
 
+#include <ostream>
 #include <stack>
 
 #include "group.hpp"
@@ -9,7 +10,7 @@ namespace runtime_testing {
 
 class TestingDriver {
 public:
-    TestingDriver();
+    explicit TestingDriver(std::ostream& log);
 
     bool isDuringTest();
 
@@ -50,6 +51,7 @@ private:
 
     std::vector<Group*> groupStack;
     std::stack<DriverState> state;
+    std::ostream& log;
 };
 
 }
