@@ -11,6 +11,12 @@
 #include "truth_matcher.hpp"
 
 
+/// Macro for checking if template argument is a matcher-like type.
+#define IS_MATCHER(cls)                                                        \
+    class=typename std::enable_if<                                             \
+            std::is_base_of<matcher::BaseMatcher, cls>::value, void>::type
+
+
 namespace matcher {
 
 extern IsTrueMatcher* isTrue;
@@ -61,7 +67,7 @@ extern IsEmptyMatcher* isEmpty;
 
 extern IsNotEmptyMatcher* isNotEmpty;
 
-template<class SizeMatcher>
+template<class SizeMatcher, IS_MATCHER(SizeMatcher)>
 CollectionSizeMatcher<SizeMatcher>* hasSize(SizeMatcher* sizeMatcher) {
     return new CollectionSizeMatcher<SizeMatcher>(sizeMatcher);
 }
@@ -71,7 +77,7 @@ CollectionSizeMatcher<Matcher<T>>* hasSize(const T& object) {
     return new CollectionSizeMatcher<Matcher<T>>(isEqualTo(object));
 }
 
-template<class EachMatcher>
+template<class EachMatcher, IS_MATCHER(EachMatcher)>
 CollectionEachMatcher<EachMatcher>* eachElement(EachMatcher *eachMatcher) {
     return new CollectionEachMatcher<EachMatcher>(eachMatcher);
 }
@@ -81,17 +87,17 @@ CollectionEachMatcher<Matcher<T>>* eachElement(const T &object) {
     return new CollectionEachMatcher<Matcher<T>>(isEqualTo(object));
 }
 
-template<class M1, class M2>
+template<class M1, class M2, IS_MATCHER(M1), IS_MATCHER(M2)>
 AndMatcher<M1, M2>* both(M1* m1, M2* m2) {
     return new AndMatcher<M1, M2>(m1, m2);
 }
 
-template<class M1, class M2>
+template<class M1, class M2, IS_MATCHER(M1), IS_MATCHER(M2)>
 OrMatcher<M1, M2>* either(M1* m1, M2* m2) {
     return new OrMatcher<M1, M2>(m1, m2);
 }
 
-template<class Matcher>
+template<class Matcher, IS_MATCHER(Matcher)>
 NotMatcher<Matcher>* isNot(Matcher* matcher) {
     return new NotMatcher<Matcher>(matcher);
 }
