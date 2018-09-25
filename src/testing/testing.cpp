@@ -21,26 +21,25 @@ bool isDuringTest() {
     return getDriver()->isDuringTest();
 }
 
-void setUp(const function<void()>& setUpFunc) {
-    return getDriver()->addSetUp(setUpFunc);
+void setUp(const function<void()>& func) {
+    return getDriver()->addSetUp(func);
 }
 
-void tearDown(const function<void()>& tearDownFunc) {
-    return getDriver()->addTearDown(tearDownFunc);
+void tearDown(const function<void()>& func) {
+    return getDriver()->addTearDown(func);
 }
 
-void group(const string& description, const function<void()>& groupFunc) {
-    return getDriver()->addGroup(new Group(description), groupFunc);
+void group(const string& description, const function<void()>& func) {
+    return getDriver()->addGroup(new Group(description), func);
 }
 
 void test(const string& description,
-          const function<void()>& testFunc) {
-    return getDriver()->addTest(new Test(description), testFunc);
+          const function<void()>& func) {
+    return getDriver()->addTest(new Test(description), func);
 }
 
 int getTestReport(ostream& report) {
-    getDriver()->generateTestReport(report);
-    return getDriver()->getNumFailedTests();
+    return getDriver()->generateTestReport(report);
 }
 
 int numFailedTests() {

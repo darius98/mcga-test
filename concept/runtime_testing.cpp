@@ -1,3 +1,4 @@
+#include <fstream>
 #include <vector>
 
 #include <runtime_testing>
@@ -50,5 +51,6 @@ int main() {
         });
     });
 
-    return numFailedTests();
+    ofstream f("report.txt");
+    return getTestReport(f);
 }

@@ -7,23 +7,19 @@
 
 namespace runtime_testing {
 
-void setUp(const std::function<void()>& setUpFunc);
+void setUp(const std::function<void()>& func);
 
-void tearDown(const std::function<void()>& tearDownFunc);
+void tearDown(const std::function<void()>& func);
 
-void test(
-        const std::string& description,
-        const std::function<void()>& testFunc);
+void test(const std::string& description, const std::function<void()>& func);
 
-void group(
-        const std::string& description,
-        const std::function<void()>& groupFunc);
+void group(const std::string& description, const std::function<void()>& func);
 
 bool isDuringTest();
 
 int numFailedTests();
 
-int getTestReport();
+int getTestReport(std::ostream& report);
 
 }
 

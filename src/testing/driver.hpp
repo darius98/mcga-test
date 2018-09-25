@@ -22,7 +22,7 @@ public:
 
     void addTearDown(const std::function<void()>& func);
 
-    void generateTestReport(std::ostream& report);
+    int generateTestReport(std::ostream& report);
 
     int getNumFailedTests();
 

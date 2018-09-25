@@ -109,10 +109,8 @@ void TestingDriver::addTearDown(const function<void()> &func) {
     lastGroup->tearDownFunc = func;
 }
 
-void TestingDriver::generateTestReport(ostream& report) {
-    this->groupStack[0]->generateTestReport(report);
-    delete groupStack[0];
-    groupStack.pop_back();
+int TestingDriver::generateTestReport(ostream& report) {
+    return this->groupStack[0]->generateTestReport(report);
 }
 
 int TestingDriver::getNumFailedTests() {
