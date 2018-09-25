@@ -39,7 +39,7 @@ struct Group {
 
     void generateTestReport(
             stringstream& report,
-            const std::string& currentGroupFullName=__FILENAME__) {
+            const string& currentGroupFullName) {
         for (Test* test: this->tests) {
             test->print(report, currentGroupFullName);
             delete test->failure;
@@ -82,7 +82,7 @@ bool isDuringTest() {
 }
 
 void _test(const string& description,
-           function<void()> testFunc,
+           const function<void()>& testFunc,
            const char* fileName,
            const int& lineNumber) {
     initGlobal();
@@ -116,19 +116,6 @@ void _test(const string& description,
             groupStack[i]->tearDownFunc();
         }
     }
-}
-
-void _group(const string& description,
-            const function<void()>& groupFunc,
-            const char* fileName,
-            const int& lineNumber) {
-    initGlobal();
-    auto currentGroup = new Group();
-    currentGroup->description = description;
-    groupStack.back()->subGroups.push_back(currentGroup);
-    groupStack.push_back(currentGroup);
-    groupFunc();
-    groupStack.pop_back();
 }
 
 void _setUp(function<void()> setUpFunc,
@@ -165,10 +152,10 @@ void _tearDown(function<void()> tearDownFunc,
     lastGroup->tearDownFunc = std::move(tearDownFunc);
 }
 
-int getTestReport() {
+int _getTestReport(const char* fileName) {
     initGlobal();
     stringstream report;
-    globalGroup->generateTestReport(report);
+    globalGroup->generateTestReport(report, fileName);
     groupStack.pop_back();
     delete globalGroup;
     globalGroup = nullptr;
@@ -180,4 +167,14 @@ int numFailedTests() {
     return globalGroup->getNumFailedTests();
 }
 
+}
+
+void group(const string& description, const function<void()>& groupFunc) {
+    runtime_testing::initGlobal();
+    auto currentGroup = new runtime_testing::Group();
+    currentGroup->description = description;
+    runtime_testing::groupStack.back()->subGroups.push_back(currentGroup);
+    runtime_testing::groupStack.push_back(currentGroup);
+    groupFunc();
+    runtime_testing::groupStack.pop_back();
 }

@@ -10,17 +10,28 @@
                       __FILE__)
 
 
+#define test(desc, func) \
+        runtime_testing::_test(desc, func, __FILENAME__, __LINE__)
+
+void group(
+        const std::string& description,
+        const std::function<void()>& groupFunc);
+
+#define setUp(func) \
+        runtime_testing::_setUp(func, __FILENAME__, __LINE__)
+#define tearDown(func) \
+        runtime_testing::_tearDown(func, __FILENAME__, __LINE__)
+#define getTestReport() \
+        runtime_testing::_getTestReport(__FILENAME__)
+
+
 namespace runtime_testing {
 
 bool isDuringTest();
 
-void _test(
-        const std::string& description,
-        std::function<void()> testFunc,
-        const char* filename,
-        const int& lineNumber);
+int numFailedTests();
 
-void _group(
+void _test(
         const std::string& description,
         const std::function<void()>& groupFunc,
         const char* fileName,
@@ -33,22 +44,11 @@ void _setUp(
 
 void _tearDown(
         std::function<void()> tearDownFunc,
-        const char* filename,
+        const char* fileName,
         const int& lineNumber);
 
-int getTestReport();
-
-int numFailedTests();
+int _getTestReport(const char* fileName);
 
 }
-
-#define test(desc, func) \
-        runtime_testing::_test(desc, func, __FILENAME__, __LINE__)
-#define group(desc, func) \
-        runtime_testing::_group(desc, func, __FILENAME__, __LINE__)
-#define setUp(func) \
-        runtime_testing::_setUp(func, __FILENAME__, __LINE__)
-#define tearDown(func) \
-        runtime_testing::_tearDown(func, __FILENAME__, __LINE__)
 
 #endif
