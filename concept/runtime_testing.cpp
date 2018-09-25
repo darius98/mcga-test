@@ -53,6 +53,20 @@ int main() {
         });
     });
 
+    group("Pointer tests", [&]() {
+        int* x = nullptr;
+
+        test("Null pointer is null", [&]() {
+           expectMatches(nullptr, isNull);
+           expectMatches(x, isNull);
+        });
+
+        test("Non-null pointer is not null", [&]() {
+            x = new int();
+            expectMatches(x, isNotNull);
+        });
+    });
+
     ofstream f("report.txt");
     int status = getTestReport(f);
     destroyTestingDriver();

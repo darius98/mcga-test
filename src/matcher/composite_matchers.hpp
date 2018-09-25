@@ -1,7 +1,6 @@
 #ifndef RUNTIME_TESTING_MATCHER_COMPOSITE_MATCHERS_H_
 #define RUNTIME_TESTING_MATCHER_COMPOSITE_MATCHERS_H_
 
-#include "description.hpp"
 #include "matcher.hpp"
 
 
