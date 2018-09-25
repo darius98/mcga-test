@@ -13,27 +13,23 @@ public:
 
     bool isDuringTest();
 
-    void validateStartGroup(const std::string& fileName="UNKNOWN_FILE",
+    void validateStartGroup();
+
+    void validateStartTest();
+
+    void validateStartSetUp(const char* fileName=nullptr,
                             const int& lineNumber=0);
 
-    void validateStartSetUp(const std::string& fileName="UNKNOWN_FILE",
-                            const int& lineNumber=0);
-
-    void validateStartTest(const std::string& fileName="UNKNOWN_FILE",
-                           const int& lineNumber=0);
-
-    void validateStartTearDown(const std::string& fileName="UNKNOWN_FILE",
+    void validateStartTearDown(const char* fileName=nullptr,
                                const int& lineNumber=0);
 
     void addGroup(Group* currentGroup, const std::function<void()>& func);
 
+    void addTest(Test* currentTest, const std::function<void()>& func);
+
     void addSetUp(const std::function<void()>& func);
 
     void addTearDown(const std::function<void()>& func);
-
-    void addTest(Test* currentTest,
-                 const std::function<void()>& func,
-                 const std::string& entryPointName);
 
     void generateTestReport(std::ostream& report, const char* fileName);
 
@@ -49,7 +45,7 @@ private:
     };
 
     void validate(const std::string& methodName,
-                  const std::string& fileName="UNKNOWN_FILE",
+                  const char* fileName=nullptr,
                   const int& lineNumber=0);
 
     std::vector<Group*> groupStack;

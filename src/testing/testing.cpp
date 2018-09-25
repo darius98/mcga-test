@@ -21,20 +21,6 @@ bool isDuringTest() {
     return getDriver()->isDuringTest();
 }
 
-void _test(const string& description,
-           const function<void()>& testFunc,
-           const char* fileName,
-           const int& lineNumber) {
-    auto driver = getDriver();
-    driver->validateStartTest(fileName, lineNumber);
-    auto currentTest = new Test(description);
-    driver->addTest(
-        currentTest,
-        testFunc,
-        fileName + string(":") + to_string(lineNumber)
-    );
-}
-
 void _setUp(function<void()> setUpFunc,
             const char* fileName,
             const int& lineNumber) {
@@ -69,4 +55,12 @@ void group(const string& description, const function<void()>& groupFunc) {
     driver->validateStartGroup();
     auto currentGroup = new runtime_testing::Group(description);
     driver->addGroup(currentGroup, groupFunc);
+}
+
+void test(const string& description,
+          const function<void()>& testFunc) {
+    auto driver = runtime_testing::getDriver();
+    driver->validateStartTest();
+    auto currentTest = new runtime_testing::Test(description);
+    driver->addTest(currentTest, testFunc);
 }
