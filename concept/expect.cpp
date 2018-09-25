@@ -34,6 +34,9 @@ int main() {
         expectMatches(v, isIdenticalTo(v));
 
         expectMatches(v, either(isEmpty, isNotEmpty));
+
+        expectMatches(nullptr, isNull);
+        expectMatches(new int(), isNotNull);
     });
     return 0;
 }

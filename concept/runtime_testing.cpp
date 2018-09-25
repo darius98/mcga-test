@@ -55,31 +55,6 @@ int main() {
         });
     });
 
-    group("Pointer tests", [&]() {
-        int* x = nullptr;
-
-        tearDown([&]() {
-            delete x;
-            x = nullptr;
-        });
-
-        test("Null pointer is null", [&]() {
-           expect(x == nullptr);
-           expectMatches(x, isNull);
-        });
-
-        test("Non-null pointer is not null", [&]() {
-            x = new int();
-            expect(x != nullptr);
-            expectMatches(x, isNotNull);
-        });
-
-        test("After tearing down, x is again null", [&]() {
-            expect(x == nullptr);
-            expectMatches(x, isNull);
-        });
-    });
-
     ofstream f("report.json");
     int status = getTestSuiteReport(f);
     destroyTestingDriver();
