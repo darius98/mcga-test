@@ -10,7 +10,7 @@ namespace runtime_testing {
 
 class TestingDriver {
 public:
-    explicit TestingDriver(std::ostream* log);
+    explicit TestingDriver(std::ostream* logger=nullptr);
 
     ~TestingDriver();
 
@@ -55,9 +55,22 @@ private:
 
     void executeTearDowns(Test* currentTest);
 
+    template<class T>
+    void log(const T& object) {
+        if (this->logger != nullptr) {
+            (*this->logger) << object;
+        }
+    }
+
+    template<class T, class... Args>
+    void log(const T& object, const Args... args) {
+        this->log(object);
+        this->log(args...);
+    };
+
     std::vector<Group*> groupStack;
     std::stack<DriverState> state;
-    std::ostream* log;
+    std::ostream* logger;
 };
 
 }

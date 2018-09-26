@@ -4,8 +4,10 @@
 #include <deque>
 #include <iostream>
 #include <list>
+#include <map>
 #include <sstream>
 #include <set>
+#include <unordered_map>
 #include <unordered_set>
 #include <vector>
 
@@ -45,6 +47,17 @@ private:
         formatList<T, std::unordered_set<T>>(s, obj, '{', '}');
     }
 
+    template<class K, class V>
+    static void format(std::stringstream& s, const std::map<K, V>& obj) {
+        formatMap<K, V, std::map<K, V>>(s, obj);
+    };
+
+    template<class K, class V>
+    static void format(std::stringstream& s,
+                       const std::unordered_map<K, V>& obj) {
+        formatMap<K, V, std::unordered_map<K, V>>(s, obj);
+    };
+
     template<class I, class T>
     static void formatList(std::stringstream& s,
                            T obj,
@@ -59,6 +72,23 @@ private:
         }
         s << finish;
     }
+
+    template<class K, class V, class T>
+    static void formatMap(std::stringstream& s, const T& obj) {
+        bool first = true;
+        s << "{";
+        for (const std::pair<K, V>& entry: obj) {
+            if (first) {
+                first = false;
+            } else {
+                s << ", ";
+            }
+            Streamer<K>::send(s, entry.first);
+            s << ":";
+            Streamer<V>::send(s, entry.second);
+        }
+        s << "}";
+    };
 
     /// In case all else fails
     template<class T>

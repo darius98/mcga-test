@@ -5,7 +5,7 @@ using namespace std;
 
 namespace runtime_testing {
 
-TestingDriver::TestingDriver(ostream* log): log(log) {
+TestingDriver::TestingDriver(ostream* logger): logger(logger) {
     this->groupStack = {new Group()};
     this->state.push(DriverState::TOP_LEVEL);
 }
@@ -60,22 +60,22 @@ void TestingDriver::addGroup(Group* currentGroup,
         failed = false;
     } catch(const exception& e) {
         failed = true;
-        (*this->log) << "\nAn exception was thrown inside group '"
-                     << currentGroup->description
-                     << "': "
-                     << e.what();
+        this->log("\nAn exception was thrown inside group '",
+                  currentGroup->description,
+                  "': ",
+                  e.what());
     } catch(...) {
         failed = true;
-        (*this->log) << "\nA non-exception object was thrown inside group'"
-                     << currentGroup->description
-                     << "'";
+        this->log("\nA non-exception object was thrown inside group'",
+                  currentGroup->description,
+                  "'");
     }
     if (failed) {
-        (*this->log) << ", outside of any test/setUp/tearDown."
-                     << "\n\n" << string(105, '*') << "\n"
-                     << "* Try to place all your testing code inside setUps, "
-                        "tearDowns or tests to ensure each test is executed. *"
-                     << "\n" << string(105, '*') << "\n\n";
+        this->log(", outside of any test/setUp/tearDown.",
+                  "\n\n", string(105, '*'), "\n",
+                  "* Try to place all your testing code inside setUps, "
+                  "tearDowns or tests to ensure each test is executed. *",
+                  "\n", string(105, '*'), "\n\n");
     }
     this->state.pop();
     this->groupStack.pop_back();
@@ -85,16 +85,14 @@ void TestingDriver::addTest(Test *currentTest,
                             const function<void()> &func) {
     this->validateStartTest();
     this->groupStack.back()->tests.push_back(currentTest);
-    (*this->log) << this->getTestFullName(currentTest->description) << ": ";
+    this->log(this->getTestFullName(currentTest->description), ": ");
     this->executeSetUps(currentTest);
     this->executeTest(currentTest, func);
     this->executeTearDowns(currentTest);
     if (currentTest->failure) {
-        (*this->log) << "FAILED\n\t"
-                     << currentTest->failure->getMessage()
-                     << "\n";
+        this->log("FAILED\n\t", currentTest->failure->getMessage(), "\n");
     } else {
-        (*this->log) << "PASSED\n";
+        this->log("PASSED\n");
     }
     for (Group* group: this->groupStack) {
         group->numTests += 1;
