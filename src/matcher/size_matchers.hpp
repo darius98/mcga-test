@@ -13,17 +13,11 @@ public:
         return object.empty();
     }
 
-    void describeExpectation(Description* description) {
-        description->append("empty iterable");
-    }
+    void describeExpectation(Description* description) override;
 
-    void describeFailure(Description* description) {
-        description->append("non-empty iterable");
-    }
+    void describeFailure(Description* description) override;
 
-    void describeSuccess(Description* description) {
-        description->append("empty iterable");
-    }
+    void describeSuccess(Description* description) override;
 };
 
 class IsNotEmptyMatcher: public BaseMatcher {
@@ -33,17 +27,11 @@ public:
         return !object.empty();
     }
 
-    void describeExpectation(Description* description) {
-        description->append("non-empty iterable");
-    }
+    void describeExpectation(Description* description) override;
 
-    void describeFailure(Description* description) {
-        description->append("empty iterable");
-    }
+    void describeFailure(Description* description) override;
 
-    void describeSuccess(Description* description) {
-        description->append("non-empty iterable");
-    }
+    void describeSuccess(Description* description) override;
 };
 
 template<class SizeMatcher, IS_MATCHER(SizeMatcher)>
@@ -57,17 +45,17 @@ public:
         return this->sizeMatcher->matches(object.size());
     }
 
-    void describeExpectation(Description* description) {
+    void describeExpectation(Description* description) override {
         description->append("iterable of size ");
         this->sizeMatcher->describeExpectation(description);
     }
 
-    void describeSuccess(Description* description) {
+    void describeSuccess(Description* description) override {
         description->append("iterable of size ");
         this->sizeMatcher->describeSuccess(description);
     }
 
-    void describeFailure(Description* description) {
+    void describeFailure(Description* description) override {
         description->append("iterable of size ");
         this->sizeMatcher->describeFailure(description);
     }

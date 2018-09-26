@@ -14,17 +14,11 @@ public:
         return object > 0;
     }
 
-    void describeExpectation(Description* description) {
-        description->append("a positive number");
-    }
+    void describeExpectation(Description* description) override;
 
-    void describeFailure(Description* description) {
-        description->append("a non-positive number");
-    }
+    void describeFailure(Description* description) override;
 
-    void describeSuccess(Description* description) {
-        description->append("a positive number");
-    }
+    void describeSuccess(Description* description) override;
 };
 
 class IsNegativeMatcher: public BaseMatcher {
@@ -34,17 +28,11 @@ public:
         return object < 0;
     }
 
-    void describeExpectation(Description* description) {
-        description->append("a negative number");
-    }
+    void describeExpectation(Description* description) override;
 
-    void describeFailure(Description* description) {
-        description->append("a non-negative number");
-    }
+    void describeFailure(Description* description) override;
 
-    void describeSuccess(Description* description) {
-        description->append("a negative number");
-    }
+    void describeSuccess(Description* description) override;
 };
 
 class IsEvenMatcher: public BaseMatcher {
@@ -54,17 +42,11 @@ public:
         return object % 2 == 0;
     }
 
-    void describeExpectation(Description* description) {
-        description->append("an even number");
-    }
+    void describeExpectation(Description* description) override;
 
-    void describeFailure(Description* description) {
-        description->append("an odd number");
-    }
+    void describeFailure(Description* description) override;
 
-    void describeSuccess(Description* description) {
-        description->append("an even number");
-    }
+    void describeSuccess(Description* description) override;
 };
 
 class IsOddMatcher: public BaseMatcher {
@@ -74,17 +56,11 @@ public:
         return object % 2 == 1;
     }
 
-    void describeExpectation(Description* description) {
-        description->append("an odd number");
-    }
+    void describeExpectation(Description* description) override;
 
-    void describeFailure(Description* description) {
-        description->append("an even number");
-    }
+    void describeFailure(Description* description) override;
 
-    void describeSuccess(Description* description) {
-        description->append("an odd number");
-    }
+    void describeSuccess(Description* description) override;
 };
 
 class IsZeroMatcher: public BaseMatcher {
@@ -94,17 +70,11 @@ public:
         return object == 0;
     }
 
-    void describeExpectation(Description* description) {
-        description->append("zero");
-    }
+    void describeExpectation(Description* description) override;
 
-    void describeFailure(Description* description) {
-        description->append("not zero");
-    }
+    void describeFailure(Description* description) override;
 
-    void describeSuccess(Description* description) {
-        description->append("zero");
-    }
+    void describeSuccess(Description* description) override;
 };
 
 template<class T>

@@ -26,12 +26,12 @@ public:
         return true;
     }
 
-    void describeExpectation(Description* description) {
+    void describeExpectation(Description* description) override {
         description->append("an iterable where each element is ");
         this->elementMatcher->describeExpectation(description);
     }
 
-    void describeFailure(Description* description) {
+    void describeFailure(Description* description) override {
         description->append(
             "an iterable where at index ",
             this->index,
@@ -40,7 +40,7 @@ public:
         );
     }
 
-    void describeSuccess(Description* description) {
+    void describeSuccess(Description* description) override {
         description->append("an iterable where each element is ");
         this->elementMatcher->describeExpectation(description);
     }
@@ -69,14 +69,14 @@ public:
         return false;
     }
 
-    void describeExpectation(Description* description) {
+    void describeExpectation(Description* description) override {
         description->append(
             "an iterable where at least one element is "
         );
         this->elementMatcher->describeExpectation(description);
     }
 
-    void describeSuccess(Description* description) {
+    void describeSuccess(Description* description) override {
         description->append(
             "an iterable where at index ",
             this->index,
@@ -85,7 +85,7 @@ public:
         this->elementMatcher->describeExpectation(description);
     }
 
-    void describeFailure(Description* description) {
+    void describeFailure(Description* description) override {
         description->append("an iterable where no element is ");
         this->elementMatcher->describeExpectation(description);
     }

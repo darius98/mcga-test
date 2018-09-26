@@ -21,13 +21,13 @@ public:
         return this->m2Matches;
     }
 
-    void describeExpectation(Description* description) {
+    void describeExpectation(Description* description) override {
         this->m1->describeExpectation(description);
         description->append(" and ");
         this->m2->describeExpectation(description);
     }
 
-    void describeFailure(Description* description) {
+    void describeFailure(Description* description) override {
         if (this->m1Matches) {
             this->m2->describeFailure(description);
         } else {
@@ -35,7 +35,7 @@ public:
         }
     }
 
-    void describeSuccess(Description* description) {
+    void describeSuccess(Description* description) override {
         this->m1->describeSuccess(description);
         description->append(" and ");
         this->m2->describeSuccess(description);
@@ -63,19 +63,19 @@ public:
         return this->m2Matches;
     }
 
-    void describeExpectation(Description* description) {
+    void describeExpectation(Description* description) override {
         this->m1->describeExpectation(description);
         description->append(" or ");
         this->m2->describeExpectation(description);
     }
 
-    void describeFailure(Description* description) {
+    void describeFailure(Description* description) override {
         this->m1->describeFailure(description);
         description->append(" and ");
         this->m2->describeFailure(description);
     }
 
-    void describeSuccess(Description* description) {
+    void describeSuccess(Description* description) override {
         if (this->m1Matches) {
             this->m1->describeSuccess(description);
         } else {
@@ -100,16 +100,16 @@ public:
         return !this->matcher->matches(obj);
     }
 
-    void describeExpectation(Description* description) {
+    void describeExpectation(Description* description) override {
         description->append("not ");
         this->matcher->describeExpectation(description);
     }
 
-    void describeFailure(Description* description) {
+    void describeFailure(Description* description) override {
         this->matcher->describeSuccess(description);
     }
 
-    void describeSuccess(Description* description) {
+    void describeSuccess(Description* description) override {
         this->matcher->describeFailure(description);
     }
 private:

@@ -6,16 +6,6 @@
 
 namespace matcher {
 
-class BaseMatcher {
-public:
-    void* operator new(std::size_t size) noexcept;
-    void operator delete(void* obj) noexcept;
-
-    static void cleanupMatchersCreatedDuringTests();
-private:
-    static std::set<void*> matchersAllocatedDuringTests;
-};
-
 /// Basic matcher interface.
 ///
 /// The `matches` method is the core method, called with the `expect` top-level
@@ -24,11 +14,12 @@ private:
 /// preferring to follow the interface where both `matches` and `describe` are
 /// template methods, in which case it is not possible to make a pure-virtual
 /// interface.
-template<class T>
-class Matcher: public BaseMatcher {
+class BaseMatcher {
 public:
-    /// Check if `object` matches this matcher.
-    virtual bool matches(const T& object) = 0;
+    static void cleanupMatchersCreatedDuringTests();
+
+    void* operator new(std::size_t size) noexcept;
+    void operator delete(void* obj) noexcept;
 
     /// Describe what this matcher expects from an object.
     virtual void describeExpectation(Description* description) = 0;
@@ -38,6 +29,15 @@ public:
 
     /// Describe the way 'object' matches expectations.
     virtual void describeSuccess(Description* description) = 0;
+private:
+    static std::set<void*> matchersAllocatedDuringTests;
+};
+
+template<class T>
+class Matcher: public BaseMatcher {
+public:
+    /// Check if `object` matches this matcher.
+    virtual bool matches(const T& object) = 0;
 };
 
 } // namespace matcher
