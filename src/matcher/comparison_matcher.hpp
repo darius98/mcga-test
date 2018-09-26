@@ -21,13 +21,32 @@ public:
         return this->comparator(object, this->target);
     }
 
-    void describe(const T& object, Description* description) override {
+    void describeExpectation(Description* description) override {
         description->append(
+            "an object that is ",
             this->expectation,
             "'",
             this->target,
-            "', got '",
-            object,
+            "'"
+        );
+    }
+
+    void describeFailure(const T& object, Description* description) override {
+        description->append(
+            "an object that is not ",
+            this->expectation,
+            "'",
+            this->target,
+            "'"
+        );
+    }
+
+    void describeSuccess(const T& object, Description* description) override {
+        description->append(
+            "an object that is ",
+            this->expectation,
+            "'",
+            this->target,
             "'"
         );
     }

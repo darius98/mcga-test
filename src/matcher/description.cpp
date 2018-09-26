@@ -10,7 +10,7 @@ Description* Description::createForExpectation(
         const char* extra) {
     auto description = new Description();
     description->append(string(fileName) + ":" + to_string(lineNumber) + ": ");
-    description->append("expected ");
+    description->append("Expected ");
     if (extra != nullptr) {
         description->append(extra);
     }

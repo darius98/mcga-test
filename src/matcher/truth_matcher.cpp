@@ -6,16 +6,36 @@ bool IsTrueMatcher::matches(const bool& object) {
     return object;
 }
 
-void IsTrueMatcher::describe(const bool& object, Description* description) {
-    description->append("true, got false");
+void IsTrueMatcher::describeExpectation(Description* description) {
+    description->append("true");
+}
+
+void IsTrueMatcher::describeFailure(const bool& object,
+                                    Description* description) {
+    description->append("false");
+}
+
+void IsTrueMatcher::describeSuccess(const bool& object,
+                                    Description* description) {
+    description->append("true");
 }
 
 bool IsFalseMatcher::matches(const bool& object) {
     return !object;
 }
 
-void IsFalseMatcher::describe(const bool& object, Description* description) {
-    description->append("false, got true");
+void IsFalseMatcher::describeExpectation(Description* description) {
+    description->append("false");
+}
+
+void IsFalseMatcher::describeFailure(const bool& object,
+                                     Description* description) {
+    description->append("true");
+}
+
+void IsFalseMatcher::describeSuccess(const bool& object,
+                                     Description* description) {
+    description->append("false");
 }
 
 }

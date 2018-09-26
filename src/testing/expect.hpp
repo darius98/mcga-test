@@ -44,7 +44,9 @@ void _expectMatches(const T& object,
         descriptionSuppression
     );
     if (descriptionSuppression == nullptr) {
-        matcher->describe(object, description);
+        matcher->describeExpectation(description);
+        description->append(", got '", object, "', which is ");
+        matcher->describeFailure(object, description);
     }
     throwExpectationFailed(description);
 }
@@ -66,7 +68,9 @@ void _expectMatches(const T& object,
         descriptionSuppression
     );
     if (descriptionSuppression == nullptr) {
-        matcher->describe(object, description);
+        matcher->describeExpectation(description);
+        description->append(". Got '", object, "': ");
+        matcher->describeFailure(object, description);
     }
     throwExpectationFailed(description);
 }

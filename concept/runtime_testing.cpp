@@ -9,7 +9,7 @@ using namespace std;
 
 
 int main() {
-    initializeTestingDriver();
+    initializeTestingDriver(cout);
 
     vector<int> v;
 
@@ -52,7 +52,8 @@ int main() {
 
             expectMatches(v, eachElement(isGreaterThan(2)));
             expectMatches(v, anyElement(3));
-            expectMatches(v, anyElement(isLessThan(4)));
+            expectMatches(v, eachElement(isLessThan(1)));  // This will fail!
+            expectMatches(v, anyElement(isLessThan(1)));  // This will fail!
 
             expect(v.empty()); // This will fail!
             expectMatches(v, isNotEmpty);

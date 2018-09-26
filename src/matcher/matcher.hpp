@@ -30,8 +30,14 @@ public:
     /// Check if `object` matches this matcher.
     virtual bool matches(const T& object) = 0;
 
-    /// Describe the way `object` does not match.
-    virtual void describe(const T& object, Description* description) = 0;
+    /// Describe what this matcher expects from an object.
+    virtual void describeExpectation(Description* description) = 0;
+
+    /// Describe the way `object` does not match expectations.
+    virtual void describeFailure(const T& object, Description* description) = 0;
+
+    /// Describe the way 'object' matches expectations.
+    virtual void describeSuccess(const T& object, Description* description) = 0;
 };
 
 } // namespace matcher

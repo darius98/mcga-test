@@ -14,9 +14,18 @@ public:
         return object > 0;
     }
 
+    void describeExpectation(Description* description) {
+        description->append("a positive number");
+    }
+
     template<class T>
-    void describe(const T& object, Description* description) {
-        description->append("positive number, got '", object, "'");
+    void describeFailure(const T& object, Description* description) {
+        description->append("a non-positive number");
+    }
+
+    template<class T>
+    void describeSuccess(const T& object, Description* description) {
+        description->append("a positive number");
     }
 };
 
@@ -27,9 +36,18 @@ public:
         return object < 0;
     }
 
+    void describeExpectation(Description* description) {
+        description->append("a negative number");
+    }
+
     template<class T>
-    void describe(const T& object, Description* description) {
-        description->append("negative number, got '", object, "'");
+    void describeFailure(const T& object, Description* description) {
+        description->append("a non-negative number");
+    }
+
+    template<class T>
+    void describeSuccess(const T& object, Description* description) {
+        description->append("a negative number");
     }
 };
 
@@ -40,9 +58,18 @@ public:
         return object % 2 == 0;
     }
 
+    void describeExpectation(Description* description) {
+        description->append("an even number");
+    }
+
     template<class T>
-    void describe(const T& object, Description* description) {
-        description->append("even number, got '", object, "'");
+    void describeFailure(const T& object, Description* description) {
+        description->append("an odd number");
+    }
+
+    template<class T>
+    void describeSuccess(const T& object, Description* description) {
+        description->append("an even number");
     }
 };
 
@@ -53,9 +80,18 @@ public:
         return object % 2 == 1;
     }
 
+    void describeExpectation(Description* description) {
+        description->append("an odd number");
+    }
+
     template<class T>
-    void describe(const T& object, Description* description) {
-        description->append("odd number, got '", object, "'");
+    void describeFailure(const T& object, Description* description) {
+        description->append("an even number");
+    }
+
+    template<class T>
+    void describeSuccess(const T& object, Description* description) {
+        description->append("an odd number");
     }
 };
 
@@ -66,9 +102,18 @@ public:
         return object == 0;
     }
 
+    void describeExpectation(Description* description) {
+        description->append("zero");
+    }
+
     template<class T>
-    void describe(const T& object, Description* description) {
-        description->append("zero, got '", object, "'");
+    void describeFailure(const T& object, Description* description) {
+        description->append("not zero");
+    }
+
+    template<class T>
+    void describeSuccess(const T& object, Description* description) {
+        description->append("zero");
     }
 };
 
@@ -79,18 +124,19 @@ public:
             target(target), eps(eps) {}
 
     bool matches(const T& object) override {
-        return fabs(object - this->target) < this->eps;
+        return fabs(object - target) < eps;
     }
 
-    void describe(const T& object, Description* description) {
-        description->append(
-            "number within ",
-            this->eps,
-            " of ",
-            this->target,
-            ", got ",
-            object
-        );
+    void describeExpectation(Description* description) override {
+        description->append("a number within ", eps, " of ", target);
+    }
+
+    void describeSuccess(const T& obj, Description* description) override {
+        description->append("a number within ", eps, " of ", target);
+    }
+
+    void describeFailure(const T& obj, Description* description) override {
+        description->append("a number not within ", eps, " of ", target);
     }
 private:
     const T& target;

@@ -21,13 +21,26 @@ public:
         return this->m2Matches;
     }
 
+    void describeExpectation(Description* description) {
+        this->m1->describeExpectation(description);
+        description->append(" and ");
+        this->m2->describeExpectation(description);
+    }
+
     template<class T>
-    void describe(const T& obj, Description* description) {
+    void describeFailure(const T& obj, Description* description) {
         if (this->m1Matches) {
-            this->m2->describe(obj, description);
+            this->m2->describeFailure(obj, description);
         } else {
-            this->m1->describe(obj, description);
+            this->m1->describeFailure(obj, description);
         }
+    }
+
+    template<class T>
+    void describeSuccess(const T& obj, Description* description) {
+        this->m1->describeSuccess(obj, description);
+        description->append(" and ");
+        this->m2->describeSuccess(obj, description);
     }
 private:
     M1* m1;
@@ -52,13 +65,26 @@ public:
         return this->m2Matches;
     }
 
+    void describeExpectation(Description* description) {
+        this->m1->describeExpectation(description);
+        description->append(" or ");
+        this->m2->describeExpectation(description);
+    }
+
     template<class T>
-    void describe(const T& obj, Description* description) {
-        description->append("(");
-        this->m2->describe(obj, description);
-        description->append(") OR (");
-        this->m1->describe(obj, description);
-        description->append(")");
+    void describeFailure(const T& obj, Description* description) {
+        this->m1->describeFailure(obj, description);
+        description->append(" and ");
+        this->m2->describeFailure(obj, description);
+    }
+
+    template<class T>
+    void describeSuccess(const T& obj, Description* description) {
+        if (this->m1Matches) {
+            this->m1->describeSuccess(obj, description);
+        } else {
+            this->m2->describeSuccess(obj, description);
+        }
     }
 private:
     M1* m1;
@@ -78,13 +104,20 @@ public:
         return !this->matcher->matches(obj);
     }
 
-    template<class T>
-    void describe(const T& obj, Description* description) {
-        description->append("NOT(");
-        this->matcher->describe(obj, description);
-        description->append(")");
+    void describeExpectation(Description* description) {
+        description->append("not ");
+        this->matcher->describeExpectation(description);
     }
 
+    template<class T>
+    void describeFailure(const T& obj, Description* description) {
+        this->matcher->describeSuccess(obj, description);
+    }
+
+    template<class T>
+    void describeSuccess(const T& obj, Description* description) {
+        this->matcher->describeFailure(obj, description);
+    }
 private:
     Matcher* matcher;
 };

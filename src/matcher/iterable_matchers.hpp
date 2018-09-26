@@ -12,8 +12,10 @@ public:
             elementMatcher(elementMatcher) {}
 
     template<class T>
-    bool matches(const T& collection) {
-        for (const auto& obj: collection) {
+    bool matches(const T& iterable) {
+        this->index = -1;
+        for (const auto& obj: iterable) {
+            this->index += 1;
             if (!this->elementMatcher->matches(obj)) {
                 return false;
             }
@@ -21,19 +23,35 @@ public:
         return true;
     }
 
+    void describeExpectation(Description* description) {
+        description->append("an iterable where each element is ");
+        this->elementMatcher->describeExpectation(description);
+    }
+
     template<class T>
-    void describe(const T& collection, Description* description) {
-        description->append("container where eachElement element is ");
-        for (const auto& obj: collection) {
+    void describeFailure(const T& iterable, Description* description) {
+        description->append(
+            "an iterable where at index ",
+            this->index,
+            " the element is "
+        );
+        for (const auto& obj: iterable) {
             if (!this->elementMatcher->matches(obj)) {
-                this->elementMatcher->describe(obj, description);
-                break;
+                this->elementMatcher->describeFailure(obj, description);
+                return;
             }
         }
-        description->append(": '", collection, "'");
     }
+
+    template<class T>
+    void describeSuccess(const T& iterable, Description* description) {
+        description->append("an iterable where each element is ");
+        this->elementMatcher->describeExpectation(description);
+    }
+
 private:
     ElementMatcher* elementMatcher;
+    int index = -1;
 };
 
 template<class ElementMatcher, IS_MATCHER(ElementMatcher)>
@@ -44,22 +62,41 @@ public:
 
     template<class T>
     bool matches(const T& collection) {
+        this->index = -1;
         for (const auto& obj: collection) {
+            this->index += 1;
             if (this->elementMatcher->matches(obj)) {
                 return true;
             }
         }
-        return true;
+        return false;
+    }
+
+    void describeExpectation(Description* description) {
+        description->append(
+            "an iterable where at least one element is "
+        );
+        this->elementMatcher->describeExpectation(description);
     }
 
     template<class T>
-    void describe(const T& collection, Description* description) {
-        description->append("container where any element is ");
-        // TODO(darius98): Find a way to do this!
-        description->append(", got '", collection, "'");
+    void describeSuccess(const T& iterable, Description* description) {
+        description->append(
+            "an iterable where at index ",
+            this->index,
+            " the element is "
+        );
+        this->elementMatcher->describeExpectation(description);
+    }
+
+    template<class T>
+    void describeFailure(const T& iterable, Description* description) {
+        description->append("an iterable where no element is ");
+        this->elementMatcher->describeExpectation(description);
     }
 private:
     ElementMatcher* elementMatcher;
+    int index = -1;
 };
 
 }

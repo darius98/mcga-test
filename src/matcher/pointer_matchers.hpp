@@ -9,14 +9,22 @@ class IsNullptrMatcher: public Matcher<void*> {
 public:
     bool matches(void*const& obj) override;
 
-    void describe(void*const& obj, Description* description) override;
+    void describeExpectation(Description* description) override;
+
+    void describeSuccess(void*const& obj, Description* description) override;
+
+    void describeFailure(void*const& obj, Description* description) override;
 };
 
 class IsNotNullptrMatcher: public Matcher<void*> {
 public:
     bool matches(void*const& obj) override;
 
-    void describe(void*const& obj, Description* description) override;
+    void describeExpectation(Description* description) override;
+
+    void describeSuccess(void*const& obj, Description* description) override;
+
+    void describeFailure(void*const& obj, Description* description) override;
 };
 
 }

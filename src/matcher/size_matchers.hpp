@@ -13,9 +13,18 @@ public:
         return object.empty();
     }
 
+    void describeExpectation(Description* description) {
+        description->append("empty iterable");
+    }
+
     template<class T>
-    void describe(const T& object, Description* description) {
-        description->append("empty container, got '", object, "'");
+    void describeFailure(const T& object, Description* description) {
+        description->append("non-empty iterable");
+    }
+
+    template<class T>
+    void describeSuccess(const T& object, Description* description) {
+        description->append("empty iterable");
     }
 };
 
@@ -26,9 +35,18 @@ public:
         return !object.empty();
     }
 
+    void describeExpectation(Description* description) {
+        description->append("non-empty iterable");
+    }
+
     template<class T>
-    void describe(const T& object, Description* description) {
-        description->append("non-empty container, got '", object, "'");
+    void describeFailure(const T& object, Description* description) {
+        description->append("empty iterable");
+    }
+
+    template<class T>
+    void describeSuccess(const T& object, Description* description) {
+        description->append("non-empty iterable");
     }
 };
 
@@ -43,12 +61,24 @@ public:
         return this->sizeMatcher->matches(object.size());
     }
 
-    template<class T>
-    void describe(const T& object, Description* description) {
-        description->append("container of size ");
-        this->sizeMatcher->describe(object.size(), description);
-        description->append(": '", object, "'");
+    void describeExpectation(Description* description) {
+        description->append("iterable of size ");
+        this->sizeMatcher->describeExpectation(description);
     }
+
+    template<class T>
+    void describeSuccess(const T& object, Description* description) {
+        description->append("iterable of size ");
+        this->sizeMatcher->describeSuccess(object.size(), description);
+    }
+
+    template<class T>
+    void describeFailure(const T& object, Description* description) {
+        description->append("iterable of size ");
+        this->sizeMatcher->describeFailure(object.size(), description);
+    }
+
+
 private:
     SizeMatcher* sizeMatcher;
 };
