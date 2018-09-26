@@ -11,9 +11,9 @@ public:
 
     void describeExpectation(Description* description) override;
 
-    void describeSuccess(void*const& obj, Description* description) override;
+    void describeSuccess(Description* description) override;
 
-    void describeFailure(void*const& obj, Description* description) override;
+    void describeFailure(Description* description) override;
 };
 
 class IsNotNullptrMatcher: public Matcher<void*> {
@@ -22,9 +22,9 @@ public:
 
     void describeExpectation(Description* description) override;
 
-    void describeSuccess(void*const& obj, Description* description) override;
+    void describeSuccess(Description* description) override;
 
-    void describeFailure(void*const& obj, Description* description) override;
+    void describeFailure(Description* description) override;
 };
 
 }

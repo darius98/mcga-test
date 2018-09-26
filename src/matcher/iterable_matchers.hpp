@@ -17,6 +17,9 @@ public:
         for (const auto& obj: iterable) {
             this->index += 1;
             if (!this->elementMatcher->matches(obj)) {
+                this->elementMatcher->describeFailure(
+                    &this->elementFailureDescription
+                );
                 return false;
             }
         }
@@ -28,29 +31,23 @@ public:
         this->elementMatcher->describeExpectation(description);
     }
 
-    template<class T>
-    void describeFailure(const T& iterable, Description* description) {
+    void describeFailure(Description* description) {
         description->append(
             "an iterable where at index ",
             this->index,
-            " the element is "
+            " the element is ",
+            this->elementFailureDescription.toString()
         );
-        for (const auto& obj: iterable) {
-            if (!this->elementMatcher->matches(obj)) {
-                this->elementMatcher->describeFailure(obj, description);
-                return;
-            }
-        }
     }
 
-    template<class T>
-    void describeSuccess(const T& iterable, Description* description) {
+    void describeSuccess(Description* description) {
         description->append("an iterable where each element is ");
         this->elementMatcher->describeExpectation(description);
     }
 
 private:
     ElementMatcher* elementMatcher;
+    Description elementFailureDescription;
     int index = -1;
 };
 
@@ -79,8 +76,7 @@ public:
         this->elementMatcher->describeExpectation(description);
     }
 
-    template<class T>
-    void describeSuccess(const T& iterable, Description* description) {
+    void describeSuccess(Description* description) {
         description->append(
             "an iterable where at index ",
             this->index,
@@ -89,8 +85,7 @@ public:
         this->elementMatcher->describeExpectation(description);
     }
 
-    template<class T>
-    void describeFailure(const T& iterable, Description* description) {
+    void describeFailure(Description* description) {
         description->append("an iterable where no element is ");
         this->elementMatcher->describeExpectation(description);
     }

@@ -18,13 +18,11 @@ public:
         description->append("a positive number");
     }
 
-    template<class T>
-    void describeFailure(const T& object, Description* description) {
+    void describeFailure(Description* description) {
         description->append("a non-positive number");
     }
 
-    template<class T>
-    void describeSuccess(const T& object, Description* description) {
+    void describeSuccess(Description* description) {
         description->append("a positive number");
     }
 };
@@ -40,13 +38,11 @@ public:
         description->append("a negative number");
     }
 
-    template<class T>
-    void describeFailure(const T& object, Description* description) {
+    void describeFailure(Description* description) {
         description->append("a non-negative number");
     }
 
-    template<class T>
-    void describeSuccess(const T& object, Description* description) {
+    void describeSuccess(Description* description) {
         description->append("a negative number");
     }
 };
@@ -62,13 +58,11 @@ public:
         description->append("an even number");
     }
 
-    template<class T>
-    void describeFailure(const T& object, Description* description) {
+    void describeFailure(Description* description) {
         description->append("an odd number");
     }
 
-    template<class T>
-    void describeSuccess(const T& object, Description* description) {
+    void describeSuccess(Description* description) {
         description->append("an even number");
     }
 };
@@ -84,13 +78,11 @@ public:
         description->append("an odd number");
     }
 
-    template<class T>
-    void describeFailure(const T& object, Description* description) {
+    void describeFailure(Description* description) {
         description->append("an even number");
     }
 
-    template<class T>
-    void describeSuccess(const T& object, Description* description) {
+    void describeSuccess(Description* description) {
         description->append("an odd number");
     }
 };
@@ -106,13 +98,11 @@ public:
         description->append("zero");
     }
 
-    template<class T>
-    void describeFailure(const T& object, Description* description) {
+    void describeFailure(Description* description) {
         description->append("not zero");
     }
 
-    template<class T>
-    void describeSuccess(const T& object, Description* description) {
+    void describeSuccess(Description* description) {
         description->append("zero");
     }
 };
@@ -131,11 +121,11 @@ public:
         description->append("a number within ", eps, " of ", target);
     }
 
-    void describeSuccess(const T& obj, Description* description) override {
+    void describeSuccess(Description* description) override {
         description->append("a number within ", eps, " of ", target);
     }
 
-    void describeFailure(const T& obj, Description* description) override {
+    void describeFailure(Description* description) override {
         description->append("a number not within ", eps, " of ", target);
     }
 private:

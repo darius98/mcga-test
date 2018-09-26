@@ -15,11 +15,9 @@ public:
 
     void describeExpectation(Description* description) override;
 
-    void describeFailure(const std::function<void()>& func,
-                         Description* description) override;
+    void describeFailure(Description* description) override;
 
-    void describeSuccess(const std::function<void()>& func,
-                         Description* description) override;
+    void describeSuccess(Description* description) override;
 };
 
 template<class E>
@@ -56,8 +54,7 @@ public:
         description->append("a function that throws ", this->getErrorName());
     }
 
-    void describeFailure(const std::function<void()>& func,
-                         Description* description) override {
+    void describeFailure(Description* description) override {
         if (failureType == 1) {
             description->append("a function that did not throw.");
         }
@@ -66,8 +63,7 @@ public:
         }
     }
 
-    void describeSuccess(const std::function<void()>& func,
-                         Description* description) override {
+    void describeSuccess(Description* description) override {
         description->append("a function that throws ", this->getErrorName());
     }
 private:

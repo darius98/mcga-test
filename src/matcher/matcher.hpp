@@ -34,10 +34,10 @@ public:
     virtual void describeExpectation(Description* description) = 0;
 
     /// Describe the way `object` does not match expectations.
-    virtual void describeFailure(const T& object, Description* description) = 0;
+    virtual void describeFailure(Description* description) = 0;
 
     /// Describe the way 'object' matches expectations.
-    virtual void describeSuccess(const T& object, Description* description) = 0;
+    virtual void describeSuccess(Description* description) = 0;
 };
 
 } // namespace matcher

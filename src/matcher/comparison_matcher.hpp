@@ -31,7 +31,7 @@ public:
         );
     }
 
-    void describeFailure(const T& object, Description* description) override {
+    void describeFailure(Description* description) override {
         description->append(
             "an object that is not ",
             this->expectation,
@@ -41,7 +41,7 @@ public:
         );
     }
 
-    void describeSuccess(const T& object, Description* description) override {
+    void describeSuccess(Description* description) override {
         description->append(
             "an object that is ",
             this->expectation,

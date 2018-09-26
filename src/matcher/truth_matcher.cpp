@@ -10,13 +10,11 @@ void IsTrueMatcher::describeExpectation(Description* description) {
     description->append("true");
 }
 
-void IsTrueMatcher::describeFailure(const bool& object,
-                                    Description* description) {
+void IsTrueMatcher::describeFailure(Description* description) {
     description->append("false");
 }
 
-void IsTrueMatcher::describeSuccess(const bool& object,
-                                    Description* description) {
+void IsTrueMatcher::describeSuccess(Description* description) {
     description->append("true");
 }
 
@@ -28,13 +26,11 @@ void IsFalseMatcher::describeExpectation(Description* description) {
     description->append("false");
 }
 
-void IsFalseMatcher::describeFailure(const bool& object,
-                                     Description* description) {
+void IsFalseMatcher::describeFailure(Description* description) {
     description->append("true");
 }
 
-void IsFalseMatcher::describeSuccess(const bool& object,
-                                     Description* description) {
+void IsFalseMatcher::describeSuccess(Description* description) {
     description->append("false");
 }
 

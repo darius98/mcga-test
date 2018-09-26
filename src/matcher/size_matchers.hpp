@@ -17,13 +17,11 @@ public:
         description->append("empty iterable");
     }
 
-    template<class T>
-    void describeFailure(const T& object, Description* description) {
+    void describeFailure(Description* description) {
         description->append("non-empty iterable");
     }
 
-    template<class T>
-    void describeSuccess(const T& object, Description* description) {
+    void describeSuccess(Description* description) {
         description->append("empty iterable");
     }
 };
@@ -39,13 +37,11 @@ public:
         description->append("non-empty iterable");
     }
 
-    template<class T>
-    void describeFailure(const T& object, Description* description) {
+    void describeFailure(Description* description) {
         description->append("empty iterable");
     }
 
-    template<class T>
-    void describeSuccess(const T& object, Description* description) {
+    void describeSuccess(Description* description) {
         description->append("non-empty iterable");
     }
 };
@@ -66,16 +62,14 @@ public:
         this->sizeMatcher->describeExpectation(description);
     }
 
-    template<class T>
-    void describeSuccess(const T& object, Description* description) {
+    void describeSuccess(Description* description) {
         description->append("iterable of size ");
-        this->sizeMatcher->describeSuccess(object.size(), description);
+        this->sizeMatcher->describeSuccess(description);
     }
 
-    template<class T>
-    void describeFailure(const T& object, Description* description) {
+    void describeFailure(Description* description) {
         description->append("iterable of size ");
-        this->sizeMatcher->describeFailure(object.size(), description);
+        this->sizeMatcher->describeFailure(description);
     }
 
 
