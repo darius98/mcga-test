@@ -7,6 +7,7 @@
 #include "composite_matchers.hpp"
 #include "functional_matchers.hpp"
 #include "iterable_matchers.hpp"
+#include "numeric_matchers.hpp"
 #include "pointer_matchers.hpp"
 #include "size_matchers.hpp"
 #include "truth_matcher.hpp"
@@ -106,6 +107,21 @@ extern Matcher<std::function<void()>>* throws;
 template<class E>
 Matcher<std::function<void()>>* throwsA() {
     return new ThrowsSpecificMatcher<E>();
+}
+
+extern IsPositiveMatcher* isPositive;
+
+extern IsNegativeMatcher* isNegative;
+
+extern IsEvenMatcher* isEven;
+
+extern IsOddMatcher* isOdd;
+
+extern IsZeroMatcher* isZero;
+
+template<class T>
+Matcher<T>* isAlmostEqualTo(const T& target, const double& eps=0.000001) {
+    return new IsAlmostEqualMatcher<T>(target, eps);
 }
 
 } // namespace matcher
