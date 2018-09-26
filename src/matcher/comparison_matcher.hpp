@@ -40,17 +40,6 @@ public:
             "'"
         );
     }
-
-    void describeSuccess(Description* description) override {
-        description->append(
-            "an object that is ",
-            this->expectation,
-            "'",
-            this->target,
-            "'"
-        );
-    }
-
 private:
     Comparator comparator;
     const T& target;

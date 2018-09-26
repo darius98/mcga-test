@@ -26,9 +26,6 @@ public:
 
     /// Describe the way `object` does not match expectations.
     virtual void describeFailure(Description* description) = 0;
-
-    /// Describe the way 'object' matches expectations.
-    virtual void describeSuccess(Description* description) = 0;
 private:
     static std::set<void*> matchersAllocatedDuringTests;
 };

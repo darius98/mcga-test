@@ -14,10 +14,6 @@ void IsTrueMatcher::describeFailure(Description* description) {
     description->append("false");
 }
 
-void IsTrueMatcher::describeSuccess(Description* description) {
-    description->append("true");
-}
-
 bool IsFalseMatcher::matches(const bool& object) {
     return !object;
 }
@@ -28,10 +24,6 @@ void IsFalseMatcher::describeExpectation(Description* description) {
 
 void IsFalseMatcher::describeFailure(Description* description) {
     description->append("true");
-}
-
-void IsFalseMatcher::describeSuccess(Description* description) {
-    description->append("false");
 }
 
 }

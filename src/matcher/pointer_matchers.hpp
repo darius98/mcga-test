@@ -11,8 +11,6 @@ public:
 
     void describeExpectation(Description* description) override;
 
-    void describeSuccess(Description* description) override;
-
     void describeFailure(Description* description) override;
 };
 
@@ -21,8 +19,6 @@ public:
     bool matches(void*const& obj) override;
 
     void describeExpectation(Description* description) override;
-
-    void describeSuccess(Description* description) override;
 
     void describeFailure(Description* description) override;
 };

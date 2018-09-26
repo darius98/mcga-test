@@ -21,8 +21,4 @@ void ThrowsAnythingMatcher::describeFailure(matcher::Description *description) {
     description->append("a function that did not throw");
 }
 
-void ThrowsAnythingMatcher::describeSuccess(matcher::Description *description) {
-    description->append("a function that throws");
-}
-
 }

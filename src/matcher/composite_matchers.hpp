@@ -34,12 +34,6 @@ public:
             this->m1->describeFailure(description);
         }
     }
-
-    void describeSuccess(Description* description) override {
-        this->m1->describeSuccess(description);
-        description->append(" and ");
-        this->m2->describeSuccess(description);
-    }
 private:
     M1* m1;
     M2* m2;
@@ -74,14 +68,6 @@ public:
         description->append(" and ");
         this->m2->describeFailure(description);
     }
-
-    void describeSuccess(Description* description) override {
-        if (this->m1Matches) {
-            this->m1->describeSuccess(description);
-        } else {
-            this->m2->describeSuccess(description);
-        }
-    }
 private:
     M1* m1;
     M2* m2;
@@ -106,11 +92,7 @@ public:
     }
 
     void describeFailure(Description* description) override {
-        this->matcher->describeSuccess(description);
-    }
-
-    void describeSuccess(Description* description) override {
-        this->matcher->describeFailure(description);
+        this->matcher->describeExpectation(description);
     }
 private:
     Matcher* matcher;

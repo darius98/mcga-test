@@ -16,8 +16,6 @@ public:
     void describeExpectation(Description* description) override;
 
     void describeFailure(Description* description) override;
-
-    void describeSuccess(Description* description) override;
 };
 
 template<class E>
@@ -61,10 +59,6 @@ public:
         if (failureType == 2) {
             description->append("a function that throws something else.");
         }
-    }
-
-    void describeSuccess(Description* description) override {
-        description->append("a function that throws ", this->getErrorName());
     }
 private:
     int failureType = -1;

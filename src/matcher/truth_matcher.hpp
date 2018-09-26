@@ -13,8 +13,6 @@ public:
     void describeExpectation(Description* description) override;
 
     void describeFailure(Description* description) override;
-
-    void describeSuccess(Description* description) override;
 };
 
 class IsFalseMatcher: public Matcher<bool> {
@@ -24,8 +22,6 @@ public:
     void describeExpectation(Description* description) override;
 
     void describeFailure(Description* description) override;
-
-    void describeSuccess(Description* description) override;
 };
 
 } // namespace matcher

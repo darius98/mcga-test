@@ -17,8 +17,6 @@ public:
     void describeExpectation(Description* description) override;
 
     void describeFailure(Description* description) override;
-
-    void describeSuccess(Description* description) override;
 };
 
 class IsNegativeMatcher: public BaseMatcher {
@@ -31,8 +29,6 @@ public:
     void describeExpectation(Description* description) override;
 
     void describeFailure(Description* description) override;
-
-    void describeSuccess(Description* description) override;
 };
 
 class IsEvenMatcher: public BaseMatcher {
@@ -45,8 +41,6 @@ public:
     void describeExpectation(Description* description) override;
 
     void describeFailure(Description* description) override;
-
-    void describeSuccess(Description* description) override;
 };
 
 class IsOddMatcher: public BaseMatcher {
@@ -59,8 +53,6 @@ public:
     void describeExpectation(Description* description) override;
 
     void describeFailure(Description* description) override;
-
-    void describeSuccess(Description* description) override;
 };
 
 class IsZeroMatcher: public BaseMatcher {
@@ -73,8 +65,6 @@ public:
     void describeExpectation(Description* description) override;
 
     void describeFailure(Description* description) override;
-
-    void describeSuccess(Description* description) override;
 };
 
 template<class T>
@@ -88,10 +78,6 @@ public:
     }
 
     void describeExpectation(Description* description) override {
-        description->append("a number within ", eps, " of ", target);
-    }
-
-    void describeSuccess(Description* description) override {
         description->append("a number within ", eps, " of ", target);
     }
 

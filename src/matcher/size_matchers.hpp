@@ -16,8 +16,6 @@ public:
     void describeExpectation(Description* description) override;
 
     void describeFailure(Description* description) override;
-
-    void describeSuccess(Description* description) override;
 };
 
 class IsNotEmptyMatcher: public BaseMatcher {
@@ -30,8 +28,6 @@ public:
     void describeExpectation(Description* description) override;
 
     void describeFailure(Description* description) override;
-
-    void describeSuccess(Description* description) override;
 };
 
 template<class SizeMatcher, IS_MATCHER(SizeMatcher)>
@@ -50,17 +46,10 @@ public:
         this->sizeMatcher->describeExpectation(description);
     }
 
-    void describeSuccess(Description* description) override {
-        description->append("iterable of size ");
-        this->sizeMatcher->describeSuccess(description);
-    }
-
     void describeFailure(Description* description) override {
         description->append("iterable of size ");
         this->sizeMatcher->describeFailure(description);
     }
-
-
 private:
     SizeMatcher* sizeMatcher;
 };

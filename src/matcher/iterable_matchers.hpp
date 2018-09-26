@@ -40,11 +40,6 @@ public:
         );
     }
 
-    void describeSuccess(Description* description) override {
-        description->append("an iterable where each element is ");
-        this->elementMatcher->describeExpectation(description);
-    }
-
 private:
     ElementMatcher* elementMatcher;
     Description elementFailureDescription;
@@ -72,15 +67,6 @@ public:
     void describeExpectation(Description* description) override {
         description->append(
             "an iterable where at least one element is "
-        );
-        this->elementMatcher->describeExpectation(description);
-    }
-
-    void describeSuccess(Description* description) override {
-        description->append(
-            "an iterable where at index ",
-            this->index,
-            " the element is "
         );
         this->elementMatcher->describeExpectation(description);
     }
