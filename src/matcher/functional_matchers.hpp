@@ -2,6 +2,7 @@
 #define RUNTIME_TESTING_MATCHER_FUNCTIONAL_MATCHERS_H_
 
 #include <cxxabi.h>
+#include <functional>
 
 #include "matcher.hpp"
 
