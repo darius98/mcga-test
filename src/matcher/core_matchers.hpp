@@ -64,23 +64,33 @@ extern IsEmptyMatcher* isEmpty;
 extern IsNotEmptyMatcher* isNotEmpty;
 
 template<class SizeMatcher, IS_MATCHER(SizeMatcher)>
-CollectionSizeMatcher<SizeMatcher>* hasSize(SizeMatcher* sizeMatcher) {
-    return new CollectionSizeMatcher<SizeMatcher>(sizeMatcher);
+IterableSizeMatcher<SizeMatcher>* hasSize(SizeMatcher* m) {
+    return new IterableSizeMatcher<SizeMatcher>(m);
 }
 
 template<class T>
-CollectionSizeMatcher<Matcher<T>>* hasSize(const T& object) {
-    return new CollectionSizeMatcher<Matcher<T>>(isEqualTo(object));
+IterableSizeMatcher<Matcher<T>>* hasSize(const T& object) {
+    return new IterableSizeMatcher<Matcher<T>>(isEqualTo(object));
 }
 
-template<class EachMatcher, IS_MATCHER(EachMatcher)>
-CollectionEachMatcher<EachMatcher>* eachElement(EachMatcher *eachMatcher) {
-    return new CollectionEachMatcher<EachMatcher>(eachMatcher);
+template<class ElementMatcher, IS_MATCHER(ElementMatcher)>
+IterableEachMatcher<ElementMatcher>* eachElement(ElementMatcher *m) {
+    return new IterableEachMatcher<ElementMatcher>(m);
 }
 
 template<class T>
-CollectionEachMatcher<Matcher<T>>* eachElement(const T &object) {
-    return new CollectionEachMatcher<Matcher<T>>(isEqualTo(object));
+IterableEachMatcher<Matcher<T>>* eachElement(const T &object) {
+    return new IterableEachMatcher<Matcher<T>>(isEqualTo(object));
+}
+
+template<class ElementMatcher, IS_MATCHER(ElementMatcher)>
+IterableAnyMatcher<ElementMatcher>* anyElement(ElementMatcher *m) {
+    return new IterableAnyMatcher<ElementMatcher>(m);
+}
+
+template<class T>
+IterableAnyMatcher<Matcher<T>>* anyElement(const T &object) {
+    return new IterableAnyMatcher<Matcher<T>>(isEqualTo(object));
 }
 
 template<class M1, class M2, IS_MATCHER(M1), IS_MATCHER(M2)>

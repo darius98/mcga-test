@@ -33,9 +33,9 @@ public:
 };
 
 template<class SizeMatcher, IS_MATCHER(SizeMatcher)>
-class CollectionSizeMatcher: public BaseMatcher {
+class IterableSizeMatcher: public BaseMatcher {
 public:
-    explicit CollectionSizeMatcher(SizeMatcher* sizeMatcher):
+    explicit IterableSizeMatcher(SizeMatcher* sizeMatcher):
             sizeMatcher(sizeMatcher) {}
 
     template<class T>

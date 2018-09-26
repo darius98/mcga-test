@@ -51,6 +51,8 @@ int main() {
             v.push_back(4);
 
             expectMatches(v, eachElement(isGreaterThan(2)));
+            expectMatches(v, anyElement(3));
+            expectMatches(v, anyElement(isLessThan(4)));
 
             expect(v.empty()); // This will fail!
             expectMatches(v, isNotEmpty);
