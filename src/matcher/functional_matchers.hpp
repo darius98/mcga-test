@@ -10,20 +10,10 @@ namespace matcher {
 
 class ThrowsAnythingMatcher: public Matcher<std::function<void()>> {
 public:
-    bool matches(const std::function<void()>& func) override {
-        try {
-            func();
-            return false;
-        } catch(...) {
-            return true;
-        }
-    }
+    bool matches(const std::function<void()>& func) override;
 
     void describe(const std::function<void()>& func,
-                  Description* description) override {
-        description->append("function that throws, got "
-                            "function that did not throw.");
-    }
+                  Description* description) override;
 };
 
 template<class E>
