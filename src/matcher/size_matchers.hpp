@@ -32,7 +32,7 @@ public:
     }
 };
 
-template<class SizeMatcher>
+template<class SizeMatcher, IS_MATCHER(SizeMatcher)>
 class CollectionSizeMatcher: public BaseMatcher {
 public:
     explicit CollectionSizeMatcher(SizeMatcher* sizeMatcher):

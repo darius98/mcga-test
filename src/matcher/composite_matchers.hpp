@@ -6,7 +6,7 @@
 
 namespace matcher {
 
-template<class M1, class M2>
+template<class M1, class M2, IS_MATCHER(M1), IS_MATCHER(M2)>
 class AndMatcher: public BaseMatcher {
 public:
     AndMatcher(M1* _m1, M2* _m2): m1(_m1), m2(_m2) {}
@@ -37,7 +37,7 @@ private:
     bool m2Matches = false;
 };
 
-template<class M1, class M2>
+template<class M1, class M2, IS_MATCHER(M1), IS_MATCHER(M2)>
 class OrMatcher: public BaseMatcher {
 public:
     OrMatcher(M1* _m1, M2* _m2): m1(_m1), m2(_m2) {}
@@ -68,7 +68,7 @@ private:
     bool m2Matches = false;
 };
 
-template<class Matcher>
+template<class Matcher, IS_MATCHER(Matcher)>
 class NotMatcher: public BaseMatcher {
 public:
     explicit NotMatcher(Matcher* matcher): matcher(matcher) {}

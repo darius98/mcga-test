@@ -5,7 +5,7 @@
 
 namespace matcher {
 
-template<class EachMatcher>
+template<class EachMatcher, IS_MATCHER(EachMatcher)>
 class CollectionEachMatcher {
 public:
     explicit CollectionEachMatcher(EachMatcher* eachMatcher):

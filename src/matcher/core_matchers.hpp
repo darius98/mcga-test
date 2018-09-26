@@ -11,12 +11,6 @@
 #include "truth_matcher.hpp"
 
 
-/// Macro for checking if template argument is a matcher-like type.
-#define IS_MATCHER(cls)                                                        \
-    class=typename std::enable_if<                                             \
-            std::is_base_of<matcher::BaseMatcher, cls>::value, void>::type
-
-
 namespace matcher {
 
 extern IsTrueMatcher* isTrue;
