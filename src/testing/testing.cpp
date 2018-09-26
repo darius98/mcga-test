@@ -1,3 +1,5 @@
+#include <fstream>
+
 #include "testing.hpp"
 
 #include "expect.hpp"
@@ -55,8 +57,17 @@ int numFailedTests() {
     return getDriver()->getNumFailedTests();
 }
 
-int getTestSuiteReport(ostream& report) {
+int writeTestSuiteReport(ostream &report) {
     return getDriver()->generateTestReport(report);
+}
+
+int finalizeTesting(const string& reportFileName) {
+    ofstream reportFileStream(reportFileName);
+    writeTestSuiteReport(reportFileStream);
+    reportFileStream.close();
+    int status = numFailedTests();
+    destroyTestingDriver();
+    return status;
 }
 
 }

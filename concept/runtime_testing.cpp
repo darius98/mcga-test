@@ -9,7 +9,7 @@ using namespace std;
 
 
 int main() {
-    initializeTestingDriver(cout);
+    initializeTestingDriver();
 
     vector<int> v;
 
@@ -66,8 +66,5 @@ int main() {
         });
     });
 
-    ofstream f("report.json");
-    int status = getTestSuiteReport(f);
-    destroyTestingDriver();
-    return status;
+    return finalizeTesting();
 }

@@ -8,9 +8,7 @@
 
 namespace runtime_testing {
 
-void initializeTestingDriver(std::ostream& log);
-
-void destroyTestingDriver();
+void initializeTestingDriver(std::ostream& log=std::cerr);
 
 void setUp(const std::function<void()>& func);
 
@@ -24,7 +22,11 @@ bool isDuringTest();
 
 int numFailedTests();
 
-int getTestSuiteReport(std::ostream& report);
+int writeTestSuiteReport(std::ostream &report);
+
+void destroyTestingDriver();
+
+int finalizeTesting(const std::string& reportFileName="report.json");
 
 }
 
