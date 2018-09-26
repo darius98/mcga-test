@@ -2,7 +2,6 @@
 #define RUNTIME_TESTING_MATCHER_MATCHER_H_
 
 #include "description.hpp"
-#include "../testing/testing.hpp"
 
 
 namespace matcher {

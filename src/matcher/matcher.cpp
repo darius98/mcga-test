@@ -1,10 +1,15 @@
 #include "matcher.hpp"
+#include "../testing/testing.hpp"
+
+using namespace runtime_testing;
+using namespace std;
+
 
 namespace matcher {
 
-void* BaseMatcher::operator new(std::size_t size) noexcept {
+void* BaseMatcher::operator new(size_t size) noexcept {
     void* p = malloc(size);
-    if (runtime_testing::isDuringTest()) {
+    if (isDuringTest()) {
         BaseMatcher::matchersAllocatedDuringTests.insert(p);
     }
     return p;
@@ -22,6 +27,6 @@ void BaseMatcher::cleanup() {
     BaseMatcher::matchersAllocatedDuringTests.clear();
 }
 
-std::set<void*> BaseMatcher::matchersAllocatedDuringTests;
+set<void*> BaseMatcher::matchersAllocatedDuringTests;
 
 }
