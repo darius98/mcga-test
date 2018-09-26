@@ -47,6 +47,14 @@ private:
 
     void validateStartTearDown();
 
+    std::string getTestFullName(const std::string& testDescription) const;
+
+    void executeSetUps(Test* currentTest);
+
+    void executeTest(Test* currentTest, const std::function<void()>& testFunc);
+
+    void executeTearDowns(Test* currentTest);
+
     std::vector<Group*> groupStack;
     std::stack<DriverState> state;
     std::ostream* log;

@@ -11,7 +11,7 @@ public:
     void* operator new(std::size_t size) noexcept;
     void operator delete(void* obj) noexcept;
 
-    static void cleanup();
+    static void cleanupMatchersCreatedDuringTests();
 private:
     static std::set<void*> matchersAllocatedDuringTests;
 };

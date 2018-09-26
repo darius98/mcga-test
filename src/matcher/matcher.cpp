@@ -20,7 +20,7 @@ void BaseMatcher::operator delete(void* obj) noexcept {
     free(obj);
 }
 
-void BaseMatcher::cleanup() {
+void BaseMatcher::cleanupMatchersCreatedDuringTests() {
     for (void* obj: BaseMatcher::matchersAllocatedDuringTests) {
         free(obj);
     }
