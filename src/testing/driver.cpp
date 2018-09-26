@@ -54,7 +54,29 @@ void TestingDriver::addGroup(Group* currentGroup,
     this->groupStack.back()->subGroups.push_back(currentGroup);
     this->groupStack.push_back(currentGroup);
     this->state.push(DriverState::GROUP);
-    func();
+    bool failed;
+    try {
+        func();
+        failed = false;
+    } catch(const exception& e) {
+        failed = true;
+        (*this->log) << "\nAn exception was thrown inside group '"
+                     << currentGroup->description
+                     << "': "
+                     << e.what();
+    } catch(...) {
+        failed = true;
+        (*this->log) << "\nA non-exception object was thrown inside group'"
+                     << currentGroup->description
+                     << "'";
+    }
+    if (failed) {
+        (*this->log) << ", outside of any test/setUp/tearDown."
+                     << "\n\n" << string(91, '*') << "\n"
+                     << "Try to place all your testing code inside setUp, "
+                        "tearDown or test calls for better tracing."
+                     << "\n" << string(91, '*') << "\n\n";
+    }
     this->state.pop();
     this->groupStack.pop_back();
 }
@@ -86,8 +108,18 @@ void TestingDriver::addTest(Test *currentTest,
     try {
         func();
         (*this->log) << "PASSED\n";
-    } catch(ExpectationFailed& failure) {
+    } catch(const ExpectationFailed& failure) {
         currentTest->failure = new ExpectationFailed(failure);
+    } catch(const exception& e) {
+        currentTest->failure = new ExpectationFailed(
+                "An exception was thrown: " + string(e.what())
+        );
+    } catch(...) {
+        currentTest->failure = new ExpectationFailed(
+                "A non-exception object was thrown"
+        );
+    }
+    if (currentTest->failure) {
         (*this->log) << "FAILED\n\t"
                      << currentTest->failure->getMessage()
                      << "\n";
