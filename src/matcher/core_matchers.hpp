@@ -5,6 +5,7 @@
 
 #include "comparison_matcher.hpp"
 #include "composite_matchers.hpp"
+#include "functional_matchers.hpp"
 #include "iterable_matchers.hpp"
 #include "pointer_matchers.hpp"
 #include "size_matchers.hpp"
@@ -99,6 +100,13 @@ NotMatcher<Matcher>* isNot(Matcher* matcher) {
 extern Matcher<void*>* isNull;
 
 extern Matcher<void*>* isNotNull;
+
+extern Matcher<std::function<void()>>* throws;
+
+template<class E>
+Matcher<std::function<void()>>* throwsA() {
+    return new ThrowsSpecificMatcher<E>();
+}
 
 } // namespace matcher
 

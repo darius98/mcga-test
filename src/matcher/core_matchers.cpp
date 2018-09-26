@@ -1,5 +1,8 @@
 #include "core_matchers.hpp"
 
+using namespace std;
+
+
 namespace matcher {
 
 IsTrueMatcher* isTrue = new IsTrueMatcher();
@@ -13,5 +16,7 @@ IsNotEmptyMatcher* isNotEmpty = new IsNotEmptyMatcher();
 Matcher<void*>* isNull = new IsNullptrMatcher();
 
 Matcher<void*>* isNotNull = new IsNotNullptrMatcher();
+
+Matcher<function<void()>>* throws = new ThrowsAnythingMatcher();
 
 }

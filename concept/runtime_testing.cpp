@@ -22,6 +22,11 @@ int main() {
         expectMatches(v, isEmpty);
     });
 
+    test("Accessing element at position 0 throws", [&]() {
+        expectMatches([&]() { v.at(0); }, throws);
+        expectMatches([&]() { v.at(0); }, throwsA<out_of_range>());
+    });
+
     group("After push_back()", [&]() {
         setUp([&]() {
             v.push_back(3);
@@ -46,13 +51,18 @@ int main() {
             v.push_back(4);
 
             expectMatches(v, eachElement(isGreaterThan(2)));
-            expectMatches(v, eachElement(2));
 
             expect(v.empty()); // This will fail!
             expectMatches(v, isNotEmpty);
 
             expect(v.back() == 4);
             expectMatches(v.back(), isEqualTo(4));
+        });
+
+        test("A pop_back() empties the vector", [&]() {
+            v.pop_back();
+
+            expectMatches(v, isEmpty);
         });
     });
 
