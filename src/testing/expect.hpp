@@ -50,7 +50,7 @@ void _expectMatches(const T& object,
 }
 
 /// Main function for expecting something during a test.
-template<class T, class PseudoMatcher>
+template<class T, class PseudoMatcher, IS_MATCHER(PseudoMatcher)>
 void _expectMatches(const T& object,
                     PseudoMatcher* matcher,
                     const char* fileName="NO_FILENAME",
@@ -71,13 +71,21 @@ void _expectMatches(const T& object,
     throwExpectationFailed(description);
 }
 
-#define expect(expr)                                                           \
-    runtime_testing::_expectMatches(                                           \
-            expr, isTrue, __FILENAME__, __LINE__, #expr", which is not true")
-
-#define expectMatches(expr, matcher) \
-    runtime_testing::_expectMatches(expr, matcher, __FILENAME__, __LINE__)
+void _fail(const std::string& message,
+           const char* fileName,
+           const int& lineNumber);
 
 } // namespace runtime_testing
+
+#define expect(...)                                                            \
+    runtime_testing::_expectMatches(__VA_ARGS__,                               \
+                                    isTrue, __FILENAME__, __LINE__,            \
+                                    #__VA_ARGS__ ", which is not true")
+
+#define expectMatches(...) \
+    runtime_testing::_expectMatches(__VA_ARGS__, __FILENAME__, __LINE__)
+
+#define fail(...) \
+    runtime_testing::_fail(__VA_ARGS__, __FILENAME__, __LINE__)
 
 #endif

@@ -30,4 +30,11 @@ void throwExpectationFailed(Description* description) {
     throw ExpectationFailed(stringDescription);
 }
 
+void _fail(const string& message, const char* fileName, const int& lineNumber) {
+    checkDuringTest(fileName, lineNumber);
+    throw ExpectationFailed(
+        string(fileName) + ":" + to_string(lineNumber) + ": " + message
+    );
+}
+
 }
