@@ -18,17 +18,17 @@ public:
         return m1Matches && m2Matches;
     }
 
-    void describeExpectation(Description* description) override {
-        m1->describeExpectation(description);
+    void describe(Description* description) override {
+        m1->describe(description);
         description->append(" and ");
-        m2->describeExpectation(description);
+        m2->describe(description);
     }
 
-    void describeFailure(Description* description) override {
+    void describeMismatch(Description* description) override {
         if (m1Matches) {
-            m2->describeFailure(description);
+            m2->describeMismatch(description);
         } else {
-            m1->describeFailure(description);
+            m1->describeMismatch(description);
         }
     }
 private:
@@ -51,16 +51,16 @@ public:
         return m1Matches || m2Matches;
     }
 
-    void describeExpectation(Description* description) override {
-        m1->describeExpectation(description);
+    void describe(Description* description) override {
+        m1->describe(description);
         description->append(" or ");
-        m2->describeExpectation(description);
+        m2->describe(description);
     }
 
-    void describeFailure(Description* description) override {
-        m1->describeFailure(description);
+    void describeMismatch(Description* description) override {
+        m1->describeMismatch(description);
         description->append(" and ");
-        m2->describeFailure(description);
+        m2->describeMismatch(description);
     }
 private:
     M1* m1;
@@ -80,13 +80,13 @@ public:
         return !matcher->matches(obj);
     }
 
-    void describeExpectation(Description* description) override {
+    void describe(Description* description) override {
         description->append("not ");
-        matcher->describeExpectation(description);
+        matcher->describe(description);
     }
 
-    void describeFailure(Description* description) override {
-        matcher->describeExpectation(description);
+    void describeMismatch(Description* description) override {
+        matcher->describe(description);
     }
 private:
     M* matcher;

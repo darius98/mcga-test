@@ -6,11 +6,11 @@ bool IsTrueMatcher::matches(const bool& object) {
     return object;
 }
 
-void IsTrueMatcher::describeExpectation(Description* description) {
+void IsTrueMatcher::describe(Description* description) {
     description->append("true");
 }
 
-void IsTrueMatcher::describeFailure(Description* description) {
+void IsTrueMatcher::describeMismatch(Description* description) {
     description->append("false");
 }
 
@@ -18,11 +18,11 @@ bool IsFalseMatcher::matches(const bool& object) {
     return !object;
 }
 
-void IsFalseMatcher::describeExpectation(Description* description) {
+void IsFalseMatcher::describe(Description* description) {
     description->append("false");
 }
 
-void IsFalseMatcher::describeFailure(Description* description) {
+void IsFalseMatcher::describeMismatch(Description* description) {
     description->append("true");
 }
 

@@ -10,18 +10,18 @@ class IsTrueMatcher: public Matcher<bool> {
 public:
     bool matches(const bool& object) override;
 
-    void describeExpectation(Description* description) override;
+    void describe(Description* description) override;
 
-    void describeFailure(Description* description) override;
+    void describeMismatch(Description* description) override;
 };
 
 class IsFalseMatcher: public Matcher<bool> {
 public:
     bool matches(const bool& object) override;
 
-    void describeExpectation(Description* description) override;
+    void describe(Description* description) override;
 
-    void describeFailure(Description* description) override;
+    void describeMismatch(Description* description) override;
 };
 
 } // namespace matcher

@@ -12,9 +12,9 @@ public:
         return object.empty();
     }
 
-    void describeExpectation(Description* description) override;
+    void describe(Description* description) override;
 
-    void describeFailure(Description* description) override;
+    void describeMismatch(Description* description) override;
 };
 
 class IsNotEmptyMatcher: public BaseMatcher {
@@ -24,9 +24,9 @@ public:
         return !object.empty();
     }
 
-    void describeExpectation(Description* description) override;
+    void describe(Description* description) override;
 
-    void describeFailure(Description* description) override;
+    void describeMismatch(Description* description) override;
 };
 
 template<class SizeMatcher, IS_MATCHER(SizeMatcher)>
@@ -40,14 +40,14 @@ public:
         return sizeMatcher->matches(object.size());
     }
 
-    void describeExpectation(Description* description) override {
+    void describe(Description* description) override {
         description->append("iterable of size ");
-        sizeMatcher->describeExpectation(description);
+        sizeMatcher->describe(description);
     }
 
-    void describeFailure(Description* description) override {
+    void describeMismatch(Description* description) override {
         description->append("iterable of size ");
-        sizeMatcher->describeFailure(description);
+        sizeMatcher->describeMismatch(description);
     }
 private:
     SizeMatcher* sizeMatcher;
@@ -65,19 +65,19 @@ public:
         for (const auto& obj: iterable) {
             index += 1;
             if (!elementMatcher->matches(obj)) {
-                elementMatcher->describeFailure(&elementFailureDescription);
+                elementMatcher->describeMismatch(&elementFailureDescription);
                 return false;
             }
         }
         return true;
     }
 
-    void describeExpectation(Description* description) override {
+    void describe(Description* description) override {
         description->append("an iterable where each element is ");
-        elementMatcher->describeExpectation(description);
+        elementMatcher->describe(description);
     }
 
-    void describeFailure(Description* description) override {
+    void describeMismatch(Description* description) override {
         description->append(
             "an iterable where at index ", index, " the element is ",
             elementFailureDescription.toString()
@@ -108,14 +108,14 @@ public:
         return false;
     }
 
-    void describeExpectation(Description* description) override {
+    void describe(Description* description) override {
         description->append("an iterable where at least one element is ");
-        elementMatcher->describeExpectation(description);
+        elementMatcher->describe(description);
     }
 
-    void describeFailure(Description* description) override {
+    void describeMismatch(Description* description) override {
         description->append("an iterable where no element is ");
-        elementMatcher->describeExpectation(description);
+        elementMatcher->describe(description);
     }
 private:
     ElementMatcher* elementMatcher;

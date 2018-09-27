@@ -14,9 +14,9 @@ public:
         return object > 0;
     }
 
-    void describeExpectation(Description* description) override;
+    void describe(Description* description) override;
 
-    void describeFailure(Description* description) override;
+    void describeMismatch(Description* description) override;
 };
 
 class IsNegativeMatcher: public BaseMatcher {
@@ -26,9 +26,9 @@ public:
         return object < 0;
     }
 
-    void describeExpectation(Description* description) override;
+    void describe(Description* description) override;
 
-    void describeFailure(Description* description) override;
+    void describeMismatch(Description* description) override;
 };
 
 class IsEvenMatcher: public BaseMatcher {
@@ -38,9 +38,9 @@ public:
         return object % 2 == 0;
     }
 
-    void describeExpectation(Description* description) override;
+    void describe(Description* description) override;
 
-    void describeFailure(Description* description) override;
+    void describeMismatch(Description* description) override;
 };
 
 class IsOddMatcher: public BaseMatcher {
@@ -50,9 +50,9 @@ public:
         return object % 2 == 1;
     }
 
-    void describeExpectation(Description* description) override;
+    void describe(Description* description) override;
 
-    void describeFailure(Description* description) override;
+    void describeMismatch(Description* description) override;
 };
 
 class IsZeroMatcher: public BaseMatcher {
@@ -62,9 +62,9 @@ public:
         return object == 0;
     }
 
-    void describeExpectation(Description* description) override;
+    void describe(Description* description) override;
 
-    void describeFailure(Description* description) override;
+    void describeMismatch(Description* description) override;
 };
 
 template<class T>
@@ -77,11 +77,11 @@ public:
         return fabs(object - target) < eps;
     }
 
-    void describeExpectation(Description* description) override {
+    void describe(Description* description) override {
         description->append("a number within ", eps, " of ", target);
     }
 
-    void describeFailure(Description* description) override {
+    void describeMismatch(Description* description) override {
         description->append("a number not within ", eps, " of ", target);
     }
 private:

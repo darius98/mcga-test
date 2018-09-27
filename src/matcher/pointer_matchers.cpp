@@ -7,11 +7,11 @@ bool IsNullptrMatcher::matches(void*const& obj) {
     return obj == nullptr;
 }
 
-void IsNullptrMatcher::describeExpectation(Description* description) {
+void IsNullptrMatcher::describe(Description* description) {
     description->append("nullptr");
 }
 
-void IsNullptrMatcher::describeFailure(Description* description) {
+void IsNullptrMatcher::describeMismatch(Description* description) {
     description->append("non-null pointer");
 }
 
@@ -19,11 +19,11 @@ bool IsNotNullptrMatcher::matches(void*const& obj) {
     return obj != nullptr;
 }
 
-void IsNotNullptrMatcher::describeExpectation(Description* description) {
+void IsNotNullptrMatcher::describe(Description* description) {
     description->append("non-null pointer");
 }
 
-void IsNotNullptrMatcher::describeFailure(Description* description) {
+void IsNotNullptrMatcher::describeMismatch(Description* description) {
     description->append("nullptr");
 }
 

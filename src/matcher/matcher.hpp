@@ -22,10 +22,10 @@ public:
     void operator delete(void* obj) noexcept;
 
     /// Describe what this matcher expects from an object.
-    virtual void describeExpectation(Description* description) = 0;
+    virtual void describe(Description* description) = 0;
 
     /// Describe the way `object` does not match expectations.
-    virtual void describeFailure(Description* description) = 0;
+    virtual void describeMismatch(Description* description) = 0;
 private:
     static std::set<void*> matchersAllocatedDuringTests;
 };

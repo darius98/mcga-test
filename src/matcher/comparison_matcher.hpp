@@ -21,13 +21,13 @@ public:
         return comparator(object, target);
     }
 
-    void describeExpectation(Description* description) override {
+    void describe(Description* description) override {
         description->append(
             "an object that is ", expectation, "'", target, "'"
         );
     }
 
-    void describeFailure(Description* description) override {
+    void describeMismatch(Description* description) override {
         description->append(
             "an object that is not ", expectation, "'", target, "'"
         );

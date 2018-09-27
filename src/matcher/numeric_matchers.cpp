@@ -3,43 +3,43 @@
 
 namespace matcher {
 
-void IsPositiveMatcher::describeExpectation(Description* description) {
+void IsPositiveMatcher::describe(Description* description) {
     description->append("a positive number");
 }
 
-void IsPositiveMatcher::describeFailure(Description* description) {
+void IsPositiveMatcher::describeMismatch(Description* description) {
     description->append("a non-positive number");
 }
 
-void IsNegativeMatcher::describeExpectation(Description* description) {
+void IsNegativeMatcher::describe(Description* description) {
     description->append("a negative number");
 }
 
-void IsNegativeMatcher::describeFailure(Description* description) {
+void IsNegativeMatcher::describeMismatch(Description* description) {
     description->append("a non-negative number");
 }
 
-void IsEvenMatcher::describeExpectation(Description* description) {
+void IsEvenMatcher::describe(Description* description) {
     description->append("an even number");
 }
 
-void IsEvenMatcher::describeFailure(Description* description) {
+void IsEvenMatcher::describeMismatch(Description* description) {
     description->append("an odd number");
 }
 
-void IsOddMatcher::describeExpectation(Description* description) {
+void IsOddMatcher::describe(Description* description) {
     description->append("an odd number");
 }
 
-void IsOddMatcher::describeFailure(Description* description) {
+void IsOddMatcher::describeMismatch(Description* description) {
     description->append("an even number");
 }
 
-void IsZeroMatcher::describeExpectation(Description* description) {
+void IsZeroMatcher::describe(Description* description) {
     description->append("zero");
 }
 
-void IsZeroMatcher::describeFailure(Description* description) {
+void IsZeroMatcher::describeMismatch(Description* description) {
     description->append("not zero");
 }
 

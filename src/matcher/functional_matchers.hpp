@@ -13,9 +13,9 @@ class ThrowsAnythingMatcher: public Matcher<std::function<void()>> {
 public:
     bool matches(const std::function<void()>& func) override;
 
-    void describeExpectation(Description* description) override;
+    void describe(Description* description) override;
 
-    void describeFailure(Description* description) override;
+    void describeMismatch(Description* description) override;
 };
 
 template<class E>
@@ -48,11 +48,11 @@ public:
         }
     }
 
-    void describeExpectation(Description* description) override {
+    void describe(Description* description) override {
         description->append("a function that throws ", getErrorName());
     }
 
-    void describeFailure(Description* description) override {
+    void describeMismatch(Description* description) override {
         if (failureType == 1) {
             description->append("a function that did not throw.");
         }

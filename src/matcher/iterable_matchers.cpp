@@ -3,19 +3,19 @@
 
 namespace matcher {
 
-void IsEmptyMatcher::describeExpectation(Description* description) {
+void IsEmptyMatcher::describe(Description* description) {
     description->append("empty iterable");
 }
 
-void IsEmptyMatcher::describeFailure(Description* description) {
+void IsEmptyMatcher::describeMismatch(Description* description) {
     description->append("non-empty iterable");
 }
 
-void IsNotEmptyMatcher::describeExpectation(Description* description) {
+void IsNotEmptyMatcher::describe(Description* description) {
     description->append("non-empty iterable");
 }
 
-void IsNotEmptyMatcher::describeFailure(Description* description) {
+void IsNotEmptyMatcher::describeMismatch(Description* description) {
     description->append("empty iterable");
 }
 
