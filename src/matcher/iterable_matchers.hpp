@@ -5,7 +5,7 @@
 
 namespace matcher {
 
-class IsEmptyMatcher: public BaseMatcher {
+class IsEmptyMatcher: public Matcher {
 public:
     template<class T>
     bool matches(const T& object) {
@@ -17,7 +17,7 @@ public:
     void describeMismatch(Description* description) override;
 };
 
-class IsNotEmptyMatcher: public BaseMatcher {
+class IsNotEmptyMatcher: public Matcher {
 public:
     template<class T>
     bool matches(const T& object) {
@@ -30,7 +30,7 @@ public:
 };
 
 template<class SizeMatcher, IS_MATCHER(SizeMatcher)>
-class IterableSizeMatcher: public BaseMatcher {
+class IterableSizeMatcher: public Matcher {
 public:
     explicit IterableSizeMatcher(SizeMatcher* sizeMatcher):
             sizeMatcher(sizeMatcher) {}
@@ -54,7 +54,7 @@ private:
 };
 
 template<class ElementMatcher, IS_MATCHER(ElementMatcher)>
-class IterableEachMatcher: public BaseMatcher {
+class IterableEachMatcher: public Matcher {
 public:
     explicit IterableEachMatcher(ElementMatcher* elementMatcher):
             elementMatcher(elementMatcher) {}
@@ -91,7 +91,7 @@ private:
 };
 
 template<class ElementMatcher, IS_MATCHER(ElementMatcher)>
-class IterableAnyMatcher: public BaseMatcher {
+class IterableAnyMatcher: public Matcher {
 public:
     explicit IterableAnyMatcher(ElementMatcher* elementMatcher):
             elementMatcher(elementMatcher) {}

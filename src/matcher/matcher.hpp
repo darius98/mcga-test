@@ -14,7 +14,7 @@ namespace matcher {
 /// preferring to follow the interface where both `matches` and `describe` are
 /// template methods, in which case it is not possible to make a pure-virtual
 /// interface.
-class BaseMatcher {
+class Matcher {
 public:
     static void cleanupMatchersCreatedDuringTests();
 
@@ -35,6 +35,6 @@ private:
 /// Macro for checking if template argument is a matcher-like type.
 #define IS_MATCHER(cls)                                                        \
     class=typename std::enable_if<                                             \
-            std::is_base_of<matcher::BaseMatcher, cls>::value, void>::type
+            std::is_base_of<matcher::Matcher, cls>::value, void>::type
 
 #endif

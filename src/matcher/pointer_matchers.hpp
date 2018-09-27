@@ -5,7 +5,7 @@
 
 namespace matcher {
 
-class IsNullptrMatcher: public BaseMatcher {
+class IsNullptrMatcher: public Matcher {
 public:
     bool matches(void*const& obj);
 
@@ -14,7 +14,7 @@ public:
     void describeMismatch(Description* description) override;
 };
 
-class IsNotNullptrMatcher: public BaseMatcher {
+class IsNotNullptrMatcher: public Matcher {
 public:
     bool matches(void*const& obj);
 

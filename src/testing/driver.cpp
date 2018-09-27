@@ -96,7 +96,7 @@ void TestingDriver::addTest(Test *currentTest,
         group->numTests += 1;
         group->numFailedTests += (currentTest->failure != nullptr);
     }
-    BaseMatcher::cleanupMatchersCreatedDuringTests();
+    Matcher::cleanupMatchersCreatedDuringTests();
 }
 
 void TestingDriver::addSetUp(const function<void()> &func) {

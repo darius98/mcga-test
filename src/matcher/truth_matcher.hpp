@@ -6,7 +6,7 @@
 
 namespace matcher {
 
-class IsTrueMatcher: public BaseMatcher {
+class IsTrueMatcher: public Matcher {
 public:
     bool matches(const bool& object);
 
@@ -15,7 +15,7 @@ public:
     void describeMismatch(Description* description) override;
 };
 
-class IsFalseMatcher: public BaseMatcher {
+class IsFalseMatcher: public Matcher {
 public:
     bool matches(const bool& object);
 

@@ -9,7 +9,7 @@
 
 namespace matcher {
 
-class ThrowsAnythingMatcher: public BaseMatcher {
+class ThrowsAnythingMatcher: public Matcher {
 public:
     bool matches(const std::function<void()>& func);
 
@@ -19,7 +19,7 @@ public:
 };
 
 template<class E>
-class ThrowsSpecificMatcher: public BaseMatcher {
+class ThrowsSpecificMatcher: public Matcher {
 private:
     static std::string getErrorName() {
         int stat;

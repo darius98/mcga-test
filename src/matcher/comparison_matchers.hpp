@@ -8,7 +8,7 @@
 namespace matcher {
 
 template<class T>
-class ComparisonMatcher: public BaseMatcher {
+class ComparisonMatcher: public Matcher {
 public:
     typedef std::function<bool(const T&, const T&)> Comparator;
 

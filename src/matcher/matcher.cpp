@@ -7,7 +7,7 @@ using namespace std;
 
 namespace matcher {
 
-void* BaseMatcher::operator new(size_t size) noexcept {
+void* Matcher::operator new(size_t size) noexcept {
     void* p = malloc(size);
     if (isDuringTest()) {
         matchersAllocatedDuringTests.insert(p);
@@ -15,18 +15,18 @@ void* BaseMatcher::operator new(size_t size) noexcept {
     return p;
 }
 
-void BaseMatcher::operator delete(void* obj) noexcept {
+void Matcher::operator delete(void* obj) noexcept {
     matchersAllocatedDuringTests.erase(obj);
     free(obj);
 }
 
-void BaseMatcher::cleanupMatchersCreatedDuringTests() {
+void Matcher::cleanupMatchersCreatedDuringTests() {
     for (void* obj: matchersAllocatedDuringTests) {
         free(obj);
     }
     matchersAllocatedDuringTests.clear();
 }
 
-set<void*> BaseMatcher::matchersAllocatedDuringTests;
+set<void*> Matcher::matchersAllocatedDuringTests;
 
 }

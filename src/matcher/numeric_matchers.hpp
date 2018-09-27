@@ -7,7 +7,7 @@
 
 namespace matcher {
 
-class IsPositiveMatcher: public BaseMatcher {
+class IsPositiveMatcher: public Matcher {
 public:
     template<class T>
     bool matches(const T& object) {
@@ -19,7 +19,7 @@ public:
     void describeMismatch(Description* description) override;
 };
 
-class IsNegativeMatcher: public BaseMatcher {
+class IsNegativeMatcher: public Matcher {
 public:
     template<class T>
     bool matches(const T& object) {
@@ -31,7 +31,7 @@ public:
     void describeMismatch(Description* description) override;
 };
 
-class IsEvenMatcher: public BaseMatcher {
+class IsEvenMatcher: public Matcher {
 public:
     template<class T>
     bool matches(const T& object) {
@@ -43,7 +43,7 @@ public:
     void describeMismatch(Description* description) override;
 };
 
-class IsOddMatcher: public BaseMatcher {
+class IsOddMatcher: public Matcher {
 public:
     template<class T>
     bool matches(const T& object) {
@@ -55,7 +55,7 @@ public:
     void describeMismatch(Description* description) override;
 };
 
-class IsZeroMatcher: public BaseMatcher {
+class IsZeroMatcher: public Matcher {
 public:
     template<class T>
     bool matches(const T& object) {
@@ -68,7 +68,7 @@ public:
 };
 
 template<class T>
-class IsAlmostEqualMatcher: public BaseMatcher {
+class IsAlmostEqualMatcher: public Matcher {
 public:
     explicit IsAlmostEqualMatcher(const T& target, const double& eps):
             target(target), eps(eps) {}
