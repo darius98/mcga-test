@@ -9,5 +9,4 @@ file(GLOB AllSrc ${MatchersSrc} ${TestingSrc} ${UtilsSrc})
 
 include_directories(.)
 
-add_executable(MatcherConcept concept/expect.cpp runtime_testing ${AllSrc})
-add_executable(TestingConcept concept/runtime_testing.cpp runtime_testing ${AllSrc})
+add_executable(StdVectorTests concept/std_vector_test.cpp runtime_testing ${AllSrc})
