@@ -30,13 +30,6 @@ private:
     static std::set<void*> matchersAllocatedDuringTests;
 };
 
-template<class T>
-class Matcher: public BaseMatcher {
-public:
-    /// Check if `object` matches this matcher.
-    virtual bool matches(const T& object) = 0;
-};
-
 } // namespace matcher
 
 /// Macro for checking if template argument is a matcher-like type.

@@ -5,18 +5,18 @@
 
 namespace matcher {
 
-class IsNullptrMatcher: public Matcher<void*> {
+class IsNullptrMatcher: public BaseMatcher {
 public:
-    bool matches(void*const& obj) override;
+    bool matches(void*const& obj);
 
     void describe(Description* description) override;
 
     void describeMismatch(Description* description) override;
 };
 
-class IsNotNullptrMatcher: public Matcher<void*> {
+class IsNotNullptrMatcher: public BaseMatcher {
 public:
-    bool matches(void*const& obj) override;
+    bool matches(void*const& obj);
 
     void describe(Description* description) override;
 

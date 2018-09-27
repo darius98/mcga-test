@@ -1,5 +1,5 @@
-#ifndef RUNTIME_TESTING_MATCHER_COMPARISON_MATCHER_H_
-#define RUNTIME_TESTING_MATCHER_COMPARISON_MATCHER_H_
+#ifndef RUNTIME_TESTING_MATCHER_COMPARISON_MATCHERS_H_
+#define RUNTIME_TESTING_MATCHER_COMPARISON_MATCHERS_H_
 
 #include <functional>
 
@@ -8,7 +8,7 @@
 namespace matcher {
 
 template<class T>
-class ComparisonMatcher : public Matcher<T> {
+class ComparisonMatcher: public BaseMatcher {
 public:
     typedef std::function<bool(const T&, const T&)> Comparator;
 
@@ -17,20 +17,16 @@ public:
                       const char* expectation) :
             target(target), comparator(comparator), expectation(expectation) {}
 
-    bool matches(const T& object) override {
+    bool matches(const T& object) {
         return comparator(object, target);
     }
 
     void describe(Description* description) override {
-        description->append(
-            "an object that is ", expectation, "'", target, "'"
-        );
+        description->append(expectation, "'", target, "'");
     }
 
     void describeMismatch(Description* description) override {
-        description->append(
-            "an object that is not ", expectation, "'", target, "'"
-        );
+        description->append("not ", expectation, "'", target, "'");
     }
 private:
     Comparator comparator;

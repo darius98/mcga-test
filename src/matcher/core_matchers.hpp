@@ -3,7 +3,7 @@
 
 #include <set>
 
-#include "comparison_matcher.hpp"
+#include "comparison_matchers.hpp"
 #include "composite_matchers.hpp"
 #include "functional_matchers.hpp"
 #include "iterable_matchers.hpp"
@@ -19,40 +19,40 @@ extern IsTrueMatcher* isTrue;
 extern IsFalseMatcher* isFalse;
 
 template<class T>
-Matcher<T>* isEqualTo(const T& object) {
+ComparisonMatcher<T>* isEqualTo(const T& object) {
     return new ComparisonMatcher<T>(object, std::equal_to<T>(), "");
 }
 
 template<class T>
-Matcher<T>* isIdenticalTo(const T& object) {
+ComparisonMatcher<T>* isIdenticalTo(const T& object) {
     return new ComparisonMatcher<T>(object, [](const T& a, const T& b) -> bool {
         return &a == &b;
     }, "variable at address ");
 }
 
 template<class T>
-Matcher<T>* isLessThan(const T &object) {
+ComparisonMatcher<T>* isLessThan(const T &object) {
     return new ComparisonMatcher<T>(
             object, std::less<T>(), "less than "
     );
 }
 
 template<class T>
-Matcher<T>* isLessThanOrEqualTo(const T &object) {
+ComparisonMatcher<T>* isLessThanOrEqualTo(const T &object) {
     return new ComparisonMatcher<T>(
             object, std::less_equal<T>(), "less than or equal to "
     );
 }
 
 template<class T>
-Matcher<T>* isGreaterThan(const T &object) {
+ComparisonMatcher<T>* isGreaterThan(const T &object) {
     return new ComparisonMatcher<T>(
             object, std::greater<T>(), "greater than "
     );
 }
 
 template<class T>
-Matcher<T>* isGreaterThanOrEqualTo(const T &object) {
+ComparisonMatcher<T>* isGreaterThanOrEqualTo(const T &object) {
     return new ComparisonMatcher<T>(
             object, std::greater_equal<T>(), "greater than or equal to "
     );
@@ -68,8 +68,8 @@ IterableSizeMatcher<SizeMatcher>* hasSize(SizeMatcher* m) {
 }
 
 template<class T>
-IterableSizeMatcher<Matcher<T>>* hasSize(const T& object) {
-    return new IterableSizeMatcher<Matcher<T>>(isEqualTo(object));
+IterableSizeMatcher<ComparisonMatcher<T>>* hasSize(const T& object) {
+    return new IterableSizeMatcher<ComparisonMatcher<T>>(isEqualTo(object));
 }
 
 template<class ElementMatcher, IS_MATCHER(ElementMatcher)>
@@ -78,8 +78,8 @@ IterableEachMatcher<ElementMatcher>* eachElement(ElementMatcher *m) {
 }
 
 template<class T>
-IterableEachMatcher<Matcher<T>>* eachElement(const T &object) {
-    return new IterableEachMatcher<Matcher<T>>(isEqualTo(object));
+IterableEachMatcher<ComparisonMatcher<T>>* eachElement(const T &object) {
+    return new IterableEachMatcher<ComparisonMatcher<T>>(isEqualTo(object));
 }
 
 template<class ElementMatcher, IS_MATCHER(ElementMatcher)>
@@ -88,8 +88,8 @@ IterableAnyMatcher<ElementMatcher>* anyElement(ElementMatcher *m) {
 }
 
 template<class T>
-IterableAnyMatcher<Matcher<T>>* anyElement(const T &object) {
-    return new IterableAnyMatcher<Matcher<T>>(isEqualTo(object));
+IterableAnyMatcher<ComparisonMatcher<T>>* anyElement(const T &object) {
+    return new IterableAnyMatcher<ComparisonMatcher<T>>(isEqualTo(object));
 }
 
 template<class M1, class M2, IS_MATCHER(M1), IS_MATCHER(M2)>
@@ -102,9 +102,9 @@ OrMatcher<M1, M2>* either(M1* m1, M2* m2) {
     return new OrMatcher<M1, M2>(m1, m2);
 }
 
-template<class Matcher, IS_MATCHER(Matcher)>
-NotMatcher<Matcher>* isNot(Matcher* matcher) {
-    return new NotMatcher<Matcher>(matcher);
+template<class M, IS_MATCHER(M)>
+NotMatcher<M>* isNot(M* matcher) {
+    return new NotMatcher<M>(matcher);
 }
 
 extern IsNullptrMatcher* isNull;

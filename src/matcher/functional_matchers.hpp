@@ -9,9 +9,9 @@
 
 namespace matcher {
 
-class ThrowsAnythingMatcher: public Matcher<std::function<void()>> {
+class ThrowsAnythingMatcher: public BaseMatcher {
 public:
-    bool matches(const std::function<void()>& func) override;
+    bool matches(const std::function<void()>& func);
 
     void describe(Description* description) override;
 
@@ -19,7 +19,7 @@ public:
 };
 
 template<class E>
-class ThrowsSpecificMatcher: public Matcher<std::function<void()>> {
+class ThrowsSpecificMatcher: public BaseMatcher {
 private:
     static std::string getErrorName() {
         int stat;
@@ -34,7 +34,7 @@ private:
         return rawName;
     }
 public:
-    bool matches(const std::function<void()>& func) override {
+    bool matches(const std::function<void()>& func) {
         try {
             func();
             failureType = 1;

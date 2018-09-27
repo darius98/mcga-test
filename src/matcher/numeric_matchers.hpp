@@ -68,12 +68,12 @@ public:
 };
 
 template<class T>
-class IsAlmostEqualMatcher: public Matcher<T> {
+class IsAlmostEqualMatcher: public BaseMatcher {
 public:
     explicit IsAlmostEqualMatcher(const T& target, const double& eps):
             target(target), eps(eps) {}
 
-    bool matches(const T& object) override {
+    bool matches(const T& object) {
         return fabs(object - target) < eps;
     }
 
