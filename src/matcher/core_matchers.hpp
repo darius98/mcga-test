@@ -9,7 +9,6 @@
 #include "iterable_matchers.hpp"
 #include "numeric_matchers.hpp"
 #include "pointer_matchers.hpp"
-#include "size_matchers.hpp"
 #include "truth_matcher.hpp"
 
 

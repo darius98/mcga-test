@@ -18,26 +18,18 @@ public:
             target(target), comparator(comparator), expectation(expectation) {}
 
     bool matches(const T& object) override {
-        return this->comparator(object, this->target);
+        return comparator(object, target);
     }
 
     void describeExpectation(Description* description) override {
         description->append(
-            "an object that is ",
-            this->expectation,
-            "'",
-            this->target,
-            "'"
+            "an object that is ", expectation, "'", target, "'"
         );
     }
 
     void describeFailure(Description* description) override {
         description->append(
-            "an object that is not ",
-            this->expectation,
-            "'",
-            this->target,
-            "'"
+            "an object that is not ", expectation, "'", target, "'"
         );
     }
 private:

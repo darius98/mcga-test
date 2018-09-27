@@ -18,7 +18,7 @@ Description* Description::createForExpectation(
 }
 
 string Description::toString() const {
-    return this->stream.str();
+    return stream.str();
 }
 
 }

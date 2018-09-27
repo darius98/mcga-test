@@ -5,6 +5,54 @@
 
 namespace matcher {
 
+class IsEmptyMatcher: public BaseMatcher {
+public:
+    template<class T>
+    bool matches(const T& object) {
+        return object.empty();
+    }
+
+    void describeExpectation(Description* description) override;
+
+    void describeFailure(Description* description) override;
+};
+
+class IsNotEmptyMatcher: public BaseMatcher {
+public:
+    template<class T>
+    bool matches(const T& object) {
+        return !object.empty();
+    }
+
+    void describeExpectation(Description* description) override;
+
+    void describeFailure(Description* description) override;
+};
+
+template<class SizeMatcher, IS_MATCHER(SizeMatcher)>
+class IterableSizeMatcher: public BaseMatcher {
+public:
+    explicit IterableSizeMatcher(SizeMatcher* sizeMatcher):
+            sizeMatcher(sizeMatcher) {}
+
+    template<class T>
+    bool matches(const T& object) {
+        return sizeMatcher->matches(object.size());
+    }
+
+    void describeExpectation(Description* description) override {
+        description->append("iterable of size ");
+        sizeMatcher->describeExpectation(description);
+    }
+
+    void describeFailure(Description* description) override {
+        description->append("iterable of size ");
+        sizeMatcher->describeFailure(description);
+    }
+private:
+    SizeMatcher* sizeMatcher;
+};
+
 template<class ElementMatcher, IS_MATCHER(ElementMatcher)>
 class IterableEachMatcher: public BaseMatcher {
 public:
@@ -13,13 +61,11 @@ public:
 
     template<class T>
     bool matches(const T& iterable) {
-        this->index = -1;
+        index = -1;
         for (const auto& obj: iterable) {
-            this->index += 1;
-            if (!this->elementMatcher->matches(obj)) {
-                this->elementMatcher->describeFailure(
-                    &this->elementFailureDescription
-                );
+            index += 1;
+            if (!elementMatcher->matches(obj)) {
+                elementMatcher->describeFailure(&elementFailureDescription);
                 return false;
             }
         }
@@ -28,15 +74,13 @@ public:
 
     void describeExpectation(Description* description) override {
         description->append("an iterable where each element is ");
-        this->elementMatcher->describeExpectation(description);
+        elementMatcher->describeExpectation(description);
     }
 
     void describeFailure(Description* description) override {
         description->append(
-            "an iterable where at index ",
-            this->index,
-            " the element is ",
-            this->elementFailureDescription.toString()
+            "an iterable where at index ", index, " the element is ",
+            elementFailureDescription.toString()
         );
     }
 
@@ -54,10 +98,10 @@ public:
 
     template<class T>
     bool matches(const T& collection) {
-        this->index = -1;
+        index = -1;
         for (const auto& obj: collection) {
-            this->index += 1;
-            if (this->elementMatcher->matches(obj)) {
+            index += 1;
+            if (elementMatcher->matches(obj)) {
                 return true;
             }
         }
@@ -65,15 +109,13 @@ public:
     }
 
     void describeExpectation(Description* description) override {
-        description->append(
-            "an iterable where at least one element is "
-        );
-        this->elementMatcher->describeExpectation(description);
+        description->append("an iterable where at least one element is ");
+        elementMatcher->describeExpectation(description);
     }
 
     void describeFailure(Description* description) override {
         description->append("an iterable where no element is ");
-        this->elementMatcher->describeExpectation(description);
+        elementMatcher->describeExpectation(description);
     }
 private:
     ElementMatcher* elementMatcher;

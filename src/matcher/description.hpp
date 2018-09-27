@@ -18,14 +18,14 @@ public:
 
     template<class T>
     Description* append(T obj) {
-        runtime_testing::utils::Streamer<T>::send(this->stream, obj);
+        runtime_testing::utils::Streamer<T>::send(stream, obj);
         return this;
     }
 
     template<class T, class... Args>
     Description* append(T obj, const Args... args) {
-        this->append(obj);
-        this->append(args...);
+        append(obj);
+        append(args...);
         return this;
     }
 

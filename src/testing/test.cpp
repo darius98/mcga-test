@@ -7,21 +7,21 @@ namespace runtime_testing {
 Test::Test(const std::string &description): description(description) {}
 
 Test::~Test() {
-    delete this->failure;
+    delete failure;
 }
 
 void Test::generateTestReport(std::ostream &report, std::size_t spaces) {
     string prefix(spaces + 2, ' ');
     report << "{\n";
-    report << prefix << R"("description": ")" << this->description << "\",\n";
+    report << prefix << R"("description": ")" << description << "\",\n";
     report << prefix
            << R"("passed": )"
-           << (this->failure == nullptr ? "true" : "false");
-    if (this->failure != nullptr) {
+           << (failure == nullptr ? "true" : "false");
+    if (failure != nullptr) {
         report << ",\n";
         report << prefix
                << R"("failureMessage": ")"
-               << this->failure->getMessage()
+               << failure->getMessage()
                << "\"\n";
     } else {
         report << "\n";

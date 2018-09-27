@@ -13,25 +13,22 @@ public:
 
     template<class T>
     bool matches(const T& obj) {
-        this->m1Matches = this->m1->matches(obj);
-        if (!this->m1Matches) {
-            return false;
-        }
-        this->m2Matches = this->m2->matches(obj);
-        return this->m2Matches;
+        m1Matches = m1->matches(obj);
+        m2Matches = m2->matches(obj);
+        return m1Matches && m2Matches;
     }
 
     void describeExpectation(Description* description) override {
-        this->m1->describeExpectation(description);
+        m1->describeExpectation(description);
         description->append(" and ");
-        this->m2->describeExpectation(description);
+        m2->describeExpectation(description);
     }
 
     void describeFailure(Description* description) override {
-        if (this->m1Matches) {
-            this->m2->describeFailure(description);
+        if (m1Matches) {
+            m2->describeFailure(description);
         } else {
-            this->m1->describeFailure(description);
+            m1->describeFailure(description);
         }
     }
 private:
@@ -49,24 +46,21 @@ public:
 
     template<class T>
     bool matches(const T& obj) {
-        this->m1Matches = this->m1->matches(obj);
-        if (this->m1Matches) {
-            return true;
-        }
-        this->m2Matches = this->m2->matches(obj);
-        return this->m2Matches;
+        m1Matches = m1->matches(obj);
+        m2Matches = m2->matches(obj);
+        return m1Matches || m2Matches;
     }
 
     void describeExpectation(Description* description) override {
-        this->m1->describeExpectation(description);
+        m1->describeExpectation(description);
         description->append(" or ");
-        this->m2->describeExpectation(description);
+        m2->describeExpectation(description);
     }
 
     void describeFailure(Description* description) override {
-        this->m1->describeFailure(description);
+        m1->describeFailure(description);
         description->append(" and ");
-        this->m2->describeFailure(description);
+        m2->describeFailure(description);
     }
 private:
     M1* m1;
@@ -76,26 +70,26 @@ private:
     bool m2Matches = false;
 };
 
-template<class Matcher, IS_MATCHER(Matcher)>
+template<class M, IS_MATCHER(M)>
 class NotMatcher: public BaseMatcher {
 public:
-    explicit NotMatcher(Matcher* matcher): matcher(matcher) {}
+    explicit NotMatcher(M* _matcher): matcher(_matcher) {}
 
     template<class T>
     bool matches(const T& obj) {
-        return !this->matcher->matches(obj);
+        return !matcher->matches(obj);
     }
 
     void describeExpectation(Description* description) override {
         description->append("not ");
-        this->matcher->describeExpectation(description);
+        matcher->describeExpectation(description);
     }
 
     void describeFailure(Description* description) override {
-        this->matcher->describeExpectation(description);
+        matcher->describeExpectation(description);
     }
 private:
-    Matcher* matcher;
+    M* matcher;
 };
 
 }

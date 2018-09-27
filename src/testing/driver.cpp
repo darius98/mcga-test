@@ -6,95 +6,93 @@ using namespace std;
 namespace runtime_testing {
 
 TestingDriver::TestingDriver(ostream* logger): logger(logger) {
-    this->groupStack = {new Group()};
-    this->state.push(DriverState::TOP_LEVEL);
+    groupStack = {new Group()};
+    state.push(DriverState::TOP_LEVEL);
 }
 
 TestingDriver::~TestingDriver() {
-    delete this->groupStack[0];
+    delete groupStack[0];
 }
 
 bool TestingDriver::isDuringTest() {
-    return this->state.top() == DriverState::TEST;
+    return state.top() == DriverState::TEST;
 }
 
 void TestingDriver::validateStartGroup() {
-    this->validate("group");
+    validate("group");
 }
 
 void TestingDriver::validateStartTest() {
-    this->validate("test");
+    validate("test");
 }
 
 void TestingDriver::validateStartSetUp() {
-    this->validate("setUp");
-    auto lastGroup = this->groupStack.back();
+    validate("setUp");
+    auto lastGroup = groupStack.back();
     if (lastGroup->hasSetUp) {
         throw runtime_error(
-            string("Group '") + lastGroup->description
-            + "' already has a setUp!"
+            "Group '" + lastGroup->description + "' already has a setUp!"
         );
     }
 }
 
 void TestingDriver::validateStartTearDown() {
-    this->validate("tearDown");
-    auto lastGroup = this->groupStack.back();
+    validate("tearDown");
+    auto lastGroup = groupStack.back();
     if (lastGroup->hasTearDown) {
         throw runtime_error(
-            string("Group '") + lastGroup->description
-            + "' already has a tearDown!"
+            "Group '" + lastGroup->description + "' already has a tearDown!"
         );
     }
 }
 
 void TestingDriver::addGroup(Group* currentGroup,
                              const function<void()> &func) {
-    this->validateStartGroup();
-    this->groupStack.back()->subGroups.push_back(currentGroup);
-    this->groupStack.push_back(currentGroup);
-    this->state.push(DriverState::GROUP);
+    validateStartGroup();
+    groupStack.back()->subGroups.push_back(currentGroup);
+    groupStack.push_back(currentGroup);
+    state.push(DriverState::GROUP);
     bool failed;
     try {
         func();
         failed = false;
     } catch(const exception& e) {
         failed = true;
-        this->log("\nAn exception was thrown inside group '",
-                  currentGroup->description,
-                  "': ",
-                  e.what());
+        log("\nAn exception was thrown inside group '",
+            currentGroup->description,
+            "': ",
+            e.what());
     } catch(...) {
         failed = true;
-        this->log("\nA non-exception object was thrown inside group'",
-                  currentGroup->description,
-                  "'");
+        log("\nA non-exception object was thrown inside group'",
+            currentGroup->description,
+            "'");
     }
     if (failed) {
-        this->log(", outside of any test/setUp/tearDown.",
-                  "\n\n", string(105, '*'), "\n",
-                  "* Try to place all your testing code inside setUps, "
-                  "tearDowns or tests to ensure each test is executed. *",
-                  "\n", string(105, '*'), "\n\n");
+        log(", outside of any test/setUp/tearDown.",
+            "\n\n", string(105, '*'), "\n",
+            "* Try to place all your testing code inside setUps, "
+            "tearDowns or tests to ensure each test is executed. *",
+            "\n", string(105, '*'), "\n\n");
     }
-    this->state.pop();
-    this->groupStack.pop_back();
+    state.pop();
+    groupStack.pop_back();
 }
 
 void TestingDriver::addTest(Test *currentTest,
                             const function<void()> &func) {
-    this->validateStartTest();
-    this->groupStack.back()->tests.push_back(currentTest);
-    this->log(this->getTestFullName(currentTest->description), ": ");
-    this->executeSetUps(currentTest);
-    this->executeTest(currentTest, func);
-    this->executeTearDowns(currentTest);
+    validateStartTest();
+    groupStack.back()->tests.push_back(currentTest);
+    log(getTestFullName(currentTest->description), ": ");
+    executeSetUps(currentTest);
+    executeTest(currentTest, func);
+    executeTearDowns(currentTest);
     if (currentTest->failure) {
-        this->log("FAILED\n\t", currentTest->failure->getMessage(), "\n");
+        log("FAILED\n\t", currentTest->failure->getMessage(), "\n");
     } else {
-        this->log("PASSED\n");
+        log("PASSED\n");
     }
-    for (Group* group: this->groupStack) {
+    for (Group* group: groupStack) {
         group->numTests += 1;
         group->numFailedTests += (currentTest->failure != nullptr);
     }
@@ -102,43 +100,43 @@ void TestingDriver::addTest(Test *currentTest,
 }
 
 void TestingDriver::addSetUp(const function<void()> &func) {
-    this->validateStartSetUp();
-    auto lastGroup = this->groupStack.back();
+    validateStartSetUp();
+    auto lastGroup = groupStack.back();
     lastGroup->hasSetUp = true;
     lastGroup->setUpFunc = func;
 }
 
 void TestingDriver::addTearDown(const function<void()> &func) {
-    this->validateStartTearDown();
-    auto lastGroup = this->groupStack.back();
+    validateStartTearDown();
+    auto lastGroup = groupStack.back();
     lastGroup->hasTearDown = true;
     lastGroup->tearDownFunc = func;
 }
 
 int TestingDriver::generateTestReport(ostream& report) {
-    return this->groupStack[0]->generateTestReport(report, 0u);
+    return groupStack[0]->generateTestReport(report, 0u);
 }
 
 int TestingDriver::getNumFailedTests() {
-    return this->groupStack[0]->numFailedTests;
+    return groupStack[0]->numFailedTests;
 }
 
 void TestingDriver::validate(const string& methodName) {
-    if (this->state.top() == DriverState::TEST) {
+    if (state.top() == DriverState::TEST) {
         throw runtime_error("Cannot call " + methodName + " within test!");
     }
-    if (this->state.top() == DriverState::SET_UP) {
+    if (state.top() == DriverState::SET_UP) {
         throw runtime_error("Cannot call " + methodName + " within setUp!");
     }
-    if (this->state.top() == DriverState::TEAR_DOWN) {
+    if (state.top() == DriverState::TEAR_DOWN) {
         throw runtime_error("Cannot call " + methodName + " within tearDown!");
     }
 }
 
 string TestingDriver::getTestFullName(const string& testDescription) const {
     string groupStackFullName;
-    for (Group* group: this->groupStack) {
-        if (group != this->groupStack[0]) {
+    for (Group* group: groupStack) {
+        if (group != groupStack[0]) {
             if (!groupStackFullName.empty()) {
                 groupStackFullName += "::";
             }
@@ -152,8 +150,8 @@ string TestingDriver::getTestFullName(const string& testDescription) const {
 }
 
 void TestingDriver::executeSetUps(Test* currentTest) {
-    this->state.push(DriverState::SET_UP);
-    for (Group* group: this->groupStack) {
+    state.push(DriverState::SET_UP);
+    for (Group* group: groupStack) {
         if (group->hasSetUp) {
             bool failed;
             string failMessage;
@@ -175,12 +173,12 @@ void TestingDriver::executeSetUps(Test* currentTest) {
             }
         }
     }
-    this->state.pop();
+    state.pop();
 }
 
 void TestingDriver::executeTest(Test* currentTest,
                                 const function<void()>& func) {
-    this->state.push(DriverState::TEST);
+    state.push(DriverState::TEST);
     try {
         func();
     } catch(const ExpectationFailed& failure) {
@@ -200,13 +198,13 @@ void TestingDriver::executeTest(Test* currentTest,
             );
         }
     }
-    this->state.pop();
+    state.pop();
 }
 
 void TestingDriver::executeTearDowns(Test* currentTest) {
-    this->state.push(DriverState::TEAR_DOWN);
-    for (int i = (int)this->groupStack.size() - 1; i >= 0; -- i) {
-        Group* group = this->groupStack[i];
+    state.push(DriverState::TEAR_DOWN);
+    for (int i = (int)groupStack.size() - 1; i >= 0; -- i) {
+        Group* group = groupStack[i];
         if (group->hasTearDown) {
             bool failed;
             string failMessage;
@@ -228,7 +226,7 @@ void TestingDriver::executeTearDowns(Test* currentTest) {
             }
         }
     }
-    this->state.pop();
+    state.pop();
 }
 
 }

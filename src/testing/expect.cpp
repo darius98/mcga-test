@@ -12,7 +12,7 @@ ExpectationFailed::ExpectationFailed(const ExpectationFailed& other) noexcept:
         ExpectationFailed(other.getMessage()) {}
 
 string ExpectationFailed::getMessage() const {
-    return this->what();
+    return what();
 }
 
 void checkDuringTest(const char* fileName, const int& lineNumber) {

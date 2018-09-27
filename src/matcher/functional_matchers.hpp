@@ -37,19 +37,19 @@ public:
     bool matches(const std::function<void()>& func) override {
         try {
             func();
-            this->failureType = 1;
+            failureType = 1;
             return false;
         } catch(const E& exception) {
-            this->failureType = 0;
+            failureType = 0;
             return true;
         } catch(...) {
-            this->failureType = 2;
+            failureType = 2;
             return false;
         }
     }
 
     void describeExpectation(Description* description) override {
-        description->append("a function that throws ", this->getErrorName());
+        description->append("a function that throws ", getErrorName());
     }
 
     void describeFailure(Description* description) override {

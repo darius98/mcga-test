@@ -57,15 +57,15 @@ private:
 
     template<class T>
     void log(const T& object) {
-        if (this->logger != nullptr) {
-            (*this->logger) << object;
+        if (logger != nullptr) {
+            (*logger) << object;
         }
     }
 
     template<class T, class... Args>
     void log(const T& object, const Args... args) {
-        this->log(object);
-        this->log(args...);
+        log(object);
+        log(args...);
     };
 
     std::vector<Group*> groupStack;

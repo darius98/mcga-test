@@ -10,21 +10,21 @@ namespace matcher {
 void* BaseMatcher::operator new(size_t size) noexcept {
     void* p = malloc(size);
     if (isDuringTest()) {
-        BaseMatcher::matchersAllocatedDuringTests.insert(p);
+        matchersAllocatedDuringTests.insert(p);
     }
     return p;
 }
 
 void BaseMatcher::operator delete(void* obj) noexcept {
-    BaseMatcher::matchersAllocatedDuringTests.erase(obj);
+    matchersAllocatedDuringTests.erase(obj);
     free(obj);
 }
 
 void BaseMatcher::cleanupMatchersCreatedDuringTests() {
-    for (void* obj: BaseMatcher::matchersAllocatedDuringTests) {
+    for (void* obj: matchersAllocatedDuringTests) {
         free(obj);
     }
-    BaseMatcher::matchersAllocatedDuringTests.clear();
+    matchersAllocatedDuringTests.clear();
 }
 
 set<void*> BaseMatcher::matchersAllocatedDuringTests;
