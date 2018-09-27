@@ -1,6 +1,8 @@
 #ifndef RUNTIME_TESTING_MATCHER_DESCRIPTION_H_
 #define RUNTIME_TESTING_MATCHER_DESCRIPTION_H_
 
+#include <cxxabi.h>
+
 #include <sstream>
 #include <string>
 
@@ -27,6 +29,20 @@ public:
         append(obj);
         append(args...);
         return this;
+    }
+
+    template<class T>
+    Description* appendType() {
+        int stat;
+        std::string rawName = typeid(T).name();
+        char* name = abi::__cxa_demangle(
+                rawName.c_str(), nullptr, nullptr, &stat
+        );
+        if(stat == 0) {
+            rawName = name;
+            free(name);
+        }
+        this->append(rawName);
     }
 
     std::string toString() const;

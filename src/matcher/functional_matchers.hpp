@@ -20,19 +20,6 @@ public:
 
 template<class E>
 class ThrowsSpecificMatcher: public Matcher {
-private:
-    static std::string getErrorName() {
-        int stat;
-        std::string rawName = typeid(E).name();
-        char* name = abi::__cxa_demangle(
-                rawName.c_str(), nullptr, nullptr, &stat
-        );
-        if(stat == 0) {
-            rawName = name;
-            free(name);
-        }
-        return rawName;
-    }
 public:
     bool matches(const std::function<void()>& func) {
         try {
@@ -49,7 +36,7 @@ public:
     }
 
     void describe(Description* description) override {
-        description->append("a function that throws ", getErrorName());
+        description->append("a function that throws ")->appendType<E>();
     }
 
     void describeMismatch(Description* description) override {

@@ -33,28 +33,28 @@ ComparisonMatcher<T>* isIdenticalTo(const T& object) {
 template<class T>
 ComparisonMatcher<T>* isLessThan(const T &object) {
     return new ComparisonMatcher<T>(
-            object, std::less<T>(), "less than "
+            object, std::less<T>(), "< "
     );
 }
 
 template<class T>
 ComparisonMatcher<T>* isLessThanOrEqualTo(const T &object) {
     return new ComparisonMatcher<T>(
-            object, std::less_equal<T>(), "less than or equal to "
+            object, std::less_equal<T>(), "<= "
     );
 }
 
 template<class T>
 ComparisonMatcher<T>* isGreaterThan(const T &object) {
     return new ComparisonMatcher<T>(
-            object, std::greater<T>(), "greater than "
+            object, std::greater<T>(), "> "
     );
 }
 
 template<class T>
 ComparisonMatcher<T>* isGreaterThanOrEqualTo(const T &object) {
     return new ComparisonMatcher<T>(
-            object, std::greater_equal<T>(), "greater than or equal to "
+            object, std::greater_equal<T>(), ">= "
     );
 }
 
