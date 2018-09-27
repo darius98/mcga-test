@@ -26,30 +26,6 @@ void checkDuringTest(const char* fileName, const int& lineNumber);
 
 void throwExpectationFailed(matcher::Description* description);
 
-/// Specialization for matcher::Matcher interface, for faster compile-time on
-/// basic matchers.
-template<class T>
-void _expectMatches(const T& object,
-                    matcher::Matcher<T>* matcher,
-                    const char* fileName="UNKNOWN_FILE",
-                    int lineNumber=0,
-                    const char* descriptionSuppression=nullptr) {
-    checkDuringTest(fileName, lineNumber);
-    if (matcher->matches(object)) {
-        return;
-    }
-    auto description = matcher::Description::createForExpectation(
-        fileName,
-        lineNumber,
-        descriptionSuppression
-    );
-    if (descriptionSuppression == nullptr) {
-        matcher->describe(description);
-        description->append(". Got '", object, "': ");
-        matcher->describeMismatch(description);
-    }
-    throwExpectationFailed(description);
-}
 
 /// Main function for expecting something during a test.
 template<class T, class PseudoMatcher, IS_MATCHER(PseudoMatcher)>
@@ -81,13 +57,13 @@ void _fail(const std::string& message,
 
 } // namespace runtime_testing
 
-#define expect(...)                                                            \
-    runtime_testing::_expectMatches(__VA_ARGS__,                               \
+#define expect(expr...)                                                        \
+    runtime_testing::_expectMatches(expr,                                      \
                                     isTrue, __FILENAME__, __LINE__,            \
-                                    #__VA_ARGS__ ", which is not true")
+                                    #expr ", which is not true")
 
-#define expectMatches(...) \
-    runtime_testing::_expectMatches(__VA_ARGS__, __FILENAME__, __LINE__)
+#define expectMatches(var_comma_matcher...)                                    \
+    runtime_testing::_expectMatches(var_comma_matcher, __FILENAME__, __LINE__)
 
 #define fail(...) \
     runtime_testing::_fail(__VA_ARGS__, __FILENAME__, __LINE__)

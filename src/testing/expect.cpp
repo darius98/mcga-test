@@ -18,8 +18,8 @@ string ExpectationFailed::getMessage() const {
 void checkDuringTest(const char* fileName, const int& lineNumber) {
     if (!isDuringTest()) {
         throw runtime_error(
-                string("'expect' can only be called inside tests! ") +
-                "(" + fileName + ":" + to_string(lineNumber) + ")"
+            string(fileName) + ":" + to_string(lineNumber) + ": "
+            "'expect' can only be called inside tests!"
         );
     }
 }

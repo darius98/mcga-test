@@ -41,12 +41,12 @@ public:
     }
 
     void describe(Description* description) override {
-        description->append("iterable of size ");
+        description->append("iterable where size is ");
         sizeMatcher->describe(description);
     }
 
     void describeMismatch(Description* description) override {
-        description->append("iterable of size ");
+        description->append("iterable where size is ");
         sizeMatcher->describeMismatch(description);
     }
 private:

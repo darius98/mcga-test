@@ -13,11 +13,11 @@ IsEmptyMatcher* isEmpty = new IsEmptyMatcher();
 
 IsNotEmptyMatcher* isNotEmpty = new IsNotEmptyMatcher();
 
-Matcher<void*>* isNull = new IsNullptrMatcher();
+IsNullptrMatcher* isNull = new IsNullptrMatcher();
 
-Matcher<void*>* isNotNull = new IsNotNullptrMatcher();
+IsNotNullptrMatcher* isNotNull = new IsNotNullptrMatcher();
 
-Matcher<function<void()>>* throws = new ThrowsAnythingMatcher();
+ThrowsAnythingMatcher* throws = new ThrowsAnythingMatcher();
 
 IsPositiveMatcher* isPositive = new IsPositiveMatcher();
 

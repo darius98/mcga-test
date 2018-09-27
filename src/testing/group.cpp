@@ -26,32 +26,36 @@ int Group::generateTestReport(ostream& report, size_t spaces) {
     }
     report << prefix << "\"numTests\": " << numTests << ",\n";
     report << prefix << "\"numFailedTests\": " << numFailedTests << ",\n";
-    report << prefix << "\"tests\": [";
-    for (size_t i = 0; i < tests.size(); ++ i) {
-        if (i == 0) {
+    if (!this->tests.empty()) {
+        report << prefix << "\"tests\": [";
+        for (size_t i = 0; i < tests.size(); ++ i) {
+            if (i == 0) {
+                report << "\n" << prefix;
+            }
+            report << "  ";
+            tests[i]->generateTestReport(report, spaces + 4);
+            if (i + 1 != tests.size()) {
+                report << ",";
+            }
             report << "\n" << prefix;
         }
-        report << "  ";
-        tests[i]->generateTestReport(report, spaces + 4);
-        if (i + 1 != tests.size()) {
-            report << ",";
-        }
-        report << "\n" << prefix;
+        report << "],\n";
     }
-    report << "],\n";
-    report << prefix << "\"subGroups\": [";
-    for (size_t i = 0; i < subGroups.size(); ++ i) {
-        if (i == 0) {
+    if (!this->subGroups.empty()) {
+        report << prefix << "\"subGroups\": [";
+        for (size_t i = 0; i < subGroups.size(); ++i) {
+            if (i == 0) {
+                report << "\n" << prefix;
+            }
+            report << "  ";
+            subGroups[i]->generateTestReport(report, spaces + 4);
+            if (i + 1 != subGroups.size()) {
+                report << ",";
+            }
             report << "\n" << prefix;
         }
-        report << "  ";
-        subGroups[i]->generateTestReport(report, spaces + 4);
-        if (i + 1 != subGroups.size()) {
-            report << ",";
-        }
-        report << "\n" << prefix;
+        report << "]\n";
     }
-    report << "]\n";
     report << string(spaces, ' ') << "}";
     return numFailedTests;
 }

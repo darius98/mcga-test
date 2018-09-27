@@ -107,14 +107,14 @@ NotMatcher<Matcher>* isNot(Matcher* matcher) {
     return new NotMatcher<Matcher>(matcher);
 }
 
-extern Matcher<void*>* isNull;
+extern IsNullptrMatcher* isNull;
 
-extern Matcher<void*>* isNotNull;
+extern IsNotNullptrMatcher* isNotNull;
 
-extern Matcher<std::function<void()>>* throws;
+extern ThrowsAnythingMatcher* throws;
 
 template<class E>
-Matcher<std::function<void()>>* throwsA() {
+ThrowsSpecificMatcher<E>* throwsA() {
     return new ThrowsSpecificMatcher<E>();
 }
 
@@ -129,7 +129,8 @@ extern IsOddMatcher* isOdd;
 extern IsZeroMatcher* isZero;
 
 template<class T>
-Matcher<T>* isAlmostEqualTo(const T& target, const double& eps=0.000001) {
+IsAlmostEqualMatcher<T>* isAlmostEqualTo(const T& target,
+                                         const double& eps=0.000001) {
     return new IsAlmostEqualMatcher<T>(target, eps);
 }
 
