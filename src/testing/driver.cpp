@@ -92,9 +92,9 @@ void TestingDriver::addTest(Test *currentTest,
     } else {
         log("PASSED\n");
     }
-    for (Group* group: groupStack) {
-        group->numTests += 1;
-        group->numFailedTests += (currentTest->failure != nullptr);
+    for (Group* g: groupStack) {
+        g->numTests += 1;
+        g->numFailedTests += (currentTest->failure != nullptr);
     }
     Matcher::cleanupMatchersCreatedDuringTests();
 }
@@ -135,12 +135,12 @@ void TestingDriver::validate(const string& methodName) {
 
 string TestingDriver::getTestFullName(const string& testDescription) const {
     string groupStackFullName;
-    for (Group* group: groupStack) {
-        if (group != groupStack[0]) {
+    for (Group* g: groupStack) {
+        if (g != groupStack[0]) {
             if (!groupStackFullName.empty()) {
                 groupStackFullName += "::";
             }
-            groupStackFullName += group->description;
+            groupStackFullName += g->description;
         }
     }
     if (!groupStackFullName.empty()) {
@@ -151,22 +151,22 @@ string TestingDriver::getTestFullName(const string& testDescription) const {
 
 void TestingDriver::executeSetUps(Test* currentTest) {
     state.push(DriverState::SET_UP);
-    for (Group* group: groupStack) {
-        if (group->hasSetUp) {
+    for (Group* g: groupStack) {
+        if (g->hasSetUp) {
             bool failed;
             string failMessage;
             try {
-                group->setUpFunc();
+                g->setUpFunc();
                 failed = false;
             } catch(const exception& e) {
                 failed = true;
                 failMessage = "An exception was thrown during the "
-                              "setUp of group '" + group->description
+                              "setUp of group '" + g->description
                               + "': " + e.what();
             } catch(...) {
                 failed = true;
                 failMessage = "A non-exception object was thrown during the "
-                              "setUp of group '" + group->description + "'.";
+                              "setUp of group '" + g->description + "'.";
             }
             if (failed && currentTest->failure == nullptr) {
                 currentTest->failure = new ExpectationFailed(failMessage);
@@ -204,22 +204,22 @@ void TestingDriver::executeTest(Test* currentTest,
 void TestingDriver::executeTearDowns(Test* currentTest) {
     state.push(DriverState::TEAR_DOWN);
     for (int i = (int)groupStack.size() - 1; i >= 0; -- i) {
-        Group* group = groupStack[i];
-        if (group->hasTearDown) {
+        Group* g = groupStack[i];
+        if (g->hasTearDown) {
             bool failed;
             string failMessage;
             try {
-                group->tearDownFunc();
+                g->tearDownFunc();
                 failed = false;
             } catch(const exception& e) {
                 failed = true;
                 failMessage = "An exception was thrown during the "
-                              "tearDown of group '" + group->description
+                              "tearDown of group '" + g->description
                               + "': " + e.what();
             } catch(...) {
                 failed = true;
                 failMessage = "A non-exception object was thrown during the "
-                              "tearDown of group '" + group->description + "'.";
+                              "tearDown of group '" + g->description + "'.";
             }
             if (failed && currentTest->failure == nullptr) {
                 currentTest->failure = new ExpectationFailed(failMessage);

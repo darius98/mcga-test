@@ -7,11 +7,11 @@ namespace runtime_testing {
 Group::Group(const std::string &description): description(description) {}
 
 Group::~Group() {
-    for (Test* test: tests) {
-        delete test;
+    for (Test* t: tests) {
+        delete t;
     }
-    for (Group* group: subGroups) {
-        delete group;
+    for (Group* g: subGroups) {
+        delete g;
     }
 }
 
