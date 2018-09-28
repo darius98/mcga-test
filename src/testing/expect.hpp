@@ -26,46 +26,56 @@ void checkDuringTest(const char* fileName, const int& lineNumber);
 
 void throwExpectationFailed(matcher::Description* description);
 
+/**
+ * Main assertion function.
+ */
+void __expect(const bool& expr,
+              const char* fileName="NO_FILENAME",
+              const int& lineNumber=0,
+              const std::string& exprStr=nullptr);
 
-/// Main function for expecting something during a test.
+/**
+ * Function to be used to force a test to fail. `expect` and `expectMatches` are
+ * preferred where possible.
+ *
+ * Has the same effect as __expect(false, fileName, lineNumber, message).
+ */
+void __fail(const std::string& message,
+            const char* fileName="NO_FILENAME",
+            const int& lineNumber=0);
+
+/**
+ * Main function for expecting something during a test.
+ */
 template<class T, class PseudoMatcher, IS_MATCHER(PseudoMatcher)>
-void _expectMatches(const T& object,
-                    PseudoMatcher* matcher,
-                    const char* fileName="NO_FILENAME",
-                    int lineNumber=0,
-                    const char* descriptionSuppression=nullptr) {
+void __expectMatches(const T& object,
+                     PseudoMatcher* matcher,
+                     const char* fileName="NO_FILENAME",
+                     const int& lineNumber=0) {
     checkDuringTest(fileName, lineNumber);
     if (matcher->matches(object)) {
         return;
     }
     auto description = matcher::Description::createForExpectation(
-        fileName,
-        lineNumber,
-        descriptionSuppression
+            fileName,
+            lineNumber,
+            ""
     );
-    if (descriptionSuppression == nullptr) {
-        matcher->describe(description);
-        description->append(". Got '", object, "': ");
-        matcher->describeMismatch(description);
-    }
+    matcher->describe(description);
+    description->append(". Got '", object, "': ");
+    matcher->describeMismatch(description);
     throwExpectationFailed(description);
 }
-
-void _fail(const std::string& message,
-           const char* fileName,
-           const int& lineNumber);
 
 } // namespace runtime_testing
 
 #define expect(expr...)                                                        \
-    runtime_testing::_expectMatches(expr,                                      \
-                                    isTrue, __FILENAME__, __LINE__,            \
-                                    #expr ", which is not true")
+    runtime_testing::__expect(expr, __FILENAME__, __LINE__, #expr " is false")
 
 #define expectMatches(var_comma_matcher...)                                    \
-    runtime_testing::_expectMatches(var_comma_matcher, __FILENAME__, __LINE__)
+    runtime_testing::__expectMatches(var_comma_matcher, __FILENAME__, __LINE__)
 
 #define fail(...) \
-    runtime_testing::_fail(__VA_ARGS__, __FILENAME__, __LINE__)
+    runtime_testing::__fail(__VA_ARGS__, __FILENAME__, __LINE__)
 
 #endif

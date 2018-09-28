@@ -30,11 +30,27 @@ void throwExpectationFailed(Description* description) {
     throw ExpectationFailed(stringDescription);
 }
 
-void _fail(const string& message, const char* fileName, const int& lineNumber) {
+
+void __expect(const bool& expr,
+             const char* fileName,
+             const int& lineNumber,
+             const string& exprStr) {
     checkDuringTest(fileName, lineNumber);
-    throw ExpectationFailed(
-        string(fileName) + ":" + to_string(lineNumber) + ": " + message
+    if (expr) {
+        return;
+    }
+    auto description = matcher::Description::createForExpectation(
+            fileName,
+            lineNumber,
+            exprStr
     );
+    throwExpectationFailed(description);
+}
+
+void __fail(const string& message,
+            const char* fileName,
+            const int& lineNumber) {
+    __expect(false, fileName, lineNumber, message);
 }
 
 }

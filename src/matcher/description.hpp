@@ -14,7 +14,7 @@ public:
     static Description* createForExpectation(
             const char* fileName,
             const int& lineNumber,
-            const char* extra);
+            const std::string& extra);
 
     template<class T>
     Description* append(T obj) {

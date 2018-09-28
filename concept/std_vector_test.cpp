@@ -62,7 +62,7 @@ int main() {
          * available except the boolean expression that was evaluated and
          * failed.
          * This should display something similar to
-         * `v.empty() is not true`
+         * `v.empty() is false`
          */
         expect(v.empty()); // Fails!
     });
