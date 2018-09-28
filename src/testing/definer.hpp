@@ -10,7 +10,7 @@ namespace __internal {
 
 class TestDefiner {
 public:
-    explicit TestDefiner(std::string _file="", const int& _line=0);
+    explicit TestDefiner(std::string _file="", int _line=0);
 
     void operator()(std::string description, const std::function<void()>& func);
 private:
@@ -20,7 +20,7 @@ private:
 
 class GroupDefiner {
 public:
-    explicit GroupDefiner(std::string _file="", const int& _line=0);
+    explicit GroupDefiner(std::string _file="", int _line=0);
 
     void operator()(std::string description, const std::function<void()>& func);
 private:

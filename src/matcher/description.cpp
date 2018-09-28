@@ -6,7 +6,7 @@ namespace matcher {
 
 Description* Description::createForExpect(
         const char *file,
-        const int &line,
+        int line,
         const string &extra) {
     auto description = new Description();
     description->append(string(file) + ":" + to_string(line) + ": ");

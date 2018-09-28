@@ -29,9 +29,7 @@ struct Group {
     int numFailedTests = 0;
     int numTests = 0;
 
-    explicit Group(std::string description="",
-                   std::string file="",
-                   const int& line=0);
+    explicit Group(std::string description="", std::string file="", int line=0);
 
     ~Group();
 

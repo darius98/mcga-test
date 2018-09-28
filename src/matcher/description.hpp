@@ -13,7 +13,7 @@ class Description {
 public:
     static Description* createForExpect(
             const char *file,
-            const int &line,
+            int line,
             const std::string &extra);
 
     template<class T>

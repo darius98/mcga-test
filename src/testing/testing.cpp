@@ -64,7 +64,7 @@ int finalizeTesting(const string& reportFileName) {
 
 namespace __internal {
 
-TestDefiner::TestDefiner(string _file, const int& _line):
+TestDefiner::TestDefiner(string _file, int _line):
         file(move(_file)), line(_line) {}
 
 void TestDefiner::operator()(string description,
@@ -72,7 +72,7 @@ void TestDefiner::operator()(string description,
     getDriver()->addTest(new Test(move(description), file, line), func);
 }
 
-GroupDefiner::GroupDefiner(string _file, const int& _line):
+GroupDefiner::GroupDefiner(string _file, int _line):
         file(move(_file)), line(_line) {}
 
 void GroupDefiner::operator()(string description,

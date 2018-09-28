@@ -17,9 +17,7 @@ struct Test {
 
     ExpectationFailed* failure = nullptr;
 
-    explicit Test(std::string description,
-                  std::string file="",
-                  const int& line=0);
+    explicit Test(std::string description, std::string file="", int line=0);
 
     ~Test();
 

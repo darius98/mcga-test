@@ -4,7 +4,7 @@ using namespace std;
 
 namespace runtime_testing {
 
-Group::Group(string description, string file, const int& line):
+Group::Group(string description, string file, int line):
         description(move(description)), file(move(file)), line(line) {}
 
 Group::~Group() {

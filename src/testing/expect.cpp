@@ -15,7 +15,7 @@ string ExpectationFailed::getMessage() const {
     return what();
 }
 
-void checkDuringTest(const char* file, const int& line) {
+void checkDuringTest(const char* file, int line) {
     if (!isDuringTest()) {
         throw runtime_error(
             string(file) + ":" + to_string(line) + ": "
@@ -33,7 +33,7 @@ void throwExpectationFailed(Description* description) {
 
 void __expect(const bool& exprResult,
               const char* file,
-              const int& line,
+              int line,
               const string& expr) {
     checkDuringTest(file, line);
     if (exprResult) {
