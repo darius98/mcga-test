@@ -2,6 +2,7 @@
 #define RUNTIME_TESTING_MATCHER_COMPARISON_MATCHERS_H_
 
 #include <functional>
+#include <utility>
 
 #include "matcher.hpp"
 
@@ -14,8 +15,10 @@ public:
 
     ComparisonMatcher(const T& target,
                       Comparator comparator,
-                      const char* expectation) :
-            target(target), comparator(comparator), expectation(expectation) {}
+                      std::string expectation) :
+            target(target),
+            comparator(comparator),
+            expectation(std::move(expectation)) {}
 
     bool matches(const T& object) {
         return comparator(object, target);
@@ -31,7 +34,7 @@ public:
 private:
     Comparator comparator;
     const T& target;
-    const char* expectation;
+    std::string expectation;
 };
 
 } // namespace matcher

@@ -15,10 +15,10 @@ string ExpectationFailed::getMessage() const {
     return what();
 }
 
-void checkDuringTest(const char* file, int line) {
+void checkDuringTest(const string& file, int line) {
     if (!isDuringTest()) {
         throw runtime_error(
-            string(file) + ":" + to_string(line) + ": "
+            file + ":" + to_string(line) + ": "
             "'expect' can only be called inside tests!"
         );
     }
@@ -32,7 +32,7 @@ void throwExpectationFailed(Description* description) {
 
 
 void __expect(const bool& exprResult,
-              const char* file,
+              const string& file,
               int line,
               const string& expr) {
     checkDuringTest(file, line);

@@ -22,19 +22,19 @@ public:
     std::string getMessage() const;
 };
 
-void checkDuringTest(const char* file, int line);
+void checkDuringTest(const std::string& file, int line);
 
 void throwExpectationFailed(matcher::Description* description);
 
 void __expect(const bool& exprResult,
-              const char* file="NO_FILENAME",
+              const std::string& file="NO_FILENAME",
               int line=0,
-              const std::string& expr);
+              const std::string& expr="");
 
 template<class T, class PseudoMatcher, IS_MATCHER(PseudoMatcher)>
 void __expectMatches(const T& object,
                      PseudoMatcher* matcher,
-                     const char* file="NO_FILENAME",
+                     const std::string& file="NO_FILENAME",
                      int line=0) {
     checkDuringTest(file, line);
     if (matcher->matches(object)) {

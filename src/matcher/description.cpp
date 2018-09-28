@@ -5,7 +5,7 @@ using namespace std;
 namespace matcher {
 
 Description* Description::createForExpect(
-        const char *file,
+        const string& file,
         int line,
         const string &extra) {
     auto description = new Description();
