@@ -12,8 +12,8 @@
 namespace runtime_testing {
 
 struct Group {
-    std::string fileName;
-    int lineNumber;
+    std::string file;
+    int line;
 
     std::string description;
 
@@ -30,8 +30,8 @@ struct Group {
     int numTests = 0;
 
     explicit Group(std::string description="",
-                   std::string fileName="",
-                   const int& lineNumber=0);
+                   std::string file="",
+                   const int& line=0);
 
     ~Group();
 

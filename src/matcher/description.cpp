@@ -4,12 +4,12 @@ using namespace std;
 
 namespace matcher {
 
-Description* Description::createForExpectation(
-        const char* fileName,
-        const int& lineNumber,
-        const string& extra) {
+Description* Description::createForExpect(
+        const char *file,
+        const int &line,
+        const string &extra) {
     auto description = new Description();
-    description->append(string(fileName) + ":" + to_string(lineNumber) + ": ");
+    description->append(string(file) + ":" + to_string(line) + ": ");
     description->append(extra);
     if (extra.empty()) {
         description->append("Expected ");

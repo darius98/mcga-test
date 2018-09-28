@@ -4,12 +4,8 @@ using namespace std;
 
 namespace runtime_testing {
 
-Test::Test(string description,
-           string fileName,
-           const int& lineNumber):
-        description(move(description)),
-        fileName(move(fileName)),
-        lineNumber(lineNumber) {}
+Test::Test(string description, string file, const int& line):
+        description(move(description)), file(move(file)), line(line) {}
 
 Test::~Test() {
     delete failure;
@@ -19,9 +15,9 @@ void Test::generateTestReport(ostream &report, size_t spaces) {
     string prefix(spaces + 2, ' ');
     report << "{\n";
     report << prefix << R"("description": ")" << description << "\",\n";
-    if (!fileName.empty()) {
-        report << prefix << R"("file": ")" << fileName << "\",\n";
-        report << prefix << R"("line": ")" << lineNumber << "\",\n";
+    if (!file.empty()) {
+        report << prefix << R"("file": ")" << file << "\",\n";
+        report << prefix << R"("line": ")" << line << "\",\n";
     }
     report << prefix
            << R"("passed": )"

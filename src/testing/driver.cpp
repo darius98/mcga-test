@@ -137,9 +137,8 @@ string TestingDriver::getTestFullName(Test* currentTest) const {
     string file;
     string groupStackFullName;
 
-    if (!currentTest->fileName.empty()) {
-        file = currentTest->fileName + ":" + to_string(currentTest->lineNumber);
-        file += ": ";
+    if (!currentTest->file.empty()) {
+        file = currentTest->file + ":" + to_string(currentTest->line) + ": ";
     }
     for (Group* g: groupStack) {
         if (g != groupStack[0]) {

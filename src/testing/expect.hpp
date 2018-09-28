@@ -22,45 +22,25 @@ public:
     std::string getMessage() const;
 };
 
-void checkDuringTest(const char* fileName, const int& lineNumber);
+void checkDuringTest(const char* file, const int& line);
 
 void throwExpectationFailed(matcher::Description* description);
 
-/**
- * Main assertion function.
- */
-void __expect(const bool& expr,
-              const char* fileName="NO_FILENAME",
-              const int& lineNumber=0,
-              const std::string& exprStr=nullptr);
+void __expect(const bool& exprResult,
+              const char* file="NO_FILENAME",
+              const int& line=0,
+              const std::string& expr=nullptr);
 
-/**
- * Function to be used to force a test to fail. `expect` and `expectMatches` are
- * preferred where possible.
- *
- * Has the same effect as __expect(false, fileName, lineNumber, message).
- */
-void __fail(const std::string& message,
-            const char* fileName="NO_FILENAME",
-            const int& lineNumber=0);
-
-/**
- * Main function for expecting something during a test.
- */
 template<class T, class PseudoMatcher, IS_MATCHER(PseudoMatcher)>
 void __expectMatches(const T& object,
                      PseudoMatcher* matcher,
-                     const char* fileName="NO_FILENAME",
-                     const int& lineNumber=0) {
-    checkDuringTest(fileName, lineNumber);
+                     const char* file="NO_FILENAME",
+                     const int& line=0) {
+    checkDuringTest(file, line);
     if (matcher->matches(object)) {
         return;
     }
-    auto description = matcher::Description::createForExpectation(
-            fileName,
-            lineNumber,
-            ""
-    );
+    auto description = matcher::Description::createForExpect(file, line, "");
     matcher->describe(description);
     description->append(". Got '", object, "': ");
     matcher->describeMismatch(description);
@@ -69,13 +49,34 @@ void __expectMatches(const T& object,
 
 } // namespace runtime_testing
 
+
+/**
+ * Assertion macro.
+ *
+ * Use this to verify a boolean condition is satisfied. Fails the test, printing
+ * the body of the boolean expression when it evaluates to false.
+ */
 #define expect(expr...)                                                        \
     runtime_testing::__expect(expr, __FILENAME__, __LINE__, #expr " is false")
 
+/**
+ * Matcher expectation macro.
+ *
+ * Use this to verify an object matches a certain matcher.
+ *
+ * The syntax is `expectMatches(object, matcher)`.
+ */
 #define expectMatches(var_comma_matcher...)                                    \
     runtime_testing::__expectMatches(var_comma_matcher, __FILENAME__, __LINE__)
 
+
+/**
+ * Macro for forcing a test to fail. `expect` and `expectMatches` are
+ * preferred where possible.
+ *
+ * Has the same effect as __expect(false, file, line, message).
+ */
 #define fail(...) \
-    runtime_testing::__fail(__VA_ARGS__, __FILENAME__, __LINE__)
+    runtime_testing::__expect(false, __FILENAME__, __LINE__, __VA_ARGS__)
 
 #endif

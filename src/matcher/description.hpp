@@ -11,10 +11,10 @@ namespace matcher {
 
 class Description {
 public:
-    static Description* createForExpectation(
-            const char* fileName,
-            const int& lineNumber,
-            const std::string& extra);
+    static Description* createForExpect(
+            const char *file,
+            const int &line,
+            const std::string &extra);
 
     template<class T>
     Description* append(T obj) {

@@ -10,16 +10,16 @@
 namespace runtime_testing {
 
 struct Test {
-    std::string fileName;
-    int lineNumber;
+    std::string file;
+    int line;
 
     std::string description;
 
     ExpectationFailed* failure = nullptr;
 
     explicit Test(std::string description,
-                  std::string fileName="",
-                  const int& lineNumber=0);
+                  std::string file="",
+                  const int& line=0);
 
     ~Test();
 

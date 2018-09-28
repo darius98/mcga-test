@@ -10,22 +10,22 @@ namespace __internal {
 
 class TestDefiner {
 public:
-    explicit TestDefiner(std::string _fileName="", const int& _lineNumber=0);
+    explicit TestDefiner(std::string _file="", const int& _line=0);
 
     void operator()(std::string description, const std::function<void()>& func);
 private:
-    std::string fileName;
-    int lineNumber;
+    std::string file;
+    int line;
 };
 
 class GroupDefiner {
 public:
-    explicit GroupDefiner(std::string _fileName="", const int& _lineNumber=0);
+    explicit GroupDefiner(std::string _file="", const int& _line=0);
 
     void operator()(std::string description, const std::function<void()>& func);
 private:
-    std::string fileName;
-    int lineNumber;
+    std::string file;
+    int line;
 };
 
 }

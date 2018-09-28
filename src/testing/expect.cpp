@@ -15,10 +15,10 @@ string ExpectationFailed::getMessage() const {
     return what();
 }
 
-void checkDuringTest(const char* fileName, const int& lineNumber) {
+void checkDuringTest(const char* file, const int& line) {
     if (!isDuringTest()) {
         throw runtime_error(
-            string(fileName) + ":" + to_string(lineNumber) + ": "
+            string(file) + ":" + to_string(line) + ": "
             "'expect' can only be called inside tests!"
         );
     }
@@ -31,26 +31,16 @@ void throwExpectationFailed(Description* description) {
 }
 
 
-void __expect(const bool& expr,
-             const char* fileName,
-             const int& lineNumber,
-             const string& exprStr) {
-    checkDuringTest(fileName, lineNumber);
-    if (expr) {
+void __expect(const bool& exprResult,
+              const char* file,
+              const int& line,
+              const string& expr) {
+    checkDuringTest(file, line);
+    if (exprResult) {
         return;
     }
-    auto description = matcher::Description::createForExpectation(
-            fileName,
-            lineNumber,
-            exprStr
-    );
+    auto description = matcher::Description::createForExpect(file, line, expr);
     throwExpectationFailed(description);
-}
-
-void __fail(const string& message,
-            const char* fileName,
-            const int& lineNumber) {
-    __expect(false, fileName, lineNumber, message);
 }
 
 }

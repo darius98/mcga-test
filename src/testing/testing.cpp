@@ -64,22 +64,20 @@ int finalizeTesting(const string& reportFileName) {
 
 namespace __internal {
 
-TestDefiner::TestDefiner(string _fileName, const int& _lineNumber):
-        fileName(move(_fileName)), lineNumber(_lineNumber) {}
+TestDefiner::TestDefiner(string _file, const int& _line):
+        file(move(_file)), line(_line) {}
 
 void TestDefiner::operator()(string description,
                              const function<void()>& func) {
-    getDriver()->addTest(new Test(move(description), fileName, lineNumber),
-                         func);
+    getDriver()->addTest(new Test(move(description), file, line), func);
 }
 
-GroupDefiner::GroupDefiner(string _fileName, const int& _lineNumber):
-        fileName(move(_fileName)), lineNumber(_lineNumber) {}
+GroupDefiner::GroupDefiner(string _file, const int& _line):
+        file(move(_file)), line(_line) {}
 
 void GroupDefiner::operator()(string description,
                               const function<void()>& func) {
-    getDriver()->addGroup(new Group(move(description), fileName, lineNumber),
-                          func);
+    getDriver()->addGroup(new Group(move(description), file, line), func);
 }
 
 } // namespace __internal
