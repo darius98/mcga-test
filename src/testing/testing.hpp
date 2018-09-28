@@ -28,8 +28,4 @@ int finalizeTesting(const std::string& reportFileName="report.json");
 
 }
 
-#define test runtime_testing::__internal::TestDefiner(__FILENAME__, __LINE__)
-
-#define group runtime_testing::__internal::GroupDefiner(__FILENAME__, __LINE__)
-
 #endif

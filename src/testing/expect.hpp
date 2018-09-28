@@ -7,11 +7,6 @@
 #include "testing.hpp"
 
 
-#define __FILENAME__ (__builtin_strrchr(__FILE__, '/') ?                       \
-                      __builtin_strrchr(__FILE__, '/') + 1 :                   \
-                      __FILE__)
-
-
 namespace runtime_testing {
 
 class ExpectationFailed: std::runtime_error {
@@ -48,35 +43,5 @@ void __expectMatches(const T& object,
 }
 
 } // namespace runtime_testing
-
-
-/**
- * Assertion macro.
- *
- * Use this to verify a boolean condition is satisfied. Fails the test, printing
- * the body of the boolean expression when it evaluates to false.
- */
-#define expect(expr...)                                                        \
-    runtime_testing::__expect(expr, __FILENAME__, __LINE__, #expr " is false")
-
-/**
- * Matcher expectation macro.
- *
- * Use this to verify an object matches a certain matcher.
- *
- * The syntax is `expectMatches(object, matcher)`.
- */
-#define expectMatches(var_comma_matcher...)                                    \
-    runtime_testing::__expectMatches(var_comma_matcher, __FILENAME__, __LINE__)
-
-
-/**
- * Macro for forcing a test to fail. `expect` and `expectMatches` are
- * preferred where possible.
- *
- * Has the same effect as __expect(false, file, line, message).
- */
-#define fail(...) \
-    runtime_testing::__expect(false, __FILENAME__, __LINE__, __VA_ARGS__)
 
 #endif
