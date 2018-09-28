@@ -1,7 +1,10 @@
 #ifndef RUNTIME_TESTING_MATCHER_DESCRIPTION_STREAMER_H_
 #define RUNTIME_TESTING_MATCHER_DESCRIPTION_STREAMER_H_
 
+#include <cxxabi.h>
+
 #include <deque>
+#include <functional>
 #include <iostream>
 #include <list>
 #include <map>
@@ -19,6 +22,19 @@ template<class S, class=void>
 struct Streamer {
     static void send(std::stringstream& stream, S obj) {
         format(stream, obj);
+    }
+
+    static void sendType(std::stringstream& stream) {
+        int stat;
+        std::string rawName = typeid(S).name();
+        char* name = abi::__cxa_demangle(
+                rawName.c_str(), nullptr, nullptr, &stat
+        );
+        if(stat == 0) {
+            rawName = name;
+            free(name);
+        }
+        stream << rawName;
     }
 
 private:
