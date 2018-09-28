@@ -47,7 +47,7 @@ private:
 
     void validateStartTearDown();
 
-    std::string getTestFullName(const std::string& testDescription) const;
+    std::string getTestFullName(Test* currentTest) const;
 
     void executeSetUps(Test* currentTest);
 

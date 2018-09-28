@@ -4,7 +4,12 @@ using namespace std;
 
 namespace runtime_testing {
 
-Group::Group(const std::string &description): description(description) {}
+Group::Group(string description,
+             string fileName,
+             const int& lineNumber):
+        description(move(description)),
+        fileName(move(fileName)),
+        lineNumber(lineNumber) {}
 
 Group::~Group() {
     for (Test* t: tests) {
@@ -19,10 +24,11 @@ int Group::generateTestReport(ostream& report, size_t spaces) {
     string prefix(spaces + 2, ' ');
     report << "{\n";
     if (!description.empty()) {
-        report << prefix
-               << R"("description": ")"
-               << description
-               << "\",\n";
+        report << prefix << R"("description": ")" << description << "\",\n";
+    }
+    if (!fileName.empty()) {
+        report << prefix << R"("file": ")" << fileName << "\",\n";
+        report << prefix << R"("line": ")" << lineNumber << "\",\n";
     }
     report << prefix << "\"numTests\": " << numTests << ",\n";
     report << prefix << "\"numFailedTests\": " << numFailedTests << ",\n";

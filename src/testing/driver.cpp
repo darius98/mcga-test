@@ -83,7 +83,7 @@ void TestingDriver::addTest(Test *currentTest,
                             const function<void()> &func) {
     validateStartTest();
     groupStack.back()->tests.push_back(currentTest);
-    log(getTestFullName(currentTest->description), ": ");
+    log(getTestFullName(currentTest), ": ");
     executeSetUps(currentTest);
     executeTest(currentTest, func);
     executeTearDowns(currentTest);
@@ -133,8 +133,14 @@ void TestingDriver::validate(const string& methodName) {
     }
 }
 
-string TestingDriver::getTestFullName(const string& testDescription) const {
+string TestingDriver::getTestFullName(Test* currentTest) const {
+    string file;
     string groupStackFullName;
+
+    if (!currentTest->fileName.empty()) {
+        file = currentTest->fileName + ":" + to_string(currentTest->lineNumber);
+        file += ": ";
+    }
     for (Group* g: groupStack) {
         if (g != groupStack[0]) {
             if (!groupStackFullName.empty()) {
@@ -146,7 +152,7 @@ string TestingDriver::getTestFullName(const string& testDescription) const {
     if (!groupStackFullName.empty()) {
         groupStackFullName += "::";
     }
-    return groupStackFullName + testDescription;
+    return file + currentTest->description;
 }
 
 void TestingDriver::executeSetUps(Test* currentTest) {

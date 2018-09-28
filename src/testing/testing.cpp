@@ -1,4 +1,5 @@
 #include <fstream>
+#include <utility>
 
 #include "testing.hpp"
 
@@ -44,15 +45,6 @@ void tearDown(const function<void()>& func) {
     return getDriver()->addTearDown(func);
 }
 
-void group(const string& description, const function<void()>& func) {
-    return getDriver()->addGroup(new Group(description), func);
-}
-
-void test(const string& description,
-          const function<void()>& func) {
-    return getDriver()->addTest(new Test(description), func);
-}
-
 int numFailedTests() {
     return getDriver()->getNumFailedTests();
 }
@@ -70,4 +62,27 @@ int finalizeTesting(const string& reportFileName) {
     return status;
 }
 
+namespace __internal {
+
+TestDefiner::TestDefiner(string _fileName, const int& _lineNumber):
+        fileName(move(_fileName)), lineNumber(_lineNumber) {}
+
+void TestDefiner::operator()(string description,
+                             const function<void()>& func) {
+    getDriver()->addTest(new Test(move(description), fileName, lineNumber),
+                         func);
 }
+
+GroupDefiner::GroupDefiner(string _fileName, const int& _lineNumber):
+        fileName(move(_fileName)), lineNumber(_lineNumber) {}
+
+void GroupDefiner::operator()(string description,
+                              const function<void()>& func) {
+    getDriver()->addGroup(new Group(move(description), fileName, lineNumber),
+                          func);
+}
+
+} // namespace __internal
+
+} // namespace runtime_testing
+

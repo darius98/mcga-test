@@ -12,6 +12,9 @@
 namespace runtime_testing {
 
 struct Group {
+    std::string fileName;
+    int lineNumber;
+
     std::string description;
 
     bool hasSetUp = false;
@@ -26,7 +29,9 @@ struct Group {
     int numFailedTests = 0;
     int numTests = 0;
 
-    explicit Group(const std::string& description="");
+    explicit Group(std::string description="",
+                   std::string fileName="",
+                   const int& lineNumber=0);
 
     ~Group();
 

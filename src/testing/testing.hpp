@@ -5,6 +5,8 @@
 #include <iostream>
 #include <string>
 
+#include "definer.hpp"
+
 
 namespace runtime_testing {
 
@@ -13,10 +15,6 @@ void initializeTestingDriver(std::ostream& log=std::cerr);
 void setUp(const std::function<void()>& func);
 
 void tearDown(const std::function<void()>& func);
-
-void test(const std::string& description, const std::function<void()>& func);
-
-void group(const std::string& description, const std::function<void()>& func);
 
 bool isDuringTest();
 
@@ -29,5 +27,9 @@ void destroyTestingDriver();
 int finalizeTesting(const std::string& reportFileName="report.json");
 
 }
+
+#define test runtime_testing::__internal::TestDefiner(__FILENAME__, __LINE__)
+
+#define group runtime_testing::__internal::GroupDefiner(__FILENAME__, __LINE__)
 
 #endif
