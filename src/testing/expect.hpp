@@ -26,9 +26,9 @@ void __expect(const bool& exprResult,
               int line=0,
               const std::string& expr="");
 
-template<class T, class PseudoMatcher, IS_MATCHER(PseudoMatcher)>
+template<class T, class M, IS_MATCHER(M)>
 void __expectMatches(const T& object,
-                     PseudoMatcher* matcher,
+                     M* matcher,
                      const std::string& file="NO_FILENAME",
                      int line=0) {
     checkDuringTest(file, line);

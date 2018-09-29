@@ -10,11 +10,21 @@ namespace runtime_testing {
 
 class TestingDriver {
 public:
+    static TestingDriver* getDriver();
+
+    static void init(std::ostream& logger);
+
+    static void destroy();
+
+    static bool isDuringTest();
+
+private:
+    static TestingDriver* globalTestingDriver;
+
+public:
     explicit TestingDriver(std::ostream* logger=nullptr);
 
     ~TestingDriver();
-
-    bool isDuringTest();
 
     void addGroup(Group* currentGroup, const std::function<void()>& func);
 

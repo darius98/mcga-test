@@ -5,6 +5,28 @@ using namespace std;
 
 namespace runtime_testing {
 
+TestingDriver* TestingDriver::globalTestingDriver = nullptr;
+
+TestingDriver* TestingDriver::getDriver() {
+    if (globalTestingDriver == nullptr) {
+        globalTestingDriver = new TestingDriver();
+    }
+    return globalTestingDriver;
+}
+
+void TestingDriver::init(ostream& logger) {
+    if (globalTestingDriver != nullptr) {
+        throw runtime_error("Testing driver cannot be initialized: "
+                            "it already exists.");
+    }
+    globalTestingDriver = new TestingDriver(&logger);
+}
+
+void TestingDriver::destroy() {
+    delete globalTestingDriver;
+    globalTestingDriver = nullptr;
+}
+
 TestingDriver::TestingDriver(ostream* logger): logger(logger) {
     groupStack = {new Group()};
     state.push(DriverState::TOP_LEVEL);
@@ -15,7 +37,8 @@ TestingDriver::~TestingDriver() {
 }
 
 bool TestingDriver::isDuringTest() {
-    return state.top() == DriverState::TEST;
+    return globalTestingDriver != nullptr &&
+            globalTestingDriver->state.top() == DriverState::TEST;
 }
 
 void TestingDriver::validateStartGroup() {

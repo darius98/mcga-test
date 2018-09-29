@@ -39,8 +39,9 @@ void __expect(const bool& exprResult,
     if (exprResult) {
         return;
     }
-    auto description = matcher::Description::createForExpect(file, line, expr);
-    throwExpectationFailed(description);
+    throwExpectationFailed(
+        matcher::Description::createForExpect(file, line, expr)
+    );
 }
 
 }

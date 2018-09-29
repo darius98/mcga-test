@@ -1,56 +1,42 @@
+#include "testing.hpp"
+
 #include <fstream>
 #include <utility>
 
-#include "testing.hpp"
-
-#include "expect.hpp"
 #include "driver.hpp"
+#include "expect.hpp"
 
 using namespace std;
 
 
 namespace runtime_testing {
 
-static TestingDriver* testingDriver = nullptr;
-
-TestingDriver* getDriver() {
-    if (testingDriver == nullptr) {
-        testingDriver = new TestingDriver();
-    }
-    return testingDriver;
-}
-
 void initializeTestingDriver(std::ostream& log) {
-    if (testingDriver != nullptr) {
-        throw runtime_error("Testing driver cannot be initialized: "
-                            "it already exists.");
-    }
-    testingDriver = new TestingDriver(&log);
+    TestingDriver::init(log);
 }
 
 void destroyTestingDriver() {
-    delete testingDriver;
-    testingDriver = nullptr;
+    TestingDriver::destroy();
 }
 
 bool isDuringTest() {
-    return testingDriver != nullptr && testingDriver->isDuringTest();
+    return TestingDriver::isDuringTest();
 }
 
 void setUp(const function<void()>& func) {
-    return getDriver()->addSetUp(func);
+    return TestingDriver::getDriver()->addSetUp(func);
 }
 
 void tearDown(const function<void()>& func) {
-    return getDriver()->addTearDown(func);
+    return TestingDriver::getDriver()->addTearDown(func);
 }
 
 int numFailedTests() {
-    return getDriver()->getNumFailedTests();
+    return TestingDriver::getDriver()->getNumFailedTests();
 }
 
 int writeTestSuiteReport(ostream &report) {
-    return getDriver()->generateTestReport(report);
+    return TestingDriver::getDriver()->generateTestReport(report);
 }
 
 int finalizeTesting(const string& reportFileName) {
@@ -62,25 +48,4 @@ int finalizeTesting(const string& reportFileName) {
     return status;
 }
 
-namespace __internal {
-
-TestDefiner::TestDefiner(string _file, int _line):
-        file(move(_file)), line(_line) {}
-
-void TestDefiner::operator()(string description,
-                             const function<void()>& func) {
-    getDriver()->addTest(new Test(move(description), file, line), func);
-}
-
-GroupDefiner::GroupDefiner(string _file, int _line):
-        file(move(_file)), line(_line) {}
-
-void GroupDefiner::operator()(string description,
-                              const function<void()>& func) {
-    getDriver()->addGroup(new Group(move(description), file, line), func);
-}
-
-} // namespace __internal
-
 } // namespace runtime_testing
-
