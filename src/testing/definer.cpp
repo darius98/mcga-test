@@ -12,7 +12,7 @@ TestDefiner::TestDefiner(string _file, int _line):
 
 void TestDefiner::operator()(string description,
                              const function<void()>& func) {
-    TestingDriver::getDriver()->addTest(
+    TestingDriver::getOrCreateGlobalDriver()->addTest(
             new Test(move(description), file, line), func
     );
 }
@@ -22,7 +22,7 @@ GroupDefiner::GroupDefiner(string _file, int _line):
 
 void GroupDefiner::operator()(string description,
                               const function<void()>& func) {
-    TestingDriver::getDriver()->addGroup(
+    TestingDriver::getOrCreateGlobalDriver()->addGroup(
             new Group(move(description), file, line), func
     );
 }

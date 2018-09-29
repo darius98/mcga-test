@@ -7,7 +7,7 @@ namespace runtime_testing {
 
 TestingDriver* TestingDriver::globalTestingDriver = nullptr;
 
-TestingDriver* TestingDriver::getDriver() {
+TestingDriver* TestingDriver::getOrCreateGlobalDriver() {
     if (globalTestingDriver == nullptr) {
         globalTestingDriver = new TestingDriver();
     }

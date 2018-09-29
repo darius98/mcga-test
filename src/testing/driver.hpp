@@ -10,7 +10,7 @@ namespace runtime_testing {
 
 class TestingDriver {
 public:
-    static TestingDriver* getDriver();
+    static TestingDriver* getOrCreateGlobalDriver();
 
     static void init(std::ostream& logger);
 

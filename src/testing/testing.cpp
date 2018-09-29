@@ -24,19 +24,19 @@ bool isDuringTest() {
 }
 
 void setUp(const function<void()>& func) {
-    return TestingDriver::getDriver()->addSetUp(func);
+    return TestingDriver::getOrCreateGlobalDriver()->addSetUp(func);
 }
 
 void tearDown(const function<void()>& func) {
-    return TestingDriver::getDriver()->addTearDown(func);
+    return TestingDriver::getOrCreateGlobalDriver()->addTearDown(func);
 }
 
 int numFailedTests() {
-    return TestingDriver::getDriver()->getNumFailedTests();
+    return TestingDriver::getOrCreateGlobalDriver()->getNumFailedTests();
 }
 
 int writeTestSuiteReport(ostream &report) {
-    return TestingDriver::getDriver()->generateTestReport(report);
+    return TestingDriver::getOrCreateGlobalDriver()->generateTestReport(report);
 }
 
 int finalizeTesting(const string& reportFileName) {
