@@ -13,12 +13,12 @@ bool ThrowsAnythingMatcher::matches(const function<void()>& func) {
     }
 }
 
-void ThrowsAnythingMatcher::describe(Description* description) {
-    description->append("a function that throws");
+void ThrowsAnythingMatcher::describe(Description& description) {
+    description << "a function that throws";
 }
 
-void ThrowsAnythingMatcher::describeMismatch(matcher::Description *description) {
-    description->append("a function that did not throw");
+void ThrowsAnythingMatcher::describeMismatch(Description& description) {
+    description << "a function that did not throw";
 }
 
 }

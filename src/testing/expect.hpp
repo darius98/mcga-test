@@ -36,9 +36,9 @@ void __expectMatches(const T& object,
         return;
     }
     auto description = matcher::Description::createForExpect(file, line, "");
-    matcher->describe(description);
-    description->append(". Got '", object, "': ");
-    matcher->describeMismatch(description);
+    matcher->describe(*description);
+    (*description) << ". Got '" << object << "': ";
+    matcher->describeMismatch(*description);
     throwExpectationFailed(description);
 }
 

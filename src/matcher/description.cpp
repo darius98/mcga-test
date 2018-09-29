@@ -9,10 +9,9 @@ Description* Description::createForExpect(
         int line,
         const string &extra) {
     auto description = new Description();
-    description->append(string(file) + ":" + to_string(line) + ": ");
-    description->append(extra);
+    (*description) << file << ":" << line << ": " << extra;
     if (extra.empty()) {
-        description->append("Expected ");
+        (*description) << "Expected ";
     }
     return description;
 }

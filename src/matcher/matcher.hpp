@@ -37,12 +37,12 @@ public:
     /**
      * Describe what this matcher expects from `object`.
      */
-    virtual void describe(Description* description) = 0;
+    virtual void describe(Description& description) = 0;
 
     /**
      * Describe the way `object` does not match expectations.
      */
-    virtual void describeMismatch(Description* description) = 0;
+    virtual void describeMismatch(Description& description) = 0;
 private:
     static std::set<void*> matchersAllocatedDuringTests;
 };

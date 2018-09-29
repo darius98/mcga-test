@@ -24,12 +24,12 @@ public:
         return comparator(object, target);
     }
 
-    void describe(Description* description) override {
-        description->append(expectation, "'", target, "'");
+    void describe(Description& description) override {
+        description << expectation << "'" << target << "'";
     }
 
-    void describeMismatch(Description* description) override {
-        description->append("not ", expectation, "'", target, "'");
+    void describeMismatch(Description& description) override {
+        description << "not " << expectation << "'" << target << "'";
     }
 private:
     Comparator comparator;

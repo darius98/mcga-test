@@ -17,20 +17,13 @@ public:
             const std::string& extra);
 
     template<class T>
-    Description* append(T obj) {
+    Description& operator<<(T obj) {
         runtime_testing::utils::Streamer<T>::send(stream, obj);
-        return this;
-    }
-
-    template<class T, class... Args>
-    Description* append(T obj, const Args... args) {
-        append(obj);
-        append(args...);
-        return this;
+        return *this;
     }
 
     template<class T>
-    Description* appendType() {
+    Description& appendType() {
         runtime_testing::utils::Streamer<T>::sendType(stream);
     }
 
