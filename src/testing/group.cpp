@@ -28,7 +28,7 @@ int Group::generateTestReport(ostream& report, size_t spaces) {
     }
     report << prefix << "\"numTests\": " << numTests << ",\n";
     report << prefix << "\"numFailedTests\": " << numFailedTests << ",\n";
-    if (!this->tests.empty()) {
+    if (!tests.empty()) {
         report << prefix << "\"tests\": [";
         for (size_t i = 0; i < tests.size(); ++ i) {
             if (i == 0) {
@@ -43,7 +43,7 @@ int Group::generateTestReport(ostream& report, size_t spaces) {
         }
         report << "],\n";
     }
-    if (!this->subGroups.empty()) {
+    if (!subGroups.empty()) {
         report << prefix << "\"subGroups\": [";
         for (size_t i = 0; i < subGroups.size(); ++i) {
             if (i == 0) {

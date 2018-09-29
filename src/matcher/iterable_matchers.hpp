@@ -29,11 +29,10 @@ public:
     void describeMismatch(Description& description) override;
 };
 
-template<class SizeMatcher, IS_MATCHER(SizeMatcher)>
+template<class M, IS_MATCHER(M)>
 class IterableSizeMatcher: public Matcher {
 public:
-    explicit IterableSizeMatcher(SizeMatcher* sizeMatcher):
-            sizeMatcher(sizeMatcher) {}
+    explicit IterableSizeMatcher(M* _sizeMatcher): sizeMatcher(_sizeMatcher) {}
 
     template<class T>
     bool matches(const T& object) {
@@ -50,13 +49,13 @@ public:
         sizeMatcher->describeMismatch(description);
     }
 private:
-    SizeMatcher* sizeMatcher;
+    M* sizeMatcher;
 };
 
-template<class ElementMatcher, IS_MATCHER(ElementMatcher)>
+template<class M, IS_MATCHER(M)>
 class IterableEachMatcher: public Matcher {
 public:
-    explicit IterableEachMatcher(ElementMatcher* elementMatcher):
+    explicit IterableEachMatcher(M* _elementMatcher):
             elementMatcher(elementMatcher) {}
 
     template<class T>
@@ -85,16 +84,16 @@ public:
     }
 
 private:
-    ElementMatcher* elementMatcher;
+    M* elementMatcher;
     Description elementFailureDescription;
     int index = -1;
 };
 
-template<class ElementMatcher, IS_MATCHER(ElementMatcher)>
+template<class M, IS_MATCHER(M)>
 class IterableAnyMatcher: public Matcher {
 public:
-    explicit IterableAnyMatcher(ElementMatcher* elementMatcher):
-            elementMatcher(elementMatcher) {}
+    explicit IterableAnyMatcher(M* _elementMatcher):
+            elementMatcher(_elementMatcher) {}
 
     template<class T>
     bool matches(const T& collection) {
@@ -118,7 +117,7 @@ public:
         elementMatcher->describe(description);
     }
 private:
-    ElementMatcher* elementMatcher;
+    M* elementMatcher;
     int index = -1;
 };
 
