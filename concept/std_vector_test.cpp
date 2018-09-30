@@ -26,17 +26,18 @@ int main() {
      */
     initializeTestingDriver();
 
-    vector<int> v;
+    vector<int> v, w;
 
     setUp([&]() {
         /**
          * This lambda expression is called before every test.
          *
-         * We want each test to start with a clean vector. To avoid writing
-         * bug-prone boiler-plate at the start of each test, write the
-         * initialization in a setUp instead.
+         * We want each test to start with a couple of clean vectors.
+         * To avoid writing bug-prone boiler-plate at the start of each test,
+         * write the initialization in a setUp instead.
          */
         v = vector<int>();
+        w = vector<int>();
     });
 
     test("Vector is initially empty - 0 (P)", [&]() {
@@ -46,6 +47,11 @@ int main() {
          * expression does not evaluate to true.
          */
         expect(v.empty());
+        /**
+         * This is the exact equivalent for verifying a boolean condition, using
+         * the `isTrue` matcher.
+         */
+        expectMatches(v.empty(), isTrue);
         /**
          * This is equivalent to the above, but with a nicer error message in
          * case of failure (see versions 1 and 2 of this test).
@@ -78,6 +84,23 @@ int main() {
          * `Expected empty iterable. Got '[1, 2, 3]': non-empty iterable`
          */
         expectMatches(v, isEmpty); // Fails!
+    });
+
+    test("Two empty vectors are equal (P)", [&]() {
+         expectMatches(v, isEqualTo(w));
+    });
+
+    test("Two empty vectors are equal (F)", [&]() {
+        w = {1};
+        expectMatches(v, isEqualTo(w));
+    });
+
+    test("Two vectors are identical (P)", [&]() {
+        expectMatches(v, isIdenticalTo(v));
+    });
+
+    test("Two vectors are identical (F)", [&]() {
+        expectMatches(v, isIdenticalTo(w));
     });
 
     /**

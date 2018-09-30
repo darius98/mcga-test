@@ -25,10 +25,8 @@ ComparisonMatcher<T>* isEqualTo(const T& object) {
 }
 
 template<class T>
-ComparisonMatcher<T>* isIdenticalTo(const T& object) {
-    return new ComparisonMatcher<T>(object, [](const T& a, const T& b) -> bool {
-        return &a == &b;
-    }, "variable at address ");
+IdentityMatcher<T>* isIdenticalTo(const T& object) {
+    return new IdentityMatcher<T>(object);
 }
 
 template<class T>
@@ -151,9 +149,7 @@ extern CharInStringMatcher* isHexDigit;
 
 extern CharInStringMatcher* isWhitespace;
 
-IsSubstringMatcher* isSubstringOf(const std::string& s) {
-    return new IsSubstringMatcher(s);
-}
+IsSubstringMatcher* isSubstringOf(const std::string& s);
 
 } // namespace matcher
 

@@ -37,6 +37,29 @@ private:
     std::string expectation;
 };
 
+template<class T>
+class IdentityMatcher: public Matcher {
+public:
+    explicit IdentityMatcher(const T& target): address((void*)&target) {}
+
+    bool matches(const T& object) {
+        objectAddress = (void*)&object;
+        return objectAddress == address;
+    }
+
+    void describe(Description& description) override {
+        description << "variable at address '" << address << "'";
+    }
+
+    void describeMismatch(Description& description) override {
+        description << "variable at address '" << objectAddress << "'";
+    }
+
+private:
+    void* address;
+    void* objectAddress = nullptr;
+};
+
 } // namespace matcher
 
 #endif

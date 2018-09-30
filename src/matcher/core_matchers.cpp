@@ -53,4 +53,8 @@ CharInStringMatcher* isHexDigit = new CharInStringMatcher(
 CharInStringMatcher* isWhitespace = new CharInStringMatcher(
         " \t\r\n", "a whitespace character");
 
+IsSubstringMatcher* isSubstringOf(const std::string& s) {
+    return new IsSubstringMatcher(s);
+}
+
 }
