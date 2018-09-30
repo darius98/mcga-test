@@ -29,4 +29,28 @@ IsOddMatcher* isOdd = new IsOddMatcher();
 
 IsZeroMatcher* isZero = new IsZeroMatcher();
 
+CharInStringMatcher* isLetter = new CharInStringMatcher(
+        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", "a letter");
+
+CharInStringMatcher* isDigit  = new CharInStringMatcher(
+        "0123456789", "a digit");
+
+CharInStringMatcher* isLowercaseLetter = new CharInStringMatcher(
+        "abcdefghijklmnopqrstuvwxyz", "a lowercase letter");
+
+CharInStringMatcher* isUppercaseLetter = new CharInStringMatcher(
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "an uppercase letter");
+
+CharInStringMatcher* isBinaryDigit = new CharInStringMatcher(
+        "01", "a binary digit");
+
+CharInStringMatcher* isOctDigit = new CharInStringMatcher(
+        "01234567", "an oct digit");
+
+CharInStringMatcher* isHexDigit = new CharInStringMatcher(
+        "0123456789ABCDEFabcdef", "a hex digit");
+
+CharInStringMatcher* isWhitespace = new CharInStringMatcher(
+        " \t\r\n", "a whitespace character");
+
 }

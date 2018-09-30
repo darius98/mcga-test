@@ -9,6 +9,7 @@
 #include "iterable_matchers.hpp"
 #include "numeric_matchers.hpp"
 #include "pointer_matchers.hpp"
+#include "string_matchers.hpp"
 #include "truth_matcher.hpp"
 
 
@@ -132,6 +133,26 @@ template<class T>
 IsAlmostEqualMatcher<T>* isAlmostEqualTo(const T& target,
                                          const double& eps=0.000001) {
     return new IsAlmostEqualMatcher<T>(target, eps);
+}
+
+extern CharInStringMatcher* isLetter;
+
+extern CharInStringMatcher* isDigit;
+
+extern CharInStringMatcher* isLowercaseLetter;
+
+extern CharInStringMatcher* isUppercaseLetter;
+
+extern CharInStringMatcher* isBinaryDigit;
+
+extern CharInStringMatcher* isOctDigit;
+
+extern CharInStringMatcher* isHexDigit;
+
+extern CharInStringMatcher* isWhitespace;
+
+IsSubstringMatcher* isSubstringOf(const std::string& s) {
+    return new IsSubstringMatcher(s);
 }
 
 } // namespace matcher
