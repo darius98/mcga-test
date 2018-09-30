@@ -13,12 +13,12 @@ class ComparisonMatcher: public Matcher {
 public:
     typedef std::function<bool(const T&, const T&)> Comparator;
 
-    ComparisonMatcher(const T& target,
-                      Comparator comparator,
-                      std::string expectation) :
-            target(target),
-            comparator(comparator),
-            expectation(std::move(expectation)) {}
+    ComparisonMatcher(const T& _target,
+                      Comparator _comparator,
+                      std::string _expectation) :
+            target(_target),
+            comparator(_comparator),
+            expectation(std::move(_expectation)) {}
 
     bool matches(const T& object) {
         return comparator(object, target);

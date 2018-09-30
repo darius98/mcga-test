@@ -1,5 +1,5 @@
-#ifndef RUNTIME_TESTING_MATCHER_DESCRIPTION_STREAMER_H_
-#define RUNTIME_TESTING_MATCHER_DESCRIPTION_STREAMER_H_
+#ifndef RUNTIME_TESTING_UTILS_STREAMER_H_
+#define RUNTIME_TESTING_UTILS_STREAMER_H_
 
 #include <cxxabi.h>
 
@@ -10,6 +10,7 @@
 #include <map>
 #include <sstream>
 #include <set>
+#include <tuple>
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
@@ -25,16 +26,7 @@ struct Streamer {
     }
 
     static void sendType(std::stringstream& stream) {
-        int stat;
-        std::string rawName = typeid(S).name();
-        char* name = abi::__cxa_demangle(
-                rawName.c_str(), nullptr, nullptr, &stat
-        );
-        if(stat == 0) {
-            rawName = name;
-            free(name);
-        }
-        stream << rawName;
+        formatType<S>(stream);
     }
 
 private:
@@ -106,16 +98,33 @@ private:
         s << "}";
     };
 
-    /// In case all else fails
+    template<class T>
+    static void formatType(std::stringstream& s) {
+        int stat;
+        std::string rawName = typeid(T).name();
+        char* name = abi::__cxa_demangle(
+                rawName.c_str(), nullptr, nullptr, &stat
+        );
+        if (stat == 0) {
+            rawName = name;
+            free(name);
+        }
+        s << rawName;
+    }
+
+    /**
+     * In case all else fails.
+     */
     template<class T>
     static void format(std::stringstream& s, T obj) {
-        s << "*(" << &obj << ")";
+        s << "[OBJECT OF TYPE ";
+        Streamer<T>::sendType(s);
+        s << "]";
     }
 };
 
 template<class S>
-struct Streamer
-        <S, std::void_t<decltype(std::cout << std::declval<S>())>> {
+struct Streamer<S, std::void_t<decltype(std::cout << std::declval<S>())>> {
     static void send(std::stringstream& s, S obj) {
         s << obj;
     }
