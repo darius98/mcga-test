@@ -17,7 +17,7 @@ void Test::generateTestReport(ostream &report, size_t spaces) {
     report << prefix << R"("description": ")" << description << "\",\n";
     if (!file.empty()) {
         report << prefix << R"("file": ")" << file << "\",\n";
-        report << prefix << R"("line": ")" << line << "\",\n";
+        report << prefix << "\"line\": " << line << ",\n";
     }
     report << prefix
            << R"("passed": )"

@@ -24,10 +24,14 @@ int Group::generateTestReport(ostream& report, size_t spaces) {
     }
     if (!file.empty()) {
         report << prefix << R"("file": ")" << file << "\",\n";
-        report << prefix << R"("line": ")" << line << "\",\n";
+        report << prefix << "\"line\": " << line << ",\n";
     }
     report << prefix << "\"numTests\": " << numTests << ",\n";
-    report << prefix << "\"numFailedTests\": " << numFailedTests << ",\n";
+    report << prefix << "\"numFailedTests\": " << numFailedTests;
+    if (!tests.empty() || !subGroups.empty()) {
+        report << ",";
+    }
+    report << "\n";
     if (!tests.empty()) {
         report << prefix << "\"tests\": [";
         for (size_t i = 0; i < tests.size(); ++ i) {
@@ -41,8 +45,12 @@ int Group::generateTestReport(ostream& report, size_t spaces) {
             }
             report << "\n" << prefix;
         }
-        report << "],\n";
+        report << "]";
     }
+    if (!subGroups.empty()) {
+        report << ",";
+    }
+    report << "\n";
     if (!subGroups.empty()) {
         report << prefix << "\"subGroups\": [";
         for (size_t i = 0; i < subGroups.size(); ++i) {
