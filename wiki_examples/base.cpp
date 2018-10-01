@@ -1,9 +1,7 @@
 #include <runtime_testing>
 
-using namespace runtime_testing;
-
-
 int main() {
+
     test("This is a passing test!", [&]() {
         expect(1 + 2 == 3);
     });
@@ -12,5 +10,5 @@ int main() {
         expect(3 * 3 == 6);
     });
 
-    return finalizeTesting();
+    return runtime_testing::finalizeTesting();
 }
