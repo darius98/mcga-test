@@ -4,8 +4,6 @@ using namespace runtime_testing;
 
 
 int main() {
-    initializeTestingDriver(std::cout);
-
     test("This is a passing test!", [&]() {
         expect(1 + 2 == 3);
     });

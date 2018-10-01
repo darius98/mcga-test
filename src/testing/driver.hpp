@@ -22,7 +22,7 @@ private:
     static TestingDriver* globalTestingDriver;
 
 public:
-    explicit TestingDriver(std::ostream* logger=nullptr);
+    explicit TestingDriver(std::ostream* logger=&std::cout);
 
     ~TestingDriver();
 

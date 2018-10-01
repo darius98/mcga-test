@@ -18,14 +18,6 @@ using namespace std;
 
 
 int main() {
-    /**
-     * This is the only one of the two lines of boiler-plate for writing test
-     * suites. It initializes the testing driver to print its output to a
-     * stream (defaults to STDERR). If this function is not called, the tests
-     * are still executed, but no output (human-readable) is provided.
-     */
-    initializeTestingDriver();
-
     vector<int> v, w;
 
     setUp([&]() {
@@ -360,9 +352,9 @@ int main() {
     });
 
     /**
-     * This is the second (and last) line of boiler-plate. This one is for
-     * integration with automated tools: it automatically generates a JSON file
-     * describing all tests executed, their structure and reasons for failure
+     * This is the only line of boiler-plate. This one is for integration with
+     * automated tools: it automatically generates a JSON file describing all
+     * tests executed, their structure and reasons for failure
      * and returns a status-code equal to the number of tests failed. Thus,
      * a passed suite of tests will return the exit code zero (0).
      */

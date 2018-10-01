@@ -10,7 +10,7 @@
 
 namespace runtime_testing {
 
-void initializeTestingDriver(std::ostream& log=std::cerr);
+void initializeTestingDriver(std::ostream& log=std::cout);
 
 void setUp(const std::function<void()>& func);
 
