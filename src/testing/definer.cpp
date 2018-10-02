@@ -7,24 +7,27 @@ using namespace std;
 namespace runtime_testing {
 namespace __internal {
 
-TestDefiner::TestDefiner(string _file, int _line):
-        file(move(_file)), line(_line) {}
+Definer::Definer(string _file, int _line): file(move(_file)), line(_line) {}
 
-void TestDefiner::operator()(string description,
-                             const function<void()>& func) {
+void TestDefiner::operator()(string description, const function<void()>& func) {
     TestingDriver::getOrCreateGlobalDriver()->addTest(
             new Test(move(description), file, line), func
     );
 }
-
-GroupDefiner::GroupDefiner(string _file, int _line):
-        file(move(_file)), line(_line) {}
 
 void GroupDefiner::operator()(string description,
                               const function<void()>& func) {
     TestingDriver::getOrCreateGlobalDriver()->addGroup(
             new Group(move(description), file, line), func
     );
+}
+
+void SetUpDefiner::operator()(const function<void()>& func) {
+    TestingDriver::getOrCreateGlobalDriver()->addSetUp(func);
+}
+
+void TearDownDefiner::operator()(const function<void()>& func) {
+    TestingDriver::getOrCreateGlobalDriver()->addTearDown(func);
 }
 
 } // namespace __internal

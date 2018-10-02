@@ -56,6 +56,11 @@
  */
 #define group runtime_testing::__internal::GroupDefiner(__FILENAME__, __LINE__)
 
+#define setUp runtime_testing::__internal::SetUpDefiner(__FILENAME__, __LINE__)
+
+#define tearDown \
+           runtime_testing::__internal::TearDownDefiner(__FILENAME__, __LINE__)
+
 /**
  * Assertion macro.
  *

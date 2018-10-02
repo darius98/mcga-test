@@ -8,24 +8,40 @@
 namespace runtime_testing {
 namespace __internal {
 
-class TestDefiner {
+class Definer {
 public:
-    explicit TestDefiner(std::string _file="", int _line=0);
-
-    void operator()(std::string description, const std::function<void()>& func);
-private:
+    Definer(std::string _file, int _line);
+protected:
     std::string file;
     int line;
 };
 
-class GroupDefiner {
+class TestDefiner: public Definer {
 public:
-    explicit GroupDefiner(std::string _file="", int _line=0);
+    using Definer::Definer;
 
     void operator()(std::string description, const std::function<void()>& func);
-private:
-    std::string file;
-    int line;
+};
+
+class GroupDefiner: public Definer {
+public:
+    using Definer::Definer;
+
+    void operator()(std::string description, const std::function<void()>& func);
+};
+
+class SetUpDefiner: public Definer {
+public:
+    using Definer::Definer;
+
+    void operator()(const std::function<void()>& func);
+};
+
+class TearDownDefiner: public Definer {
+public:
+    using Definer::Definer;
+
+    void operator()(const std::function<void()>& func);
 };
 
 }
