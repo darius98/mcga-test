@@ -174,7 +174,7 @@ string TestingDriver::getTestFullName(Test* currentTest) const {
     if (!groupStackFullName.empty()) {
         groupStackFullName += "::";
     }
-    return file + currentTest->description;
+    return file + groupStackFullName + currentTest->description;
 }
 
 void TestingDriver::executeSetUps(Test* currentTest) {
