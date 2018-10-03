@@ -4,7 +4,8 @@
 #include <ostream>
 #include <stack>
 
-#include "group.hpp"
+#include "testing/group.hpp"
+
 
 namespace ktest {
 

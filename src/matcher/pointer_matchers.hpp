@@ -1,7 +1,8 @@
 #ifndef KTEST_MATCHER_POINTER_MATCHERS_H_
 #define KTEST_MATCHER_POINTER_MATCHERS_H_
 
-#include "matcher.hpp"
+#include "matcher/matcher.hpp"
+
 
 namespace ktest {
 

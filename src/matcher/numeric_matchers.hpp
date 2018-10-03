@@ -2,7 +2,8 @@
 #define KTEST_MATCHER_NUMERIC_MATCHERS_H_
 
 #include <cmath>
-#include "matcher.hpp"
+
+#include "matcher/matcher.hpp"
 
 
 namespace ktest {

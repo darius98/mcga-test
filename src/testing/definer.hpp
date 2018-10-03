@@ -1,8 +1,8 @@
 #ifndef KTEST_TESTING_DEFINER_H_
 #define KTEST_TESTING_DEFINER_H_
 
-#include <string>
 #include <functional>
+#include <string>
 
 
 namespace ktest {

@@ -2,9 +2,9 @@
 #define KTEST_MATCHER_COMPARISON_MATCHERS_H_
 
 #include <functional>
-#include <utility>
 
-#include "matcher.hpp"
+#include "matcher/matcher.hpp"
+
 
 namespace ktest {
 

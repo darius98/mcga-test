@@ -3,8 +3,8 @@
 
 #include <stdexcept>
 
-#include "../matcher/matcher.hpp"
-#include "testing.hpp"
+#include "matcher/matcher.hpp"
+#include "testing/testing.hpp"
 
 
 namespace ktest {

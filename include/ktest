@@ -1,11 +1,11 @@
 #ifndef KTEST_KTEST_H_
 #define KTEST_KTEST_H_
 
-#include "src/matcher/matcher.hpp"
-#include "src/matcher/core_matchers.hpp"
+#include "matcher/core_matchers.hpp"
 
-#include "src/testing/expect.hpp"
-#include "src/testing/testing.hpp"
+#include "testing/definer.hpp"
+#include "testing/expect.hpp"
+#include "testing/testing.hpp"
 
 // TODO(darius98): Trim the file to project-level instead.
 #define __FILENAME__ (__builtin_strrchr(__FILE__, '/') ?                       \

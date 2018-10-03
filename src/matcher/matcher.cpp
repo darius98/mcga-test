@@ -1,5 +1,5 @@
-#include "matcher.hpp"
-#include "../testing/testing.hpp"
+#include "matcher/matcher.hpp"
+#include "testing/testing.hpp"
 
 using namespace ktest;
 using namespace std;

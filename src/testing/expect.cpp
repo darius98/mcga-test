@@ -1,7 +1,7 @@
-#include "expect.hpp"
+#include "testing/expect.hpp"
 
 using namespace std;
-using namespace ktest;
+
 
 namespace ktest {
 

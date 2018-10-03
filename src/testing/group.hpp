@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 
-#include "test.hpp"
+#include "testing/test.hpp"
 
 
 namespace ktest {

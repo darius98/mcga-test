@@ -2,14 +2,13 @@
 #define KTEST_UTILS_STREAMER_H_
 
 #include <cxxabi.h>
-
 #include <deque>
 #include <functional>
 #include <iostream>
 #include <list>
 #include <map>
-#include <sstream>
 #include <set>
+#include <sstream>
 #include <tuple>
 #include <unordered_map>
 #include <unordered_set>

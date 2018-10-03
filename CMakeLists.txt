@@ -2,10 +2,11 @@ cmake_minimum_required(VERSION 3.8)
 project(KTest)
 set(CMAKE_CXX_STANDARD 14)
 
-include_directories(.)
-file(GLOB KTestLibImpl src/**/*.cpp src/**/*.hpp ktest)
+include_directories(./src)
+file(GLOB KTestLibImpl src/**/*.cpp src/**/*.hpp include/ktest)
 add_library("ktest" ${KTestLibImpl})
 
+include_directories(./include)
 set(T StdVectorTests)
 add_executable(${T} concept/std_vector_test.cpp)
 install(TARGETS ${T} DESTINATION ${T})

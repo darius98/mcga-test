@@ -4,7 +4,7 @@
 #include <ostream>
 #include <string>
 
-#include "expect.hpp"
+#include "testing/expect.hpp"
 
 
 namespace ktest {

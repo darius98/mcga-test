@@ -4,8 +4,6 @@
 #include <iostream>
 #include <string>
 
-#include "definer.hpp"
-
 
 namespace ktest {
 

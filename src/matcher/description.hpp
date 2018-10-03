@@ -4,7 +4,7 @@
 #include <sstream>
 #include <string>
 
-#include "src/utils/streamer.hpp"
+#include "utils/streamer.hpp"
 
 
 namespace ktest {

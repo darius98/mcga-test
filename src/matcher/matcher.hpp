@@ -1,7 +1,7 @@
 #ifndef KTEST_MATCHER_MATCHER_H_
 #define KTEST_MATCHER_MATCHER_H_
 
-#include "description.hpp"
+#include "matcher/description.hpp"
 
 
 namespace ktest {
