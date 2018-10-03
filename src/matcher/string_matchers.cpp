@@ -4,7 +4,7 @@
 
 using namespace std;
 
-namespace matcher {
+namespace ktest {
 
 CharInStringMatcher::CharInStringMatcher(const char* _container,
                                          const char* _expectation) noexcept:

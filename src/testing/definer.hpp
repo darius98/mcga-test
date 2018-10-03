@@ -1,11 +1,11 @@
-#ifndef RUNTIME_TESTING_TESTING_DEFINER_H_
-#define RUNTIME_TESTING_TESTING_DEFINER_H_
+#ifndef KTEST_TESTING_DEFINER_H_
+#define KTEST_TESTING_DEFINER_H_
 
 #include <string>
 #include <functional>
 
 
-namespace runtime_testing {
+namespace ktest {
 namespace __internal {
 
 class Definer {

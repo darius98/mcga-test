@@ -1,5 +1,5 @@
-#ifndef RUNTIME_TESTING_MATCHER_FUNCTIONAL_MATCHERS_H_
-#define RUNTIME_TESTING_MATCHER_FUNCTIONAL_MATCHERS_H_
+#ifndef KTEST_MATCHER_FUNCTIONAL_MATCHERS_H_
+#define KTEST_MATCHER_FUNCTIONAL_MATCHERS_H_
 
 #include <cxxabi.h>
 #include <functional>
@@ -7,7 +7,7 @@
 #include "matcher.hpp"
 
 
-namespace matcher {
+namespace ktest {
 
 class ThrowsAnythingMatcher: public Matcher {
 public:

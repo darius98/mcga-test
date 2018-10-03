@@ -1,6 +1,6 @@
 #include "truth_matcher.hpp"
 
-namespace matcher {
+namespace ktest {
 
 bool IsTrueMatcher::matches(const bool& object) {
     return object;

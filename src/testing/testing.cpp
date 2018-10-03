@@ -9,7 +9,7 @@
 using namespace std;
 
 
-namespace runtime_testing {
+namespace ktest {
 
 void initializeTestingDriver(std::ostream& log) {
     TestingDriver::init(log);
@@ -48,4 +48,4 @@ int finalizeTesting(const string& reportFileName) {
     return status;
 }
 
-} // namespace runtime_testing
+} // namespace ktest

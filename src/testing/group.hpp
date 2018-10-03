@@ -1,5 +1,5 @@
-#ifndef RUNTIME_TESTING_TESTING_GROUP_H_
-#define RUNTIME_TESTING_TESTING_GROUP_H_
+#ifndef KTEST_TESTING_GROUP_H_
+#define KTEST_TESTING_GROUP_H_
 
 #include <functional>
 #include <ostream>
@@ -9,7 +9,7 @@
 #include "test.hpp"
 
 
-namespace runtime_testing {
+namespace ktest {
 
 struct Group {
     std::string file;

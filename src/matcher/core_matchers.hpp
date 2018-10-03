@@ -1,5 +1,5 @@
-#ifndef RUNTIME_TESTING_MATCHER_CORE_MATCHERS_H_
-#define RUNTIME_TESTING_MATCHER_CORE_MATCHERS_H_
+#ifndef KTEST_MATCHER_CORE_MATCHERS_H_
+#define KTEST_MATCHER_CORE_MATCHERS_H_
 
 #include <set>
 
@@ -13,7 +13,7 @@
 #include "truth_matcher.hpp"
 
 
-namespace matcher {
+namespace ktest {
 
 extern IsTrueMatcher* isTrue;
 
@@ -151,6 +151,6 @@ extern CharInStringMatcher* isWhitespace;
 
 IsSubstringMatcher* isSubstringOf(const std::string& s);
 
-} // namespace matcher
+} // namespace ktest
 
 #endif

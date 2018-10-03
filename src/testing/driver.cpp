@@ -1,9 +1,9 @@
 #include "driver.hpp"
 
-using namespace matcher;
+using namespace ktest;
 using namespace std;
 
-namespace runtime_testing {
+namespace ktest {
 
 TestingDriver* TestingDriver::globalTestingDriver = nullptr;
 

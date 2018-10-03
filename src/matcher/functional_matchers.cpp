@@ -2,7 +2,7 @@
 
 using namespace std;
 
-namespace matcher {
+namespace ktest {
 
 bool ThrowsAnythingMatcher::matches(const function<void()>& func) {
     try {

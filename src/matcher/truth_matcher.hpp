@@ -1,10 +1,10 @@
-#ifndef RUNTIME_TESTING_MATCHER_TRUTH_MATCHER_H_
-#define RUNTIME_TESTING_MATCHER_TRUTH_MATCHER_H_
+#ifndef KTEST_MATCHER_TRUTH_MATCHER_H_
+#define KTEST_MATCHER_TRUTH_MATCHER_H_
 
 #include "matcher.hpp"
 
 
-namespace matcher {
+namespace ktest {
 
 class IsTrueMatcher: public Matcher {
 public:
@@ -24,6 +24,6 @@ public:
     void describeMismatch(Description& description) override;
 };
 
-} // namespace matcher
+} // namespace ktest
 
 #endif

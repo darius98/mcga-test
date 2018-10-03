@@ -1,5 +1,5 @@
-#ifndef RUNTIME_TESTING_TESTING_EXPECT_H_
-#define RUNTIME_TESTING_TESTING_EXPECT_H_
+#ifndef KTEST_TESTING_EXPECT_H_
+#define KTEST_TESTING_EXPECT_H_
 
 #include <stdexcept>
 
@@ -7,7 +7,7 @@
 #include "testing.hpp"
 
 
-namespace runtime_testing {
+namespace ktest {
 
 class ExpectationFailed: std::runtime_error {
 public:
@@ -19,7 +19,7 @@ public:
 
 void checkDuringTest(const std::string& file, int line);
 
-void throwExpectationFailed(matcher::Description* description);
+void throwExpectationFailed(Description* description);
 
 void __expect(const bool& exprResult,
               const std::string& file="NO_FILENAME",
@@ -35,13 +35,13 @@ void __expectMatches(const T& object,
     if (matcher->matches(object)) {
         return;
     }
-    auto description = matcher::Description::createForExpect(file, line, "");
+    auto description = Description::createForExpect(file, line, "");
     matcher->describe(*description);
     (*description) << ". Got '" << object << "': ";
     matcher->describeMismatch(*description);
     throwExpectationFailed(description);
 }
 
-} // namespace runtime_testing
+} // namespace ktest
 
 #endif

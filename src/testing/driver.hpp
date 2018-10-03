@@ -1,12 +1,12 @@
-#ifndef RUNTIME_TESTING_TESTING_DRIVER_H_
-#define RUNTIME_TESTING_TESTING_DRIVER_H_
+#ifndef KTEST_TESTING_DRIVER_H_
+#define KTEST_TESTING_DRIVER_H_
 
 #include <ostream>
 #include <stack>
 
 #include "group.hpp"
 
-namespace runtime_testing {
+namespace ktest {
 
 class TestingDriver {
 public:

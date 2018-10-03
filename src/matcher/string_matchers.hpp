@@ -1,12 +1,12 @@
-#ifndef RUNTIME_TESTING_MATCHER_STRING_MATCHERS_H_
-#define RUNTIME_TESTING_MATCHER_STRING_MATCHERS_H_
+#ifndef KTEST_MATCHER_STRING_MATCHERS_H_
+#define KTEST_MATCHER_STRING_MATCHERS_H_
 
 #include <string>
 
 #include "matcher.hpp"
 
 
-namespace matcher {
+namespace ktest {
 
 class CharInStringMatcher: public Matcher {
 public:

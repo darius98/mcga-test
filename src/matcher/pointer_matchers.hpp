@@ -1,9 +1,9 @@
-#ifndef RUNTIME_TESTING_MATCHER_POINTER_MATCHERS_H_
-#define RUNTIME_TESTING_MATCHER_POINTER_MATCHERS_H_
+#ifndef KTEST_MATCHER_POINTER_MATCHERS_H_
+#define KTEST_MATCHER_POINTER_MATCHERS_H_
 
 #include "matcher.hpp"
 
-namespace matcher {
+namespace ktest {
 
 class IsNullptrMatcher: public Matcher {
 public:

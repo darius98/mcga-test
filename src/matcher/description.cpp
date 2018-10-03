@@ -2,7 +2,7 @@
 
 using namespace std;
 
-namespace matcher {
+namespace ktest {
 
 Description* Description::createForExpect(
         const string& file,

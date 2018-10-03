@@ -1,10 +1,10 @@
-#ifndef RUNTIME_TESTING_MATCHER_MATCHER_H_
-#define RUNTIME_TESTING_MATCHER_MATCHER_H_
+#ifndef KTEST_MATCHER_MATCHER_H_
+#define KTEST_MATCHER_MATCHER_H_
 
 #include "description.hpp"
 
 
-namespace matcher {
+namespace ktest {
 
 /**
  * Basic matcher interface.
@@ -47,13 +47,13 @@ private:
     static std::set<void*> matchersAllocatedDuringTests;
 };
 
-} // namespace matcher
+} // namespace ktest
 
 /**
  * Macro for checking if template argument is a matcher type.
  */
 #define IS_MATCHER(cls)                                                        \
     class=typename std::enable_if<                                             \
-            std::is_base_of<matcher::Matcher, cls>::value, void>::type
+            std::is_base_of<ktest::Matcher, cls>::value, void>::type
 
 #endif

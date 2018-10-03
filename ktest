@@ -1,5 +1,5 @@
-#ifndef RUNTIME_TESTING_RUNTIME_TESTING_H_
-#define RUNTIME_TESTING_RUNTIME_TESTING_H_
+#ifndef KTEST_KTEST_H_
+#define KTEST_KTEST_H_
 
 #include "src/matcher/matcher.hpp"
 #include "src/matcher/core_matchers.hpp"
@@ -25,7 +25,7 @@
  * });
  * ```
  */
-#define test runtime_testing::__internal::TestDefiner(__FILENAME__, __LINE__)
+#define test ktest::__internal::TestDefiner(__FILENAME__, __LINE__)
 
 /**
  * Create a test group.
@@ -54,12 +54,11 @@
  * });
  * ```
  */
-#define group runtime_testing::__internal::GroupDefiner(__FILENAME__, __LINE__)
+#define group ktest::__internal::GroupDefiner(__FILENAME__, __LINE__)
 
-#define setUp runtime_testing::__internal::SetUpDefiner(__FILENAME__, __LINE__)
+#define setUp ktest::__internal::SetUpDefiner(__FILENAME__, __LINE__)
 
-#define tearDown \
-           runtime_testing::__internal::TearDownDefiner(__FILENAME__, __LINE__)
+#define tearDown ktest::__internal::TearDownDefiner(__FILENAME__, __LINE__)
 
 /**
  * Assertion macro.
@@ -68,7 +67,7 @@
  * the body of the boolean expression when it evaluates to false.
  */
 #define expect(expr...)                                                        \
-    runtime_testing::__expect(expr, __FILENAME__, __LINE__, #expr " is false")
+    ktest::__expect(expr, __FILENAME__, __LINE__, #expr " is false")
 
 /**
  * Matcher expectation macro.
@@ -78,7 +77,7 @@
  * The syntax is `expectMatches(object, matcher)`.
  */
 #define expectMatches(var_comma_matcher...)                                    \
-    runtime_testing::__expectMatches(var_comma_matcher, __FILENAME__, __LINE__)
+    ktest::__expectMatches(var_comma_matcher, __FILENAME__, __LINE__)
 
 
 /**
@@ -88,6 +87,6 @@
  * Has the same effect as __expect(false, file, line, message).
  */
 #define fail(...) \
-    runtime_testing::__expect(false, __FILENAME__, __LINE__, __VA_ARGS__)
+    ktest::__expect(false, __FILENAME__, __LINE__, __VA_ARGS__)
 
 #endif

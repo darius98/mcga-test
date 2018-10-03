@@ -1,11 +1,11 @@
-#ifndef RUNTIME_TESTING_MATCHER_NUMERIC_MATCHERS_H_
-#define RUNTIME_TESTING_MATCHER_NUMERIC_MATCHERS_H_
+#ifndef KTEST_MATCHER_NUMERIC_MATCHERS_H_
+#define KTEST_MATCHER_NUMERIC_MATCHERS_H_
 
 #include <cmath>
 #include "matcher.hpp"
 
 
-namespace matcher {
+namespace ktest {
 
 class IsPositiveMatcher: public Matcher {
 public:

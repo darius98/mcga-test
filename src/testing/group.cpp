@@ -2,7 +2,7 @@
 
 using namespace std;
 
-namespace runtime_testing {
+namespace ktest {
 
 Group::Group(string description, string file, int line):
         description(move(description)), file(move(file)), line(line) {}

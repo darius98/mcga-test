@@ -1,5 +1,5 @@
-#ifndef RUNTIME_TESTING_TESTING_TESTING_H_
-#define RUNTIME_TESTING_TESTING_TESTING_H_
+#ifndef KTEST_TESTING_TESTING_H_
+#define KTEST_TESTING_TESTING_H_
 
 #include <iostream>
 #include <string>
@@ -7,7 +7,7 @@
 #include "definer.hpp"
 
 
-namespace runtime_testing {
+namespace ktest {
 
 void initializeTestingDriver(std::ostream& log=std::cout);
 

@@ -1,5 +1,5 @@
-#ifndef RUNTIME_TESTING_UTILS_STREAMER_H_
-#define RUNTIME_TESTING_UTILS_STREAMER_H_
+#ifndef KTEST_UTILS_STREAMER_H_
+#define KTEST_UTILS_STREAMER_H_
 
 #include <cxxabi.h>
 
@@ -16,7 +16,7 @@
 #include <vector>
 
 
-namespace runtime_testing {
+namespace ktest {
 namespace utils {
 
 template<class S, class=void>

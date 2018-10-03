@@ -1,7 +1,7 @@
 #include "iterable_matchers.hpp"
 
 
-namespace matcher {
+namespace ktest {
 
 void IsEmptyMatcher::describe(Description& description) {
     description << "empty iterable";

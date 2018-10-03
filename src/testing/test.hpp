@@ -1,5 +1,5 @@
-#ifndef RUNTIME_TESTING_TESTING_TEST_H_
-#define RUNTIME_TESTING_TESTING_TEST_H_
+#ifndef KTEST_TESTING_TEST_H_
+#define KTEST_TESTING_TEST_H_
 
 #include <ostream>
 #include <string>
@@ -7,7 +7,7 @@
 #include "expect.hpp"
 
 
-namespace runtime_testing {
+namespace ktest {
 
 struct Test {
     std::string file;

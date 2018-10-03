@@ -1,9 +1,9 @@
 #include "expect.hpp"
 
 using namespace std;
-using namespace matcher;
+using namespace ktest;
 
-namespace runtime_testing {
+namespace ktest {
 
 ExpectationFailed::ExpectationFailed(const string& str):
         runtime_error(str) {}
@@ -40,7 +40,7 @@ void __expect(const bool& exprResult,
         return;
     }
     throwExpectationFailed(
-        matcher::Description::createForExpect(file, line, expr)
+        Description::createForExpect(file, line, expr)
     );
 }
 

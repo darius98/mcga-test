@@ -1,10 +1,10 @@
-#ifndef RUNTIME_TESTING_MATCHER_COMPOSITE_MATCHERS_H_
-#define RUNTIME_TESTING_MATCHER_COMPOSITE_MATCHERS_H_
+#ifndef KTEST_MATCHER_COMPOSITE_MATCHERS_H_
+#define KTEST_MATCHER_COMPOSITE_MATCHERS_H_
 
 #include "matcher.hpp"
 
 
-namespace matcher {
+namespace ktest {
 
 template<class M1, class M2, IS_MATCHER(M1), IS_MATCHER(M2)>
 class AndMatcher: public Matcher {
