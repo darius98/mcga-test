@@ -1,0 +1,6 @@
+[submodule "third_party/autojson"]
+	path = third_party/autojson
+	url = https://github.com/establishment/autojson
+[submodule "third_party/easyflags"]
+	path = third_party/easyflags
+	url = https://github.com/establishment/easyflags
