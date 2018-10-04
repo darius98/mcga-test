@@ -1,5 +1,6 @@
 #include "testing/test.hpp"
 
+using namespace autojson;
 using namespace std;
 
 
@@ -12,27 +13,18 @@ Test::~Test() {
     delete failure;
 }
 
-void Test::generateTestReport(ostream &report, size_t spaces) {
-    string prefix(spaces + 2, ' ');
-    report << "{\n";
-    report << prefix << R"("description": ")" << description << "\",\n";
+JSON Test::generateReport() const {
+    JSON report;
+    report["description"] = description;
+    report["passed"] = (failure == nullptr);
     if (!file.empty()) {
-        report << prefix << R"("file": ")" << file << "\",\n";
-        report << prefix << "\"line\": " << line << ",\n";
+        report["file"] = file;
+        report["line"] = line;
     }
-    report << prefix
-           << R"("passed": )"
-           << (failure == nullptr ? "true" : "false");
     if (failure != nullptr) {
-        report << ",\n";
-        report << prefix
-               << R"("failureMessage": ")"
-               << failure->getMessage()
-               << "\"\n";
-    } else {
-        report << "\n";
+        report["failureMessage"] = failure->getMessage();
     }
-    report << string(spaces, ' ') << "}";
+    return report;
 }
 
 }

@@ -2,9 +2,18 @@ cmake_minimum_required(VERSION 3.8)
 project(KKTest)
 set(CMAKE_CXX_STANDARD 14)
 
+add_definitions(-Dautojsonuselib)
+include_directories(./third_party/autojson/include)
+add_subdirectory(third_party/autojson)
+
+add_definitions(-Deasyflagsuselib)
+include_directories(./third_party/easyflags/include)
+add_subdirectory(third_party/easyflags)
+
 include_directories(./src)
 file(GLOB KKTestLibImpl src/**/*.cpp src/**/*.hpp include/kktest)
 add_library("kktest" ${KKTestLibImpl})
+target_link_libraries(kktest autojson easyflags)
 
 include_directories(./include)
 set(T StdVectorTests)

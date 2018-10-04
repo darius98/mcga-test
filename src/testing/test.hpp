@@ -4,6 +4,8 @@
 #include <ostream>
 #include <string>
 
+#include <JSON>
+
 #include "testing/expect.hpp"
 
 
@@ -21,7 +23,7 @@ struct Test {
 
     ~Test();
 
-    void generateTestReport(std::ostream& report, std::size_t spaces);
+    autojson::JSON generateReport() const;
 };
 
 }

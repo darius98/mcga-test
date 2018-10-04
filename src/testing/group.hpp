@@ -6,6 +6,8 @@
 #include <string>
 #include <vector>
 
+#include <JSON>
+
 #include "testing/test.hpp"
 
 
@@ -33,7 +35,7 @@ struct Group {
 
     ~Group();
 
-    int generateTestReport(std::ostream& report, std::size_t spaces);
+    autojson::JSON generateReport() const;
 };
 
 }

@@ -1,5 +1,6 @@
 #include "testing/group.hpp"
 
+using namespace autojson;
 using namespace std;
 
 
@@ -17,58 +18,30 @@ Group::~Group() {
     }
 }
 
-int Group::generateTestReport(ostream& report, size_t spaces) {
-    string prefix(spaces + 2, ' ');
-    report << "{\n";
+JSON Group::generateReport() const {
+    JSON report;
     if (!description.empty()) {
-        report << prefix << R"("description": ")" << description << "\",\n";
+        report["description"] = description;
     }
     if (!file.empty()) {
-        report << prefix << R"("file": ")" << file << "\",\n";
-        report << prefix << "\"line\": " << line << ",\n";
+        report["file"] = file;
+        report["line"] = line;
     }
-    report << prefix << "\"numTests\": " << numTests << ",\n";
-    report << prefix << "\"numFailedTests\": " << numFailedTests;
-    if (!tests.empty() || !subGroups.empty()) {
-        report << ",";
-    }
-    report << "\n";
+    report["numTests"] = numTests;
+    report["numFailedTests"] = numFailedTests;
     if (!tests.empty()) {
-        report << prefix << "\"tests\": [";
-        for (size_t i = 0; i < tests.size(); ++ i) {
-            if (i == 0) {
-                report << "\n" << prefix;
-            }
-            report << "  ";
-            tests[i]->generateTestReport(report, spaces + 4);
-            if (i + 1 != tests.size()) {
-                report << ",";
-            }
-            report << "\n" << prefix;
+        report["tests"] = vector<JSON>();
+        for (const auto& test: tests) {
+            report["tests"].push_back(test->generateReport());
         }
-        report << "]";
     }
     if (!subGroups.empty()) {
-        report << ",";
-    }
-    report << "\n";
-    if (!subGroups.empty()) {
-        report << prefix << "\"subGroups\": [";
-        for (size_t i = 0; i < subGroups.size(); ++i) {
-            if (i == 0) {
-                report << "\n" << prefix;
-            }
-            report << "  ";
-            subGroups[i]->generateTestReport(report, spaces + 4);
-            if (i + 1 != subGroups.size()) {
-                report << ",";
-            }
-            report << "\n" << prefix;
+        report["subGroups"] = vector<JSON>();
+        for (const auto& subGroup: subGroups) {
+            report["subGroups"].push_back(subGroup->generateReport());
         }
-        report << "]\n";
     }
-    report << string(spaces, ' ') << "}";
-    return numFailedTests;
+    return report;
 }
 
 }

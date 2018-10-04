@@ -137,7 +137,7 @@ void TestingDriver::addTearDown(const function<void()> &func) {
 }
 
 int TestingDriver::generateTestReport(ostream& report) {
-    return groupStack[0]->generateTestReport(report, 0u);
+    report << groupStack[0]->generateReport().stringify(false);
 }
 
 int TestingDriver::getNumFailedTests() {
