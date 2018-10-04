@@ -3,7 +3,7 @@
 using namespace std;
 
 
-namespace ktest {
+namespace kktest {
 
 Description* Description::createForExpect(
         const string& file,

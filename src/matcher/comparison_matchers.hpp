@@ -1,12 +1,12 @@
-#ifndef KTEST_MATCHER_COMPARISON_MATCHERS_H_
-#define KTEST_MATCHER_COMPARISON_MATCHERS_H_
+#ifndef KKTEST_MATCHER_COMPARISON_MATCHERS_H_
+#define KKTEST_MATCHER_COMPARISON_MATCHERS_H_
 
 #include <functional>
 
 #include "matcher/matcher.hpp"
 
 
-namespace ktest {
+namespace kktest {
 
 template<class T>
 class ComparisonMatcher: public Matcher {
@@ -60,6 +60,6 @@ private:
     void* objectAddress = nullptr;
 };
 
-} // namespace ktest
+} // namespace kktest
 
 #endif

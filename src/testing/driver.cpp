@@ -3,7 +3,7 @@
 using namespace std;
 
 
-namespace ktest {
+namespace kktest {
 
 TestingDriver* TestingDriver::globalTestingDriver = nullptr;
 

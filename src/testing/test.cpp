@@ -3,7 +3,7 @@
 using namespace std;
 
 
-namespace ktest {
+namespace kktest {
 
 Test::Test(string description, string file, int line):
         description(move(description)), file(move(file)), line(line) {}

@@ -1,7 +1,7 @@
 #include "matcher/pointer_matchers.hpp"
 
 
-namespace ktest {
+namespace kktest {
 
 bool IsNullptrMatcher::matches(void*const& obj) {
     return obj == nullptr;

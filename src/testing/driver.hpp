@@ -1,5 +1,5 @@
-#ifndef KTEST_TESTING_DRIVER_H_
-#define KTEST_TESTING_DRIVER_H_
+#ifndef KKTEST_TESTING_DRIVER_H_
+#define KKTEST_TESTING_DRIVER_H_
 
 #include <ostream>
 #include <stack>
@@ -7,7 +7,7 @@
 #include "testing/group.hpp"
 
 
-namespace ktest {
+namespace kktest {
 
 class TestingDriver {
 public:

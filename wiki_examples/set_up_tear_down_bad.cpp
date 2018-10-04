@@ -1,5 +1,5 @@
 #include <algorithm>
-#include <ktest>
+#include <kktest>
 
 int main() {
     std::vector<int> v;
@@ -28,5 +28,5 @@ int main() {
         v.clear();
     });
 
-    return ktest::finalizeTesting();
+    return kktest::finalizeTesting();
 }

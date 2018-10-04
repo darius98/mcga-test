@@ -5,7 +5,7 @@
 using namespace std;
 
 
-namespace ktest {
+namespace kktest {
 
 void initializeTestingDriver(std::ostream& log) {
     TestingDriver::init(log);
@@ -44,4 +44,4 @@ int finalizeTesting(const string& reportFileName) {
     return status;
 }
 
-} // namespace ktest
+} // namespace kktest

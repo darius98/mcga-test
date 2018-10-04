@@ -1,7 +1,7 @@
 #include "matcher/numeric_matchers.hpp"
 
 
-namespace ktest {
+namespace kktest {
 
 void IsPositiveMatcher::describe(Description& description) {
     description << "a positive number";

@@ -10,9 +10,9 @@
 
 #include <vector>
 
-#include <ktest>
+#include <kktest>
 
-using namespace ktest;
+using namespace kktest;
 using namespace std;
 
 

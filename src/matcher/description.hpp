@@ -1,5 +1,5 @@
-#ifndef KTEST_MATCHER_DESCRIPTION_H_
-#define KTEST_MATCHER_DESCRIPTION_H_
+#ifndef KKTEST_MATCHER_DESCRIPTION_H_
+#define KKTEST_MATCHER_DESCRIPTION_H_
 
 #include <sstream>
 #include <string>
@@ -7,7 +7,7 @@
 #include "utils/streamer.hpp"
 
 
-namespace ktest {
+namespace kktest {
 
 class Description {
 public:

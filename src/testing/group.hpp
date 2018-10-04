@@ -1,5 +1,5 @@
-#ifndef KTEST_TESTING_GROUP_H_
-#define KTEST_TESTING_GROUP_H_
+#ifndef KKTEST_TESTING_GROUP_H_
+#define KKTEST_TESTING_GROUP_H_
 
 #include <functional>
 #include <ostream>
@@ -9,7 +9,7 @@
 #include "testing/test.hpp"
 
 
-namespace ktest {
+namespace kktest {
 
 struct Group {
     std::string file;

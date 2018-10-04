@@ -1,7 +1,7 @@
 #include "matcher/truth_matcher.hpp"
 
 
-namespace ktest {
+namespace kktest {
 
 bool IsTrueMatcher::matches(const bool& object) {
     return object;

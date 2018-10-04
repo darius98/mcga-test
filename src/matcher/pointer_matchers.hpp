@@ -1,10 +1,10 @@
-#ifndef KTEST_MATCHER_POINTER_MATCHERS_H_
-#define KTEST_MATCHER_POINTER_MATCHERS_H_
+#ifndef KKTEST_MATCHER_POINTER_MATCHERS_H_
+#define KKTEST_MATCHER_POINTER_MATCHERS_H_
 
 #include "matcher/matcher.hpp"
 
 
-namespace ktest {
+namespace kktest {
 
 class IsNullptrMatcher: public Matcher {
 public:

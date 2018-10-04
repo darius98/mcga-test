@@ -1,5 +1,5 @@
-#ifndef KTEST_TESTING_EXPECT_H_
-#define KTEST_TESTING_EXPECT_H_
+#ifndef KKTEST_TESTING_EXPECT_H_
+#define KKTEST_TESTING_EXPECT_H_
 
 #include <stdexcept>
 
@@ -7,7 +7,7 @@
 #include "testing/testing.hpp"
 
 
-namespace ktest {
+namespace kktest {
 
 class ExpectationFailed: std::runtime_error {
 public:
@@ -42,6 +42,6 @@ void __expectMatches(const T& object,
     throwExpectationFailed(description);
 }
 
-} // namespace ktest
+} // namespace kktest
 
 #endif

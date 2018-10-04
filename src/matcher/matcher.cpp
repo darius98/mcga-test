@@ -1,11 +1,11 @@
 #include "matcher/matcher.hpp"
 #include "testing/testing.hpp"
 
-using namespace ktest;
+using namespace kktest;
 using namespace std;
 
 
-namespace ktest {
+namespace kktest {
 
 void* Matcher::operator new(size_t size) noexcept {
     void* p = malloc(size);

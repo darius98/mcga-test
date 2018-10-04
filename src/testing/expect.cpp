@@ -3,7 +3,7 @@
 using namespace std;
 
 
-namespace ktest {
+namespace kktest {
 
 ExpectationFailed::ExpectationFailed(const string& str):
         runtime_error(str) {}

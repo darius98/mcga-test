@@ -1,11 +1,11 @@
-#ifndef KTEST_TESTING_TESTING_H_
-#define KTEST_TESTING_TESTING_H_
+#ifndef KKTEST_TESTING_TESTING_H_
+#define KKTEST_TESTING_TESTING_H_
 
 #include <iostream>
 #include <string>
 
 
-namespace ktest {
+namespace kktest {
 
 void initializeTestingDriver(std::ostream& log=std::cout);
 

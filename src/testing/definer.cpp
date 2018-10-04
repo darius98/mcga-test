@@ -4,7 +4,7 @@
 using namespace std;
 
 
-namespace ktest {
+namespace kktest {
 namespace __internal {
 
 Definer::Definer(string _file, int _line): file(move(_file)), line(_line) {}
@@ -31,4 +31,4 @@ void TearDownDefiner::operator()(const function<void()>& func) {
 }
 
 } // namespace __internal
-} // namespace ktest
+} // namespace kktest

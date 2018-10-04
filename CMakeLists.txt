@@ -1,22 +1,22 @@
 cmake_minimum_required(VERSION 3.8)
-project(KTest)
+project(KKTest)
 set(CMAKE_CXX_STANDARD 14)
 
 include_directories(./src)
-file(GLOB KTestLibImpl src/**/*.cpp src/**/*.hpp include/ktest)
-add_library("ktest" ${KTestLibImpl})
+file(GLOB KKTestLibImpl src/**/*.cpp src/**/*.hpp include/kktest)
+add_library("kktest" ${KKTestLibImpl})
 
 include_directories(./include)
 set(T StdVectorTests)
 add_executable(${T} concept/std_vector_test.cpp)
 install(TARGETS ${T} DESTINATION ${T})
-target_link_libraries(${T} "ktest")
+target_link_libraries(${T} "kktest")
 
 function(wiki_example FILE_NAME)
     set(T wiki_example_${FILE_NAME})
     add_executable(${T} wiki_examples/${FILE_NAME}.cpp)
     install(TARGETS ${T} DESTINATION ${T})
-    target_link_libraries(${T} "ktest")
+    target_link_libraries(${T} "kktest")
 endfunction()
 
 wiki_example(base)

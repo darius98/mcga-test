@@ -1,12 +1,12 @@
-#ifndef KTEST_MATCHER_FUNCTIONAL_MATCHERS_H_
-#define KTEST_MATCHER_FUNCTIONAL_MATCHERS_H_
+#ifndef KKTEST_MATCHER_FUNCTIONAL_MATCHERS_H_
+#define KKTEST_MATCHER_FUNCTIONAL_MATCHERS_H_
 
 #include <functional>
 
 #include "matcher/matcher.hpp"
 
 
-namespace ktest {
+namespace kktest {
 
 class ThrowsAnythingMatcher: public Matcher {
 public:

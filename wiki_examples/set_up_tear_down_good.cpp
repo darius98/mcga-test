@@ -1,5 +1,5 @@
 #include <algorithm>
-#include <ktest>
+#include <kktest>
 
 int main() {
     std::vector<int> v;
@@ -26,5 +26,5 @@ int main() {
         expect(std::find(v.begin(), v.end(), 6) == v.end());
     });
 
-    return ktest::finalizeTesting();
+    return kktest::finalizeTesting();
 }

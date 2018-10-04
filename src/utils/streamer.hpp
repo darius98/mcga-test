@@ -1,5 +1,5 @@
-#ifndef KTEST_UTILS_STREAMER_H_
-#define KTEST_UTILS_STREAMER_H_
+#ifndef KKTEST_UTILS_STREAMER_H_
+#define KKTEST_UTILS_STREAMER_H_
 
 #include <cxxabi.h>
 #include <deque>
@@ -15,7 +15,7 @@
 #include <vector>
 
 
-namespace ktest {
+namespace kktest {
 namespace utils {
 
 template<class S, class=void>

@@ -1,4 +1,4 @@
-#include <ktest>
+#include <kktest>
 
 int main() {
 
@@ -10,5 +10,5 @@ int main() {
         expect(3 * 3 == 6);
     });
 
-    return ktest::finalizeTesting();
+    return kktest::finalizeTesting();
 }

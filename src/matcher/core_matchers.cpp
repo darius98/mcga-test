@@ -3,7 +3,7 @@
 using namespace std;
 
 
-namespace ktest {
+namespace kktest {
 
 IsTrueMatcher* isTrue = new IsTrueMatcher();
 

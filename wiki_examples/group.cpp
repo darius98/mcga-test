@@ -1,4 +1,4 @@
-#include <ktest>
+#include <kktest>
 
 int main() {
     std::vector<int> v;
@@ -43,5 +43,5 @@ int main() {
         } catch(...) { /* All ok; */ }
     });
 
-    return ktest::finalizeTesting();
+    return kktest::finalizeTesting();
 }

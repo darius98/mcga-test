@@ -3,7 +3,7 @@
 using namespace std;
 
 
-namespace ktest {
+namespace kktest {
 
 bool ThrowsAnythingMatcher::matches(const function<void()>& func) {
     try {
