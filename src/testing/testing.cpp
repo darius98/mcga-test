@@ -26,26 +26,15 @@ void initializeTestingDriver(int argc, char** argv) {
     TestingDriver::initGlobal();
 }
 
-void destroyTestingDriver() {
-    TestingDriver::destroyGlobal();
-}
-
-bool isDuringTest() {
-    return TestingDriver::isDuringTest();
-}
-
-int numFailedTests() {
-    return TestingDriver::getGlobalDriver()->getNumFailedTests();
-}
-
 int finalizeTesting() {
+    TestingDriver* driver = TestingDriver::getGlobalDriver();
     if (flagEnableReport) {
         ofstream reportFileStream(reportFileName);
-        TestingDriver::getGlobalDriver()->generateTestReport(reportFileStream);
+        driver->generateTestReport(reportFileStream);
         reportFileStream.close();
     }
-    int status = numFailedTests();
-    destroyTestingDriver();
+    int status = driver->getNumFailedTests();
+    TestingDriver::destroyGlobal();
     return status;
 }
 

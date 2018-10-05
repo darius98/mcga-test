@@ -6,12 +6,6 @@ namespace kktest {
 
 void initializeTestingDriver(int argc, char** argv);
 
-bool isDuringTest();
-
-int numFailedTests();
-
-void destroyTestingDriver();
-
 int finalizeTesting();
 
 }

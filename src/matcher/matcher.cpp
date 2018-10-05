@@ -1,5 +1,5 @@
 #include "matcher/matcher.hpp"
-#include "testing/testing.hpp"
+#include "testing/driver.hpp"
 
 using namespace kktest;
 using namespace std;
@@ -9,7 +9,7 @@ namespace kktest {
 
 void* Matcher::operator new(size_t size) noexcept {
     void* p = malloc(size);
-    if (isDuringTest()) {
+    if (TestingDriver::isDuringTest()) {
         matchersAllocatedDuringTests.insert(p);
     }
     return p;
