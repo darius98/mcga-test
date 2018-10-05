@@ -40,13 +40,15 @@ void TestingDriver::destroyGlobal() {
     globalTestingDriver = nullptr;
 }
 
-TestingDriver::TestingDriver(): shouldLog(flagEnableLogging != 0) {
+TestingDriver::TestingDriver():
+        shouldLog(flagEnableLogging != 0), executor(new Executor()) {
     groupStack = {new Group()};
     state.push(DriverState::TOP_LEVEL);
 }
 
 TestingDriver::~TestingDriver() {
     delete groupStack[0];
+    delete executor;
 }
 
 bool TestingDriver::isDuringTest() {
@@ -54,7 +56,7 @@ bool TestingDriver::isDuringTest() {
             globalTestingDriver->state.top() == DriverState::TEST;
 }
 
-void TestingDriver::validateStartSetUp() {
+void TestingDriver::checkCurrentGroupHasNoSetUp() {
     auto lastGroup = groupStack.back();
     if (lastGroup->hasSetUp) {
         throw runtime_error(
@@ -63,7 +65,7 @@ void TestingDriver::validateStartSetUp() {
     }
 }
 
-void TestingDriver::validateStartTearDown() {
+void TestingDriver::checkCurrentGroupHasNoTearDown() {
     auto lastGroup = groupStack.back();
     if (lastGroup->hasTearDown) {
         throw runtime_error(
@@ -72,47 +74,21 @@ void TestingDriver::validateStartTearDown() {
     }
 }
 
-void TestingDriver::addGroup(Group* currentGroup,
-                             const function<void()> &func) {
-    validate("group");
+void TestingDriver::addGroup(Group* currentGroup, Executable func) {
+    checkIsNotAlreadyExecuting("group");
     groupStack.back()->subGroups.push_back(currentGroup);
     groupStack.push_back(currentGroup);
     state.push(DriverState::GROUP);
-    bool failed;
-    try {
-        func();
-        failed = false;
-    } catch(const exception& e) {
-        failed = true;
-        log("\nAn exception was thrown inside group '",
-            currentGroup->description,
-            "': ",
-            e.what());
-    } catch(...) {
-        failed = true;
-        log("\nA non-exception object was thrown inside group'",
-            currentGroup->description,
-            "'");
-    }
-    if (failed) {
-        log(", outside of any test/setUp/tearDown.",
-            "\n\n", string(105, '*'), "\n",
-            "* Try to place all your testing code inside setUps, "
-            "tearDowns or tests to ensure each test is executed. *",
-            "\n", string(105, '*'), "\n\n");
-    }
+    executor->executeGroup(currentGroup, func);
     state.pop();
     groupStack.pop_back();
 }
 
-void TestingDriver::addTest(Test *currentTest,
-                            const function<void()> &func) {
-    validate("test");
+void TestingDriver::addTest(Test* currentTest, Executable func) {
+    checkIsNotAlreadyExecuting("test");
     groupStack.back()->tests.push_back(currentTest);
     log(getTestFullName(currentTest), ": ");
-    executeSetUps(currentTest);
-    executeTest(currentTest, func);
-    executeTearDowns(currentTest);
+    execute(currentTest, func);
     if (currentTest->failure) {
         log("FAILED\n\t", currentTest->failure->getMessage(), "\n");
     } else {
@@ -125,17 +101,29 @@ void TestingDriver::addTest(Test *currentTest,
     Matcher::cleanupMatchersCreatedDuringTests();
 }
 
-void TestingDriver::addSetUp(const function<void()> &func) {
-    validate("setUp");
-    validateStartSetUp();
+void TestingDriver::execute(Test* currentTest, Executable func) {
+    state.push(DriverState::SET_UP);
+    executor->executeSetUps(groupStack, currentTest);
+    state.pop();
+    state.push(DriverState::TEST);
+    executor->executeTest(currentTest, func);
+    state.pop();
+    state.push(DriverState::TEAR_DOWN);
+    executor->executeTearDowns(groupStack, currentTest);
+    state.pop();
+}
+
+void TestingDriver::addSetUp(Executable func) {
+    checkIsNotAlreadyExecuting("setUp");
+    checkCurrentGroupHasNoSetUp();
     auto lastGroup = groupStack.back();
     lastGroup->hasSetUp = true;
     lastGroup->setUpFunc = func;
 }
 
-void TestingDriver::addTearDown(const function<void()> &func) {
-    validate("tearDown");
-    validateStartTearDown();
+void TestingDriver::addTearDown(Executable func) {
+    checkIsNotAlreadyExecuting("tearDown");
+    checkCurrentGroupHasNoTearDown();
     auto lastGroup = groupStack.back();
     lastGroup->hasTearDown = true;
     lastGroup->tearDownFunc = func;
@@ -149,7 +137,7 @@ int TestingDriver::getNumFailedTests() {
     return groupStack[0]->numFailedTests;
 }
 
-void TestingDriver::validate(const string& methodName) {
+void TestingDriver::checkIsNotAlreadyExecuting(const string& methodName) {
     if (state.top() == DriverState::TEST) {
         throw runtime_error("Cannot call " + methodName + " within test!");
     }
@@ -180,86 +168,6 @@ string TestingDriver::getTestFullName(Test* currentTest) const {
         groupStackFullName += "::";
     }
     return file + groupStackFullName + currentTest->description;
-}
-
-void TestingDriver::executeSetUps(Test* currentTest) {
-    state.push(DriverState::SET_UP);
-    for (Group* g: groupStack) {
-        if (g->hasSetUp) {
-            bool failed;
-            string failMessage;
-            try {
-                g->setUpFunc();
-                failed = false;
-            } catch(const exception& e) {
-                failed = true;
-                failMessage = "An exception was thrown during the "
-                              "setUp of group '" + g->description
-                              + "': " + e.what();
-            } catch(...) {
-                failed = true;
-                failMessage = "A non-exception object was thrown during the "
-                              "setUp of group '" + g->description + "'.";
-            }
-            if (failed && currentTest->failure == nullptr) {
-                currentTest->failure = new ExpectationFailed(failMessage);
-            }
-        }
-    }
-    state.pop();
-}
-
-void TestingDriver::executeTest(Test* currentTest,
-                                const function<void()>& func) {
-    state.push(DriverState::TEST);
-    try {
-        func();
-    } catch(const ExpectationFailed& failure) {
-        if (currentTest->failure == nullptr) {
-            currentTest->failure = new ExpectationFailed(failure);
-        }
-    } catch(const exception& e) {
-        if (currentTest->failure == nullptr) {
-            currentTest->failure = new ExpectationFailed(
-                    "An exception was thrown during test: " + string(e.what())
-            );
-        }
-    } catch(...) {
-        if (currentTest->failure == nullptr) {
-            currentTest->failure = new ExpectationFailed(
-                    "A non-exception object was thrown during test"
-            );
-        }
-    }
-    state.pop();
-}
-
-void TestingDriver::executeTearDowns(Test* currentTest) {
-    state.push(DriverState::TEAR_DOWN);
-    for (int i = (int)groupStack.size() - 1; i >= 0; -- i) {
-        Group* g = groupStack[i];
-        if (g->hasTearDown) {
-            bool failed;
-            string failMessage;
-            try {
-                g->tearDownFunc();
-                failed = false;
-            } catch(const exception& e) {
-                failed = true;
-                failMessage = "An exception was thrown during the "
-                              "tearDown of group '" + g->description
-                              + "': " + e.what();
-            } catch(...) {
-                failed = true;
-                failMessage = "A non-exception object was thrown during the "
-                              "tearDown of group '" + g->description + "'.";
-            }
-            if (failed && currentTest->failure == nullptr) {
-                currentTest->failure = new ExpectationFailed(failMessage);
-            }
-        }
-    }
-    state.pop();
 }
 
 }

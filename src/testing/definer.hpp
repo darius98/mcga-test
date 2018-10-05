@@ -6,6 +6,7 @@
 
 #include "matcher/matcher.hpp"
 #include "testing/driver.hpp"
+#include "testing/executable.hpp"
 
 
 namespace kktest {
@@ -26,28 +27,28 @@ class TestDefiner: public Definer {
 public:
     using Definer::Definer;
 
-    void operator()(std::string description, const std::function<void()>& func);
+    void operator()(std::string description, Executable func);
 };
 
 class GroupDefiner: public Definer {
 public:
     using Definer::Definer;
 
-    void operator()(std::string description, const std::function<void()>& func);
+    void operator()(std::string description, Executable func);
 };
 
 class SetUpDefiner: public Definer {
 public:
     using Definer::Definer;
 
-    void operator()(const std::function<void()>& func);
+    void operator()(Executable func);
 };
 
 class TearDownDefiner: public Definer {
 public:
     using Definer::Definer;
 
-    void operator()(const std::function<void()>& func);
+    void operator()(Executable func);
 };
 
 class BaseExpectDefiner: public Definer {

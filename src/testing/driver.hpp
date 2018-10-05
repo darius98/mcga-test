@@ -1,9 +1,11 @@
 #ifndef KKTEST_TESTING_DRIVER_H_
 #define KKTEST_TESTING_DRIVER_H_
 
+#include <iostream>
 #include <stack>
 
 #include "testing/group.hpp"
+#include "testing/executor.hpp"
 
 
 namespace kktest {
@@ -12,13 +14,13 @@ class TestingDriver {
 public:
     ~TestingDriver();
 
-    void addGroup(Group* currentGroup, const std::function<void()>& func);
+    void addGroup(Group* currentGroup, Executable func);
 
-    void addTest(Test* currentTest, const std::function<void()>& func);
+    void addTest(Test* currentTest, Executable func);
 
-    void addSetUp(const std::function<void()>& func);
+    void addSetUp(Executable func);
 
-    void addTearDown(const std::function<void()>& func);
+    void addTearDown(Executable func);
 
     void generateTestReport(std::ostream& report);
 
@@ -34,19 +36,15 @@ private:
 
     TestingDriver();
 
-    void validate(const std::string& methodName);
+    void execute(Test* currentTest, Executable func);
 
-    void validateStartSetUp();
+    void checkIsNotAlreadyExecuting(const std::string &methodName);
 
-    void validateStartTearDown();
+    void checkCurrentGroupHasNoSetUp();
+
+    void checkCurrentGroupHasNoTearDown();
 
     std::string getTestFullName(Test* currentTest) const;
-
-    void executeSetUps(Test* currentTest);
-
-    void executeTest(Test* currentTest, const std::function<void()>& testFunc);
-
-    void executeTearDowns(Test* currentTest);
 
     template<class T>
     void log(const T& object) {
@@ -63,6 +61,7 @@ private:
 
     std::vector<Group*> groupStack;
     std::stack<DriverState> state;
+    Executor* executor;
     bool shouldLog;
 
     static TestingDriver* getGlobalDriver();

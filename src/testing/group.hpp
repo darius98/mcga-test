@@ -7,6 +7,7 @@
 
 #include <JSON>
 
+#include "testing/executable.hpp"
 #include "testing/test.hpp"
 
 
@@ -19,10 +20,10 @@ struct Group {
     std::string description;
 
     bool hasSetUp = false;
-    std::function<void()> setUpFunc;
+    CopyableExecutable setUpFunc;
 
     bool hasTearDown = false;
-    std::function<void()> tearDownFunc;
+    CopyableExecutable tearDownFunc;
 
     std::vector<Group*> subGroups;
     std::vector<Test*> tests;

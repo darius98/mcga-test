@@ -16,20 +16,19 @@ bool Definer::isDuringTest() {
     return TestingDriver::isDuringTest();
 }
 
-void TestDefiner::operator()(string description, const function<void()>& func) {
+void TestDefiner::operator()(string description, Executable func) {
     getDriver()->addTest(new Test(move(description), file, line), func);
 }
 
-void GroupDefiner::operator()(string description,
-                              const function<void()>& func) {
+void GroupDefiner::operator()(string description, Executable func) {
     getDriver()->addGroup(new Group(move(description), file, line), func);
 }
 
-void SetUpDefiner::operator()(const function<void()>& func) {
+void SetUpDefiner::operator()(Executable func) {
     getDriver()->addSetUp(func);
 }
 
-void TearDownDefiner::operator()(const function<void()>& func) {
+void TearDownDefiner::operator()(Executable func) {
     getDriver()->addTearDown(func);
 }
 
