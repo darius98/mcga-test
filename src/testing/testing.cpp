@@ -7,12 +7,23 @@
 using namespace easyflags;
 using namespace std;
 
+AddArgument(int, flagEnableReport)
+    .Name("enable-report")
+    .ArgumentType("bool")
+    .Description("Enable test report generation for this test run")
+    .DefaultValue(1).ImplicitValue(1);
+AddArgument(string, reportFileName)
+    .Name("report-file")
+    .ArgumentType("string")
+    .Description("Path to file where to dump the test report")
+    .DefaultValue("report.json");
+
 
 namespace kktest {
 
 void initializeTestingDriver(int argc, char** argv) {
-    TestingDriver::initGlobal();
     ParseEasyFlags(argc, argv);
+    TestingDriver::initGlobal();
 }
 
 void destroyTestingDriver() {
@@ -23,14 +34,6 @@ bool isDuringTest() {
     return TestingDriver::isDuringTest();
 }
 
-void setUp(const function<void()>& func) {
-    return TestingDriver::getGlobalDriver()->addSetUp(func);
-}
-
-void tearDown(const function<void()>& func) {
-    return TestingDriver::getGlobalDriver()->addTearDown(func);
-}
-
 int numFailedTests() {
     return TestingDriver::getGlobalDriver()->getNumFailedTests();
 }
@@ -39,10 +42,12 @@ void writeTestSuiteReport(ostream &report) {
     TestingDriver::getGlobalDriver()->generateTestReport(report);
 }
 
-int finalizeTesting(const string& reportFileName) {
-    ofstream reportFileStream(reportFileName);
-    writeTestSuiteReport(reportFileStream);
-    reportFileStream.close();
+int finalizeTesting() {
+    if (flagEnableReport) {
+        ofstream reportFileStream(reportFileName);
+        writeTestSuiteReport(reportFileStream);
+        reportFileStream.close();
+    }
     int status = numFailedTests();
     destroyTestingDriver();
     return status;

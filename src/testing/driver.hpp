@@ -21,9 +21,8 @@ public:
 private:
     static TestingDriver* globalTestingDriver;
 
-public:
     explicit TestingDriver();
-
+public:
     ~TestingDriver();
 
     void addGroup(Group* currentGroup, const std::function<void()>& func);
@@ -37,7 +36,6 @@ public:
     void generateTestReport(std::ostream& report);
 
     int getNumFailedTests();
-
 private:
     enum DriverState {
         TOP_LEVEL,
@@ -67,7 +65,9 @@ private:
 
     template<class T>
     void log(const T& object) {
-        std::cout << object;
+        if (shouldLog) {
+            std::cout << object;
+        }
     }
 
     template<class T, class... Args>
@@ -78,6 +78,7 @@ private:
 
     std::vector<Group*> groupStack;
     std::stack<DriverState> state;
+    bool shouldLog;
 };
 
 }

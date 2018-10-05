@@ -1,8 +1,17 @@
 #include <iostream>
 
+#include <EasyFlags.hpp>
+
 #include "testing/driver.hpp"
 
+using namespace easyflags;
 using namespace std;
+
+AddArgument(int, flagEnableLogging)
+    .Name("enable-logging")
+    .ArgumentType("bool")
+    .Description("Enable STDOUT logging for this test run")
+    .DefaultValue(1).ImplicitValue(1);
 
 
 namespace kktest {
@@ -30,7 +39,7 @@ void TestingDriver::destroyGlobal() {
     globalTestingDriver = nullptr;
 }
 
-TestingDriver::TestingDriver() {
+TestingDriver::TestingDriver(): shouldLog(flagEnableLogging) {
     groupStack = {new Group()};
     state.push(DriverState::TOP_LEVEL);
 }

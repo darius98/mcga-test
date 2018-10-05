@@ -17,7 +17,7 @@ void writeTestSuiteReport(std::ostream &report);
 
 void destroyTestingDriver();
 
-int finalizeTesting(const std::string& reportFileName="report.json");
+int finalizeTesting();
 
 }
 
