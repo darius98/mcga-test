@@ -8,7 +8,6 @@
 
 
 namespace kktest {
-namespace __internal {
 
 class Definer {
 public:
@@ -81,7 +80,6 @@ public:
     }
 };
 
-}
 }
 
 #endif

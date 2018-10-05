@@ -1,12 +1,10 @@
 #include "testing/definer.hpp"
 #include "testing/driver.hpp"
-#include "testing/testing.hpp"
 
 using namespace std;
 
 
 namespace kktest {
-namespace __internal {
 
 Definer::Definer(string _file, int _line): file(move(_file)), line(_line) {}
 
@@ -32,7 +30,7 @@ void TearDownDefiner::operator()(const function<void()>& func) {
 }
 
 void BaseExpectDefiner::checkDuringTest() {
-    if (!isDuringTest()) {
+    if (!TestingDriver::isDuringTest()) {
         throw runtime_error(
             file + ":" + to_string(line) + ": "
             "'expect' can only be called inside tests!"
@@ -53,5 +51,4 @@ void ExpectDefiner::operator()(const bool& exprResult, const string& expr) {
     }
 }
 
-} // namespace __internal
 } // namespace kktest

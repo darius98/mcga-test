@@ -40,7 +40,7 @@ void TestingDriver::destroyGlobal() {
     globalTestingDriver = nullptr;
 }
 
-TestingDriver::TestingDriver(): shouldLog(flagEnableLogging) {
+TestingDriver::TestingDriver(): shouldLog(flagEnableLogging != 0) {
     groupStack = {new Group()};
     state.push(DriverState::TOP_LEVEL);
 }
