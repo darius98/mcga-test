@@ -41,10 +41,10 @@ void TestingDriver::destroyGlobal() {
 }
 
 TestingDriver::TestingDriver():
-        shouldLog(flagEnableLogging != 0), executor(new Executor()) {
-    groupStack = {new Group()};
-    state.push(DriverState::TOP_LEVEL);
-}
+        shouldLog(flagEnableLogging != 0),
+        executor(new Executor()),
+        state(DriverState::INACTIVE),
+        groupStack({new Group()}) {}
 
 TestingDriver::~TestingDriver() {
     delete groupStack[0];
@@ -53,21 +53,19 @@ TestingDriver::~TestingDriver() {
 
 bool TestingDriver::isDuringTest() {
     return globalTestingDriver != nullptr &&
-            globalTestingDriver->state.top() == DriverState::TEST;
+            globalTestingDriver->state == DriverState::TEST;
 }
 
 void TestingDriver::addGroup(Group* currentGroup, Executable func) {
-    checkIsNotAlreadyExecuting("group");
+    checkExecutorIsInactive("group");
     groupStack.back()->subGroups.push_back(currentGroup);
     groupStack.push_back(currentGroup);
-    state.push(DriverState::GROUP);
     executor->executeGroup(currentGroup, func);
-    state.pop();
     groupStack.pop_back();
 }
 
 void TestingDriver::addTest(Test* currentTest, Executable func) {
-    checkIsNotAlreadyExecuting("test");
+    checkExecutorIsInactive("test");
     groupStack.back()->tests.push_back(currentTest);
     log(getTestFullName(currentTest), ": ");
     execute(currentTest, func);
@@ -84,24 +82,22 @@ void TestingDriver::addTest(Test* currentTest, Executable func) {
 }
 
 void TestingDriver::execute(Test* currentTest, Executable func) {
-    state.push(DriverState::SET_UP);
+    state = DriverState::SET_UP;
     executor->executeSetUps(groupStack, currentTest);
-    state.pop();
-    state.push(DriverState::TEST);
+    state = DriverState::TEST;
     executor->executeTest(currentTest, func);
-    state.pop();
-    state.push(DriverState::TEAR_DOWN);
+    state = DriverState::TEAR_DOWN;
     executor->executeTearDowns(groupStack, currentTest);
-    state.pop();
+    state = DriverState::INACTIVE;
 }
 
 void TestingDriver::addSetUp(Executable func) {
-    checkIsNotAlreadyExecuting("setUp");
+    checkExecutorIsInactive("setUp");
     groupStack.back()->setSetUp(func);
 }
 
 void TestingDriver::addTearDown(Executable func) {
-    checkIsNotAlreadyExecuting("tearDown");
+    checkExecutorIsInactive("tearDown");
     groupStack.back()->setTearDown(func);
 }
 
@@ -113,14 +109,14 @@ int TestingDriver::getNumFailedTests() {
     return groupStack[0]->numFailedTests;
 }
 
-void TestingDriver::checkIsNotAlreadyExecuting(const string& methodName) {
-    if (state.top() == DriverState::TEST) {
+void TestingDriver::checkExecutorIsInactive(const string &methodName) {
+    if (state == DriverState::TEST) {
         throw runtime_error("Cannot call " + methodName + " within test!");
     }
-    if (state.top() == DriverState::SET_UP) {
+    if (state == DriverState::SET_UP) {
         throw runtime_error("Cannot call " + methodName + " within setUp!");
     }
-    if (state.top() == DriverState::TEAR_DOWN) {
+    if (state == DriverState::TEAR_DOWN) {
         throw runtime_error("Cannot call " + methodName + " within tearDown!");
     }
 }

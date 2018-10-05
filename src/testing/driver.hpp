@@ -27,8 +27,7 @@ public:
     int getNumFailedTests();
 private:
     enum DriverState {
-        TOP_LEVEL,
-        GROUP,
+        INACTIVE,
         TEST,
         SET_UP,
         TEAR_DOWN,
@@ -38,7 +37,7 @@ private:
 
     void execute(Test* currentTest, Executable func);
 
-    void checkIsNotAlreadyExecuting(const std::string &methodName);
+    void checkExecutorIsInactive(const std::string &methodName);
 
     std::string getTestFullName(Test* currentTest) const;
 
@@ -56,7 +55,7 @@ private:
     };
 
     std::vector<Group*> groupStack;
-    std::stack<DriverState> state;
+    DriverState state;
     Executor* executor;
     bool shouldLog;
 
