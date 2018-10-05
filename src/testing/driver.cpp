@@ -56,24 +56,6 @@ bool TestingDriver::isDuringTest() {
             globalTestingDriver->state.top() == DriverState::TEST;
 }
 
-void TestingDriver::checkCurrentGroupHasNoSetUp() {
-    auto lastGroup = groupStack.back();
-    if (lastGroup->hasSetUp) {
-        throw runtime_error(
-            "Group '" + lastGroup->description + "' already has a setUp!"
-        );
-    }
-}
-
-void TestingDriver::checkCurrentGroupHasNoTearDown() {
-    auto lastGroup = groupStack.back();
-    if (lastGroup->hasTearDown) {
-        throw runtime_error(
-            "Group '" + lastGroup->description + "' already has a tearDown!"
-        );
-    }
-}
-
 void TestingDriver::addGroup(Group* currentGroup, Executable func) {
     checkIsNotAlreadyExecuting("group");
     groupStack.back()->subGroups.push_back(currentGroup);
@@ -115,18 +97,12 @@ void TestingDriver::execute(Test* currentTest, Executable func) {
 
 void TestingDriver::addSetUp(Executable func) {
     checkIsNotAlreadyExecuting("setUp");
-    checkCurrentGroupHasNoSetUp();
-    auto lastGroup = groupStack.back();
-    lastGroup->hasSetUp = true;
-    lastGroup->setUpFunc = func;
+    groupStack.back()->setSetUp(func);
 }
 
 void TestingDriver::addTearDown(Executable func) {
     checkIsNotAlreadyExecuting("tearDown");
-    checkCurrentGroupHasNoTearDown();
-    auto lastGroup = groupStack.back();
-    lastGroup->hasTearDown = true;
-    lastGroup->tearDownFunc = func;
+    groupStack.back()->setTearDown(func);
 }
 
 void TestingDriver::generateTestReport(ostream& report) {

@@ -40,10 +40,6 @@ private:
 
     void checkIsNotAlreadyExecuting(const std::string &methodName);
 
-    void checkCurrentGroupHasNoSetUp();
-
-    void checkCurrentGroupHasNoTearDown();
-
     std::string getTestFullName(Test* currentTest) const;
 
     template<class T>

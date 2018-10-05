@@ -35,6 +35,10 @@ struct Group {
 
     ~Group();
 
+    void setSetUp(Executable func);
+
+    void setTearDown(Executable func);
+
     autojson::JSON generateReport() const;
 };
 

@@ -18,6 +18,24 @@ Group::~Group() {
     }
 }
 
+void Group::setSetUp(Executable func) {
+    if (hasSetUp) {
+        throw runtime_error("Group '" + description +
+                            "' already has a setUp!");
+    }
+    hasSetUp = true;
+    setUpFunc = func;
+}
+
+void Group::setTearDown(Executable func) {
+    if (hasTearDown) {
+        throw runtime_error("Group '" + description +
+                            "' already has a tearDown!");
+    }
+    hasTearDown = true;
+    tearDownFunc = func;
+}
+
 JSON Group::generateReport() const {
     JSON report;
     if (!description.empty()) {
