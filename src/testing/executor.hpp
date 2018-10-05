@@ -38,7 +38,8 @@ private:
         TEAR_DOWN = 3
     };
 
-    ExecutorState state;
+    ExecutorState state = ExecutorState::INACTIVE;
+    int testIndex = 0;
 };
 
 }

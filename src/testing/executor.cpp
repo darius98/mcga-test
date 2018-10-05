@@ -1,12 +1,16 @@
+#include <EasyFlags.hpp>
+
 #include "testing/executor.hpp"
 #include "testing/driver.hpp"
 
 using namespace std;
 
+AddArgument(int, argumentTestIndex).Name("single-test").DefaultValue(0);
+
 
 namespace kktest {
 
-Executor::Executor(): state(ExecutorState::INACTIVE) {}
+Executor::Executor() = default;
 
 bool Executor::isDuringTest() const {
     return state == ExecutorState::TEST;
@@ -15,9 +19,19 @@ bool Executor::isDuringTest() const {
 void Executor::execute(const vector<Group*>& groups,
                        Test* test,
                        Executable func) {
+    testIndex += 1;
+    if (argumentTestIndex != 0 && testIndex != argumentTestIndex) {
+        return;
+    }
     executeSetUps(groups, test);
     executeTest(test, func);
     executeTearDowns(groups, test);
+    if (argumentTestIndex != 0) {
+        if (test->failure) {
+            cout << test->failure->getMessage();
+        }
+        exit(test->failure == nullptr);
+    }
 }
 
 void Executor::checkIsInactive(const string& methodName) const {
