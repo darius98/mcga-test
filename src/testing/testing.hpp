@@ -7,13 +7,13 @@
 
 namespace kktest {
 
-void initializeTestingDriver(std::ostream& log=std::cout);
+void initializeTestingDriver(int argc, char** argv);
 
 bool isDuringTest();
 
 int numFailedTests();
 
-int writeTestSuiteReport(std::ostream &report);
+void writeTestSuiteReport(std::ostream &report);
 
 void destroyTestingDriver();
 

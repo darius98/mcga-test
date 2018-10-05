@@ -1,7 +1,9 @@
 #include <algorithm>
 #include <kktest>
 
-int main() {
+int main(int argc, char** argv) {
+    kktest::initializeTestingDriver(argc, argv);
+
     std::vector<int> v;
 
     test("After pushing back 3, 4 and 5, v has size 3", [&]() {

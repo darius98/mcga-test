@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "testing/driver.hpp"
 
 using namespace std;
@@ -7,27 +9,28 @@ namespace kktest {
 
 TestingDriver* TestingDriver::globalTestingDriver = nullptr;
 
-TestingDriver* TestingDriver::getOrCreateGlobalDriver() {
+TestingDriver* TestingDriver::getGlobalDriver() {
     if (globalTestingDriver == nullptr) {
-        globalTestingDriver = new TestingDriver();
+        std::cout << "Global testing driver not defined. Cannot continue.\n";
+        exit(1);
     }
     return globalTestingDriver;
 }
 
-void TestingDriver::init(ostream& logger) {
+void TestingDriver::initGlobal() {
     if (globalTestingDriver != nullptr) {
         throw runtime_error("Testing driver cannot be initialized: "
                             "it already exists.");
     }
-    globalTestingDriver = new TestingDriver(&logger);
+    globalTestingDriver = new TestingDriver();
 }
 
-void TestingDriver::destroy() {
+void TestingDriver::destroyGlobal() {
     delete globalTestingDriver;
     globalTestingDriver = nullptr;
 }
 
-TestingDriver::TestingDriver(ostream* logger): logger(logger) {
+TestingDriver::TestingDriver() {
     groupStack = {new Group()};
     state.push(DriverState::TOP_LEVEL);
 }
@@ -136,7 +139,7 @@ void TestingDriver::addTearDown(const function<void()> &func) {
     lastGroup->tearDownFunc = func;
 }
 
-int TestingDriver::generateTestReport(ostream& report) {
+void TestingDriver::generateTestReport(ostream& report) {
     report << groupStack[0]->generateReport().stringify(false);
 }
 

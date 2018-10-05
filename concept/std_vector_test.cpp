@@ -16,7 +16,9 @@ using namespace kktest;
 using namespace std;
 
 
-int main() {
+int main(int argc, char** argv) {
+    initializeTestingDriver(argc, argv);
+
     vector<int> v, w;
 
     setUp([&]() {

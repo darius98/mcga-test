@@ -1,7 +1,6 @@
 #ifndef KKTEST_TESTING_DRIVER_H_
 #define KKTEST_TESTING_DRIVER_H_
 
-#include <ostream>
 #include <stack>
 
 #include "testing/group.hpp"
@@ -11,11 +10,11 @@ namespace kktest {
 
 class TestingDriver {
 public:
-    static TestingDriver* getOrCreateGlobalDriver();
+    static TestingDriver* getGlobalDriver();
 
-    static void init(std::ostream& logger);
+    static void initGlobal();
 
-    static void destroy();
+    static void destroyGlobal();
 
     static bool isDuringTest();
 
@@ -23,7 +22,7 @@ private:
     static TestingDriver* globalTestingDriver;
 
 public:
-    explicit TestingDriver(std::ostream* logger=&std::cout);
+    explicit TestingDriver();
 
     ~TestingDriver();
 
@@ -35,7 +34,7 @@ public:
 
     void addTearDown(const std::function<void()>& func);
 
-    int generateTestReport(std::ostream& report);
+    void generateTestReport(std::ostream& report);
 
     int getNumFailedTests();
 
@@ -68,9 +67,7 @@ private:
 
     template<class T>
     void log(const T& object) {
-        if (logger != nullptr) {
-            (*logger) << object;
-        }
+        std::cout << object;
     }
 
     template<class T, class... Args>
@@ -81,7 +78,6 @@ private:
 
     std::vector<Group*> groupStack;
     std::stack<DriverState> state;
-    std::ostream* logger;
 };
 
 }

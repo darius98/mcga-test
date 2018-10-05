@@ -2,7 +2,6 @@
 #define KKTEST_TESTING_GROUP_H_
 
 #include <functional>
-#include <ostream>
 #include <string>
 #include <vector>
 

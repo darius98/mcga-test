@@ -1,18 +1,22 @@
 #include <fstream>
 
+#include <EasyFlags.hpp>
+
 #include "testing/driver.hpp"
 
+using namespace easyflags;
 using namespace std;
 
 
 namespace kktest {
 
-void initializeTestingDriver(std::ostream& log) {
-    TestingDriver::init(log);
+void initializeTestingDriver(int argc, char** argv) {
+    TestingDriver::initGlobal();
+    ParseEasyFlags(argc, argv);
 }
 
 void destroyTestingDriver() {
-    TestingDriver::destroy();
+    TestingDriver::destroyGlobal();
 }
 
 bool isDuringTest() {
@@ -20,19 +24,19 @@ bool isDuringTest() {
 }
 
 void setUp(const function<void()>& func) {
-    return TestingDriver::getOrCreateGlobalDriver()->addSetUp(func);
+    return TestingDriver::getGlobalDriver()->addSetUp(func);
 }
 
 void tearDown(const function<void()>& func) {
-    return TestingDriver::getOrCreateGlobalDriver()->addTearDown(func);
+    return TestingDriver::getGlobalDriver()->addTearDown(func);
 }
 
 int numFailedTests() {
-    return TestingDriver::getOrCreateGlobalDriver()->getNumFailedTests();
+    return TestingDriver::getGlobalDriver()->getNumFailedTests();
 }
 
-int writeTestSuiteReport(ostream &report) {
-    return TestingDriver::getOrCreateGlobalDriver()->generateTestReport(report);
+void writeTestSuiteReport(ostream &report) {
+    TestingDriver::getGlobalDriver()->generateTestReport(report);
 }
 
 int finalizeTesting(const string& reportFileName) {
