@@ -6,7 +6,7 @@
 
 #include <JSON>
 
-#include "testing/expect.hpp"
+#include "testing/expectation_failed.hpp"
 
 
 namespace kktest {

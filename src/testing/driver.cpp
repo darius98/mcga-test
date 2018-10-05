@@ -2,6 +2,7 @@
 
 #include <EasyFlags.hpp>
 
+#include "matcher/matcher.hpp"
 #include "testing/driver.hpp"
 
 using namespace easyflags;

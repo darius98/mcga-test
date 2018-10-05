@@ -4,7 +4,7 @@
 #include "matcher/core_matchers.hpp"
 
 #include "testing/definer.hpp"
-#include "testing/expect.hpp"
+#include "testing/expectation_failed.hpp"
 #include "testing/testing.hpp"
 
 // TODO(darius98): Trim the file to project-level instead.
@@ -56,8 +56,18 @@
  */
 #define group kktest::__internal::GroupDefiner(__FILENAME__, __LINE__)
 
+/**
+ * Add a setUp code to be executed before every test inside the current scope.
+ *
+ * **Note**: only one setUp can exist per scope.
+ */
 #define setUp kktest::__internal::SetUpDefiner(__FILENAME__, __LINE__)
 
+/**
+ * Add a tearDown code to be executed after every test inside the current scope.
+ *
+ * **Note**: only one tearDown can exist per group.
+ */
 #define tearDown kktest::__internal::TearDownDefiner(__FILENAME__, __LINE__)
 
 /**
@@ -66,8 +76,8 @@
  * Use this to verify a boolean condition is satisfied. Fails the test, printing
  * the body of the boolean expression when it evaluates to false.
  */
-#define expect(expr...)                                                        \
-    kktest::__expect(expr, __FILENAME__, __LINE__, #expr " is false")
+#define expect(...) kktest::__internal::ExpectDefiner(__FILENAME__, __LINE__) \
+                            (__VA_ARGS__, #__VA_ARGS__ " is false")
 
 /**
  * Matcher expectation macro.
@@ -76,9 +86,8 @@
  *
  * The syntax is `expectMatches(object, matcher)`.
  */
-#define expectMatches(var_comma_matcher...)                                    \
-    kktest::__expectMatches(var_comma_matcher, __FILENAME__, __LINE__)
-
+#define expectMatches(...) kktest::__internal::ExpectMatchesDefiner \
+                            (__FILENAME__, __LINE__)(__VA_ARGS__)
 
 /**
  * Macro for forcing a test to fail. `expect` and `expectMatches` are
@@ -86,7 +95,7 @@
  *
  * Has the same effect as __expect(false, file, line, message).
  */
-#define fail(...) \
-    kktest::__expect(false, __FILENAME__, __LINE__, __VA_ARGS__)
+#define fail(...) kktest::__internal::ExpectDefiner(__FILENAME__, __LINE__)   \
+                            (false, __VA_ARGS__)
 
 #endif
