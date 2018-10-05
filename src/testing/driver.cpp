@@ -54,16 +54,7 @@ bool TestingDriver::isDuringTest() {
             globalTestingDriver->state.top() == DriverState::TEST;
 }
 
-void TestingDriver::validateStartGroup() {
-    validate("group");
-}
-
-void TestingDriver::validateStartTest() {
-    validate("test");
-}
-
 void TestingDriver::validateStartSetUp() {
-    validate("setUp");
     auto lastGroup = groupStack.back();
     if (lastGroup->hasSetUp) {
         throw runtime_error(
@@ -73,7 +64,6 @@ void TestingDriver::validateStartSetUp() {
 }
 
 void TestingDriver::validateStartTearDown() {
-    validate("tearDown");
     auto lastGroup = groupStack.back();
     if (lastGroup->hasTearDown) {
         throw runtime_error(
@@ -84,7 +74,7 @@ void TestingDriver::validateStartTearDown() {
 
 void TestingDriver::addGroup(Group* currentGroup,
                              const function<void()> &func) {
-    validateStartGroup();
+    validate("group");
     groupStack.back()->subGroups.push_back(currentGroup);
     groupStack.push_back(currentGroup);
     state.push(DriverState::GROUP);
@@ -117,7 +107,7 @@ void TestingDriver::addGroup(Group* currentGroup,
 
 void TestingDriver::addTest(Test *currentTest,
                             const function<void()> &func) {
-    validateStartTest();
+    validate("test");
     groupStack.back()->tests.push_back(currentTest);
     log(getTestFullName(currentTest), ": ");
     executeSetUps(currentTest);
@@ -136,6 +126,7 @@ void TestingDriver::addTest(Test *currentTest,
 }
 
 void TestingDriver::addSetUp(const function<void()> &func) {
+    validate("setUp");
     validateStartSetUp();
     auto lastGroup = groupStack.back();
     lastGroup->hasSetUp = true;
@@ -143,6 +134,7 @@ void TestingDriver::addSetUp(const function<void()> &func) {
 }
 
 void TestingDriver::addTearDown(const function<void()> &func) {
+    validate("tearDown");
     validateStartTearDown();
     auto lastGroup = groupStack.back();
     lastGroup->hasTearDown = true;

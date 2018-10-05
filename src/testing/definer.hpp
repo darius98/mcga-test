@@ -5,6 +5,7 @@
 #include <string>
 
 #include "matcher/matcher.hpp"
+#include "testing/driver.hpp"
 
 
 namespace kktest {
@@ -13,6 +14,10 @@ class Definer {
 public:
     Definer(std::string _file, int _line);
 protected:
+    TestingDriver* getDriver();
+
+    bool isDuringTest();
+
     std::string file;
     int line;
 };

@@ -10,19 +10,6 @@ namespace kktest {
 
 class TestingDriver {
 public:
-    static TestingDriver* getGlobalDriver();
-
-    static void initGlobal();
-
-    static void destroyGlobal();
-
-    static bool isDuringTest();
-
-private:
-    static TestingDriver* globalTestingDriver;
-
-    explicit TestingDriver();
-public:
     ~TestingDriver();
 
     void addGroup(Group* currentGroup, const std::function<void()>& func);
@@ -45,11 +32,9 @@ private:
         TEAR_DOWN,
     };
 
+    TestingDriver();
+
     void validate(const std::string& methodName);
-
-    void validateStartGroup();
-
-    void validateStartTest();
 
     void validateStartSetUp();
 
@@ -79,6 +64,21 @@ private:
     std::vector<Group*> groupStack;
     std::stack<DriverState> state;
     bool shouldLog;
+
+    static TestingDriver* getGlobalDriver();
+
+    static void initGlobal();
+
+    static void destroyGlobal();
+
+    static bool isDuringTest();
+
+    static TestingDriver* globalTestingDriver;
+
+    friend class Matcher;
+    friend class Definer;
+    friend void initializeTestingDriver(int argc, char** argv);
+    friend int finalizeTesting();
 };
 
 }
