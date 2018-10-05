@@ -2,6 +2,14 @@ cmake_minimum_required(VERSION 3.8)
 project(KKTest)
 set(CMAKE_CXX_STANDARD 14)
 
+set(LIB_PATH "${CMAKE_CURRENT_SOURCE_DIR}/build/lib")
+set(BIN_PATH "${CMAKE_CURRENT_SOURCE_DIR}/build/bin")
+
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${LIB_PATH})
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${LIB_PATH})
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${BIN_PATH})
+
+
 add_definitions(-Dautojsonuselib)
 include_directories(./third_party/autojson/include)
 add_subdirectory(third_party/autojson)
