@@ -47,13 +47,21 @@ private:
     static std::set<void*> matchersAllocatedDuringTests;
 };
 
+template<class T, class>
+struct is_matcher { };
+
+template<class T>
+struct is_matcher<T, typename std::enable_if<
+                                  std::is_base_of<Matcher, T>::value, void
+                              >::type> {
+    typedef T type;
+};
+
 } // namespace kktest
 
 /**
  * Macro for checking if template argument is a matcher type.
  */
-#define IS_MATCHER(cls)                                                        \
-    class=typename std::enable_if<                                             \
-            std::is_base_of<kktest::Matcher, cls>::value, void>::type
+#define IS_MATCHER(cls) class=typename is_matcher<cls, void>::type
 
 #endif
