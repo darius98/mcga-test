@@ -6,7 +6,34 @@ using namespace std;
 
 namespace kktest {
 
+Executor::Executor(): state(ExecutorState::INACTIVE) {}
+
+bool Executor::isDuringTest() const {
+    return state == ExecutorState::TEST;
+}
+
+void Executor::execute(const vector<Group*>& groups,
+                       Test* test,
+                       Executable func) {
+    executeSetUps(groups, test);
+    executeTest(test, func);
+    executeTearDowns(groups, test);
+}
+
+void Executor::checkIsInactive(const string& methodName) const {
+    if (state == ExecutorState::TEST) {
+        throw runtime_error("Cannot call " + methodName + " within test!");
+    }
+    if (state == ExecutorState::SET_UP) {
+        throw runtime_error("Cannot call " + methodName + " within setUp!");
+    }
+    if (state == ExecutorState::TEAR_DOWN) {
+        throw runtime_error("Cannot call " + methodName + " within tearDown!");
+    }
+}
+
 void Executor::executeSetUps(const vector<Group*>& groups, Test* test) {
+    state = ExecutorState::SET_UP;
     for (Group* g: groups) {
         if (g->hasSetUp) {
             bool failed;
@@ -29,9 +56,11 @@ void Executor::executeSetUps(const vector<Group*>& groups, Test* test) {
             }
         }
     }
+    state = ExecutorState::INACTIVE;
 }
 
 void Executor::executeTest(Test *test, Executable func) {
+    state = ExecutorState::TEST;
     try {
         func();
     } catch(const ExpectationFailed& failure) {
@@ -51,9 +80,11 @@ void Executor::executeTest(Test *test, Executable func) {
             );
         }
     }
+    state = ExecutorState::INACTIVE;
 }
 
 void Executor::executeTearDowns(const vector<Group*>& groups, Test* test) {
+    state = ExecutorState::TEAR_DOWN;
     for (int i = (int)groups.size() - 1; i >= 0; -- i) {
         Group* g = groups[i];
         if (g->hasTearDown) {
@@ -77,6 +108,7 @@ void Executor::executeTearDowns(const vector<Group*>& groups, Test* test) {
             }
         }
     }
+    state = ExecutorState::INACTIVE;
 }
 
 void Executor::executeGroup(Group* group, Executable func) {
@@ -89,8 +121,8 @@ void Executor::executeGroup(Group* group, Executable func) {
             e.what());
     } catch(...) {
         throw runtime_error(
-                "A non-exception object was thrown inside group'" +
-                    group->description + "'");
+            "A non-exception object was thrown inside group'" +
+            group->description + "'");
     }
 }
 

@@ -25,19 +25,11 @@ public:
     void generateTestReport(std::ostream& report);
 
     int getNumFailedTests();
-private:
-    enum DriverState {
-        INACTIVE,
-        TEST,
-        SET_UP,
-        TEAR_DOWN,
-    };
 
+private:
     TestingDriver();
 
     void execute(Test* currentTest, Executable func);
-
-    void checkExecutorIsInactive(const std::string &methodName);
 
     std::string getTestFullName(Test* currentTest) const;
 
@@ -55,7 +47,6 @@ private:
     };
 
     std::vector<Group*> groupStack;
-    DriverState state;
     Executor* executor;
     bool shouldLog;
 

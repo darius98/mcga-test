@@ -43,7 +43,6 @@ void TestingDriver::destroyGlobal() {
 TestingDriver::TestingDriver():
         shouldLog(flagEnableLogging != 0),
         executor(new Executor()),
-        state(DriverState::INACTIVE),
         groupStack({new Group()}) {}
 
 TestingDriver::~TestingDriver() {
@@ -53,11 +52,11 @@ TestingDriver::~TestingDriver() {
 
 bool TestingDriver::isDuringTest() {
     return globalTestingDriver != nullptr &&
-            globalTestingDriver->state == DriverState::TEST;
+            globalTestingDriver->executor->isDuringTest();
 }
 
 void TestingDriver::addGroup(Group* currentGroup, Executable func) {
-    checkExecutorIsInactive("group");
+    executor->checkIsInactive("group");
     groupStack.back()->subGroups.push_back(currentGroup);
     groupStack.push_back(currentGroup);
     executor->executeGroup(currentGroup, func);
@@ -65,10 +64,10 @@ void TestingDriver::addGroup(Group* currentGroup, Executable func) {
 }
 
 void TestingDriver::addTest(Test* currentTest, Executable func) {
-    checkExecutorIsInactive("test");
+    executor->checkIsInactive("test");
     groupStack.back()->tests.push_back(currentTest);
     log(getTestFullName(currentTest), ": ");
-    execute(currentTest, func);
+    executor->execute(groupStack, currentTest, func);
     if (currentTest->failure) {
         log("FAILED\n\t", currentTest->failure->getMessage(), "\n");
     } else {
@@ -81,23 +80,13 @@ void TestingDriver::addTest(Test* currentTest, Executable func) {
     Matcher::cleanupMatchersCreatedDuringTests();
 }
 
-void TestingDriver::execute(Test* currentTest, Executable func) {
-    state = DriverState::SET_UP;
-    executor->executeSetUps(groupStack, currentTest);
-    state = DriverState::TEST;
-    executor->executeTest(currentTest, func);
-    state = DriverState::TEAR_DOWN;
-    executor->executeTearDowns(groupStack, currentTest);
-    state = DriverState::INACTIVE;
-}
-
 void TestingDriver::addSetUp(Executable func) {
-    checkExecutorIsInactive("setUp");
+    executor->checkIsInactive("setUp");
     groupStack.back()->setSetUp(func);
 }
 
 void TestingDriver::addTearDown(Executable func) {
-    checkExecutorIsInactive("tearDown");
+    executor->checkIsInactive("tearDown");
     groupStack.back()->setTearDown(func);
 }
 
@@ -107,18 +96,6 @@ void TestingDriver::generateTestReport(ostream& report) {
 
 int TestingDriver::getNumFailedTests() {
     return groupStack[0]->numFailedTests;
-}
-
-void TestingDriver::checkExecutorIsInactive(const string &methodName) {
-    if (state == DriverState::TEST) {
-        throw runtime_error("Cannot call " + methodName + " within test!");
-    }
-    if (state == DriverState::SET_UP) {
-        throw runtime_error("Cannot call " + methodName + " within setUp!");
-    }
-    if (state == DriverState::TEAR_DOWN) {
-        throw runtime_error("Cannot call " + methodName + " within tearDown!");
-    }
 }
 
 string TestingDriver::getTestFullName(Test* currentTest) const {
