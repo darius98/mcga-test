@@ -38,14 +38,10 @@ int numFailedTests() {
     return TestingDriver::getGlobalDriver()->getNumFailedTests();
 }
 
-void writeTestSuiteReport(ostream &report) {
-    TestingDriver::getGlobalDriver()->generateTestReport(report);
-}
-
 int finalizeTesting() {
     if (flagEnableReport) {
         ofstream reportFileStream(reportFileName);
-        writeTestSuiteReport(reportFileStream);
+        TestingDriver::getGlobalDriver()->generateTestReport(reportFileStream);
         reportFileStream.close();
     }
     int status = numFailedTests();

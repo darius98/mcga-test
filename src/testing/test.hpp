@@ -1,7 +1,6 @@
 #ifndef KKTEST_TESTING_TEST_H_
 #define KKTEST_TESTING_TEST_H_
 
-#include <ostream>
 #include <string>
 
 #include <JSON>
