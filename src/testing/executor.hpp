@@ -12,7 +12,7 @@ class TestingDriver;
 
 class Executor {
 public:
-    Executor(const std::string& name);
+    explicit Executor(const std::string& name);
 
     bool isDuringTest() const;
 
