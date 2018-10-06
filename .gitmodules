@@ -4,3 +4,6 @@
 [submodule "third_party/easyflags"]
 	path = third_party/easyflags
 	url = https://github.com/establishment/easyflags
+[submodule "third_party/sandman"]
+	path = third_party/sandman
+	url = https://github.com/establishment/sandman
