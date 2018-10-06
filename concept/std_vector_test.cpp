@@ -174,26 +174,22 @@ int main(int argc, char** argv) {
             });
 
             test("6 (F)", [&]() {
-                expectMatches(v, hasSize(isGreaterThan(7)));
-            });
-
-            test("7 (F)", [&]() {
                 expectMatches(v, eachElement(isGreaterThanOrEqualTo(2)));
             });
 
-            test("8 (F)", [&]() {
+            test("7 (F)", [&]() {
                 expectMatches(v, anyElement(isEqualTo(22)));
             });
 
-            test("9 (F)", [&]() {
+            test("8 (F)", [&]() {
                 expectMatches(v, eachElement(either(isZero, isLessThan(9))));
             });
 
-            test("10 (F)", [&]() {
+            test("9 (F)", [&]() {
                 expectMatches(v, anyElement(both(isOdd, isGreaterThan(20))));
             });
 
-            test("11 (F)", [&]() {
+            test("10 (F)", [&]() {
                 expectMatches(v, eachElement(isNot(isPositive)));
             });
         });
