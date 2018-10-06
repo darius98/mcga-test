@@ -12,7 +12,7 @@ class TestingDriver;
 
 class Executor {
 public:
-    Executor();
+    Executor(const std::string& name);
 
     bool isDuringTest() const;
 
@@ -25,6 +25,8 @@ public:
     void executeGroup(Group* group, Executable func);
 
 private:
+    void executeLocked(Test* test, int testIndex);
+
     void executeSetUps(const std::vector<Group*>& groups, Test* test);
 
     void executeTearDowns(const std::vector<Group*>& groups, Test* test);
@@ -40,6 +42,7 @@ private:
 
     ExecutorState state = ExecutorState::INACTIVE;
     int testIndex = 0;
+    std::string name;
 };
 
 }

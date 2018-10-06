@@ -27,12 +27,12 @@ TestingDriver* TestingDriver::getGlobalDriver() {
     return globalTestingDriver;
 }
 
-void TestingDriver::initGlobal() {
+void TestingDriver::initGlobal(const string& executorName) {
     if (globalTestingDriver != nullptr) {
         throw runtime_error("Testing driver cannot be initialized: "
                             "it already exists.");
     }
-    globalTestingDriver = new TestingDriver();
+    globalTestingDriver = new TestingDriver(executorName);
 }
 
 void TestingDriver::destroyGlobal() {
@@ -40,9 +40,9 @@ void TestingDriver::destroyGlobal() {
     globalTestingDriver = nullptr;
 }
 
-TestingDriver::TestingDriver():
+TestingDriver::TestingDriver(const string& executorName):
         shouldLog(flagEnableLogging != 0),
-        executor(new Executor()),
+        executor(new Executor(executorName)),
         groupStack({new Group()}) {}
 
 TestingDriver::~TestingDriver() {

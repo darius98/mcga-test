@@ -27,7 +27,7 @@ public:
     int getNumFailedTests();
 
 private:
-    TestingDriver();
+    explicit TestingDriver(const std::string& executorName);
 
     void execute(Test* currentTest, Executable func);
 
@@ -52,7 +52,7 @@ private:
 
     static TestingDriver* getGlobalDriver();
 
-    static void initGlobal();
+    static void initGlobal(const std::string& executorName);
 
     static void destroyGlobal();
 

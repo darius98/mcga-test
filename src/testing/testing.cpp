@@ -23,7 +23,7 @@ namespace kktest {
 
 void initializeTestingDriver(int argc, char** argv) {
     ParseEasyFlags(argc, argv);
-    TestingDriver::initGlobal();
+    TestingDriver::initGlobal(argv[0]);
 }
 
 int finalizeTesting() {

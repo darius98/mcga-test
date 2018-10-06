@@ -10,7 +10,7 @@ AddArgument(int, argumentTestIndex).Name("single-test").DefaultValue(0);
 
 namespace kktest {
 
-Executor::Executor() = default;
+Executor::Executor(const string& _name): name(_name) {}
 
 bool Executor::isDuringTest() const {
     return state == ExecutorState::TEST;
@@ -23,15 +23,16 @@ void Executor::execute(const vector<Group*>& groups,
     if (argumentTestIndex != 0 && testIndex != argumentTestIndex) {
         return;
     }
-    executeSetUps(groups, test);
-    executeTest(test, func);
-    executeTearDowns(groups, test);
     if (argumentTestIndex != 0) {
+        executeSetUps(groups, test);
+        executeTest(test, func);
+        executeTearDowns(groups, test);
         if (test->failure) {
             cout << test->failure->getMessage();
         }
-        exit(test->failure == nullptr);
+        exit(test->failure != nullptr);
     }
+    executeLocked(test, testIndex);
 }
 
 void Executor::checkIsInactive(const string& methodName) const {
@@ -137,6 +138,32 @@ void Executor::executeGroup(Group* group, Executable func) {
         throw runtime_error(
             "A non-exception object was thrown inside group'" +
             group->description + "'");
+    }
+}
+
+void Executor::executeLocked(Test *test, int testIndex) {
+    string processName = name;
+    processName += " --enable-logging=0";
+    processName += " --single-test=" + to_string(testIndex);
+
+    // TODO(darius98): Replace this with alexvelea's isolate
+    FILE* pipe = popen(processName.c_str(), "r");
+    if (!pipe) {
+        throw runtime_error("popen() failed!");
+    }
+
+    string result;
+
+    char buffer[32];
+    while (!feof(pipe)) {
+        if (fgets(buffer, 32, pipe) != nullptr) {
+            result += buffer;
+        }
+    }
+    auto rc = pclose(pipe);
+
+    if (rc != EXIT_SUCCESS) { // == 0
+        test->failure = new ExpectationFailed(result);
     }
 }
 
