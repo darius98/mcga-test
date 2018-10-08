@@ -1,11 +1,15 @@
+#include <JSON>
 #include <EasyFlags.hpp>
 
 #include "testing/executor.hpp"
 #include "testing/driver.hpp"
 
+using namespace autojson;
 using namespace std;
 
 AddArgument(int, argumentTestIndex).Name("single-test").DefaultValue(0);
+AddArgument(int, flagDebug).Name("debug").DefaultValue(1).ImplicitValue(1);
+AddArgument(string, boxId).Name("box-id").DefaultValue("0");
 
 
 namespace kktest {
@@ -24,15 +28,17 @@ void Executor::execute(const vector<Group*>& groups,
         return;
     }
     if (argumentTestIndex != 0) {
-        executeSetUps(groups, test);
-        executeTest(test, func);
-        executeTearDowns(groups, test);
+        executeSimple(groups, test, func);
         if (test->failure) {
             cout << test->failure->getMessage();
         }
         exit(test->failure != nullptr);
     }
-    executeLocked(test, testIndex);
+    if (!flagDebug) {
+        executeLocked(test, testIndex);
+    } else {
+        executeSimple(groups, test, func);
+    }
 }
 
 void Executor::checkIsInactive(const string& methodName) const {
@@ -142,11 +148,19 @@ void Executor::executeGroup(Group* group, Executable func) {
 }
 
 void Executor::executeLocked(Test *test, int testIndex) {
-    string processName = name;
-    processName += " --enable-logging=0";
-    processName += " --single-test=" + to_string(testIndex);
+    string boxDir = "/tmp/box/" + boxId + "/box/";
 
-    // TODO(darius98): Replace this with alexvelea's isolate
+    if (!copiedBinary) {
+        system("box --init");
+        string copyCommand = "cp " + name + " " + boxDir + "test";
+        system(copyCommand.c_str());
+        copiedBinary = true;
+    }
+
+    string processName = "box --run --stdout=output.txt --box-id=" + boxId;
+    processName += " -- ./test --enable-logging=0 --single-test=";
+    processName += to_string(testIndex);
+
     FILE* pipe = popen(processName.c_str(), "r");
     if (!pipe) {
         throw runtime_error("popen() failed!");
@@ -160,11 +174,18 @@ void Executor::executeLocked(Test *test, int testIndex) {
             result += buffer;
         }
     }
-    auto rc = pclose(pipe);
-
-    if (rc != EXIT_SUCCESS) { // == 0
+    JSON runStats = JSON::parse(result) | JSON();
+    if (pclose(pipe) != EXIT_SUCCESS) {
         test->failure = new ExpectationFailed(result);
     }
+}
+
+void Executor::executeSimple(const vector<Group*>& groups,
+                             Test* test,
+                             Executable func) {
+    executeSetUps(groups, test);
+    executeTest(test, func);
+    executeTearDowns(groups, test);
 }
 
 }
