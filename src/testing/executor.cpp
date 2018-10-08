@@ -8,7 +8,7 @@ using namespace autojson;
 using namespace std;
 
 AddArgument(int, argumentTestIndex).Name("single-test").DefaultValue(0);
-AddArgument(int, flagDebug).Name("debug").DefaultValue(1).ImplicitValue(1);
+AddArgument(int, flagDebug).Name("debug").DefaultValue(0).ImplicitValue(1);
 AddArgument(string, boxId).Name("box-id").DefaultValue("0");
 
 
@@ -151,13 +151,11 @@ void Executor::executeLocked(Test *test, int testIndex) {
     string boxDir = "/tmp/box/" + boxId + "/box/";
 
     if (!copiedBinary) {
-        system("box --init");
-        string copyCommand = "cp " + name + " " + boxDir + "test";
-        system(copyCommand.c_str());
+        system(("box --init; cp " + name + " " + boxDir + "test").c_str());
         copiedBinary = true;
     }
 
-    string processName = "box --run --stdout=output.txt --box-id=" + boxId;
+    string processName = "box --run --meta=" + boxId + " --box-id=" + boxId;
     processName += " -- ./test --enable-logging=0 --single-test=";
     processName += to_string(testIndex);
 
@@ -165,18 +163,18 @@ void Executor::executeLocked(Test *test, int testIndex) {
     if (!pipe) {
         throw runtime_error("popen() failed!");
     }
-
-    string result;
-
+    string testOutput;
     char buffer[32];
     while (!feof(pipe)) {
         if (fgets(buffer, 32, pipe) != nullptr) {
-            result += buffer;
+            testOutput += buffer;
         }
     }
-    JSON runStats = JSON::parse(result) | JSON();
-    if (pclose(pipe) != EXIT_SUCCESS) {
-        test->failure = new ExpectationFailed(result);
+
+    JSON runStats = JSON::readFromFile(boxId);
+    system(("rm " + boxId).c_str());
+    if (pclose(pipe) != 0 || (int)runStats["exitCode"] != 0) {
+        test->failure = new ExpectationFailed(testOutput);
     }
 }
 
