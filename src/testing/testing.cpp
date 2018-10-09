@@ -5,6 +5,7 @@
 #include "testing/driver.hpp"
 
 using namespace easyflags;
+using namespace kktest;
 using namespace std;
 
 AddArgument(int, flagEnableReport)
@@ -18,24 +19,16 @@ AddArgument(string, reportFileName)
     .Description("Path to file where to dump the test report")
     .DefaultValue("report.json");
 
-
-namespace kktest {
-
-void initializeTestingDriver(int argc, char** argv) {
+void initializeTesting(int argc, char** argv) {
     ParseEasyFlags(argc, argv);
     TestingDriver::initGlobal(argv[0]);
 }
 
 int finalizeTesting() {
-    TestingDriver* driver = TestingDriver::getGlobalDriver();
     if (flagEnableReport) {
         ofstream reportFileStream(reportFileName);
-        driver->generateTestReport(reportFileStream);
+        TestingDriver::generateTestReport(reportFileStream);
         reportFileStream.close();
     }
-    int status = driver->getNumFailedTests();
-    TestingDriver::destroyGlobal();
-    return status;
+    return TestingDriver::destroyGlobal();
 }
-
-} // namespace kktest

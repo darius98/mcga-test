@@ -1,7 +1,7 @@
 #include <kktest>
 
 int main(int argc, char** argv) {
-    kktest::initializeTestingDriver(argc, argv);
+    initializeTesting(argc, argv);
 
     test("This is a passing test!", [&]() {
         expect(1 + 2 == 3);
@@ -11,5 +11,5 @@ int main(int argc, char** argv) {
         expect(3 * 3 == 6);
     });
 
-    return kktest::finalizeTesting();
+    return finalizeTesting();
 }

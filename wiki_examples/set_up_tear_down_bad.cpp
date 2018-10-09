@@ -2,7 +2,7 @@
 #include <kktest>
 
 int main(int argc, char** argv) {
-    kktest::initializeTestingDriver(argc, argv);
+    initializeTesting(argc, argv);
 
     std::vector<int> v;
 
@@ -30,5 +30,5 @@ int main(int argc, char** argv) {
         v.clear();
     });
 
-    return kktest::finalizeTesting();
+    return finalizeTesting();
 }

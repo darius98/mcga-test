@@ -21,7 +21,7 @@ TestingDriver* TestingDriver::globalTestingDriver = nullptr;
 
 TestingDriver* TestingDriver::getGlobalDriver() {
     if (globalTestingDriver == nullptr) {
-        std::cout << "Global testing driver not defined. Cannot continue.\n";
+        cout << "Global testing driver not defined. Cannot continue.\n";
         exit(1);
     }
     return globalTestingDriver;
@@ -35,9 +35,16 @@ void TestingDriver::initGlobal(const string& executorName) {
     globalTestingDriver = new TestingDriver(executorName);
 }
 
-void TestingDriver::destroyGlobal() {
-    delete globalTestingDriver;
+void TestingDriver::generateTestReport(ostream& report) {
+    report << getGlobalDriver()->groupStack[0]->generateReport().stringify(0);
+}
+
+int TestingDriver::destroyGlobal() {
+    TestingDriver* driver = getGlobalDriver();
+    int status = driver->getNumFailedTests();
+    delete driver;
     globalTestingDriver = nullptr;
+    return status;
 }
 
 TestingDriver::TestingDriver(const string& executorName):
@@ -88,10 +95,6 @@ void TestingDriver::addSetUp(Executable func) {
 void TestingDriver::addTearDown(Executable func) {
     executor->checkIsInactive("tearDown");
     groupStack.back()->setTearDown(func);
-}
-
-void TestingDriver::generateTestReport(ostream& report) {
-    report << groupStack[0]->generateReport().stringify(false);
 }
 
 int TestingDriver::getNumFailedTests() {

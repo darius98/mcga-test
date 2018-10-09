@@ -17,7 +17,7 @@ using namespace std;
 
 
 int main(int argc, char** argv) {
-    initializeTestingDriver(argc, argv);
+    initializeTesting(argc, argv);
 
     vector<int> v, w;
 

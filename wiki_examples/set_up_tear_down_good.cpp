@@ -2,7 +2,7 @@
 #include <kktest>
 
 int main(int argc, char** argv) {
-    kktest::initializeTestingDriver(argc, argv);
+    initializeTesting(argc, argv);
 
     std::vector<int> v;
 
@@ -28,5 +28,5 @@ int main(int argc, char** argv) {
         expect(std::find(v.begin(), v.end(), 6) == v.end());
     });
 
-    return kktest::finalizeTesting();
+    return finalizeTesting();
 }

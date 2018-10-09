@@ -12,6 +12,12 @@ namespace kktest {
 
 class TestingDriver {
 public:
+    static void initGlobal(const std::string& executorName);
+
+    static int destroyGlobal();
+
+    static void generateTestReport(std::ostream& report);
+
     ~TestingDriver();
 
     void addGroup(Group* currentGroup, Executable func);
@@ -22,14 +28,10 @@ public:
 
     void addTearDown(Executable func);
 
-    void generateTestReport(std::ostream& report);
-
     int getNumFailedTests();
 
 private:
     explicit TestingDriver(const std::string& executorName);
-
-    void execute(Test* currentTest, Executable func);
 
     std::string getTestFullName(Test* currentTest) const;
 
@@ -50,20 +52,14 @@ private:
     Executor* executor;
     bool shouldLog;
 
-    static TestingDriver* getGlobalDriver();
-
-    static void initGlobal(const std::string& executorName);
-
-    static void destroyGlobal();
-
     static bool isDuringTest();
+
+    static TestingDriver* getGlobalDriver();
 
     static TestingDriver* globalTestingDriver;
 
     friend class Matcher;
     friend class Definer;
-    friend void initializeTestingDriver(int argc, char** argv);
-    friend int finalizeTesting();
 };
 
 }
