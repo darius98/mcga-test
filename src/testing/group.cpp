@@ -21,6 +21,22 @@ Group::~Group() {
     }
 }
 
+bool Group::isGlobalScope() const {
+    return parentGroup == nullptr;
+}
+
+Group* Group::addSubGroup(string description, string file, int line) {
+    Group* subGroup = new Group(move(description), move(file), line, this);
+    subGroups.push_back(subGroup);
+    return subGroup;
+}
+
+Test* Group::addTest(string description, string file, int line) {
+    Test* test = new Test(move(description), move(file), line, this);
+    tests.push_back(test);
+    return test;
+}
+
 void Group::addSetUp(Executable func) {
     if (hasSetUp) {
         throw runtime_error("Group '" + getFullDescription() +
@@ -53,20 +69,24 @@ void Group::tearDown() const {
 
 string Group::getFullDescription() const {
     string fullDescription = description;
-    if (parentGroup->parentGroup != nullptr) {
-        fullDescription = parentGroup->getFullDescription() + "::" + fullDescription;
+    if (!parentGroup->isGlobalScope()) {
+        fullDescription = parentGroup->getFullDescription()
+                          + "::"
+                          + fullDescription;
     }
     return fullDescription;
 }
 
 JSON Group::generateReport() const {
     JSON report = {
-        {"file", file},
-        {"line", line},
         {"numTests", numTests},
         {"numFailedTests", numFailedTests},
-        {"description", description},
     };
+    if (!isGlobalScope()) {
+      report["line"] = line;
+      report["file"] = file;
+      report["description"] = description;
+    }
     if (!tests.empty()) {
         report["tests"] = vector<JSON>();
         for (const auto& test: tests) {

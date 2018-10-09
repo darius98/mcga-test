@@ -44,7 +44,7 @@ string Test::getFailureMessage() const {
 string Test::getFullDescription() const {
     string fullDescription = file + ":" + to_string(line) + ": ";
 
-    if (parentGroup->parentGroup != nullptr) {
+    if (!parentGroup->isGlobalScope()) {
         fullDescription += parentGroup->getFullDescription() + "::";
     }
 

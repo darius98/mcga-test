@@ -51,10 +51,11 @@ int TestingDriver::destroyGlobal() {
 TestingDriver::TestingDriver(const string& executorName):
         shouldLog(flagEnableLogging != 0),
         executor(new Executor(executorName)),
-        groupStack({new Group("", "", 0, nullptr)}) {}
+        globalScope(new Group("", "", 0, nullptr)),
+        groupStack({globalScope}) {}
 
 TestingDriver::~TestingDriver() {
-    delete groupStack[0];
+    delete globalScope;
     delete executor;
 }
 
@@ -68,8 +69,7 @@ void TestingDriver::addGroup(string description,
                              int line,
                              Executable func) {
     executor->checkIsInactive("group");
-    Group* group = new Group(description, file, line, groupStack.back());
-    groupStack.back()->subGroups.push_back(group);
+    Group* group = groupStack.back()->addSubGroup(move(description), move(file), line);
     groupStack.push_back(group);
     executor->executeGroup(group, func);
     groupStack.pop_back();
@@ -80,8 +80,7 @@ void TestingDriver::addTest(string description,
                             int line,
                             Executable func) {
     executor->checkIsInactive("test");
-    Test* test = new Test(description, file, line, groupStack.back());
-    groupStack.back()->tests.push_back(test);
+    Test* test = groupStack.back()->addTest(move(description), move(file), line);
     log(test->getFullDescription(), ": ");
     executor->execute(groupStack, test, func);
     if (test->isFailed()) {
@@ -107,7 +106,7 @@ void TestingDriver::addTearDown(Executable func) {
 }
 
 int TestingDriver::getNumFailedTests() {
-    return groupStack[0]->numFailedTests;
+    return globalScope->numFailedTests;
 }
 
 }

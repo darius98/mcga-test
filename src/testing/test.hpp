@@ -33,9 +33,9 @@ struct Test {
     std::string getFullDescription() const;
 
     autojson::JSON generateReport() const;
-
-    Group* parentGroup = nullptr;
 private:
+    Group* parentGroup = nullptr;
+
     std::string description;
 
     std::string file;

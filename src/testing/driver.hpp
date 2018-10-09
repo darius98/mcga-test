@@ -52,6 +52,7 @@ private:
         log(args...);
     };
 
+    Group* globalScope;
     std::vector<Group*> groupStack;
     Executor* executor;
     bool shouldLog;
