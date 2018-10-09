@@ -29,10 +29,10 @@ void Executor::execute(const vector<Group*>& groups,
     }
     if (argumentTestIndex != 0) {
         executeSimple(groups, test, func);
-        if (test->failure) {
-            cout << test->failure->getMessage();
+        if (test->isFailed()) {
+            cout << test->getFailureMessage();
         }
-        exit(test->failure != nullptr);
+        exit(test->isFailed());
     }
     if (!flagDebug) {
         executeLocked(test, testIndex);
@@ -72,8 +72,8 @@ void Executor::executeSetUps(const vector<Group*>& groups, Test* test) {
                 failMessage = "A non-exception object was thrown during the "
                               "setUp of group '" + g->description + "'.";
             }
-            if (failed && test->failure == nullptr) {
-                test->failure = new ExpectationFailed(failMessage);
+            if (failed) {
+                test->setFailure(failMessage);
             }
         }
     }
@@ -85,21 +85,13 @@ void Executor::executeTest(Test *test, Executable func) {
     try {
         func();
     } catch(const ExpectationFailed& failure) {
-        if (test->failure == nullptr) {
-            test->failure = new ExpectationFailed(failure);
-        }
+        test->setFailure(failure);
     } catch(const exception& e) {
-        if (test->failure == nullptr) {
-            test->failure = new ExpectationFailed(
-                "An exception was thrown during test: " + string(e.what())
-            );
-        }
+        test->setFailure(
+            "An exception was thrown during test: " + string(e.what())
+        );
     } catch(...) {
-        if (test->failure == nullptr) {
-            test->failure = new ExpectationFailed(
-                "A non-exception object was thrown during test"
-            );
-        }
+        test->setFailure("A non-exception object was thrown during test");
     }
     state = ExecutorState::INACTIVE;
 }
@@ -124,8 +116,8 @@ void Executor::executeTearDowns(const vector<Group*>& groups, Test* test) {
                 failMessage = "A non-exception object was thrown during the "
                               "tearDown of group '" + g->description + "'.";
             }
-            if (failed && test->failure == nullptr) {
-                test->failure = new ExpectationFailed(failMessage);
+            if (failed) {
+                test->setFailure(failMessage);
             }
         }
     }
@@ -174,7 +166,7 @@ void Executor::executeLocked(Test *test, int testIndex) {
     JSON runStats = JSON::readFromFile(boxId);
     system(("rm " + boxId).c_str());
     if (pclose(pipe) != 0 || (int)runStats["exitCode"] != 0) {
-        test->failure = new ExpectationFailed(testOutput);
+        test->setFailure(testOutput);
     }
 }
 

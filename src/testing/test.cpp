@@ -13,16 +13,40 @@ Test::~Test() {
     delete failure;
 }
 
+bool Test::isFailed() const {
+    return failure != nullptr;
+}
+
+bool Test::isPassed() const {
+    return !isFailed();
+}
+
+void Test::setFailure(const string& message) {
+    if (isPassed()) {
+        failure = new ExpectationFailed(message);
+    }
+}
+
+void Test::setFailure(const ExpectationFailed& f) {
+    if (isPassed()) {
+        failure = new ExpectationFailed(f);
+    }
+}
+
+string Test::getFailureMessage() const {
+    return failure->getMessage();
+}
+
 JSON Test::generateReport() const {
     JSON report;
     report["description"] = description;
-    report["passed"] = (failure == nullptr);
     if (!file.empty()) {
         report["file"] = file;
         report["line"] = line;
     }
-    if (failure != nullptr) {
-        report["failureMessage"] = failure->getMessage();
+    report["passed"] = isPassed();
+    if (!isPassed()) {
+        report["failureMessage"] = getFailureMessage();
     }
     return report;
 }

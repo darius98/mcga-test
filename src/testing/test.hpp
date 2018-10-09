@@ -11,18 +11,28 @@
 namespace kktest {
 
 struct Test {
-    std::string file;
-    int line;
-
-    std::string description;
-
-    ExpectationFailed* failure = nullptr;
-
     explicit Test(std::string description, std::string file="", int line=0);
 
     ~Test();
 
+    bool isFailed() const;
+
+    bool isPassed() const;
+
+    std::string getFailureMessage() const;
+
+    void setFailure(const std::string& message);
+
+    void setFailure(const ExpectationFailed& f);
+
     autojson::JSON generateReport() const;
+
+    std::string description;
+
+    std::string file;
+    int line;
+private:
+    ExpectationFailed* failure = nullptr;
 };
 
 }

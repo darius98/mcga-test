@@ -68,14 +68,14 @@ void TestingDriver::addTest(Test* currentTest, Executable func) {
     groupStack.back()->tests.push_back(currentTest);
     log(getTestFullName(currentTest), ": ");
     executor->execute(groupStack, currentTest, func);
-    if (currentTest->failure) {
-        log("FAILED\n\t", currentTest->failure->getMessage(), "\n");
+    if (currentTest->isFailed()) {
+        log("FAILED\n\t", currentTest->getFailureMessage(), "\n");
     } else {
         log("PASSED\n");
     }
     for (Group* g: groupStack) {
         g->numTests += 1;
-        g->numFailedTests += (currentTest->failure != nullptr);
+        g->numFailedTests += currentTest->isFailed();
     }
     Matcher::cleanupMatchersCreatedDuringTests();
 }
