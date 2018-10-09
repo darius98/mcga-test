@@ -13,7 +13,10 @@ namespace kktest {
 struct Group;
 
 struct Test {
-    explicit Test(std::string _description, std::string _file, int _line);
+    Test(std::string _description,
+         std::string _file,
+         int _line,
+         Group* _parentGroup);
 
     ~Test();
 

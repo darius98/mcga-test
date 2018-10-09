@@ -6,15 +6,18 @@ using namespace std;
 
 namespace kktest {
 
-Group::Group(string description, string file, int line):
-        description(move(description)), file(move(file)), line(line) {}
+Group::Group(string _description, string _file, int _line, Group* _parentGroup):
+        description(move(_description)),
+        file(move(_file)),
+        line(_line),
+        parentGroup(_parentGroup) {}
 
 Group::~Group() {
-    for (Test* t: tests) {
-        delete t;
+    for (Test* test: tests) {
+        delete test;
     }
-    for (Group* g: subGroups) {
-        delete g;
+    for (Group* subGroup: subGroups) {
+        delete subGroup;
     }
 }
 
@@ -62,10 +65,8 @@ JSON Group::generateReport() const {
         {"line", line},
         {"numTests", numTests},
         {"numFailedTests", numFailedTests},
+        {"description", description},
     };
-    if (!description.empty()) {
-        report["description"] = description;
-    }
     if (!tests.empty()) {
         report["tests"] = vector<JSON>();
         for (const auto& test: tests) {

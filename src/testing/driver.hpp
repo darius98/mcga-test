@@ -20,9 +20,15 @@ public:
 
     ~TestingDriver();
 
-    void addGroup(Group* currentGroup, Executable func);
+    void addGroup(std::string description,
+                  std::string file,
+                  int line,
+                  Executable func);
 
-    void addTest(Test* currentTest, Executable func);
+    void addTest(std::string description,
+                 std::string file,
+                 int line,
+                 Executable func);
 
     void addSetUp(Executable func);
 

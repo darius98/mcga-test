@@ -17,11 +17,11 @@ bool Definer::isDuringTest() {
 }
 
 void TestDefiner::operator()(string description, Executable func) {
-    getDriver()->addTest(new Test(move(description), file, line), func);
+    getDriver()->addTest(move(description), file, line, func);
 }
 
 void GroupDefiner::operator()(string description, Executable func) {
-    getDriver()->addGroup(new Group(move(description), file, line), func);
+    getDriver()->addGroup(move(description), file, line, func);
 }
 
 void SetUpDefiner::operator()(Executable func) {

@@ -7,8 +7,11 @@ using namespace std;
 
 namespace kktest {
 
-Test::Test(string _description, string _file, int _line):
-        description(move(_description)), file(move(_file)), line(_line) {}
+Test::Test(string _description, string _file, int _line, Group* _parentGroup):
+        description(move(_description)),
+        file(move(_file)),
+        line(_line),
+        parentGroup(_parentGroup) {}
 
 Test::~Test() {
     delete failure;

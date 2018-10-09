@@ -51,7 +51,7 @@ int TestingDriver::destroyGlobal() {
 TestingDriver::TestingDriver(const string& executorName):
         shouldLog(flagEnableLogging != 0),
         executor(new Executor(executorName)),
-        groupStack({new Group()}) {}
+        groupStack({new Group("", "", 0, nullptr)}) {}
 
 TestingDriver::~TestingDriver() {
     delete groupStack[0];
@@ -63,29 +63,35 @@ bool TestingDriver::isDuringTest() {
             globalTestingDriver->executor->isDuringTest();
 }
 
-void TestingDriver::addGroup(Group* currentGroup, Executable func) {
+void TestingDriver::addGroup(string description,
+                             string file,
+                             int line,
+                             Executable func) {
     executor->checkIsInactive("group");
-    groupStack.back()->subGroups.push_back(currentGroup);
-    currentGroup->parentGroup = groupStack.back();
-    groupStack.push_back(currentGroup);
-    executor->executeGroup(currentGroup, func);
+    Group* group = new Group(description, file, line, groupStack.back());
+    groupStack.back()->subGroups.push_back(group);
+    groupStack.push_back(group);
+    executor->executeGroup(group, func);
     groupStack.pop_back();
 }
 
-void TestingDriver::addTest(Test* currentTest, Executable func) {
+void TestingDriver::addTest(string description,
+                            string file,
+                            int line,
+                            Executable func) {
     executor->checkIsInactive("test");
-    groupStack.back()->tests.push_back(currentTest);
-    currentTest->parentGroup = groupStack.back();
-    log(currentTest->getFullDescription(), ": ");
-    executor->execute(groupStack, currentTest, func);
-    if (currentTest->isFailed()) {
-        log("FAILED\n\t", currentTest->getFailureMessage(), "\n");
+    Test* test = new Test(description, file, line, groupStack.back());
+    groupStack.back()->tests.push_back(test);
+    log(test->getFullDescription(), ": ");
+    executor->execute(groupStack, test, func);
+    if (test->isFailed()) {
+        log("FAILED\n\t", test->getFailureMessage(), "\n");
     } else {
         log("PASSED\n");
     }
-    for (Group* g: groupStack) {
-        g->numTests += 1;
-        g->numFailedTests += currentTest->isFailed();
+    for (Group* group: groupStack) {
+        group->numTests += 1;
+        group->numFailedTests += test->isFailed();
     }
     Matcher::cleanupMatchersCreatedDuringTests();
 }
