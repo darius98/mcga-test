@@ -16,9 +16,7 @@ class Definer {
 public:
     Definer(std::string _file, int _line);
 protected:
-    TestingDriver* getDriver();
-
-    bool isDuringTest();
+    TestingDriver* getDriver() const;
 
     std::string file;
     int line;

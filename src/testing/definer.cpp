@@ -8,12 +8,8 @@ namespace kktest {
 
 Definer::Definer(string _file, int _line): file(move(_file)), line(_line) {}
 
-TestingDriver* Definer::getDriver() {
+TestingDriver* Definer::getDriver() const {
     return TestingDriver::getGlobalDriver();
-}
-
-bool Definer::isDuringTest() {
-    return TestingDriver::isDuringTest();
 }
 
 void TestDefiner::operator()(string description, Executable func) {
@@ -33,7 +29,7 @@ void TearDownDefiner::operator()(Executable func) {
 }
 
 void BaseExpectDefiner::checkDuringTest() {
-    if (!isDuringTest()) {
+    if (!TestingDriver::isDuringTest()) {
         throw runtime_error(
             file + ":" + to_string(line) + ": "
             "'expect' can only be called inside tests!"
@@ -54,4 +50,4 @@ void ExpectDefiner::operator()(const bool& exprResult, const string& expr) {
     }
 }
 
-} // namespace kktest
+}
