@@ -73,7 +73,20 @@ void TestingDriver::addGroup(string description,
         move(description), move(file), line
     );
     groupStack.push_back(group);
-    executor->executeGroup(group, func);
+
+    try {
+        func();
+    } catch(const exception& e) {
+        throw runtime_error("An exception was thrown inside group '" +
+            group->getFullDescription() +
+            "': " +
+            e.what());
+    } catch(...) {
+        throw runtime_error(
+            "A non-exception object was thrown inside group'" +
+            group->getFullDescription() + "'");
+    }
+
     groupStack.pop_back();
 }
 

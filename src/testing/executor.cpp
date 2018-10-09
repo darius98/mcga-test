@@ -53,6 +53,45 @@ void Executor::checkIsInactive(const string& methodName) const {
     }
 }
 
+void Executor::executeLocked(Test *test, int testIndex) {
+    string boxDir = "/tmp/box/" + boxId + "/box/";
+
+    if (!copiedBinary) {
+        system(("box --init; cp " + name + " " + boxDir + "test").c_str());
+        copiedBinary = true;
+    }
+
+    string processName = "box --run --meta=" + boxId + " --box-id=" + boxId;
+    processName += " -- ./test --enable-logging=0 --single-test=";
+    processName += to_string(testIndex);
+
+    FILE* pipe = popen(processName.c_str(), "r");
+    if (!pipe) {
+        throw runtime_error("popen() failed!");
+    }
+    string testOutput;
+    char buffer[32];
+    while (!feof(pipe)) {
+        if (fgets(buffer, 32, pipe) != nullptr) {
+            testOutput += buffer;
+        }
+    }
+
+    JSON runStats = JSON::readFromFile(boxId);
+    system(("rm " + boxId).c_str());
+    if (pclose(pipe) != 0 || (int)runStats["exitCode"] != 0) {
+        test->setFailure(testOutput);
+    }
+}
+
+void Executor::executeSimple(const vector<Group*>& groups,
+                             Test* test,
+                             Executable func) {
+    executeSetUps(groups, test);
+    executeTest(test, func);
+    executeTearDowns(groups, test);
+}
+
 void Executor::executeSetUps(const vector<Group*>& groups, Test* test) {
     state = ExecutorState::SET_UP;
     for (Group* g: groups) {
@@ -118,60 +157,6 @@ void Executor::executeTearDowns(const vector<Group*>& groups, Test* test) {
         }
     }
     state = ExecutorState::INACTIVE;
-}
-
-void Executor::executeGroup(Group* group, Executable func) {
-    try {
-        func();
-    } catch(const exception& e) {
-        throw runtime_error("An exception was thrown inside group '" +
-            group->getFullDescription() +
-            "': " +
-            e.what());
-    } catch(...) {
-        throw runtime_error(
-            "A non-exception object was thrown inside group'" +
-            group->getFullDescription() + "'");
-    }
-}
-
-void Executor::executeLocked(Test *test, int testIndex) {
-    string boxDir = "/tmp/box/" + boxId + "/box/";
-
-    if (!copiedBinary) {
-        system(("box --init; cp " + name + " " + boxDir + "test").c_str());
-        copiedBinary = true;
-    }
-
-    string processName = "box --run --meta=" + boxId + " --box-id=" + boxId;
-    processName += " -- ./test --enable-logging=0 --single-test=";
-    processName += to_string(testIndex);
-
-    FILE* pipe = popen(processName.c_str(), "r");
-    if (!pipe) {
-        throw runtime_error("popen() failed!");
-    }
-    string testOutput;
-    char buffer[32];
-    while (!feof(pipe)) {
-        if (fgets(buffer, 32, pipe) != nullptr) {
-            testOutput += buffer;
-        }
-    }
-
-    JSON runStats = JSON::readFromFile(boxId);
-    system(("rm " + boxId).c_str());
-    if (pclose(pipe) != 0 || (int)runStats["exitCode"] != 0) {
-        test->setFailure(testOutput);
-    }
-}
-
-void Executor::executeSimple(const vector<Group*>& groups,
-                             Test* test,
-                             Executable func) {
-    executeSetUps(groups, test);
-    executeTest(test, func);
-    executeTearDowns(groups, test);
 }
 
 }

@@ -20,8 +20,6 @@ public:
                  Test* test,
                  Executable func);
 
-    void executeGroup(Group* group, Executable func);
-
 private:
     void executeLocked(Test* test, int testIndex);
 
