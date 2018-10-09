@@ -20,17 +20,15 @@ struct Group {
 
     void setSetUp(Executable func);
 
+    void setUp() const;
+
     void setTearDown(Executable func);
+
+    void tearDown() const;
 
     std::string getFullDescription() const;
 
     autojson::JSON generateReport() const;
-
-    bool hasSetUp = false;
-    CopyableExecutable setUpFunc;
-
-    bool hasTearDown = false;
-    CopyableExecutable tearDownFunc;
 
     Group* parentGroup = nullptr;
     std::vector<Group*> subGroups;
@@ -43,6 +41,12 @@ private:
     int line;
 
     std::string description;
+
+    bool hasSetUp = false;
+    CopyableExecutable setUpFunc;
+
+    bool hasTearDown = false;
+    CopyableExecutable tearDownFunc;
 };
 
 }

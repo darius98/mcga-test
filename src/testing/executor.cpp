@@ -56,25 +56,23 @@ void Executor::checkIsInactive(const string& methodName) const {
 void Executor::executeSetUps(const vector<Group*>& groups, Test* test) {
     state = ExecutorState::SET_UP;
     for (Group* g: groups) {
-        if (g->hasSetUp) {
-            bool failed;
-            string failMessage;
-            try {
-                g->setUpFunc();
-                failed = false;
-            } catch(const exception& e) {
-                failed = true;
-                failMessage = "An exception was thrown during the "
-                              "setUp of group '" + g->getFullDescription()
-                              + "': " + e.what();
-            } catch(...) {
-                failed = true;
-                failMessage = "A non-exception object was thrown during the "
-                              "setUp of group '" + g->getFullDescription() + "'.";
-            }
-            if (failed) {
-                test->setFailure(failMessage);
-            }
+        bool failed;
+        string failMessage;
+        try {
+            g->setUp();
+            failed = false;
+        } catch(const exception& e) {
+            failed = true;
+            failMessage = "An exception was thrown during the "
+                          "setUp of group '" + g->getFullDescription()
+                          + "': " + e.what();
+        } catch(...) {
+            failed = true;
+            failMessage = "A non-exception object was thrown during the "
+                          "setUp of group '" + g->getFullDescription() + "'.";
+        }
+        if (failed) {
+            test->setFailure(failMessage);
         }
     }
     state = ExecutorState::INACTIVE;
@@ -100,25 +98,23 @@ void Executor::executeTearDowns(const vector<Group*>& groups, Test* test) {
     state = ExecutorState::TEAR_DOWN;
     for (int i = (int)groups.size() - 1; i >= 0; -- i) {
         Group* g = groups[i];
-        if (g->hasTearDown) {
-            bool failed;
-            string failMessage;
-            try {
-                g->tearDownFunc();
-                failed = false;
-            } catch(const exception& e) {
-                failed = true;
-                failMessage = "An exception was thrown during the "
-                              "tearDown of group '" + g->getFullDescription()
-                              + "': " + e.what();
-            } catch(...) {
-                failed = true;
-                failMessage = "A non-exception object was thrown during the "
-                              "tearDown of group '" + g->getFullDescription() + "'.";
-            }
-            if (failed) {
-                test->setFailure(failMessage);
-            }
+        bool failed;
+        string failMessage;
+        try {
+            g->tearDown();
+            failed = false;
+        } catch(const exception& e) {
+            failed = true;
+            failMessage = "An exception was thrown during the "
+                          "tearDown of group '" + g->getFullDescription()
+                          + "': " + e.what();
+        } catch(...) {
+            failed = true;
+            failMessage = "A non-exception object was thrown during the "
+                          "tearDown of group '" + g->getFullDescription() + "'.";
+        }
+        if (failed) {
+            test->setFailure(failMessage);
         }
     }
     state = ExecutorState::INACTIVE;

@@ -20,20 +20,32 @@ Group::~Group() {
 
 void Group::setSetUp(Executable func) {
     if (hasSetUp) {
-        throw runtime_error("Group '" + description +
+        throw runtime_error("Group '" + getFullDescription() +
                             "' already has a setUp!");
     }
     hasSetUp = true;
     setUpFunc = func;
 }
 
+void Group::setUp() const {
+    if (hasSetUp) {
+        setUpFunc();
+    }
+}
+
 void Group::setTearDown(Executable func) {
     if (hasTearDown) {
-        throw runtime_error("Group '" + description +
+        throw runtime_error("Group '" + getFullDescription() +
                             "' already has a tearDown!");
     }
     hasTearDown = true;
     tearDownFunc = func;
+}
+
+void Group::tearDown() const {
+    if (hasTearDown) {
+        tearDownFunc();
+    }
 }
 
 string Group::getFullDescription() const {
