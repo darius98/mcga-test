@@ -1,5 +1,5 @@
-#include "testing/definer.hpp"
-#include "testing/driver.hpp"
+#include "definer.hpp"
+#include "driver.hpp"
 
 using namespace std;
 

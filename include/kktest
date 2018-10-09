@@ -1,9 +1,9 @@
 #ifndef KKTEST_KKTEST_H_
 #define KKTEST_KKTEST_H_
 
-#include "matcher/core_matchers.hpp"
+#include <matcher/core_matchers.hpp>
 
-#include "testing/macros.hpp"
-#include "testing/testing.hpp"
+#include <testing/macros.hpp>
+#include <testing/testing.hpp>
 
 #endif

@@ -4,8 +4,8 @@
 #include <iostream>
 #include <stack>
 
-#include "testing/group.hpp"
-#include "testing/executor.hpp"
+#include "group.hpp"
+#include "executor.hpp"
 
 
 namespace kktest {

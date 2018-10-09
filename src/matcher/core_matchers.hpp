@@ -3,14 +3,14 @@
 
 #include <set>
 
-#include "matcher/comparison_matchers.hpp"
-#include "matcher/composite_matchers.hpp"
-#include "matcher/functional_matchers.hpp"
-#include "matcher/iterable_matchers.hpp"
-#include "matcher/numeric_matchers.hpp"
-#include "matcher/pointer_matchers.hpp"
-#include "matcher/string_matchers.hpp"
-#include "matcher/truth_matcher.hpp"
+#include "comparison_matchers.hpp"
+#include "composite_matchers.hpp"
+#include "functional_matchers.hpp"
+#include "iterable_matchers.hpp"
+#include "numeric_matchers.hpp"
+#include "pointer_matchers.hpp"
+#include "string_matchers.hpp"
+#include "truth_matcher.hpp"
 
 
 namespace kktest {

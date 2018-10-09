@@ -1,4 +1,4 @@
-#include "testing/group.hpp"
+#include "group.hpp"
 
 using namespace autojson;
 using namespace std;

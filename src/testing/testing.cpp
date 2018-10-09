@@ -2,7 +2,7 @@
 
 #include <EasyFlags.hpp>
 
-#include "testing/driver.hpp"
+#include "driver.hpp"
 
 using namespace easyflags;
 using namespace kktest;

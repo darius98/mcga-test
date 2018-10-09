@@ -1,9 +1,9 @@
 #ifndef KKTEST_TESTING_EXECUTOR_H_
 #define KKTEST_TESTING_EXECUTOR_H_
 
-#include "testing/executable.hpp"
-#include "testing/group.hpp"
-#include "testing/test.hpp"
+#include "executable.hpp"
+#include "group.hpp"
+#include "test.hpp"
 
 
 namespace kktest {

@@ -7,8 +7,8 @@
 
 #include <JSON>
 
-#include "testing/executable.hpp"
-#include "testing/test.hpp"
+#include "executable.hpp"
+#include "test.hpp"
 
 
 namespace kktest {

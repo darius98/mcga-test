@@ -1,8 +1,8 @@
 #include <JSON>
 #include <EasyFlags.hpp>
 
-#include "testing/executor.hpp"
-#include "testing/driver.hpp"
+#include "executor.hpp"
+#include "driver.hpp"
 
 using namespace autojson;
 using namespace std;

@@ -1,5 +1,6 @@
-#include "matcher/matcher.hpp"
-#include "testing/driver.hpp"
+#include <testing/driver.hpp>
+
+#include "matcher.hpp"
 
 using namespace kktest;
 using namespace std;

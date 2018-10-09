@@ -4,9 +4,10 @@
 #include <functional>
 #include <string>
 
-#include "matcher/matcher.hpp"
-#include "testing/driver.hpp"
-#include "testing/executable.hpp"
+#include <matcher/matcher.hpp>
+
+#include "driver.hpp"
+#include "executable.hpp"
 
 
 namespace kktest {
