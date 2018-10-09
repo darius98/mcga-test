@@ -18,11 +18,11 @@ struct Group {
 
     ~Group();
 
-    void setSetUp(Executable func);
+    void addSetUp(Executable func);
 
     void setUp() const;
 
-    void setTearDown(Executable func);
+    void addTearDown(Executable func);
 
     void tearDown() const;
 

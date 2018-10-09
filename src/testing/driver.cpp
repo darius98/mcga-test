@@ -92,12 +92,12 @@ void TestingDriver::addTest(Test* currentTest, Executable func) {
 
 void TestingDriver::addSetUp(Executable func) {
     executor->checkIsInactive("setUp");
-    groupStack.back()->setSetUp(func);
+    groupStack.back()->addSetUp(func);
 }
 
 void TestingDriver::addTearDown(Executable func) {
     executor->checkIsInactive("tearDown");
-    groupStack.back()->setTearDown(func);
+    groupStack.back()->addTearDown(func);
 }
 
 int TestingDriver::getNumFailedTests() {

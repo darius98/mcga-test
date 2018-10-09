@@ -18,7 +18,7 @@ Group::~Group() {
     }
 }
 
-void Group::setSetUp(Executable func) {
+void Group::addSetUp(Executable func) {
     if (hasSetUp) {
         throw runtime_error("Group '" + getFullDescription() +
                             "' already has a setUp!");
@@ -33,7 +33,7 @@ void Group::setUp() const {
     }
 }
 
-void Group::setTearDown(Executable func) {
+void Group::addTearDown(Executable func) {
     if (hasTearDown) {
         throw runtime_error("Group '" + getFullDescription() +
                             "' already has a tearDown!");
