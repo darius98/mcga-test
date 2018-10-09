@@ -18,6 +18,12 @@ public:
 
     static void generateTestReport(std::ostream& report);
 
+    static bool isDuringTest();
+
+private:
+    static TestingDriver* getGlobalDriver();
+
+public:
     ~TestingDriver();
 
     void addGroup(std::string description,
@@ -57,13 +63,6 @@ private:
     Executor* executor;
     bool shouldLog;
 
-    static bool isDuringTest();
-
-    static TestingDriver* getGlobalDriver();
-
-    static TestingDriver* globalTestingDriver;
-
-    friend class Matcher;
     friend class Definer;
 };
 

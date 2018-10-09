@@ -18,7 +18,7 @@ AddArgument(int, flagEnableLogging)
 
 namespace kktest {
 
-TestingDriver* TestingDriver::globalTestingDriver = nullptr;
+TestingDriver* globalTestingDriver = nullptr;
 
 TestingDriver* TestingDriver::getGlobalDriver() {
     if (globalTestingDriver == nullptr) {
@@ -69,7 +69,9 @@ void TestingDriver::addGroup(string description,
                              int line,
                              Executable func) {
     executor->checkIsInactive("group");
-    Group* group = groupStack.back()->addSubGroup(move(description), move(file), line);
+    Group* group = groupStack.back()->addSubGroup(
+        move(description), move(file), line
+    );
     groupStack.push_back(group);
     executor->executeGroup(group, func);
     groupStack.pop_back();
@@ -80,7 +82,9 @@ void TestingDriver::addTest(string description,
                             int line,
                             Executable func) {
     executor->checkIsInactive("test");
-    Test* test = groupStack.back()->addTest(move(description), move(file), line);
+    Test* test = groupStack.back()->addTest(
+        move(description), move(file), line
+    );
     log(test->getFullDescription(), ": ");
     executor->execute(groupStack, test, func);
     if (test->isFailed()) {
