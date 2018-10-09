@@ -1,4 +1,5 @@
 #include "test.hpp"
+#include "group.hpp"
 
 using namespace autojson;
 using namespace std;
@@ -6,8 +7,8 @@ using namespace std;
 
 namespace kktest {
 
-Test::Test(string description, string file, int line):
-        description(move(description)), file(move(file)), line(line) {}
+Test::Test(string _description, string _file, int _line):
+        description(move(_description)), file(move(_file)), line(_line) {}
 
 Test::~Test() {
     delete failure;
@@ -37,14 +38,23 @@ string Test::getFailureMessage() const {
     return failure->getMessage();
 }
 
-JSON Test::generateReport() const {
-    JSON report;
-    report["description"] = description;
-    if (!file.empty()) {
-        report["file"] = file;
-        report["line"] = line;
+string Test::getFullDescription() const {
+    string fullDescription = file + ":" + to_string(line) + ": ";
+
+    if (parentGroup->parentGroup != nullptr) {
+        fullDescription += parentGroup->getFullDescription() + "::";
     }
-    report["passed"] = isPassed();
+
+    return fullDescription + description;
+}
+
+JSON Test::generateReport() const {
+    JSON report = {
+        {"description", description},
+        {"file", file},
+        {"line", line},
+        {"passed", isPassed()}
+    };
     if (!isPassed()) {
         report["failureMessage"] = getFailureMessage();
     }

@@ -33,8 +33,6 @@ public:
 private:
     explicit TestingDriver(const std::string& executorName);
 
-    std::string getTestFullName(Test* currentTest) const;
-
     template<class T>
     void log(const T& object) {
         if (shouldLog) {

@@ -8,8 +8,6 @@
 
 namespace kktest {
 
-class TestingDriver;
-
 class Executor {
 public:
     explicit Executor(const std::string& name);

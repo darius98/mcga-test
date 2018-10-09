@@ -14,23 +14,6 @@
 namespace kktest {
 
 struct Group {
-    std::string file;
-    int line;
-
-    std::string description;
-
-    bool hasSetUp = false;
-    CopyableExecutable setUpFunc;
-
-    bool hasTearDown = false;
-    CopyableExecutable tearDownFunc;
-
-    std::vector<Group*> subGroups;
-    std::vector<Test*> tests;
-
-    int numFailedTests = 0;
-    int numTests = 0;
-
     explicit Group(std::string description="", std::string file="", int line=0);
 
     ~Group();
@@ -39,7 +22,27 @@ struct Group {
 
     void setTearDown(Executable func);
 
+    std::string getFullDescription() const;
+
     autojson::JSON generateReport() const;
+
+    bool hasSetUp = false;
+    CopyableExecutable setUpFunc;
+
+    bool hasTearDown = false;
+    CopyableExecutable tearDownFunc;
+
+    Group* parentGroup = nullptr;
+    std::vector<Group*> subGroups;
+    std::vector<Test*> tests;
+
+    int numFailedTests = 0;
+    int numTests = 0;
+private:
+    std::string file;
+    int line;
+
+    std::string description;
 };
 
 }

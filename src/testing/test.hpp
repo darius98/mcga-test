@@ -10,8 +10,10 @@
 
 namespace kktest {
 
+struct Group;
+
 struct Test {
-    explicit Test(std::string description, std::string file="", int line=0);
+    explicit Test(std::string _description, std::string _file, int _line);
 
     ~Test();
 
@@ -25,13 +27,17 @@ struct Test {
 
     void setFailure(const ExpectationFailed& f);
 
+    std::string getFullDescription() const;
+
     autojson::JSON generateReport() const;
 
+    Group* parentGroup = nullptr;
+private:
     std::string description;
 
     std::string file;
     int line;
-private:
+
     ExpectationFailed* failure = nullptr;
 };
 

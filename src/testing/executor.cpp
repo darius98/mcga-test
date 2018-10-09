@@ -65,12 +65,12 @@ void Executor::executeSetUps(const vector<Group*>& groups, Test* test) {
             } catch(const exception& e) {
                 failed = true;
                 failMessage = "An exception was thrown during the "
-                              "setUp of group '" + g->description
+                              "setUp of group '" + g->getFullDescription()
                               + "': " + e.what();
             } catch(...) {
                 failed = true;
                 failMessage = "A non-exception object was thrown during the "
-                              "setUp of group '" + g->description + "'.";
+                              "setUp of group '" + g->getFullDescription() + "'.";
             }
             if (failed) {
                 test->setFailure(failMessage);
@@ -109,12 +109,12 @@ void Executor::executeTearDowns(const vector<Group*>& groups, Test* test) {
             } catch(const exception& e) {
                 failed = true;
                 failMessage = "An exception was thrown during the "
-                              "tearDown of group '" + g->description
+                              "tearDown of group '" + g->getFullDescription()
                               + "': " + e.what();
             } catch(...) {
                 failed = true;
                 failMessage = "A non-exception object was thrown during the "
-                              "tearDown of group '" + g->description + "'.";
+                              "tearDown of group '" + g->getFullDescription() + "'.";
             }
             if (failed) {
                 test->setFailure(failMessage);
@@ -129,13 +129,13 @@ void Executor::executeGroup(Group* group, Executable func) {
         func();
     } catch(const exception& e) {
         throw runtime_error("An exception was thrown inside group '" +
-            group->description +
+            group->getFullDescription() +
             "': " +
             e.what());
     } catch(...) {
         throw runtime_error(
             "A non-exception object was thrown inside group'" +
-            group->description + "'");
+            group->getFullDescription() + "'");
     }
 }
 

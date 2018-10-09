@@ -66,6 +66,7 @@ bool TestingDriver::isDuringTest() {
 void TestingDriver::addGroup(Group* currentGroup, Executable func) {
     executor->checkIsInactive("group");
     groupStack.back()->subGroups.push_back(currentGroup);
+    currentGroup->parentGroup = groupStack.back();
     groupStack.push_back(currentGroup);
     executor->executeGroup(currentGroup, func);
     groupStack.pop_back();
@@ -74,7 +75,8 @@ void TestingDriver::addGroup(Group* currentGroup, Executable func) {
 void TestingDriver::addTest(Test* currentTest, Executable func) {
     executor->checkIsInactive("test");
     groupStack.back()->tests.push_back(currentTest);
-    log(getTestFullName(currentTest), ": ");
+    currentTest->parentGroup = groupStack.back();
+    log(currentTest->getFullDescription(), ": ");
     executor->execute(groupStack, currentTest, func);
     if (currentTest->isFailed()) {
         log("FAILED\n\t", currentTest->getFailureMessage(), "\n");
@@ -100,27 +102,6 @@ void TestingDriver::addTearDown(Executable func) {
 
 int TestingDriver::getNumFailedTests() {
     return groupStack[0]->numFailedTests;
-}
-
-string TestingDriver::getTestFullName(Test* currentTest) const {
-    string file;
-    string groupStackFullName;
-
-    if (!currentTest->file.empty()) {
-        file = currentTest->file + ":" + to_string(currentTest->line) + ": ";
-    }
-    for (Group* g: groupStack) {
-        if (g != groupStack[0]) {
-            if (!groupStackFullName.empty()) {
-                groupStackFullName += "::";
-            }
-            groupStackFullName += g->description;
-        }
-    }
-    if (!groupStackFullName.empty()) {
-        groupStackFullName += "::";
-    }
-    return file + groupStackFullName + currentTest->description;
 }
 
 }

@@ -36,17 +36,24 @@ void Group::setTearDown(Executable func) {
     tearDownFunc = func;
 }
 
+string Group::getFullDescription() const {
+    string fullDescription = description;
+    if (parentGroup->parentGroup != nullptr) {
+        fullDescription = parentGroup->getFullDescription() + "::" + fullDescription;
+    }
+    return fullDescription;
+}
+
 JSON Group::generateReport() const {
-    JSON report;
+    JSON report = {
+        {"file", file},
+        {"line", line},
+        {"numTests", numTests},
+        {"numFailedTests", numFailedTests},
+    };
     if (!description.empty()) {
         report["description"] = description;
     }
-    if (!file.empty()) {
-        report["file"] = file;
-        report["line"] = line;
-    }
-    report["numTests"] = numTests;
-    report["numFailedTests"] = numFailedTests;
     if (!tests.empty()) {
         report["tests"] = vector<JSON>();
         for (const auto& test: tests) {
