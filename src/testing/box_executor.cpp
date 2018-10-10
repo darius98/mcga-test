@@ -38,11 +38,10 @@ void BoxExecutor::execute(const vector<Group*>& groups,
         copiedBinary = true;
     }
 
-    string processName = "box --run --meta=" + boxId + " --box-id=" + boxId;
-    processName += " -- ./test --smooth --verbose=0 --test=";
-    processName += to_string(testIndex);
+    string boxedProcess = "box --run --meta=" + boxId + " --box-id=" + boxId
+                          + " -- ./test -s -t " + to_string(testIndex);
 
-    FILE* pipe = popen(processName.c_str(), "r");
+    FILE* pipe = popen(boxedProcess.c_str(), "r");
     if (!pipe) {
         throw runtime_error("popen() failed!");
     }
