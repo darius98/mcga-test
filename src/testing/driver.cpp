@@ -29,8 +29,7 @@ AddArgument(int, argumentTestIndex)
     .ArgumentType("int ")
     .Name("test")
     .Short("t")
-    .Description("Index of the test to run (0 to run all tests). "
-                 "Used only if smooth=1.")
+    .Description("Index of the test to run (defaults to 0 - run all tests).")
     .DefaultValue(0)
     .ImplicitValue(0);
 
@@ -73,7 +72,7 @@ TestingDriver::TestingDriver(const string& binaryPath):
     if (flagSmooth) {
         executor = new SmoothExecutor(argumentTestIndex);
     } else {
-        executor = new BoxExecutor(binaryPath);
+        executor = new BoxExecutor(argumentTestIndex, binaryPath);
     }
 }
 

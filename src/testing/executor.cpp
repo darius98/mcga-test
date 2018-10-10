@@ -4,15 +4,20 @@ using namespace std;
 
 namespace kktest {
 
+Executor::Executor(int _testIndexToRun):
+    testIndexToRun(_testIndexToRun), currentTestIndex(0) {}
+
 void Executor::executeTest(const vector<Group*>& groups,
                            Test* test,
                            Executable func) {
     currentTestIndex += 1;
-    execute(groups, test, func);
+    if (testIndexToRun == 0 || testIndexToRun == currentTestIndex) {
+        execute(groups, test, func, currentTestIndex);
+    }
 }
 
-int Executor::getCurrentTestIndex() const {
-    return currentTestIndex;
+bool Executor::isSingleTestExecutor() const {
+    return testIndexToRun != 0;
 }
 
 }

@@ -7,8 +7,16 @@
 namespace kktest {
 
 class SmoothExecutor: public Executor {
+private:
+    enum State {
+        INACTIVE = 0,
+        SET_UP = 1,
+        TEST = 2,
+        TEAR_DOWN = 3
+    };
+
 public:
-    SmoothExecutor(int _testIndexToRun);
+    SmoothExecutor(int testIndexToRun);
 
     bool isDuringTest() const override;
 
@@ -17,7 +25,8 @@ public:
 private:
     void execute(const std::vector<Group*>& groups,
                  Test* test,
-                 Executable func) override;
+                 Executable func,
+                 int testIndex) override;
 
     void executeSetUps(const std::vector<Group*>& groups, Test* test);
 
@@ -25,15 +34,7 @@ private:
 
     void executeTest(Test* test, Executable func);
 
-    enum State {
-        INACTIVE = 0,
-        SET_UP = 1,
-        TEST = 2,
-        TEAR_DOWN = 3
-    };
-
     State state;
-    int testIndexToRun;
 };
 
 }

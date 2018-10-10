@@ -10,6 +10,8 @@ namespace kktest {
 
 class Executor {
 public:
+    explicit Executor(int _testIndexToRun);
+
     virtual bool isDuringTest() const = 0;
 
     virtual void checkIsInactive(const std::string& methodName) const = 0;
@@ -18,15 +20,15 @@ public:
                      Test* test,
                      Executable func);
 
-protected:
-    int getCurrentTestIndex() const;
-
+    bool isSingleTestExecutor() const;
 private:
     virtual void execute(const std::vector<Group*>& groups,
         Test* test,
-        Executable func) = 0;
+        Executable func,
+        int testIndex) = 0;
 
-    int currentTestIndex = 0;
+    int currentTestIndex;
+    int testIndexToRun;
 };
 
 }

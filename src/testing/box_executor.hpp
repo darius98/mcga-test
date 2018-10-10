@@ -8,7 +8,7 @@ namespace kktest {
 
 class BoxExecutor: public Executor {
 public:
-    explicit BoxExecutor(std::string _binaryPath);
+    explicit BoxExecutor(int testIndexToRun, std::string _binaryPath);
 
     bool isDuringTest() const override;
 
@@ -17,10 +17,11 @@ public:
 private:
     void execute(const std::vector<Group*>& groups,
                  Test* test,
-                 Executable func) override;
+                 Executable func,
+                 int testIndex) override;
 
     std::string binaryPath;
-    bool copiedBinary = false;
+    bool copiedBinary;
 };
 
 }

@@ -16,7 +16,10 @@ AddArgument(string, boxId)
 
 namespace kktest {
 
-BoxExecutor::BoxExecutor(string _binaryPath): binaryPath(move(_binaryPath)) {}
+BoxExecutor::BoxExecutor(int testIndexToRun, string _binaryPath):
+        Executor(testIndexToRun),
+        binaryPath(move(_binaryPath)),
+        copiedBinary(false) {}
 
 void BoxExecutor::checkIsInactive(const string& methodName) const {}
 
@@ -26,7 +29,8 @@ bool BoxExecutor::isDuringTest() const {
 
 void BoxExecutor::execute(const vector<Group*>& groups,
                           Test* test,
-                          Executable func) {
+                          Executable func,
+                          int testIndex) {
     string boxDir = "/tmp/box/" + boxId + "/box/";
 
     if (!copiedBinary) {
@@ -36,7 +40,7 @@ void BoxExecutor::execute(const vector<Group*>& groups,
 
     string processName = "box --run --meta=" + boxId + " --box-id=" + boxId;
     processName += " -- ./test --smooth --verbose=0 --test=";
-    processName += to_string(getCurrentTestIndex());
+    processName += to_string(testIndex);
 
     FILE* pipe = popen(processName.c_str(), "r");
     if (!pipe) {

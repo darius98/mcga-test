@@ -7,8 +7,8 @@ using namespace std;
 
 namespace kktest {
 
-SmoothExecutor::SmoothExecutor(int _testIndexToRun):
-        testIndexToRun(_testIndexToRun), state(State::INACTIVE) {}
+SmoothExecutor::SmoothExecutor(int testIndexToRun):
+    Executor(testIndexToRun), state(State::INACTIVE) {}
 
 bool SmoothExecutor::isDuringTest() const {
     return state == State::TEST;
@@ -28,13 +28,14 @@ void SmoothExecutor::checkIsInactive(const string& methodName) const {
 
 void SmoothExecutor::execute(const vector<Group*>& groups,
                              Test* test,
-                             Executable func) {
-    if (testIndexToRun == 0 || testIndexToRun == getCurrentTestIndex()) {
-        executeSetUps(groups, test);
-        executeTest(test, func);
-        executeTearDowns(groups, test);
-    }
-    if (testIndexToRun == getCurrentTestIndex()) {
+                             Executable func,
+                             int testIndex) {
+    executeSetUps(groups, test);
+    executeTest(test, func);
+    executeTearDowns(groups, test);
+
+    // TODO(darius98): Remove this!
+    if (isSingleTestExecutor()) {
         if (test->isFailed()) {
             cout << test->getFailureMessage();
         }
