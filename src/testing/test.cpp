@@ -7,14 +7,22 @@ using namespace std;
 
 namespace kktest {
 
+int globalTestIndex = 0;
+
 Test::Test(string _description, string _file, int _line, Group* _parentGroup):
         description(move(_description)),
         file(move(_file)),
         line(_line),
-        parentGroup(_parentGroup) {}
+        parentGroup(_parentGroup) {
+    index = ++ globalTestIndex;
+}
 
 Test::~Test() {
     delete failure;
+}
+
+int Test::getIndex() const {
+    return index;
 }
 
 bool Test::isFailed() const {

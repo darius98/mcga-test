@@ -30,8 +30,7 @@ void SmoothExecutor::finalize() {}
 
 void SmoothExecutor::execute(const vector<Group*>& groups,
                              Test* test,
-                             Executable func,
-                             int testIndex) {
+                             Executable func) {
     executeSetUps(groups, test);
     executeTest(test, func);
     executeTearDowns(groups, test);

@@ -7,14 +7,13 @@ using namespace std;
 namespace kktest {
 
 Executor::Executor(int _testIndexToRun, bool _verbose):
-    testIndexToRun(_testIndexToRun), currentTestIndex(0), verbose(_verbose) {}
+    testIndexToRun(_testIndexToRun), verbose(_verbose) {}
 
 void Executor::executeTest(const vector<Group*>& groups,
                            Test* test,
                            Executable func) {
-    currentTestIndex += 1;
-    if (testIndexToRun == 0 || testIndexToRun == currentTestIndex) {
-        execute(groups, test, func, currentTestIndex);
+    if (testIndexToRun == 0 || testIndexToRun == test->getIndex()) {
+        execute(groups, test, func);
     }
 }
 

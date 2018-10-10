@@ -27,11 +27,9 @@ public:
     void logTest(Test* test);
 private:
     virtual void execute(const std::vector<Group*>& groups,
-        Test* test,
-        Executable func,
-        int testIndex) = 0;
+                         Test* test,
+                         Executable func) = 0;
 
-    int currentTestIndex;
     int testIndexToRun;
     bool verbose;
 };

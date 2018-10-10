@@ -21,6 +21,8 @@ public:
 
     ~Test();
 
+    int getIndex() const;
+
     bool isFailed() const;
 
     bool isPassed() const;
@@ -36,9 +38,9 @@ public:
     autojson::JSON generateReport() const;
 
     void updateGroups() const;
-
 private:
     Group* parentGroup = nullptr;
+    int index;
 
     std::string description;
 

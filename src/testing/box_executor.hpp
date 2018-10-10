@@ -26,8 +26,7 @@ public:
 private:
     void execute(const std::vector<Group*>& groups,
                  Test* test,
-                 Executable func,
-                 int testIndex) override;
+                 Executable func) override;
 
     int pollForEmptyBox();
 

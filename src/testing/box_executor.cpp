@@ -42,11 +42,10 @@ bool BoxExecutor::isDuringTest() const {
 
 void BoxExecutor::execute(const vector<Group*>& groups,
                           Test* test,
-                          Executable func,
-                          int testIndex) {
+                          Executable func) {
     int emptyBoxIndex = pollForEmptyBox();
     boxes[emptyBoxIndex].second = test;
-    boxes[emptyBoxIndex].first->run("-s --test=" + to_string(testIndex));
+    boxes[emptyBoxIndex].first->run("-s --test=" + to_string(test->getIndex()));
 }
 
 int BoxExecutor::pollForEmptyBox() {
