@@ -7,8 +7,8 @@ using namespace std;
 
 namespace kktest {
 
-SmoothExecutor::SmoothExecutor(int testIndexToRun):
-    Executor(testIndexToRun), state(State::INACTIVE) {}
+SmoothExecutor::SmoothExecutor(int testIndexToRun, bool verbose):
+    Executor(testIndexToRun, verbose), state(State::INACTIVE) {}
 
 bool SmoothExecutor::isDuringTest() const {
     return state == State::TEST;
@@ -43,6 +43,8 @@ void SmoothExecutor::execute(const vector<Group*>& groups,
         }
         exit(test->isFailed());
     }
+    logTest(test);
+    test->updateGroups();
 }
 
 void SmoothExecutor::executeSetUps(const vector<Group*>& groups, Test* test) {

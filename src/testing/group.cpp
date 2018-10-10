@@ -102,4 +102,8 @@ JSON Group::generateReport() const {
     return report;
 }
 
+Group* Group::getParentGroup() const {
+    return parentGroup;
+}
+
 }

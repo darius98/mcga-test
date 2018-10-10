@@ -1,3 +1,6 @@
+#include <iostream>
+#include <sstream>
+
 #include <EasyFlags.hpp>
 #include <JSON>
 
@@ -6,22 +9,29 @@
 using namespace autojson;
 using namespace std;
 
-AddArgument(string, argumentBoxId)
-    .ArgumentType("string")
-    .Name("box-id")
+AddArgument(string, argumentBoxes)
+    .ArgumentType("comma separated string list")
+    .Name("boxes")
     .Short("b")
-    .Description("ID of the box to use for boxed testing.")
-    .DefaultValue("0");
+    .Description("Array of box ids (integers) to be used while running boxed.")
+    .DefaultValue("0,1,2,3,4,5,6,7,8,9");
 
 
 namespace kktest {
 
-BoxExecutor::BoxExecutor(int testIndexToRun, string binaryPath):
-        Executor(testIndexToRun),
-        box(new BoxWrapper(argumentBoxId, binaryPath)) {}
+BoxExecutor::BoxExecutor(int testIndexToRun, bool verbose, string binaryPath):
+        Executor(testIndexToRun, verbose) {
+    stringstream stream(argumentBoxes);
+    string boxId;
+    while (getline(stream, boxId, ',')) {
+        boxes.emplace_back(new BoxWrapper(boxId, binaryPath), nullptr);
+    }
+}
 
 BoxExecutor::~BoxExecutor() {
-    delete box;
+    for (auto p: boxes) {
+        delete p.first;
+    }
 }
 
 void BoxExecutor::checkIsInactive(const string& methodName) const {}
@@ -34,16 +44,43 @@ void BoxExecutor::execute(const vector<Group*>& groups,
                           Test* test,
                           Executable func,
                           int testIndex) {
-    box->run("-s -t " + to_string(testIndex));
-    while (!box->poll()) {}
-    pair<string, JSON> boxRunStats = box->getRunStats();
-    if ((int)boxRunStats.second["exitCode"] != 0) {
-        test->setFailure(boxRunStats.first);
+    int emptyBoxIndex = pollForEmptyBox();
+    boxes[emptyBoxIndex].second = test;
+    boxes[emptyBoxIndex].first->run("-s --test=" + to_string(testIndex));
+}
+
+int BoxExecutor::pollForEmptyBox() {
+    while (!tryFinalizeBox(currentBoxIndex)) {
+        currentBoxIndex += 1;
+        if (currentBoxIndex == (int)boxes.size()) {
+            currentBoxIndex = 0;
+        }
     }
+    return currentBoxIndex;
+}
+
+bool BoxExecutor::tryFinalizeBox(int boxIndex) {
+    if (!boxes[boxIndex].first->poll()) {
+        return false;
+    }
+    if (boxes[boxIndex].second == nullptr) {
+        return true;
+    }
+    pair<string, JSON> boxRunStats = boxes[boxIndex].first->getRunStats();
+    if ((int)boxRunStats.second["exitCode"] != 0) {
+        boxes[boxIndex].second->setFailure(boxRunStats.first);
+    }
+    logTest(boxes[boxIndex].second);
+    boxes[boxIndex].second->updateGroups();
+    boxes[boxIndex].second = nullptr;
+    return true;
 }
 
 void BoxExecutor::finalize() {
-    // Nothing yet...
+    for (int i = 0; i < (int)boxes.size(); ++ i) {
+        while (!tryFinalizeBox(i)) {
+        }
+    }
 }
 
 }

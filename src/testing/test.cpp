@@ -64,4 +64,13 @@ JSON Test::generateReport() const {
     return report;
 }
 
+void Test::updateGroups() const {
+    Group* parent = parentGroup;
+    while (parent != nullptr) {
+        parent->numTests += 1;
+        parent->numFailedTests += isFailed();
+        parent = parent->getParentGroup();
+    }
+}
+
 }

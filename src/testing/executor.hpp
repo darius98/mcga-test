@@ -10,7 +10,7 @@ namespace kktest {
 
 class Executor {
 public:
-    explicit Executor(int _testIndexToRun);
+    explicit Executor(int _testIndexToRun, bool _verbose);
 
     virtual bool isDuringTest() const = 0;
 
@@ -23,6 +23,8 @@ public:
                      Executable func);
 
     bool isSingleTestExecutor() const;
+
+    void logTest(Test* test);
 private:
     virtual void execute(const std::vector<Group*>& groups,
         Test* test,
@@ -31,6 +33,7 @@ private:
 
     int currentTestIndex;
     int testIndexToRun;
+    bool verbose;
 };
 
 }

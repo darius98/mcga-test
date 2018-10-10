@@ -1,6 +1,8 @@
 #ifndef KKTEST_TESTING_BOX_EXECUTOR_H_
 #define KKTEST_TESTING_BOX_EXECUTOR_H_
 
+#include <vector>
+
 #include "box_wrapper.hpp"
 #include "executor.hpp"
 
@@ -9,7 +11,9 @@ namespace kktest {
 
 class BoxExecutor: public Executor {
 public:
-    explicit BoxExecutor(int testIndexToRun, std::string binaryPath);
+    explicit BoxExecutor(int testIndexToRun,
+                         bool verbose,
+                         std::string binaryPath);
 
     ~BoxExecutor();
 
@@ -25,7 +29,12 @@ private:
                  Executable func,
                  int testIndex) override;
 
-    BoxWrapper* box;
+    int pollForEmptyBox();
+
+    bool tryFinalizeBox(int boxId);
+
+    std::vector<std::pair<BoxWrapper*, Test*>> boxes;
+    int currentBoxIndex = 0;
 };
 
 }

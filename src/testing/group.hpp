@@ -40,6 +40,8 @@ public:
 
     autojson::JSON generateReport() const;
 
+    Group* getParentGroup() const;
+
     int numFailedTests = 0;
     int numTests = 0;
 private:

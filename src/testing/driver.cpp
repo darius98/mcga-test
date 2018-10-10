@@ -72,9 +72,9 @@ TestingDriver::TestingDriver(const string& binaryPath):
         globalScope(new Group("", "", 0, nullptr)),
         groupStack({globalScope}) {
     if (flagSmooth) {
-        executor = new SmoothExecutor(argumentTestIndex);
+        executor = new SmoothExecutor(argumentTestIndex, flagVerbose);
     } else {
-        executor = new BoxExecutor(argumentTestIndex, binaryPath);
+        executor = new BoxExecutor(argumentTestIndex, flagVerbose, binaryPath);
     }
 }
 
@@ -123,19 +123,6 @@ void TestingDriver::addTest(string description,
         move(description), move(file), line
     );
     executor->executeTest(groupStack, test, func);
-    if (flagVerbose) {
-        cout << test->getFullDescription()
-             << ": "
-             << (test->isFailed() ? "FAILED" : "PASSED")
-             << "\n";
-        if (test->isFailed()) {
-            cout << "\t" << test->getFailureMessage() << "\n";
-        }
-    }
-    for (Group* group: groupStack) {
-        group->numTests += 1;
-        group->numFailedTests += test->isFailed();
-    }
     Matcher::cleanupMatchersCreatedDuringTests();
 }
 

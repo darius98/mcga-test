@@ -34,6 +34,9 @@ public:
     std::string getFullDescription() const;
 
     autojson::JSON generateReport() const;
+
+    void updateGroups() const;
+
 private:
     Group* parentGroup = nullptr;
 
