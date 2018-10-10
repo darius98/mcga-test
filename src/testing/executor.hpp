@@ -14,10 +14,18 @@ public:
 
     virtual void checkIsInactive(const std::string& methodName) const = 0;
 
-    virtual void execute(const std::vector<Group*>& groups,
-                         Test* test,
-                         Executable func) = 0;
+    void executeTest(const std::vector<Group*>& groups,
+                     Test* test,
+                     Executable func);
+
 protected:
+    int getCurrentTestIndex() const;
+
+private:
+    virtual void execute(const std::vector<Group*>& groups,
+        Test* test,
+        Executable func) = 0;
+
     int currentTestIndex = 0;
 };
 

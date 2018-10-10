@@ -1,20 +1,20 @@
 #include <iostream>
 
-#include "simple_executor.hpp"
+#include "smooth_executor.hpp"
 
 using namespace std;
 
 
 namespace kktest {
 
-SimpleExecutor::SimpleExecutor(int _testIndexToRun):
+SmoothExecutor::SmoothExecutor(int _testIndexToRun):
         testIndexToRun(_testIndexToRun), state(State::INACTIVE) {}
 
-bool SimpleExecutor::isDuringTest() const {
+bool SmoothExecutor::isDuringTest() const {
     return state == State::TEST;
 }
 
-void SimpleExecutor::checkIsInactive(const string& methodName) const {
+void SmoothExecutor::checkIsInactive(const string& methodName) const {
     if (state == State::TEST) {
         throw runtime_error("Cannot call " + methodName + " within test!");
     }
@@ -26,16 +26,15 @@ void SimpleExecutor::checkIsInactive(const string& methodName) const {
     }
 }
 
-void SimpleExecutor::execute(const vector<Group*>& groups,
+void SmoothExecutor::execute(const vector<Group*>& groups,
                              Test* test,
                              Executable func) {
-    currentTestIndex += 1;
-    if (testIndexToRun == 0 || testIndexToRun == currentTestIndex) {
+    if (testIndexToRun == 0 || testIndexToRun == getCurrentTestIndex()) {
         executeSetUps(groups, test);
         executeTest(test, func);
         executeTearDowns(groups, test);
     }
-    if (testIndexToRun == currentTestIndex) {
+    if (testIndexToRun == getCurrentTestIndex()) {
         if (test->isFailed()) {
             cout << test->getFailureMessage();
         }
@@ -43,7 +42,7 @@ void SimpleExecutor::execute(const vector<Group*>& groups,
     }
 }
 
-void SimpleExecutor::executeSetUps(const vector<Group*>& groups, Test* test) {
+void SmoothExecutor::executeSetUps(const vector<Group*>& groups, Test* test) {
     state = State::SET_UP;
     for (Group* g: groups) {
         bool failed;
@@ -68,7 +67,7 @@ void SimpleExecutor::executeSetUps(const vector<Group*>& groups, Test* test) {
     state = State::INACTIVE;
 }
 
-void SimpleExecutor::executeTest(Test *test, Executable func) {
+void SmoothExecutor::executeTest(Test *test, Executable func) {
     state = State::TEST;
     try {
         func();
@@ -84,7 +83,7 @@ void SimpleExecutor::executeTest(Test *test, Executable func) {
     state = State::INACTIVE;
 }
 
-void SimpleExecutor::executeTearDowns(const vector<Group*>& groups,
+void SmoothExecutor::executeTearDowns(const vector<Group*>& groups,
                                       Test* test) {
     state = State::TEAR_DOWN;
     for (int i = (int)groups.size() - 1; i >= 0; -- i) {

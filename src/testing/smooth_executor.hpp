@@ -1,14 +1,14 @@
-#ifndef KKTEST_TESTING_SIMPLE_EXECUTOR_H_
-#define KKTEST_TESTING_SIMPLE_EXECUTOR_H_
+#ifndef KKTEST_TESTING_SMOOTH_EXECUTOR_H_
+#define KKTEST_TESTING_SMOOTH_EXECUTOR_H_
 
 #include "executor.hpp"
 
 
 namespace kktest {
 
-class SimpleExecutor: public Executor {
+class SmoothExecutor: public Executor {
 public:
-    SimpleExecutor(int _testIndexToRun);
+    SmoothExecutor(int _testIndexToRun);
 
     bool isDuringTest() const override;
 

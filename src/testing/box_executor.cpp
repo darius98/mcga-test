@@ -22,8 +22,6 @@ bool BoxExecutor::isDuringTest() const {
 void BoxExecutor::execute(const vector<Group*>& groups,
                           Test* test,
                           Executable func) {
-    currentTestIndex += 1;
-
     string boxDir = "/tmp/box/" + boxId + "/box/";
 
     if (!copiedBinary) {
@@ -33,7 +31,7 @@ void BoxExecutor::execute(const vector<Group*>& groups,
 
     string processName = "box --run --meta=" + boxId + " --box-id=" + boxId;
     processName += " -- ./test --smooth --enable-logging=0 --single-test=";
-    processName += to_string(currentTestIndex);
+    processName += to_string(getCurrentTestIndex());
 
     FILE* pipe = popen(processName.c_str(), "r");
     if (!pipe) {

@@ -6,7 +6,7 @@
 
 #include "box_executor.hpp"
 #include "driver.hpp"
-#include "simple_executor.hpp"
+#include "smooth_executor.hpp"
 
 using namespace easyflags;
 using namespace std;
@@ -57,7 +57,7 @@ TestingDriver::TestingDriver(const string& executorName):
         globalScope(new Group("", "", 0, nullptr)),
         groupStack({globalScope}) {
     if (flagSmooth) {
-        executor = new SimpleExecutor(argumentTestIndex);
+        executor = new SmoothExecutor(argumentTestIndex);
     } else {
         executor = new BoxExecutor(executorName);
     }
@@ -108,7 +108,7 @@ void TestingDriver::addTest(string description,
         move(description), move(file), line
     );
     log(test->getFullDescription(), ": ");
-    executor->execute(groupStack, test, func);
+    executor->executeTest(groupStack, test, func);
     if (test->isFailed()) {
         log("FAILED\n\t", test->getFailureMessage(), "\n");
     } else {
