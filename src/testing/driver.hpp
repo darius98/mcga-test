@@ -9,7 +9,7 @@ namespace kktest {
 
 class TestingDriver {
 public:
-    static void initGlobal(const std::string& executorName);
+    static void initGlobal(const std::string& binaryPath);
 
     static int destroyGlobal();
 
@@ -20,7 +20,7 @@ public:
 private:
     static TestingDriver* getGlobalDriver();
 
-    explicit TestingDriver(const std::string& executorName);
+    explicit TestingDriver(const std::string& binaryPath);
 
 public:
     ~TestingDriver();

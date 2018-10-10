@@ -47,12 +47,12 @@ TestingDriver* TestingDriver::getGlobalDriver() {
     return globalTestingDriver;
 }
 
-void TestingDriver::initGlobal(const string& executorName) {
+void TestingDriver::initGlobal(const string& binaryPath) {
     if (globalTestingDriver != nullptr) {
         throw runtime_error("Testing driver cannot be initialized: "
                             "it already exists.");
     }
-    globalTestingDriver = new TestingDriver(executorName);
+    globalTestingDriver = new TestingDriver(binaryPath);
 }
 
 void TestingDriver::generateTestReport(ostream& report) {
@@ -67,13 +67,13 @@ int TestingDriver::destroyGlobal() {
     return status;
 }
 
-TestingDriver::TestingDriver(const string& executorName):
+TestingDriver::TestingDriver(const string& binaryPath):
         globalScope(new Group("", "", 0, nullptr)),
         groupStack({globalScope}) {
     if (flagSmooth) {
         executor = new SmoothExecutor(argumentTestIndex);
     } else {
-        executor = new BoxExecutor(executorName);
+        executor = new BoxExecutor(binaryPath);
     }
 }
 
