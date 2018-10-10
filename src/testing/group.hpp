@@ -13,7 +13,8 @@
 
 namespace kktest {
 
-struct Group {
+class Group {
+public:
     Group(std::string _description,
           std::string _file,
           int _line,

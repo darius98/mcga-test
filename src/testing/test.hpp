@@ -10,9 +10,10 @@
 
 namespace kktest {
 
-struct Group;
+class Group;
 
-struct Test {
+class Test {
+public:
     Test(std::string _description,
          std::string _file,
          int _line,
