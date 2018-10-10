@@ -1,0 +1,40 @@
+#ifndef KKTEST_TESTING_SIMPLE_EXECUTOR_H_
+#define KKTEST_TESTING_SIMPLE_EXECUTOR_H_
+
+#include "executor.hpp"
+
+
+namespace kktest {
+
+class SimpleExecutor: public Executor {
+public:
+    SimpleExecutor(int _testIndexToRun);
+
+    bool isDuringTest() const override;
+
+    void checkIsInactive(const std::string& methodName) const override;
+
+    void execute(const std::vector<Group*>& groups,
+                 Test* test,
+                 Executable func) override;
+private:
+    void executeSetUps(const std::vector<Group*>& groups, Test* test);
+
+    void executeTearDowns(const std::vector<Group*>& groups, Test* test);
+
+    void executeTest(Test* test, Executable func);
+
+    enum State {
+        INACTIVE = 0,
+        SET_UP = 1,
+        TEST = 2,
+        TEAR_DOWN = 3
+    };
+
+    State state;
+    int testIndexToRun;
+};
+
+}
+
+#endif

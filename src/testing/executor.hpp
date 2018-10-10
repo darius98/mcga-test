@@ -10,40 +10,15 @@ namespace kktest {
 
 class Executor {
 public:
-    explicit Executor(const std::string& name);
+    virtual bool isDuringTest() const = 0;
 
-    bool isDuringTest() const;
+    virtual void checkIsInactive(const std::string& methodName) const = 0;
 
-    void checkIsInactive(const std::string& methodName) const;
-
-    void execute(const std::vector<Group*>& groups,
-                 Test* test,
-                 Executable func);
-
-private:
-    void executeLocked(Test* test, int testIndex);
-
-    void executeSimple(const std::vector<Group*>& groups,
-                       Test* test,
-                       Executable func);
-
-    void executeSetUps(const std::vector<Group*>& groups, Test* test);
-
-    void executeTearDowns(const std::vector<Group*>& groups, Test* test);
-
-    void executeTest(Test* test, Executable func);
-
-    enum ExecutorState {
-        INACTIVE = 0,
-        SET_UP = 1,
-        TEST = 2,
-        TEAR_DOWN = 3
-    };
-
-    ExecutorState state = ExecutorState::INACTIVE;
-    bool copiedBinary = false;
-    int testIndex = 0;
-    std::string name;
+    virtual void execute(const std::vector<Group*>& groups,
+                         Test* test,
+                         Executable func) = 0;
+protected:
+    int currentTestIndex = 0;
 };
 
 }

@@ -4,7 +4,9 @@
 
 #include <matcher/matcher.hpp>
 
+#include "box_executor.hpp"
 #include "driver.hpp"
+#include "simple_executor.hpp"
 
 using namespace easyflags;
 using namespace std;
@@ -14,6 +16,8 @@ AddArgument(int, flagEnableLogging)
     .ArgumentType("bool")
     .Description("Enable STDOUT logging for this test run")
     .DefaultValue(1).ImplicitValue(1);
+AddArgument(int, argumentTestIndex).Name("single-test").DefaultValue(0);
+AddArgument(int, flagSmooth).Name("smooth").DefaultValue(0).ImplicitValue(1);
 
 
 namespace kktest {
@@ -50,9 +54,14 @@ int TestingDriver::destroyGlobal() {
 
 TestingDriver::TestingDriver(const string& executorName):
         shouldLog(flagEnableLogging != 0),
-        executor(new Executor(executorName)),
         globalScope(new Group("", "", 0, nullptr)),
-        groupStack({globalScope}) {}
+        groupStack({globalScope}) {
+    if (flagSmooth) {
+        executor = new SimpleExecutor(argumentTestIndex);
+    } else {
+        executor = new BoxExecutor(executorName);
+    }
+}
 
 TestingDriver::~TestingDriver() {
     delete globalScope;
