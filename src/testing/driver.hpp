@@ -1,9 +1,6 @@
 #ifndef KKTEST_TESTING_DRIVER_H_
 #define KKTEST_TESTING_DRIVER_H_
 
-#include <iostream>
-#include <stack>
-
 #include "group.hpp"
 #include "executor.hpp"
 
@@ -22,6 +19,8 @@ public:
 
 private:
     static TestingDriver* getGlobalDriver();
+
+    explicit TestingDriver(const std::string& executorName);
 
 public:
     ~TestingDriver();
@@ -43,27 +42,11 @@ public:
     int getNumFailedTests();
 
 private:
-    explicit TestingDriver(const std::string& executorName);
-
-    template<class T>
-    void log(const T& object) {
-        if (shouldLog) {
-            std::cout << object;
-        }
-    }
-
-    template<class T, class... Args>
-    void log(const T& object, const Args... args) {
-        log(object);
-        log(args...);
-    };
-
     Group* globalScope;
     std::vector<Group*> groupStack;
     Executor* executor;
-    bool shouldLog;
 
-    friend class Definer;
+friend class Definer;
 };
 
 }

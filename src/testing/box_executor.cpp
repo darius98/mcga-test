@@ -6,7 +6,12 @@
 using namespace autojson;
 using namespace std;
 
-AddArgument(string, boxId).Name("box-id").DefaultValue("0");
+AddArgument(string, boxId)
+    .ArgumentType("string")
+    .Name("box-id")
+    .Short("b")
+    .Description("ID of the box to use for boxed testing.")
+    .DefaultValue("0");
 
 
 namespace kktest {
@@ -30,7 +35,7 @@ void BoxExecutor::execute(const vector<Group*>& groups,
     }
 
     string processName = "box --run --meta=" + boxId + " --box-id=" + boxId;
-    processName += " -- ./test --smooth --enable-logging=0 --single-test=";
+    processName += " -- ./test --smooth --verbose=0 --test=";
     processName += to_string(getCurrentTestIndex());
 
     FILE* pipe = popen(processName.c_str(), "r");

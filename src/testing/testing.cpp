@@ -8,16 +8,14 @@ using namespace easyflags;
 using namespace kktest;
 using namespace std;
 
-AddArgument(int, flagEnableReport)
-    .Name("enable-report")
-    .ArgumentType("bool")
-    .Description("Enable test report generation for this test run")
-    .DefaultValue(1).ImplicitValue(1);
 AddArgument(string, reportFileName)
-    .Name("report-file")
-    .ArgumentType("string")
-    .Description("Path to file where to dump the test report")
-    .DefaultValue("report.json");
+    .Name("report")
+    .Short("r")
+    .ArgumentType("FILE ")
+    .Description("Generate a JSON test report at the end of running the tests")
+    .DefaultValue("")
+    .ImplicitValue("./report.json");
+
 
 void initializeTesting(int argc, char** argv) {
     ParseEasyFlags(argc, argv);
@@ -25,7 +23,7 @@ void initializeTesting(int argc, char** argv) {
 }
 
 int finalizeTesting() {
-    if (flagEnableReport) {
+    if (!reportFileName.empty()) {
         ofstream reportFileStream(reportFileName);
         TestingDriver::generateTestReport(reportFileStream);
         reportFileStream.close();

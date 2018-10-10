@@ -11,13 +11,28 @@
 using namespace easyflags;
 using namespace std;
 
-AddArgument(int, flagEnableLogging)
-    .Name("enable-logging")
-    .ArgumentType("bool")
+AddArgument(int, flagVerbose)
+    .ArgumentType("0|1 ")
+    .Name("verbose")
+    .Short("v")
     .Description("Enable STDOUT logging for this test run")
-    .DefaultValue(1).ImplicitValue(1);
-AddArgument(int, argumentTestIndex).Name("single-test").DefaultValue(0);
-AddArgument(int, flagSmooth).Name("smooth").DefaultValue(0).ImplicitValue(1);
+    .DefaultValue(0)
+    .ImplicitValue(1);
+AddArgument(int, flagSmooth)
+    .ArgumentType("0|1 ")
+    .Name("smooth")
+    .Short("s")
+    .Description("Run the tests unboxed (for debugging)")
+    .DefaultValue(0)
+    .ImplicitValue(1);
+AddArgument(int, argumentTestIndex)
+    .ArgumentType("int ")
+    .Name("test")
+    .Short("t")
+    .Description("Index of the test to run (0 to run all tests). "
+                 "Used only if smooth=1.")
+    .DefaultValue(0)
+    .ImplicitValue(0);
 
 
 namespace kktest {
@@ -53,7 +68,6 @@ int TestingDriver::destroyGlobal() {
 }
 
 TestingDriver::TestingDriver(const string& executorName):
-        shouldLog(flagEnableLogging != 0),
         globalScope(new Group("", "", 0, nullptr)),
         groupStack({globalScope}) {
     if (flagSmooth) {
@@ -107,12 +121,15 @@ void TestingDriver::addTest(string description,
     Test* test = groupStack.back()->addTest(
         move(description), move(file), line
     );
-    log(test->getFullDescription(), ": ");
     executor->executeTest(groupStack, test, func);
-    if (test->isFailed()) {
-        log("FAILED\n\t", test->getFailureMessage(), "\n");
-    } else {
-        log("PASSED\n");
+    if (flagVerbose) {
+        cout << test->getFullDescription()
+             << ": "
+             << (test->isFailed() ? "FAILED" : "PASSED")
+             << "\n";
+        if (test->isFailed()) {
+            cout << "\t" << test->getFailureMessage() << "\n";
+        }
     }
     for (Group* group: groupStack) {
         group->numTests += 1;
