@@ -42,4 +42,8 @@ void BoxExecutor::execute(const vector<Group*>& groups,
     }
 }
 
+void BoxExecutor::finalize() {
+    // Nothing yet...
+}
+
 }

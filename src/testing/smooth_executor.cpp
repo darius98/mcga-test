@@ -26,6 +26,8 @@ void SmoothExecutor::checkIsInactive(const string& methodName) const {
     }
 }
 
+void SmoothExecutor::finalize() {}
+
 void SmoothExecutor::execute(const vector<Group*>& groups,
                              Test* test,
                              Executable func,

@@ -17,6 +17,8 @@ public:
 
     void checkIsInactive(const std::string& methodName) const override;
 
+    void finalize() override;
+
 private:
     void execute(const std::vector<Group*>& groups,
                  Test* test,

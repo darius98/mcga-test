@@ -55,11 +55,13 @@ void TestingDriver::initGlobal(const string& binaryPath) {
 }
 
 void TestingDriver::generateTestReport(ostream& report) {
+    getGlobalDriver()->executor->finalize();
     report << getGlobalDriver()->groupStack[0]->generateReport().stringify(0);
 }
 
 int TestingDriver::destroyGlobal() {
     TestingDriver* driver = getGlobalDriver();
+    driver->executor->finalize();
     int status = driver->getNumFailedTests();
     delete driver;
     globalTestingDriver = nullptr;

@@ -16,6 +16,8 @@ public:
 
     virtual void checkIsInactive(const std::string& methodName) const = 0;
 
+    virtual void finalize() = 0;
+
     void executeTest(const std::vector<Group*>& groups,
                      Test* test,
                      Executable func);
