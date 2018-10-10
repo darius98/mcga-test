@@ -6,6 +6,11 @@ using namespace std;
 
 namespace kktest {
 
+bool Executor::AscendingByTestIndex::operator()(Test* const& a,
+                                                Test* const& b) {
+    return a->getIndex() < b->getIndex();
+}
+
 Executor::Executor(int _testIndexToRun, bool _verbose):
     testIndexToRun(_testIndexToRun), verbose(_verbose) {}
 
@@ -21,16 +26,23 @@ bool Executor::isSingleTestExecutor() const {
     return testIndexToRun != 0;
 }
 
-void Executor::logTest(Test* test) {
+void Executor::enqueueTestForLogging(Test* test) {
     if (!verbose) {
         return;
     }
-    cout << test->getFullDescription()
-         << ": "
-         << (test->isFailed() ? "FAILED" : "PASSED")
-         << "\n";
-    if (test->isFailed()) {
-        cout << "\t" << test->getFailureMessage() << "\n";
+    loggingQueue.insert(test);
+    while (!loggingQueue.empty() &&
+                (*loggingQueue.begin())->getIndex() == testsLogged + 1) {
+        Test* test = *loggingQueue.begin();
+        cout << test->getFullDescription()
+             << ": "
+             << (test->isFailed() ? "FAILED" : "PASSED")
+             << "\n";
+        if (test->isFailed()) {
+            cout << "\t" << test->getFailureMessage() << "\n";
+        }
+        testsLogged += 1;
+        loggingQueue.erase(loggingQueue.begin());
     }
 }
 

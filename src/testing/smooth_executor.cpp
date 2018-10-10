@@ -42,7 +42,7 @@ void SmoothExecutor::execute(const vector<Group*>& groups,
         }
         exit(test->isFailed());
     }
-    logTest(test);
+    enqueueTestForLogging(test);
     test->updateGroups();
 }
 

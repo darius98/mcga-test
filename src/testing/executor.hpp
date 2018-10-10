@@ -1,6 +1,8 @@
 #ifndef KKTEST_TESTING_EXECUTOR_H_
 #define KKTEST_TESTING_EXECUTOR_H_
 
+#include <set>
+
 #include "executable.hpp"
 #include "group.hpp"
 #include "test.hpp"
@@ -24,14 +26,21 @@ public:
 
     bool isSingleTestExecutor() const;
 
-    void logTest(Test* test);
+    void enqueueTestForLogging(Test* test);
 private:
+    struct AscendingByTestIndex {
+        bool operator()(Test* const& a, Test* const& b);
+    };
+
     virtual void execute(const std::vector<Group*>& groups,
                          Test* test,
                          Executable func) = 0;
 
     int testIndexToRun;
     bool verbose;
+
+    int testsLogged = 0;
+    std::set<Test*, AscendingByTestIndex> loggingQueue;
 };
 
 }

@@ -69,15 +69,20 @@ bool BoxExecutor::tryFinalizeBox(int boxIndex) {
     if ((int)boxRunStats.second["exitCode"] != 0) {
         boxes[boxIndex].second->setFailure(boxRunStats.first);
     }
-    logTest(boxes[boxIndex].second);
+    enqueueTestForLogging(boxes[boxIndex].second);
     boxes[boxIndex].second->updateGroups();
     boxes[boxIndex].second = nullptr;
     return true;
 }
 
 void BoxExecutor::finalize() {
-    for (int i = 0; i < (int)boxes.size(); ++ i) {
-        while (!tryFinalizeBox(i)) {
+    bool allFinalized = false;
+    while (!allFinalized) {
+        allFinalized = true;
+        for (int i = 0; i < (int)boxes.size(); ++ i) {
+            if (!tryFinalizeBox(i)) {
+                allFinalized = false;
+            }
         }
     }
 }
