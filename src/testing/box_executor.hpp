@@ -14,10 +14,11 @@ public:
 
     void checkIsInactive(const std::string& methodName) const override;
 
+private:
     void execute(const std::vector<Group*>& groups,
                  Test* test,
                  Executable func) override;
-private:
+
     std::string binaryPath;
     bool copiedBinary = false;
 };

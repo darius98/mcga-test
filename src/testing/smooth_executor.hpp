@@ -14,10 +14,11 @@ public:
 
     void checkIsInactive(const std::string& methodName) const override;
 
+private:
     void execute(const std::vector<Group*>& groups,
                  Test* test,
                  Executable func) override;
-private:
+
     void executeSetUps(const std::vector<Group*>& groups, Test* test);
 
     void executeTearDowns(const std::vector<Group*>& groups, Test* test);
