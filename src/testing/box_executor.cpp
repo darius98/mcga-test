@@ -49,6 +49,9 @@ void BoxExecutor::execute(const vector<Group*>& groups,
 }
 
 int BoxExecutor::pollForEmptyBox() {
+    for (int i = 0; i < (int)boxes.size(); ++ i) {
+        tryFinalizeBox(i);
+    }
     while (!tryFinalizeBox(currentBoxIndex)) {
         currentBoxIndex += 1;
         if (currentBoxIndex == (int)boxes.size()) {
