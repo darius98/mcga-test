@@ -1,4 +1,7 @@
 #include <algorithm>
+#include <vector>
+
+
 #include <kktest>
 
 int main(int argc, char** argv) {

@@ -1,3 +1,5 @@
+#include <testing/driver.hpp>
+
 #include "expect_matches.hpp"
 
 using namespace std;
