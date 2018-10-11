@@ -17,9 +17,7 @@ using namespace kktest;
 using namespace std;
 
 
-int main(int argc, char** argv) {
-    initializeTesting(argc, argv);
-
+void testCase() {
     vector<int> v, w;
 
     setUp([&]() {
@@ -241,6 +239,4 @@ int main(int argc, char** argv) {
                           throwsA<out_of_range>()); // Fails!
         });
     });
-
-    return finalizeTesting();
 }

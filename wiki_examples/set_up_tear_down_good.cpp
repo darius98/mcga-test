@@ -3,9 +3,7 @@
 
 #include <kktest>
 
-int main(int argc, char** argv) {
-    initializeTesting(argc, argv);
-
+void testCase() {
     std::vector<int> v;
 
     setUp([&]() {
@@ -29,6 +27,4 @@ int main(int argc, char** argv) {
     test("After pushing back 3, 4 and 5, v does not contain '6'", [&]() {
         expect(std::find(v.begin(), v.end(), 6) == v.end());
     });
-
-    return finalizeTesting();
 }

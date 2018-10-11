@@ -4,9 +4,7 @@
 
 #include <kktest>
 
-int main(int argc, char** argv) {
-    initializeTesting(argc, argv);
-
+void testCase() {
     std::vector<int> v;
 
     test("After pushing back 3, 4 and 5, v has size 3", [&]() {
@@ -32,6 +30,4 @@ int main(int argc, char** argv) {
         expect(std::find(v.begin(), v.end(), 6) == v.end());
         v.clear();
     });
-
-    return finalizeTesting();
 }

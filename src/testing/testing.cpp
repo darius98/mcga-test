@@ -3,6 +3,7 @@
 #include <EasyFlags.hpp>
 
 #include "driver.hpp"
+#include "testing.hpp"
 
 using namespace easyflags;
 using namespace kktest;
@@ -16,13 +17,12 @@ AddArgument(string, reportFileName)
     .DefaultValue("")
     .ImplicitValue("./report.json");
 
-
-void initializeTesting(int argc, char** argv) {
+int main(int argc, char** argv) {
     ParseEasyFlags(argc, argv);
     TestingDriver::initGlobal(argv[0]);
-}
 
-int finalizeTesting() {
+    testCase();
+
     if (!reportFileName.empty()) {
         ofstream reportFileStream(reportFileName);
         TestingDriver::generateTestReport(reportFileStream);

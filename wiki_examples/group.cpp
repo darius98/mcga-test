@@ -2,9 +2,7 @@
 
 #include <kktest>
 
-int main(int argc, char** argv) {
-    initializeTesting(argc, argv);
-
+void testCase() {
     std::vector<int> v;
 
     setUp([&]() {
@@ -46,6 +44,4 @@ int main(int argc, char** argv) {
             fail("Did not throw.");
         } catch(...) { /* All ok; */ }
     });
-
-    return finalizeTesting();
 }
