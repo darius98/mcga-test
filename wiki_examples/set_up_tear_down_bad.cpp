@@ -1,7 +1,6 @@
 #include <algorithm>
 #include <vector>
 
-
 #include <kktest>
 
 void testCase() {
