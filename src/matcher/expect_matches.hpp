@@ -2,7 +2,6 @@
 #define KKTEST_MATCHER_EXPECT_MATCHES_H_
 
 #include <testing/definer.hpp>
-#include <testing/expectation_failed.hpp>
 #include <utils/filename.hpp>
 
 #include "matcher.hpp"
