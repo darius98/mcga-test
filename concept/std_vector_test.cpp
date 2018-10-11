@@ -10,6 +10,7 @@
 
 #include <vector>
 
+#include <kktest_matchers>
 #include <kktest>
 
 using namespace kktest;

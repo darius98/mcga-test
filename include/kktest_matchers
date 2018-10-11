@@ -1,0 +1,7 @@
+#ifndef KKTEST_KKTEST_MATCHERS_H_
+#define KKTEST_KKTEST_MATCHERS_H_
+
+#include <matcher/core_matchers.hpp>
+#include <matcher/expect_matches.hpp>
+
+#endif

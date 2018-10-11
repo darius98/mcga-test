@@ -28,17 +28,13 @@ void TearDownDefiner::operator()(Executable func) {
     getDriver()->addTearDown(func);
 }
 
-void BaseExpectDefiner::checkDuringTest() {
+void ExpectDefiner::operator()(const bool& exprResult, const string& expr) {
     if (!TestingDriver::isDuringTest()) {
         throw runtime_error(
             file + ":" + to_string(line) + ": "
             "'expect' can only be called inside tests!"
         );
     }
-}
-
-void ExpectDefiner::operator()(const bool& exprResult, const string& expr) {
-    checkDuringTest();
     if (!exprResult) {
         throw ExpectationFailed(file + ":" + to_string(line) + ": " + expr);
     }

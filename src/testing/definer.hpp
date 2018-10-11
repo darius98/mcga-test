@@ -48,17 +48,9 @@ public:
     void operator()(Executable func);
 };
 
-class BaseExpectDefiner: public Definer {
+class ExpectDefiner: public Definer {
 public:
     using Definer::Definer;
-
-protected:
-    void checkDuringTest();
-};
-
-class ExpectDefiner: public BaseExpectDefiner {
-public:
-    using BaseExpectDefiner::BaseExpectDefiner;
 
     void operator()(const bool& result, const std::string& expr);
 };

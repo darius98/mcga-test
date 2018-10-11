@@ -3,20 +3,18 @@
 
 #include <testing/definer.hpp>
 #include <testing/expectation_failed.hpp>
+#include <utils/filename.hpp>
 
 #include "matcher.hpp"
 
 namespace kktest {
 
-class ExpectMatchesDefiner: public BaseExpectDefiner {
+class ExpectMatchesDefiner: public Definer {
 public:
-    using BaseExpectDefiner::BaseExpectDefiner;
-
-    void throwExpectationFailed(Description* description);
+    using Definer::Definer;
 
     template<class T, class M, IS_MATCHER(M)>
     void operator()(const T& object, M* matcher) {
-        checkDuringTest();
         if (matcher->matches(object)) {
             return;
         }
@@ -26,6 +24,11 @@ public:
         matcher->describeMismatch(*description);
         throwExpectationFailed(description);
     }
+
+private:
+    void throwExpectationFailed(Description* description);
+
+    void checkDuringTest();
 };
 
 }

@@ -11,4 +11,13 @@ void ExpectMatchesDefiner::throwExpectationFailed(Description* description) {
     throw ExpectationFailed(stringDescription);
 }
 
+void ExpectMatchesDefiner::checkDuringTest() {
+    if (!TestingDriver::isDuringTest()) {
+        throw runtime_error(
+            file + ":" + to_string(line) + ": "
+            "'expect' can only be called inside tests!"
+        );
+    }
+}
+
 }

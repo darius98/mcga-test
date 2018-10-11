@@ -1,13 +1,9 @@
 #ifndef KKTEST_TESTING_MACROS_H_
 #define KKTEST_TESTING_MACROS_H_
 
+#include <utils/filename.hpp>
+
 #include "definer.hpp"
-
-
-// TODO(darius98): Trim the file to project-level instead.
-#define __FILENAME__ (__builtin_strrchr(__FILE__, '/') ?                       \
-                      __builtin_strrchr(__FILE__, '/') + 1 :                   \
-                      __FILE__)
 
 /**
  * Create a test.
@@ -82,7 +78,6 @@
  *
  * Has the same effect as __expect(false, file, line, message).
  */
-#define fail(...) kktest::ExpectDefiner(__FILENAME__, __LINE__)                \
-                                       (false, __VA_ARGS__)
+#define fail(...) kktest::ExpectDefiner(__FILENAME__, __LINE__)(0, __VA_ARGS__)
 
 #endif
