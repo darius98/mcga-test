@@ -21,9 +21,8 @@ namespace kktest {
 
 class Matcher {
 public:
-    static void cleanupMatchersCreatedDuringTests();
-
     void* operator new(std::size_t size) noexcept;
+
     void operator delete(void* obj) noexcept;
 
     /**
@@ -43,8 +42,13 @@ public:
      * Describe the way `object` does not match expectations.
      */
     virtual void describeMismatch(Description& description) = 0;
+
 private:
+    static void cleanupMatchersCreatedDuringTests();
+
     static std::set<void*> matchersAllocatedDuringTests;
+
+    static bool hookedInTestingDriver;
 };
 
 template<class T, class>

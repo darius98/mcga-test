@@ -12,6 +12,12 @@ void* Matcher::operator new(size_t size) noexcept {
     void* p = malloc(size);
     if (TestingDriver::isDuringTest()) {
         matchersAllocatedDuringTests.insert(p);
+        if (!hookedInTestingDriver) {
+            TestingDriver::addAfterTestHook([]() {
+                cleanupMatchersCreatedDuringTests();
+            });
+            hookedInTestingDriver = true;
+        }
     }
     return p;
 }
@@ -29,5 +35,6 @@ void Matcher::cleanupMatchersCreatedDuringTests() {
 }
 
 set<void*> Matcher::matchersAllocatedDuringTests;
+bool Matcher::hookedInTestingDriver = false;
 
 }

@@ -17,6 +17,7 @@ public:
 
     static bool isDuringTest();
 
+    static void addAfterTestHook(CopyableExecutable hook);
 private:
     static TestingDriver* getGlobalDriver();
 

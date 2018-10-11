@@ -2,8 +2,6 @@
 
 #include <EasyFlags.hpp>
 
-#include <matcher/matcher.hpp>
-
 #include "box_executor.hpp"
 #include "driver.hpp"
 #include "smooth_executor.hpp"
@@ -68,6 +66,15 @@ int TestingDriver::destroyGlobal() {
     return status;
 }
 
+bool TestingDriver::isDuringTest() {
+    return globalTestingDriver != nullptr &&
+            globalTestingDriver->executor->isDuringTest();
+}
+
+void TestingDriver::addAfterTestHook(CopyableExecutable hook) {
+    getGlobalDriver()->executor->addAfterTestHook(hook);
+}
+
 TestingDriver::TestingDriver(const string& binaryPath):
         globalScope(new Group("", "", 0, nullptr)),
         groupStack({globalScope}) {
@@ -81,11 +88,6 @@ TestingDriver::TestingDriver(const string& binaryPath):
 TestingDriver::~TestingDriver() {
     delete globalScope;
     delete executor;
-}
-
-bool TestingDriver::isDuringTest() {
-    return globalTestingDriver != nullptr &&
-            globalTestingDriver->executor->isDuringTest();
 }
 
 void TestingDriver::addGroup(string description,
@@ -123,7 +125,6 @@ void TestingDriver::addTest(string description,
         move(description), move(file), line
     );
     executor->executeTest(groupStack, test, func);
-    Matcher::cleanupMatchersCreatedDuringTests();
 }
 
 void TestingDriver::addSetUp(Executable func) {

@@ -22,11 +22,18 @@ void Executor::executeTest(const vector<Group*>& groups,
     }
 }
 
+void Executor::addAfterTestHook(CopyableExecutable hook) {
+    afterTestHooks.push_back(hook);
+}
+
 bool Executor::isSingleTestExecutor() const {
     return testIndexToRun != 0;
 }
 
 void Executor::enqueueTestForLogging(Test* test) {
+    for (Executable hook: afterTestHooks) {
+        hook();
+    }
     if (!verbose) {
         return;
     }

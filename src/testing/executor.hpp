@@ -24,9 +24,13 @@ public:
                      Test* test,
                      Executable func);
 
+    void addAfterTestHook(CopyableExecutable hook);
+
+protected:
     bool isSingleTestExecutor() const;
 
     void enqueueTestForLogging(Test* test);
+
 private:
     struct AscendingByTestIndex {
         bool operator()(Test* const& a, Test* const& b);
@@ -41,6 +45,8 @@ private:
 
     int testsLogged = 0;
     std::set<Test*, AscendingByTestIndex> loggingQueue;
+
+    std::vector<CopyableExecutable> afterTestHooks;
 };
 
 }
