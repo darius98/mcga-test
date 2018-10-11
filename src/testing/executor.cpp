@@ -30,6 +30,12 @@ void Executor::enqueueTestForLogging(Test* test) {
     if (!verbose) {
         return;
     }
+    if (isSingleTestExecutor()) {
+        if (test->isFailed()) {
+            cout << test->getFailureMessage();
+        }
+        return;
+    }
     loggingQueue.insert(test);
     while (!loggingQueue.empty() &&
                 (*loggingQueue.begin())->getIndex() == testsLogged + 1) {

@@ -34,14 +34,6 @@ void SmoothExecutor::execute(const vector<Group*>& groups,
     executeSetUps(groups, test);
     executeTest(test, func);
     executeTearDowns(groups, test);
-
-    // TODO(darius98): Remove this!
-    if (isSingleTestExecutor()) {
-        if (test->isFailed()) {
-            cout << test->getFailureMessage();
-        }
-        exit(test->isFailed());
-    }
     enqueueTestForLogging(test);
     test->updateGroups();
 }
