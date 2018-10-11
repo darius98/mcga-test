@@ -11,7 +11,7 @@ namespace kktest {
 
 class BoxExecutor: public Executor {
 public:
-    BoxExecutor(int testIndexToRun, bool verbose, std::string binaryPath);
+    BoxExecutor(int testIndexToRun, bool quiet, std::string binaryPath);
 
     ~BoxExecutor();
 

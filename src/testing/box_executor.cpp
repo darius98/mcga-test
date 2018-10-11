@@ -11,16 +11,15 @@ using namespace std;
 
 AddArgument(string, argumentBoxes)
     .ArgumentType("comma separated string list")
-    .Name("boxes")
-    .Short("b")
+    .Name("box_ids")
     .Description("Array of box ids (integers) to be used while running boxed.")
     .DefaultValue("0,1,2,3,4,5,6,7,8,9");
 
 
 namespace kktest {
 
-BoxExecutor::BoxExecutor(int testIndexToRun, bool verbose, string binaryPath):
-        Executor(testIndexToRun, verbose) {
+BoxExecutor::BoxExecutor(int testIndexToRun, bool quiet, string binaryPath):
+        Executor(testIndexToRun, quiet) {
     stringstream stream(argumentBoxes);
     string boxId;
     while (getline(stream, boxId, ',')) {
@@ -45,7 +44,7 @@ void BoxExecutor::execute(const vector<Group*>& groups,
                           Executable func) {
     int emptyBoxIndex = pollForEmptyBox();
     boxes[emptyBoxIndex].second = test;
-    boxes[emptyBoxIndex].first->run("-svt " + to_string(test->getIndex()));
+    boxes[emptyBoxIndex].first->run("-t " + to_string(test->getIndex()));
 }
 
 int BoxExecutor::pollForEmptyBox() {

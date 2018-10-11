@@ -12,7 +12,7 @@ namespace kktest {
 
 class Executor {
 public:
-    explicit Executor(int _testIndexToRun, bool _verbose);
+    explicit Executor(int _testIndexToRun, bool _quiet);
 
     virtual bool isDuringTest() const = 0;
 
@@ -41,7 +41,7 @@ private:
                          Executable func) = 0;
 
     int testIndexToRun;
-    bool verbose;
+    bool quiet;
 
     int testsLogged = 0;
     std::set<Test*, AscendingByTestIndex> loggingQueue;

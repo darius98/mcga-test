@@ -9,18 +9,18 @@
 using namespace easyflags;
 using namespace std;
 
-AddArgument(int, flagVerbose)
+AddArgument(int, flagQuiet)
     .ArgumentType("0|1 ")
-    .Name("verbose")
-    .Short("v")
-    .Description("Enable STDOUT logging for this test run")
+    .Name("quiet")
+    .Short("q")
+    .Description("Disable STDOUT logging for this test run")
     .DefaultValue(0)
     .ImplicitValue(1);
-AddArgument(int, flagSmooth)
+AddArgument(int, flagBoxed)
     .ArgumentType("0|1 ")
-    .Name("smooth")
-    .Short("s")
-    .Description("Run the tests unboxed (for debugging)")
+    .Name("boxed")
+    .Short("b")
+    .Description("Run the tests boxed (requires sudo + box installed)")
     .DefaultValue(0)
     .ImplicitValue(1);
 AddArgument(int, argumentTestIndex)
@@ -78,10 +78,10 @@ void TestingDriver::addAfterTestHook(CopyableExecutable hook) {
 TestingDriver::TestingDriver(const string& binaryPath):
         globalScope(new Group("", "", 0, nullptr)),
         groupStack({globalScope}) {
-    if (flagSmooth) {
-        executor = new SmoothExecutor(argumentTestIndex, flagVerbose);
+    if (flagBoxed) {
+        executor = new BoxExecutor(argumentTestIndex, flagQuiet, binaryPath);
     } else {
-        executor = new BoxExecutor(argumentTestIndex, flagVerbose, binaryPath);
+        executor = new SmoothExecutor(argumentTestIndex, flagQuiet);
     }
 }
 

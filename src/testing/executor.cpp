@@ -11,8 +11,8 @@ bool Executor::AscendingByTestIndex::operator()(Test* const& a,
     return a->getIndex() < b->getIndex();
 }
 
-Executor::Executor(int _testIndexToRun, bool _verbose):
-    testIndexToRun(_testIndexToRun), verbose(_verbose) {}
+Executor::Executor(int _testIndexToRun, bool _quiet):
+    testIndexToRun(_testIndexToRun), quiet(_quiet) {}
 
 void Executor::executeTest(const vector<Group*>& groups,
                            Test* test,
@@ -34,7 +34,7 @@ void Executor::enqueueTestForLogging(Test* test) {
     for (Executable hook: afterTestHooks) {
         hook();
     }
-    if (!verbose) {
+    if (quiet) {
         return;
     }
     if (isSingleTestExecutor()) {
