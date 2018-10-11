@@ -77,16 +77,6 @@
                                          (__VA_ARGS__, #__VA_ARGS__ " is false")
 
 /**
- * Matcher expectation macro.
- *
- * Use this to verify an object matches a certain matcher.
- *
- * The syntax is `expectMatches(object, matcher)`.
- */
-#define expectMatches(...) kktest::ExpectMatchesDefiner(__FILENAME__, __LINE__)\
-                                                       (__VA_ARGS__)
-
-/**
  * Macro for forcing a test to fail. `expect` and `expectMatches` are
  * preferred where possible.
  *

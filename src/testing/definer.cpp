@@ -37,16 +37,10 @@ void BaseExpectDefiner::checkDuringTest() {
     }
 }
 
-void BaseExpectDefiner::throwExpectationFailed(Description* description) {
-    string stringDescription = description->toString();
-    delete description;
-    throw ExpectationFailed(stringDescription);
-}
-
 void ExpectDefiner::operator()(const bool& exprResult, const string& expr) {
     checkDuringTest();
     if (!exprResult) {
-        throwExpectationFailed(Description::createForExpect(file, line, expr));
+        throw ExpectationFailed(file + ":" + to_string(line) + ": " + expr);
     }
 }
 

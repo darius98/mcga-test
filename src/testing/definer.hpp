@@ -4,8 +4,6 @@
 #include <functional>
 #include <string>
 
-#include <matcher/matcher.hpp>
-
 #include "driver.hpp"
 #include "executable.hpp"
 
@@ -56,8 +54,6 @@ public:
 
 protected:
     void checkDuringTest();
-
-    void throwExpectationFailed(Description* description);
 };
 
 class ExpectDefiner: public BaseExpectDefiner {
@@ -65,24 +61,6 @@ public:
     using BaseExpectDefiner::BaseExpectDefiner;
 
     void operator()(const bool& result, const std::string& expr);
-};
-
-class ExpectMatchesDefiner: public BaseExpectDefiner {
-public:
-    using BaseExpectDefiner::BaseExpectDefiner;
-
-    template<class T, class M, IS_MATCHER(M)>
-    void operator()(const T& object, M* matcher) {
-        checkDuringTest();
-        if (matcher->matches(object)) {
-            return;
-        }
-        auto description = Description::createForExpect(file, line, "");
-        matcher->describe(*description);
-        (*description) << ". Got '" << object << "': ";
-        matcher->describeMismatch(*description);
-        throwExpectationFailed(description);
-    }
 };
 
 }
