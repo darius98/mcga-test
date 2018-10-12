@@ -11,3 +11,4 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${BIN_PATH})
 include("../kktest_library.cmake")
 
 matcher_testcase(truth_matcher matcher/truth_matcher_test.cpp)
+matcher_testcase(comparison_matcher matcher/comparison_matcher_test.cpp)
