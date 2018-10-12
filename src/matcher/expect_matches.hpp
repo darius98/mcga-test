@@ -8,12 +8,15 @@
 
 namespace kktest {
 
-class ExpectMatchesDefiner: public Definer {
+class ExpectMatchesDefiner: public ExpectDefiner {
 public:
-    using Definer::Definer;
+    using ExpectDefiner::ExpectDefiner;
 
-    template<class T, class M, IS_MATCHER(M)>
-    void operator()(const T& object, M* matcher) {
+    void operator()(const bool& result, const std::string& expr) override;
+
+    template<class T, class M, class... Args, IS_MATCHER(M)>
+    void operator()(const T& object, M* matcher, const Args... args) {
+        checkDuringTest();
         if (matcher->matches(object)) {
             return;
         }
@@ -32,14 +35,24 @@ private:
 
 }
 
+#ifdef EXPECT_DEFINED
+#undef expect
+#undef fail
+#endif
+
 /**
  * Matcher expectation macro.
  *
  * Use this to verify an object matches a certain matcher.
  *
- * The syntax is `expectMatches(object, matcher)`.
+ * The syntax is `expect(object, matcher)`.
  */
-#define expectMatches(...) kktest::ExpectMatchesDefiner(__FILENAME__, __LINE__)\
-                                                       (__VA_ARGS__)
+#define expect(...) kktest::ExpectMatchesDefiner(__FILENAME__, __LINE__)       \
+                                         (__VA_ARGS__, #__VA_ARGS__ " is false")
+
+#define fail(...)   kktest::ExpectMatchesDefiner(__FILENAME__, __LINE__)       \
+                                         (false, __VA_ARGS__)
+
+#define EXPECT_DEFINED
 
 #endif

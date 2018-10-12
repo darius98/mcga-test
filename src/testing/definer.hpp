@@ -57,7 +57,7 @@ class ExpectDefiner: public Definer {
 public:
     using Definer::Definer;
 
-    void operator()(const bool& result, const std::string& expr);
+    virtual void operator()(const bool& result, const std::string& expr);
 };
 
 }

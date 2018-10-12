@@ -7,6 +7,10 @@ using namespace std;
 
 namespace kktest {
 
+void ExpectMatchesDefiner::operator()(const bool& result, const string& expr) {
+    ExpectDefiner::operator()(result, expr);
+}
+
 void ExpectMatchesDefiner::throwExpectationFailed(Description* description) {
     string stringDescription = description->toString();
     delete description;
