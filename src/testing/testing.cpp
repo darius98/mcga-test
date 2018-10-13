@@ -19,7 +19,7 @@ AddArgument(string, reportFileName)
 
 int main(int argc, char** argv) {
     ParseEasyFlags(argc, argv);
-    TestingDriver::initGlobal(argv[0]);
+    TestingDriver::init(argv[0]);
 
     testCase();
 
@@ -28,5 +28,5 @@ int main(int argc, char** argv) {
         TestingDriver::generateTestReport(reportFileStream);
         reportFileStream.close();
     }
-    return TestingDriver::destroyGlobal();
+    return TestingDriver::destroy();
 }

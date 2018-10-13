@@ -8,20 +8,20 @@ using namespace std;
 namespace kktest {
 
 SmoothExecutor::SmoothExecutor(int testIndexToRun):
-    Executor(testIndexToRun), state(State::INACTIVE) {}
+    Executor(testIndexToRun), state(INACTIVE) {}
 
 bool SmoothExecutor::isDuringTest() const {
-    return state == State::TEST;
+    return state == TEST;
 }
 
 void SmoothExecutor::checkIsInactive(const string& methodName) const {
-    if (state == State::TEST) {
+    if (state == TEST) {
         throw runtime_error("Cannot call " + methodName + " within test!");
     }
-    if (state == State::SET_UP) {
+    if (state == SET_UP) {
         throw runtime_error("Cannot call " + methodName + " within setUp!");
     }
-    if (state == State::TEAR_DOWN) {
+    if (state == TEAR_DOWN) {
         throw runtime_error("Cannot call " + methodName + " within tearDown!");
     }
 }
@@ -38,32 +38,32 @@ void SmoothExecutor::execute(const vector<Group*>& groups,
 }
 
 void SmoothExecutor::executeSetUps(const vector<Group*>& groups, Test* test) {
-    state = State::SET_UP;
-    for (Group* g: groups) {
+    state = SET_UP;
+    for (Group* group: groups) {
         bool failed;
         string failMessage;
         try {
-            g->setUp();
+            group->setUp();
             failed = false;
         } catch(const exception& e) {
             failed = true;
             failMessage = "An exception was thrown during the "
-                          "setUp of group '" + g->getFullDescription()
+                          "setUp of group '" + group->getFullDescription()
                           + "': " + e.what();
         } catch(...) {
             failed = true;
             failMessage = "A non-exception object was thrown during the "
-                          "setUp of group '" + g->getFullDescription() + "'.";
+                          "setUp of group '" + group->getFullDescription() + "'.";
         }
         if (failed) {
             test->setFailure(failMessage);
         }
     }
-    state = State::INACTIVE;
+    state = INACTIVE;
 }
 
 void SmoothExecutor::executeTest(Test *test, Executable func) {
-    state = State::TEST;
+    state = TEST;
     try {
         func();
     } catch(const ExpectationFailed& failure) {
@@ -75,35 +75,35 @@ void SmoothExecutor::executeTest(Test *test, Executable func) {
     } catch(...) {
         test->setFailure("A non-exception object was thrown during test");
     }
-    state = State::INACTIVE;
+    state = INACTIVE;
 }
 
 void SmoothExecutor::executeTearDowns(const vector<Group*>& groups,
                                       Test* test) {
-    state = State::TEAR_DOWN;
+    state = TEAR_DOWN;
     for (int i = (int)groups.size() - 1; i >= 0; -- i) {
-        Group* g = groups[i];
+        Group* group = groups[i];
         bool failed;
         string failMessage;
         try {
-            g->tearDown();
+            group->tearDown();
             failed = false;
         } catch(const exception& e) {
             failed = true;
             failMessage = "An exception was thrown during the "
-                          "tearDown of group '" + g->getFullDescription()
+                          "tearDown of group '" + group->getFullDescription()
                           + "': " + e.what();
         } catch(...) {
             failed = true;
             failMessage = "A non-exception object was thrown during the "
-                          "tearDown of group '" + g->getFullDescription()
+                          "tearDown of group '" + group->getFullDescription()
                           + "'.";
         }
         if (failed) {
             test->setFailure(failMessage);
         }
     }
-    state = State::INACTIVE;
+    state = INACTIVE;
 }
 
 }

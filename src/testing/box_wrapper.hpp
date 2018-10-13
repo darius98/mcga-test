@@ -15,7 +15,7 @@ public:
 
     bool poll();
 
-    std::pair<std::string, autojson::JSON> getRunStats() const;
+    autojson::JSON getRunStats() const;
 
 private:
     std::string getBoxDirPath() const;

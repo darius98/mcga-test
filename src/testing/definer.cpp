@@ -8,28 +8,20 @@ namespace kktest {
 
 Definer::Definer(string _file, int _line): file(move(_file)), line(_line) {}
 
-void* Definer::getDriverAsVoid() const {
-    return TestingDriver::getGlobalDriver();
-}
-
 void TestDefiner::operator()(string description, Executable func) {
-    ((TestingDriver*)getDriverAsVoid())->addTest(
-        move(description), file, line, func
-    );
+    TestingDriver::getInstance()->addTest(move(description), file, line, func);
 }
 
 void GroupDefiner::operator()(string description, Executable func) {
-    ((TestingDriver*)getDriverAsVoid())->addGroup(
-        move(description), file, line, func
-    );
+    TestingDriver::getInstance()->addGroup(move(description), file, line, func);
 }
 
 void SetUpDefiner::operator()(Executable func) {
-    ((TestingDriver*)getDriverAsVoid())->addSetUp(func);
+    TestingDriver::getInstance()->addSetUp(func);
 }
 
 void TearDownDefiner::operator()(Executable func) {
-    ((TestingDriver*)getDriverAsVoid())->addTearDown(func);
+    TestingDriver::getInstance()->addTearDown(func);
 }
 
 void ExpectDefiner::operator()(const bool& exprResult, const string& expr) {

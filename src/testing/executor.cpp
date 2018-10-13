@@ -20,8 +20,8 @@ void Executor::addAfterTestHook(Hook hook) {
     afterTestHooks.push_back(hook);
 }
 
-void Executor::afterTest(Test* test) {
-    for (Hook hook: afterTestHooks) {
+void Executor::afterTest(Test* test) const {
+    for (const Hook& hook: afterTestHooks) {
         hook(test);
     }
 }

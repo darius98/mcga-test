@@ -2,7 +2,6 @@
 #include <sstream>
 
 #include <EasyFlags.hpp>
-#include <JSON>
 
 #include "box_executor.hpp"
 
@@ -61,18 +60,20 @@ int BoxExecutor::pollForEmptyBox() {
 }
 
 bool BoxExecutor::tryFinalizeBox(int boxIndex) {
-    if (!boxes[boxIndex].first->poll()) {
+    pair<BoxWrapper*, Test*>& box = boxes[boxIndex];
+    if (!box.first->poll()) {
         return false;
     }
-    if (boxes[boxIndex].second == nullptr) {
+    if (box.second == nullptr) {
         return true;
     }
-    pair<string, JSON> boxRunStats = boxes[boxIndex].first->getRunStats();
-    if ((int)boxRunStats.second["exitCode"] != 0) {
-        boxes[boxIndex].second->setFailure(boxRunStats.first);
+    JSON boxRunStats = box.first->getRunStats();
+    if ((int)boxRunStats["exitCode"] != 0) {
+        string failureMessage = boxRunStats["processOutput"];
+        box.second->setFailure(failureMessage);
     }
-    afterTest(boxes[boxIndex].second);
-    boxes[boxIndex].second = nullptr;
+    afterTest(box.second);
+    box.second = nullptr;
     return true;
 }
 

@@ -12,19 +12,19 @@ bool TestLogger::AscendingByTestIndex::operator()(Test* const& a,
 }
 
 void TestLogger::enqueueTestForLogging(Test* test) {
-    loggingQueue.insert(test);
-    while (!loggingQueue.empty() &&
-                (*loggingQueue.begin())->getIndex() == testsLogged + 1) {
-        Test* test = *loggingQueue.begin();
-        cout << test->getFullDescription()
+    testsQueue.insert(test);
+    while (!testsQueue.empty() &&
+                (*testsQueue.begin())->getIndex() == testsLogged + 1) {
+        Test* testToLog = *testsQueue.begin();
+        cout << testToLog->getFullDescription()
              << ": "
-             << (test->isFailed() ? "FAILED" : "PASSED")
+             << (testToLog->isFailed() ? "FAILED" : "PASSED")
              << "\n";
-        if (test->isFailed()) {
-            cout << "\t" << test->getFailureMessage() << "\n";
+        if (testToLog->isFailed()) {
+            cout << "\t" << testToLog->getFailureMessage() << "\n";
         }
         testsLogged += 1;
-        loggingQueue.erase(loggingQueue.begin());
+        testsQueue.erase(testsQueue.begin());
     }
 }
 

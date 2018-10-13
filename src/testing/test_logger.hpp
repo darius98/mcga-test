@@ -17,7 +17,7 @@ private:
     };
 
     int testsLogged = 0;
-    std::set<Test*, AscendingByTestIndex> loggingQueue;
+    std::set<Test*, AscendingByTestIndex> testsQueue;
 };
 
 }

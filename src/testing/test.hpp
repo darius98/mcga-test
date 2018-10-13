@@ -13,6 +13,9 @@ namespace kktest {
 class Group;
 
 class Test {
+private:
+    static int globalTestIndex;
+
 public:
     Test(std::string _description,
          std::string _file,

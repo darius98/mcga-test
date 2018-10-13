@@ -11,16 +11,8 @@ namespace kktest {
 class Definer {
 public:
     Definer(std::string _file, int _line);
-protected:
-    /**
-     * This method returns TestingDriver::getGlobalDriver().
-     *
-     * It returns it as a void pointer as a trick to avoid including driver.hpp
-     * in this file (that is exposed in the API of the library), to
-     * significantly reduce compile time on user-implemented test suites.
-     */
-    void* getDriverAsVoid() const;
 
+protected:
     std::string file;
     int line;
 };

@@ -34,45 +34,45 @@ AddArgument(int, argumentTestIndex)
 
 namespace kktest {
 
-TestingDriver* globalTestingDriver = nullptr;
+TestingDriver* TestingDriver::instance = nullptr;
 
-TestingDriver* TestingDriver::getGlobalDriver() {
-    if (globalTestingDriver == nullptr) {
+TestingDriver* TestingDriver::getInstance() {
+    if (instance == nullptr) {
         cout << "Global testing driver not defined. Cannot continue.\n";
         exit(1);
     }
-    return globalTestingDriver;
+    return instance;
 }
 
-void TestingDriver::initGlobal(const string& binaryPath) {
-    if (globalTestingDriver != nullptr) {
+void TestingDriver::init(const string &binaryPath) {
+    if (instance != nullptr) {
         throw runtime_error("Testing driver cannot be initialized: "
                             "it already exists.");
     }
-    globalTestingDriver = new TestingDriver(binaryPath);
+    instance = new TestingDriver(binaryPath);
 }
 
 void TestingDriver::generateTestReport(ostream& report) {
-    getGlobalDriver()->executor->finalize();
-    report << getGlobalDriver()->groupStack[0]->generateReport().stringify(0);
+    getInstance()->executor->finalize();
+    report << getInstance()->groupStack[0]->generateReport().stringify(0);
 }
 
-int TestingDriver::destroyGlobal() {
-    TestingDriver* driver = getGlobalDriver();
+int TestingDriver::destroy() {
+    TestingDriver* driver = getInstance();
     driver->executor->finalize();
     int status = driver->getNumFailedTests();
     delete driver;
-    globalTestingDriver = nullptr;
+    instance = nullptr;
     return status;
 }
 
 bool TestingDriver::isDuringTest() {
-    return globalTestingDriver != nullptr &&
-            globalTestingDriver->executor->isDuringTest();
+    return instance != nullptr &&
+            instance->executor->isDuringTest();
 }
 
 void TestingDriver::addAfterTestHook(Executor::Hook hook) {
-    getGlobalDriver()->executor->addAfterTestHook(hook);
+    getInstance()->executor->addAfterTestHook(move(hook));
 }
 
 TestingDriver::TestingDriver(const string& binaryPath):

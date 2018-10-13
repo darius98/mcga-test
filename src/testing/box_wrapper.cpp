@@ -47,18 +47,19 @@ bool BoxWrapper::poll() {
     if (feof(processFileDescriptor)) {
         pclose(processFileDescriptor);
         runStats = JSON::readFromFile(getMetaFilePath());
+        runStats["processOutput"] = processOutput;
         runStatsAvailable = true;
         available = true;
     }
     return available;
 }
 
-pair<string, JSON> BoxWrapper::getRunStats() const {
+JSON BoxWrapper::getRunStats() const {
     if (!runStatsAvailable) {
-        throw runtime_error("Askex box for run stats, "
+        throw runtime_error("Asked box for run stats, "
                             "but run stats are not available!");
     }
-    return {processOutput, runStats};
+    return runStats;
 }
 
 string BoxWrapper::getBoxDirPath() const {

@@ -29,7 +29,7 @@ public:
     void addAfterTestHook(Hook hook);
 
 protected:
-    void afterTest(Test* test);
+    void afterTest(Test* test) const;
 
 private:
     virtual void execute(const std::vector<Group*>& groups,

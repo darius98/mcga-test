@@ -10,17 +10,20 @@ namespace kktest {
 
 class TestingDriver {
 public:
-    static void initGlobal(const std::string& binaryPath);
+    static void init(const std::string& binaryPath);
 
-    static int destroyGlobal();
+    static int destroy();
 
     static void generateTestReport(std::ostream& report);
 
     static bool isDuringTest();
 
     static void addAfterTestHook(Executor::Hook);
+
+    static TestingDriver* getInstance();
 private:
-    static TestingDriver* getGlobalDriver();
+
+    static TestingDriver* instance;
 
     explicit TestingDriver(const std::string& binaryPath);
 
@@ -48,8 +51,6 @@ private:
     std::vector<Group*> groupStack;
     Executor* executor;
     TestLogger* testLogger = nullptr;
-
-friend class Definer;
 };
 
 }
