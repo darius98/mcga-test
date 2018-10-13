@@ -13,7 +13,7 @@ void* Matcher::operator new(size_t size) noexcept {
     if (TestingDriver::isDuringTest()) {
         matchersAllocatedDuringTests.insert(p);
         if (!hookedInTestingDriver) {
-            TestingDriver::addAfterTestHook([]() {
+            TestingDriver::addAfterTestHook([](Test*) {
                 cleanupMatchersCreatedDuringTests();
             });
             hookedInTestingDriver = true;

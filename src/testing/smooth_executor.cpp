@@ -7,8 +7,8 @@ using namespace std;
 
 namespace kktest {
 
-SmoothExecutor::SmoothExecutor(int testIndexToRun, bool quiet):
-    Executor(testIndexToRun, quiet), state(State::INACTIVE) {}
+SmoothExecutor::SmoothExecutor(int testIndexToRun):
+    Executor(testIndexToRun), state(State::INACTIVE) {}
 
 bool SmoothExecutor::isDuringTest() const {
     return state == State::TEST;
@@ -34,8 +34,7 @@ void SmoothExecutor::execute(const vector<Group*>& groups,
     executeSetUps(groups, test);
     executeTest(test, func);
     executeTearDowns(groups, test);
-    enqueueTestForLogging(test);
-    test->updateGroups();
+    afterTest(test);
 }
 
 void SmoothExecutor::executeSetUps(const vector<Group*>& groups, Test* test) {

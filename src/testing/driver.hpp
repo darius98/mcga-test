@@ -3,6 +3,7 @@
 
 #include "group.hpp"
 #include "executor.hpp"
+#include "test_logger.hpp"
 
 
 namespace kktest {
@@ -17,7 +18,7 @@ public:
 
     static bool isDuringTest();
 
-    static void addAfterTestHook(CopyableExecutable hook);
+    static void addAfterTestHook(Executor::Hook);
 private:
     static TestingDriver* getGlobalDriver();
 
@@ -46,6 +47,7 @@ private:
     Group* globalScope;
     std::vector<Group*> groupStack;
     Executor* executor;
+    TestLogger* testLogger = nullptr;
 
 friend class Definer;
 };

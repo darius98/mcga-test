@@ -12,7 +12,9 @@ namespace kktest {
 
 class Executor {
 public:
-    explicit Executor(int _testIndexToRun, bool _quiet);
+    typedef std::function<void(Test*)> Hook;
+
+    explicit Executor(int _testIndexToRun);
 
     virtual bool isDuringTest() const = 0;
 
@@ -24,29 +26,18 @@ public:
                      Test* test,
                      Executable func);
 
-    void addAfterTestHook(CopyableExecutable hook);
+    void addAfterTestHook(Hook hook);
 
 protected:
-    bool isSingleTestExecutor() const;
-
-    void enqueueTestForLogging(Test* test);
+    void afterTest(Test* test);
 
 private:
-    struct AscendingByTestIndex {
-        bool operator()(Test* const& a, Test* const& b);
-    };
-
     virtual void execute(const std::vector<Group*>& groups,
                          Test* test,
                          Executable func) = 0;
 
     int testIndexToRun;
-    bool quiet;
-
-    int testsLogged = 0;
-    std::set<Test*, AscendingByTestIndex> loggingQueue;
-
-    std::vector<CopyableExecutable> afterTestHooks;
+    std::vector<Hook> afterTestHooks;
 };
 
 }

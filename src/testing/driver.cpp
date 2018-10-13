@@ -71,7 +71,7 @@ bool TestingDriver::isDuringTest() {
             globalTestingDriver->executor->isDuringTest();
 }
 
-void TestingDriver::addAfterTestHook(CopyableExecutable hook) {
+void TestingDriver::addAfterTestHook(Executor::Hook hook) {
     getGlobalDriver()->executor->addAfterTestHook(hook);
 }
 
@@ -79,15 +79,30 @@ TestingDriver::TestingDriver(const string& binaryPath):
         globalScope(new Group("", "", 0, nullptr)),
         groupStack({globalScope}) {
     if (flagBoxed) {
-        executor = new BoxExecutor(argumentTestIndex, flagQuiet, binaryPath);
+        executor = new BoxExecutor(argumentTestIndex, binaryPath);
     } else {
-        executor = new SmoothExecutor(argumentTestIndex, flagQuiet);
+        executor = new SmoothExecutor(argumentTestIndex);
+    }
+    executor->addAfterTestHook([](Test* test) {
+        test->updateGroups();
+    });
+    executor->addAfterTestHook([](Test* test) {
+        if (test->isFailed() && argumentTestIndex == test->getIndex()) {
+            cout << test->getFailureMessage();
+        }
+    });
+    if (!flagQuiet) {
+        testLogger = new TestLogger();
+        executor->addAfterTestHook([this](Test* test) {
+            testLogger->enqueueTestForLogging(test);
+        });
     }
 }
 
 TestingDriver::~TestingDriver() {
     delete globalScope;
     delete executor;
+    delete testLogger;
 }
 
 void TestingDriver::addGroup(string description,

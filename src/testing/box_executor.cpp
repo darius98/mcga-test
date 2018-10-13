@@ -18,8 +18,8 @@ AddArgument(string, argumentBoxes)
 
 namespace kktest {
 
-BoxExecutor::BoxExecutor(int testIndexToRun, bool quiet, string binaryPath):
-        Executor(testIndexToRun, quiet) {
+BoxExecutor::BoxExecutor(int testIndexToRun, string binaryPath):
+        Executor(testIndexToRun) {
     stringstream stream(argumentBoxes);
     string boxId;
     while (getline(stream, boxId, ',')) {
@@ -44,7 +44,7 @@ void BoxExecutor::execute(const vector<Group*>& groups,
                           Executable func) {
     int emptyBoxIndex = pollForEmptyBox();
     boxes[emptyBoxIndex].second = test;
-    boxes[emptyBoxIndex].first->run("-t " + to_string(test->getIndex()));
+    boxes[emptyBoxIndex].first->run("-qt " + to_string(test->getIndex()));
 }
 
 int BoxExecutor::pollForEmptyBox() {
@@ -71,8 +71,7 @@ bool BoxExecutor::tryFinalizeBox(int boxIndex) {
     if ((int)boxRunStats.second["exitCode"] != 0) {
         boxes[boxIndex].second->setFailure(boxRunStats.first);
     }
-    enqueueTestForLogging(boxes[boxIndex].second);
-    boxes[boxIndex].second->updateGroups();
+    afterTest(boxes[boxIndex].second);
     boxes[boxIndex].second = nullptr;
     return true;
 }
