@@ -16,7 +16,7 @@ private:
     };
 
 public:
-    SmoothExecutor(int testIndexToRun);
+    explicit SmoothExecutor(int testIndexToRun);
 
     bool isDuringTest() const override;
 
