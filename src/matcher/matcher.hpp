@@ -55,11 +55,9 @@ template<class T, class>
 struct is_matcher { };
 
 template<class T>
-struct is_matcher<T, typename std::enable_if<
-                                  std::is_base_of<Matcher, T>::value, void
-                              >::type> {
-    typedef T type;
-};
+struct is_matcher<
+    T, typename std::enable_if<std::is_base_of<Matcher, T>::value, void>::type>
+    { typedef T type; };
 
 } // namespace kktest
 

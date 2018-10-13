@@ -86,7 +86,7 @@ public:
         description << "a number not within " << eps << " of " << target;
     }
 private:
-    const T& target;
+    T target;
     double eps;
 };
 

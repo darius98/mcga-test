@@ -33,7 +33,7 @@ public:
     }
 private:
     Comparator comparator;
-    const T& target;
+    T target;
     std::string expectation;
 };
 
