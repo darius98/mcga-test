@@ -38,16 +38,15 @@ TestingDriver* TestingDriver::instance = nullptr;
 
 TestingDriver* TestingDriver::getInstance() {
     if (instance == nullptr) {
-        cout << "Global testing driver not defined. Cannot continue.\n";
-        exit(1);
+        throw runtime_error("TestingDriver::getInstance() called "
+                            "before TestingDriver::init.");
     }
     return instance;
 }
 
 void TestingDriver::init(const string &binaryPath) {
     if (instance != nullptr) {
-        throw runtime_error("Testing driver cannot be initialized: "
-                            "it already exists.");
+        throw runtime_error("TestingDriver::init called a second time!");
     }
     instance = new TestingDriver(binaryPath);
 }
@@ -86,13 +85,8 @@ TestingDriver::TestingDriver(const string& binaryPath):
     executor->addAfterTestHook([](Test* test) {
         test->updateGroups();
     });
-    executor->addAfterTestHook([](Test* test) {
-        if (test->isFailed() && argumentTestIndex == test->getIndex()) {
-            cout << test->getFailureMessage();
-        }
-    });
     if (!flagQuiet) {
-        testLogger = new TestLogger();
+        testLogger = new TestLogger(cout, argumentTestIndex != 0);
         executor->addAfterTestHook([this](Test* test) {
             testLogger->enqueueTestForLogging(test);
         });

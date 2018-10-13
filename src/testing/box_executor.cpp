@@ -43,7 +43,7 @@ void BoxExecutor::execute(const vector<Group*>& groups,
                           Executable func) {
     int emptyBoxIndex = pollForEmptyBox();
     boxes[emptyBoxIndex].second = test;
-    boxes[emptyBoxIndex].first->run("-qt " + to_string(test->getIndex()));
+    boxes[emptyBoxIndex].first->run("-t " + to_string(test->getIndex()));
 }
 
 int BoxExecutor::pollForEmptyBox() {
