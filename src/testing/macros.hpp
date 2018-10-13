@@ -63,27 +63,25 @@
  */
 #define tearDown kktest::TearDownDefiner(__FILENAME__, __LINE__)
 
+#ifndef KKTEST_EXPECT_DEFINED
+#define KKTEST_EXPECT_DEFINED
+
 /**
  * Assertion macro.
  *
  * Use this to verify a boolean condition is satisfied. Fails the test, printing
  * the body of the boolean expression when it evaluates to false.
  */
-#ifndef EXPECT_DEFINED
 #define expect(...) kktest::ExpectDefiner(__FILENAME__, __LINE__)              \
                                          (__VA_ARGS__, #__VA_ARGS__ " is false")
-#endif
 
 /**
  * Macro for forcing a test to fail. `expect` and `expectMatches` are
  * preferred where possible.
- *
- * Has the same effect as __expect(false, file, line, message).
  */
-#ifndef EXPECT_DEFINED
-#define fail(...) kktest::ExpectDefiner(__FILENAME__, __LINE__)(0, __VA_ARGS__)
-#endif
+#define failTest(...) kktest::ExpectDefiner(__FILENAME__, __LINE__)            \
+                                           (false, __VA_ARGS__)
 
-#define EXPECT_DEFINED
+#endif // KKTEST_EXPECT_DEFINED
 
 #endif

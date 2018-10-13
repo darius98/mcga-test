@@ -33,7 +33,7 @@ void testCase() {
             try {
                 v.at(4);
             } catch(...) {
-                fail("It did throw.");
+                failTest("It did throw.");
             }
         });
     });
@@ -41,7 +41,7 @@ void testCase() {
     test("v.at(4) throws on empty vector", [&]() {
         try {
             v.at(4);
-            fail("Did not throw.");
+            failTest("Did not throw.");
         } catch(...) { /* All ok; */ }
     });
 }

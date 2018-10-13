@@ -35,9 +35,9 @@ private:
 
 }
 
-#ifdef EXPECT_DEFINED
+#ifdef KKTEST_EXPECT_DEFINED
 #undef expect
-#undef fail
+#undef failTest
 #endif
 
 /**
@@ -47,12 +47,12 @@ private:
  *
  * The syntax is `expect(object, matcher)`.
  */
-#define expect(...) kktest::ExpectMatchesDefiner(__FILENAME__, __LINE__)       \
+#define expect(...)     kktest::ExpectMatchesDefiner(__FILENAME__, __LINE__)   \
                                          (__VA_ARGS__, #__VA_ARGS__ " is false")
 
-#define fail(...)   kktest::ExpectMatchesDefiner(__FILENAME__, __LINE__)       \
+#define failTest(...)   kktest::ExpectMatchesDefiner(__FILENAME__, __LINE__)   \
                                          (false, __VA_ARGS__)
 
-#define EXPECT_DEFINED
+#define KKTEST_EXPECT_DEFINED
 
 #endif
