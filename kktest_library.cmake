@@ -51,8 +51,6 @@ function(testcase TEST_NAME FILE_NAME)
             list(APPEND FILE_LIST ${arg})
         endif()
     endforeach()
-    message(STATUS "FILE_LIST=${FILE_LIST}")
-    message(STATUS "LIB_LIST=${LIB_LIST}")
 
     add_executable(${TEST_NAME} ${FILE_NAME} ${FILE_LIST})
     install(TARGETS ${TEST_NAME} DESTINATION ${TEST_NAME})
