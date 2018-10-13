@@ -88,36 +88,36 @@ void testCase() {
     });
 
     group("Less than or equal to", [&]() {
-        test("isLessThanOrEqualTo matches smaller values", [&]() {
-            expect(isLessThanOrEqualTo(5)->matches(3));
-            expect(isLessThanOrEqualTo(17)->matches(-20));
-            expect(isLessThanOrEqualTo('c')->matches('a'));
-            expect(isLessThanOrEqualTo(string("cada"))->matches("abra"));
-            expect(isLessThanOrEqualTo(vector<int>{2, 1, 3})
+        test("isLessThanEqual matches smaller values", [&]() {
+            expect(isLessThanEqual(5)->matches(3));
+            expect(isLessThanEqual(17)->matches(-20));
+            expect(isLessThanEqual('c')->matches('a'));
+            expect(isLessThanEqual(string("cada"))->matches("abra"));
+            expect(isLessThanEqual(vector<int>{2, 1, 3})
                        ->matches(vector<int>{1, 2, 3}));
         });
 
-        test("isLessThanOrEqualTo matches equal values", [&]() {
-            expect(isLessThanOrEqualTo(3)->matches(3));
-            expect(isLessThanOrEqualTo(-17)->matches(-17));
-            expect(isLessThanOrEqualTo('c')->matches('c'));
-            expect(isLessThanOrEqualTo(string("cada"))->matches("cada"));
-            expect(isLessThanOrEqualTo(vector<int>{2, 1, 3})
+        test("isLessThanEqual matches equal values", [&]() {
+            expect(isLessThanEqual(3)->matches(3));
+            expect(isLessThanEqual(-17)->matches(-17));
+            expect(isLessThanEqual('c')->matches('c'));
+            expect(isLessThanEqual(string("cada"))->matches("cada"));
+            expect(isLessThanEqual(vector<int>{2, 1, 3})
                        ->matches(vector<int>{2, 1, 3}));
         });
 
-        test("isLessThanOrEqualTo does not match greater values", [&]() {
-            expect(!isLessThanOrEqualTo(3)->matches(5));
-            expect(!isLessThanOrEqualTo(-20)->matches(17));
-            expect(!isLessThanOrEqualTo('a')->matches('c'));
-            expect(!isLessThanOrEqualTo(string("abra"))->matches("cada"));
-            expect(!isLessThanOrEqualTo(vector<int>{1, 2, 3})
+        test("isLessThanEqual does not match greater values", [&]() {
+            expect(!isLessThanEqual(3)->matches(5));
+            expect(!isLessThanEqual(-20)->matches(17));
+            expect(!isLessThanEqual('a')->matches('c'));
+            expect(!isLessThanEqual(string("abra"))->matches("cada"));
+            expect(!isLessThanEqual(vector<int>{1, 2, 3})
                        ->matches(vector<int>{2, 1, 3}));
         });
 
-        test("Failure description for isLessThanOrEqualTo", [&]() {
+        test("Failure description for isLessThanEqual", [&]() {
             Description description, mismatchDescription;
-            auto m = isLessThanOrEqualTo(vector<int>{2,1,3});
+            auto m = isLessThanEqual(vector<int>{2,1,3});
             m->matches(vector<int>{3,1,2});
             m->describe(description);
             m->describeMismatch(mismatchDescription);
@@ -166,36 +166,36 @@ void testCase() {
     });
 
     group("Greater than or equal to", [&]() {
-        test("isGreaterThanOrEqualTo does not match smaller values", [&]() {
-            expect(!isGreaterThanOrEqualTo(5)->matches(3));
-            expect(!isGreaterThanOrEqualTo(17)->matches(-20));
-            expect(!isGreaterThanOrEqualTo('c')->matches('a'));
-            expect(!isGreaterThanOrEqualTo(string("cada"))->matches("abra"));
-            expect(!isGreaterThanOrEqualTo(vector<int>{2, 1, 3})
+        test("isGreaterThanEqual does not match smaller values", [&]() {
+            expect(!isGreaterThanEqual(5)->matches(3));
+            expect(!isGreaterThanEqual(17)->matches(-20));
+            expect(!isGreaterThanEqual('c')->matches('a'));
+            expect(!isGreaterThanEqual(string("cada"))->matches("abra"));
+            expect(!isGreaterThanEqual(vector<int>{2, 1, 3})
                        ->matches(vector<int>{1, 2, 3}));
         });
 
-        test("isGreaterThanOrEqualTo matches equal values", [&]() {
-            expect(isGreaterThanOrEqualTo(3)->matches(3));
-            expect(isGreaterThanOrEqualTo(-17)->matches(-17));
-            expect(isGreaterThanOrEqualTo('c')->matches('c'));
-            expect(isGreaterThanOrEqualTo(string("cada"))->matches("cada"));
-            expect(isGreaterThanOrEqualTo(vector<int>{2, 1, 3})
+        test("isGreaterThanEqual matches equal values", [&]() {
+            expect(isGreaterThanEqual(3)->matches(3));
+            expect(isGreaterThanEqual(-17)->matches(-17));
+            expect(isGreaterThanEqual('c')->matches('c'));
+            expect(isGreaterThanEqual(string("cada"))->matches("cada"));
+            expect(isGreaterThanEqual(vector<int>{2, 1, 3})
                        ->matches(vector<int>{2, 1, 3}));
         });
 
-        test("isGreaterThanOrEqualTo matches greater values", [&]() {
-            expect(isGreaterThanOrEqualTo(3)->matches(5));
-            expect(isGreaterThanOrEqualTo(-20)->matches(17));
-            expect(isGreaterThanOrEqualTo('a')->matches('c'));
-            expect(isGreaterThanOrEqualTo(string("abra"))->matches("cada"));
-            expect(isGreaterThanOrEqualTo(vector<int>{1, 2, 3})
+        test("isGreaterThanEqual matches greater values", [&]() {
+            expect(isGreaterThanEqual(3)->matches(5));
+            expect(isGreaterThanEqual(-20)->matches(17));
+            expect(isGreaterThanEqual('a')->matches('c'));
+            expect(isGreaterThanEqual(string("abra"))->matches("cada"));
+            expect(isGreaterThanEqual(vector<int>{1, 2, 3})
                        ->matches(vector<int>{2, 1, 3}));
         });
 
-        test("Failure description for isGreaterThanOrEqualTo", [&]() {
+        test("Failure description for isGreaterThanEqual", [&]() {
             Description description, mismatchDescription;
-            auto m = isGreaterThanOrEqualTo(vector<int>{2,1,3});
+            auto m = isGreaterThanEqual(vector<int>{2,1,3});
             m->matches(vector<int>{1,2,3});
             m->describe(description);
             m->describeMismatch(mismatchDescription);

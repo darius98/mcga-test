@@ -133,14 +133,14 @@ void testCase() {
 
             expect(v[5], isEqualTo(0));
             expect(v[5], isLessThan(2));
-            expect(v[5], isLessThanOrEqualTo(2));
-            expect(v[5], isLessThanOrEqualTo(0));
+            expect(v[5], isLessThanEqual(2));
+            expect(v[5], isLessThanEqual(0));
             expect(v[5], isGreaterThan(-2));
-            expect(v[5], isGreaterThanOrEqualTo(-2));
-            expect(v[5], isGreaterThanOrEqualTo(0));
+            expect(v[5], isGreaterThanEqual(-2));
+            expect(v[5], isGreaterThanEqual(0));
 
             expect(v, hasSize(isGreaterThan(7)));
-            expect(v, eachElement(isGreaterThanOrEqualTo(0)));
+            expect(v, eachElement(isGreaterThanEqual(0)));
             expect(v, anyElement(isEqualTo(13)));
 
             expect(v, eachElement(either(isZero, isGreaterThan(9))));
@@ -161,7 +161,7 @@ void testCase() {
             });
 
             test("3 (F)", [&]() {
-                expect(v[5], isLessThanOrEqualTo(-2));
+                expect(v[5], isLessThanEqual(-2));
             });
 
             test("4 (F)", [&]() {
@@ -169,11 +169,11 @@ void testCase() {
             });
 
             test("5 (F)", [&]() {
-                expect(v[5], isGreaterThanOrEqualTo(2));
+                expect(v[5], isGreaterThanEqual(2));
             });
 
             test("6 (F)", [&]() {
-                expect(v, eachElement(isGreaterThanOrEqualTo(2)));
+                expect(v, eachElement(isGreaterThanEqual(2)));
             });
 
             test("7 (F)", [&]() {
