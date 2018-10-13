@@ -92,6 +92,21 @@ private:
     M* matcher;
 };
 
+template<class M1, class M2, IS_MATCHER(M1), IS_MATCHER(M2)>
+AndMatcher<M1, M2>* both(M1* m1, M2* m2) {
+    return new AndMatcher<M1, M2>(m1, m2);
+}
+
+template<class M1, class M2, IS_MATCHER(M1), IS_MATCHER(M2)>
+OrMatcher<M1, M2>* either(M1* m1, M2* m2) {
+    return new OrMatcher<M1, M2>(m1, m2);
+}
+
+template<class M, IS_MATCHER(M)>
+NotMatcher<M>* isNot(M* matcher) {
+    return new NotMatcher<M>(matcher);
+}
+
 }
 
 #endif

@@ -23,6 +23,22 @@ private:
     const char* expectation;
 };
 
+extern CharInStringMatcher* isLetter;
+
+extern CharInStringMatcher* isDigit;
+
+extern CharInStringMatcher* isLowercaseLetter;
+
+extern CharInStringMatcher* isUppercaseLetter;
+
+extern CharInStringMatcher* isBinaryDigit;
+
+extern CharInStringMatcher* isOctDigit;
+
+extern CharInStringMatcher* isHexDigit;
+
+extern CharInStringMatcher* isWhitespace;
+
 class IsSubstringMatcher: public Matcher {
 public:
     explicit IsSubstringMatcher(std::string _container);
@@ -35,6 +51,8 @@ public:
 private:
     std::string container;
 };
+
+IsSubstringMatcher* isSubstringOf(const std::string& s);
 
 }
 

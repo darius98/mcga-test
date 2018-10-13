@@ -60,6 +60,36 @@ private:
     void* objectAddress = nullptr;
 };
 
+template<class T>
+ComparisonMatcher<T>* isEqualTo(const T& object) {
+    return new ComparisonMatcher<T>(object, std::equal_to<T>(), "");
+}
+
+template<class T>
+ComparisonMatcher<T>* isLessThan(const T &object) {
+    return new ComparisonMatcher<T>(object, std::less<T>(), "< ");
+}
+
+template<class T>
+ComparisonMatcher<T>* isLessThanEqual(const T &object) {
+    return new ComparisonMatcher<T>(object, std::less_equal<T>(), "<= ");
+}
+
+template<class T>
+ComparisonMatcher<T>* isGreaterThan(const T &object) {
+    return new ComparisonMatcher<T>(object, std::greater<T>(), "> ");
+}
+
+template<class T>
+ComparisonMatcher<T>* isGreaterThanEqual(const T &object) {
+    return new ComparisonMatcher<T>(object, std::greater_equal<T>(), ">= ");
+}
+
+template<class T>
+IdentityMatcher<T>* isIdenticalTo(const T& object) {
+    return new IdentityMatcher<T>(object);
+}
+
 } // namespace kktest
 
 #endif

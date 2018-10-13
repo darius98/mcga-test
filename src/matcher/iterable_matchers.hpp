@@ -1,6 +1,7 @@
 #ifndef KKTEST_MATCHER_ITERABLE_MATCHERS_H_
 #define KKTEST_MATCHER_ITERABLE_MATCHERS_H_
 
+#include "comparison_matchers.hpp"
 #include "matcher.hpp"
 
 
@@ -121,6 +122,40 @@ private:
     M* elementMatcher;
     int index = -1;
 };
+
+extern IsEmptyMatcher* isEmpty;
+
+extern IsNotEmptyMatcher* isNotEmpty;
+
+template<class M, IS_MATCHER(M)>
+IterableSizeMatcher<M>* hasSize(M* sizeMatcher) {
+    return new IterableSizeMatcher<M>(sizeMatcher);
+}
+
+template<class T>
+IterableSizeMatcher<ComparisonMatcher<T>>* hasSize(const T& object) {
+    return new IterableSizeMatcher<ComparisonMatcher<T>>(isEqualTo(object));
+}
+
+template<class M, IS_MATCHER(M)>
+IterableEachMatcher<M>* eachElement(M* elementMatcher) {
+    return new IterableEachMatcher<M>(elementMatcher);
+}
+
+template<class T>
+IterableEachMatcher<ComparisonMatcher<T>>* eachElement(const T &object) {
+    return new IterableEachMatcher<ComparisonMatcher<T>>(isEqualTo(object));
+}
+
+template<class M, IS_MATCHER(M)>
+IterableAnyMatcher<M>* anyElement(M *elementMatcher) {
+    return new IterableAnyMatcher<M>(elementMatcher);
+}
+
+template<class T>
+IterableAnyMatcher<ComparisonMatcher<T>>* anyElement(const T &object) {
+    return new IterableAnyMatcher<ComparisonMatcher<T>>(isEqualTo(object));
+}
 
 }
 

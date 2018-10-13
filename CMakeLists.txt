@@ -22,3 +22,5 @@ wiki_example(base)
 wiki_example(set_up_tear_down_bad)
 wiki_example(set_up_tear_down_good)
 wiki_example(group)
+
+add_subdirectory(tests)

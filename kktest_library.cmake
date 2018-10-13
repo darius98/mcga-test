@@ -1,3 +1,8 @@
+if(__KKTEST_LIBRARY_INCLUDE_GUARD__)
+    return()
+endif()
+set(__KKTEST_LIBRARY_INCLUDE_GUARD__ TRUE)
+
 cmake_minimum_required(VERSION 3.7)
 project(KKTestLibs)
 set(CMAKE_CXX_STANDARD 14)
@@ -11,12 +16,21 @@ include_directories(${CMAKE_CURRENT_LIST_DIR}/third_party/easyflags/include)
 add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/third_party/easyflags CMakeFiles_easyflags)
 
 include_directories(${CMAKE_CURRENT_LIST_DIR}/src)
-file(GLOB KKTestLibImpl ${CMAKE_CURRENT_LIST_DIR}/src/testing/*.cpp)
-add_library("kktest" ${KKTestLibImpl})
+file(GLOB KKTestLibImpl
+        ${CMAKE_CURRENT_LIST_DIR}/src/testing/*.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/src/testing/*.hpp
+        ${CMAKE_CURRENT_LIST_DIR}/src/utils/filename.hpp
+        )
+add_library("kktest" ${KKTestLibImpl} include/kktest)
 target_link_libraries(kktest autojson easyflags)
 
-file(GLOB KKTestMatchersLibImpl ${CMAKE_CURRENT_LIST_DIR}/src/matcher/*.cpp)
-add_library("kktest_matchers" ${KKTestMatchersLibImpl})
+file(GLOB KKTestMatchersLibImpl
+        ${CMAKE_CURRENT_LIST_DIR}/src/matcher/*.cpp
+        ${CMAKE_CURRENT_LIST_DIR}/src/matcher/*.hpp
+        ${CMAKE_CURRENT_LIST_DIR}/src/utils/filename.hpp
+        ${CMAKE_CURRENT_LIST_DIR}/src/utils/streamer.hpp
+        )
+add_library("kktest_matchers" ${KKTestMatchersLibImpl} include/kktest_matchers)
 
 include_directories(${CMAKE_CURRENT_LIST_DIR}/include)
 

@@ -20,6 +20,8 @@ public:
     void describeMismatch(Description& description) override;
 };
 
+extern IsPositiveMatcher* isPositive;
+
 class IsNegativeMatcher: public Matcher {
 public:
     template<class T>
@@ -31,6 +33,8 @@ public:
 
     void describeMismatch(Description& description) override;
 };
+
+extern IsNegativeMatcher* isNegative;
 
 class IsEvenMatcher: public Matcher {
 public:
@@ -44,6 +48,8 @@ public:
     void describeMismatch(Description& description) override;
 };
 
+extern IsEvenMatcher* isEven;
+
 class IsOddMatcher: public Matcher {
 public:
     template<class T>
@@ -56,6 +62,8 @@ public:
     void describeMismatch(Description& description) override;
 };
 
+extern IsOddMatcher* isOdd;
+
 class IsZeroMatcher: public Matcher {
 public:
     template<class T>
@@ -67,6 +75,8 @@ public:
 
     void describeMismatch(Description& description) override;
 };
+
+extern IsZeroMatcher* isZero;
 
 template<class T>
 class IsAlmostEqualMatcher: public Matcher {
@@ -89,6 +99,12 @@ private:
     T target;
     double eps;
 };
+
+template<class T>
+IsAlmostEqualMatcher<T>* isAlmostEqualTo(const T& target,
+                                         const double& eps=0.000001) {
+    return new IsAlmostEqualMatcher<T>(target, eps);
+}
 
 }
 

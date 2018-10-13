@@ -3,6 +3,10 @@
 
 namespace kktest {
 
+IsEmptyMatcher* isEmpty = new IsEmptyMatcher();
+
+IsNotEmptyMatcher* isNotEmpty = new IsNotEmptyMatcher();
+
 void IsEmptyMatcher::describe(Description& description) {
     description << "empty iterable";
 }

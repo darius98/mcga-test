@@ -17,6 +17,8 @@ public:
     void describeMismatch(Description& description) override;
 };
 
+extern ThrowsAnythingMatcher* throws;
+
 template<class E>
 class ThrowsSpecificMatcher: public Matcher {
 public:
@@ -50,6 +52,11 @@ public:
 private:
     int failureType = -1;
 };
+
+template<class E>
+ThrowsSpecificMatcher<E>* throwsA() {
+    return new ThrowsSpecificMatcher<E>();
+}
 
 }
 

@@ -15,6 +15,8 @@ public:
     void describeMismatch(Description& description) override;
 };
 
+extern IsTrueMatcher* isTrue;
+
 class IsFalseMatcher: public Matcher {
 public:
     bool matches(const bool& object);
@@ -23,6 +25,8 @@ public:
 
     void describeMismatch(Description& description) override;
 };
+
+extern IsFalseMatcher* isFalse;
 
 } // namespace kktest
 

@@ -15,6 +15,8 @@ void IsNullptrMatcher::describeMismatch(Description& description) {
     description << "non-null pointer";
 }
 
+IsNullptrMatcher* isNull = new IsNullptrMatcher();
+
 bool IsNotNullptrMatcher::matches(void*const& obj) {
     return obj != nullptr;
 }
@@ -26,5 +28,7 @@ void IsNotNullptrMatcher::describe(Description& description) {
 void IsNotNullptrMatcher::describeMismatch(Description& description) {
     description << "nullptr";
 }
+
+IsNotNullptrMatcher* isNotNull = new IsNotNullptrMatcher();
 
 }
