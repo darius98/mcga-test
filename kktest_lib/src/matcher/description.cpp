@@ -8,12 +8,9 @@ namespace kktest {
 Description* Description::createForExpect(
         const string& file,
         int line,
-        const string &extra) {
+        const string& extra) {
     auto description = new Description();
     (*description) << file << ":" << line << ": " << extra;
-    if (extra.empty()) {
-        (*description) << "Expected ";
-    }
     return description;
 }
 

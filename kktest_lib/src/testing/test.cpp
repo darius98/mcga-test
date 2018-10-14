@@ -49,14 +49,16 @@ string Test::getFailureMessage() const {
     return failure->getMessage();
 }
 
-string Test::getFullDescription() const {
-    string fullDescription = file + ":" + to_string(line) + ": ";
-
+string Test::getDescriptionPrefix() const {
+    string prefix = file + ":" + to_string(line) + "::";
     if (!parentGroup->isGlobalScope()) {
-        fullDescription += parentGroup->getFullDescription() + "::";
+        prefix += parentGroup->getFullDescription() + "::";
     }
+    return prefix;
+}
 
-    return fullDescription + description;
+string Test::getDescription() const {
+    return description;
 }
 
 JSON Test::generateReport() const {

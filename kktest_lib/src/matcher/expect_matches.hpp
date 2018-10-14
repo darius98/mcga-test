@@ -21,9 +21,11 @@ public:
             return;
         }
         auto description = Description::createForExpect(file, line, "");
+        (*description) << "\n\tExpected ";
         matcher->describe(*description);
-        (*description) << ". Got '" << object << "': ";
+        (*description) << ".\n\tGot '" << object << "'.\n\tWhich is ";
         matcher->describeMismatch(*description);
+        (*description) << ".";
         throwExpectationFailed(description);
     }
 

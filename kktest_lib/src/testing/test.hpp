@@ -36,7 +36,9 @@ public:
 
     void setFailure(const ExpectationFailed& f);
 
-    std::string getFullDescription() const;
+    std::string getDescriptionPrefix() const;
+
+    std::string getDescription() const;
 
     autojson::JSON generateReport() const;
 

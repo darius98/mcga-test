@@ -14,11 +14,16 @@ public:
     explicit TestLogger(std::ostream& _stream, bool _singleTest);
 
     void enqueueTestForLogging(Test* test);
+
 private:
-    void logTest(Test* test) const;
+    bool isInTerminal() const;
+
+    void modifyOutput(const int& code);
+
+    void logTest(Test* test);
 
     struct AscendingByTestIndex {
-        bool operator()(Test* a, Test* b);
+        bool operator()(Test* a, Test* b) const;
     };
 
     std::ostream& stream;
