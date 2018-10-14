@@ -9,7 +9,7 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${LIB_PATH})
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${LIB_PATH})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${BIN_PATH})
 
-include("kktest_library.cmake")
+include("/usr/local/include/kktest.cmake")
 
 add_executable(StdVectorTests concept/std_vector_test.cpp)
 install(TARGETS StdVectorTests DESTINATION StdVectorTests)
