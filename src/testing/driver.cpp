@@ -1,3 +1,4 @@
+#include <fstream>
 #include <iostream>
 
 #include <EasyFlags.hpp>
@@ -16,6 +17,14 @@ AddArgument(int, flagQuiet)
     .Description("Disable STDOUT logging for this test run")
     .DefaultValue(0)
     .ImplicitValue(1);
+AddArgument(string, argumentReportFileName)
+    .Name("report")
+    .Short("r")
+    .ArgumentType("FILE ")
+    .Description("Generate a JSON test report at the end of running the tests")
+    .DefaultValue("")
+    .ImplicitValue("./report.json");
+
 AddArgument(int, flagBoxed)
     .ArgumentType("0|1 ")
     .Name("boxed")
@@ -23,6 +32,18 @@ AddArgument(int, flagBoxed)
     .Description("Run the tests boxed (requires sudo + box installed)")
     .DefaultValue(0)
     .ImplicitValue(1);
+AddArgument(int, argumentFirstBox)
+    .ArgumentType("int")
+    .Name("first_box")
+    .Description("The index of the first box to use while running boxed")
+    .DefaultValue("0");
+AddArgument(int, argumentNumBoxes)
+    .ArgumentType("int")
+    .Name("num_boxes")
+    .Description("Number of boxes to use while running boxed "
+                 "(consecutive ids, starting from first_box)")
+    .DefaultValue("10");
+
 AddArgument(int, argumentTestIndex)
     .ArgumentType("int ")
     .Name("test")
@@ -51,15 +72,15 @@ void TestingDriver::init(const string &binaryPath) {
     instance = new TestingDriver(binaryPath);
 }
 
-void TestingDriver::generateTestReport(ostream& report) {
-    getInstance()->executor->finalize();
-    report << getInstance()->groupStack[0]->generateReport().stringify(0);
-}
-
 int TestingDriver::destroy() {
     TestingDriver* driver = getInstance();
     driver->executor->finalize();
     int status = driver->getNumFailedTests();
+    if (!argumentReportFileName.empty()) {
+        ofstream report(argumentReportFileName);
+        report << driver->groupStack[0]->generateReport().stringify(0);
+        report.close();
+    }
     delete driver;
     instance = nullptr;
     return status;
@@ -76,9 +97,15 @@ void TestingDriver::addAfterTestHook(Executor::Hook hook) {
 
 TestingDriver::TestingDriver(const string& binaryPath):
         globalScope(new Group("", "", 0, nullptr)),
-        groupStack({globalScope}) {
+        groupStack({globalScope}),
+        testLogger(nullptr) {
     if (flagBoxed) {
-        executor = new BoxExecutor(argumentTestIndex, binaryPath);
+        executor = new BoxExecutor(
+            argumentTestIndex,
+            binaryPath,
+            argumentFirstBox,
+            argumentFirstBox + argumentNumBoxes
+        );
     } else {
         executor = new SmoothExecutor(argumentTestIndex);
     }

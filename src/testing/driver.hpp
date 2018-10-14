@@ -14,15 +14,13 @@ public:
 
     static int destroy();
 
-    static void generateTestReport(std::ostream& report);
-
     static bool isDuringTest();
 
     static void addAfterTestHook(Executor::Hook);
 
     static TestingDriver* getInstance();
-private:
 
+private:
     static TestingDriver* instance;
 
     explicit TestingDriver(const std::string& binaryPath);
