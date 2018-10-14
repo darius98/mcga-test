@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.7)
 
-set(BIN_PATH   "${CMAKE_CURRENT_SOURCE_DIR}/../cmake_build/bin")
-set(LIB_PATH   "${CMAKE_CURRENT_SOURCE_DIR}/../cmake_build/lib")
-set(TESTS_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../cmake_build/tests")
+set(BIN_PATH   "${CMAKE_CURRENT_SOURCE_DIR}/../../cmake_build/bin")
+set(LIB_PATH   "${CMAKE_CURRENT_SOURCE_DIR}/../../cmake_build/lib")
+set(TESTS_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../../cmake_build/tests")
 
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${LIB_PATH})
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${LIB_PATH})
