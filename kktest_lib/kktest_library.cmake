@@ -21,7 +21,7 @@ file(GLOB KKTestLibImpl
         ${CMAKE_CURRENT_LIST_DIR}/src/testing/*.hpp
         ${CMAKE_CURRENT_LIST_DIR}/src/utils/filename.hpp
         )
-add_library("kktest" ${KKTestLibImpl} include/kktest)
+add_library("kktest" ${KKTestLibImpl} src/kktest)
 target_link_libraries(kktest autojson easyflags)
 
 file(GLOB KKTestMatchersLibImpl
@@ -30,9 +30,9 @@ file(GLOB KKTestMatchersLibImpl
         ${CMAKE_CURRENT_LIST_DIR}/src/utils/filename.hpp
         ${CMAKE_CURRENT_LIST_DIR}/src/utils/streamer.hpp
         )
-add_library("kktest_matchers" ${KKTestMatchersLibImpl} include/kktest_matchers)
+add_library("kktest_matchers" ${KKTestMatchersLibImpl} src/kktest_matchers)
 
-include_directories(${CMAKE_CURRENT_LIST_DIR}/include)
+include_directories(${CMAKE_CURRENT_LIST_DIR}/src)
 
 function(testcase TEST_NAME FILE_NAME)
     if (NOT TESTS_PATH)
