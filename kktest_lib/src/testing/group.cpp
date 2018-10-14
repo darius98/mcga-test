@@ -21,6 +21,10 @@ Group::~Group() {
     }
 }
 
+int Group::getNumFailedTests() const {
+    return numFailedTests;
+}
+
 bool Group::isGlobalScope() const {
     return parentGroup == nullptr;
 }
@@ -79,7 +83,7 @@ string Group::getFullDescription() const {
 
 JSON Group::generateReport() const {
     JSON report = {
-        {"numTests", numTests},
+        {"numExecutedTests", numExecutedTests},
         {"numFailedTests", numFailedTests},
     };
     if (!isGlobalScope()) {
@@ -104,6 +108,13 @@ JSON Group::generateReport() const {
 
 Group* Group::getParentGroup() const {
     return parentGroup;
+}
+
+void Group::updateWithExecutedTest(Test* test) {
+    numExecutedTests += 1;
+    if (test->isFailed()) {
+        numFailedTests += 1;
+    }
 }
 
 }

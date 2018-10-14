@@ -75,7 +75,7 @@ void TestingDriver::init(const string &binaryPath) {
 int TestingDriver::destroy() {
     TestingDriver* driver = getInstance();
     driver->executor->finalize();
-    int status = driver->getNumFailedTests();
+    int status = driver->globalScope->getNumFailedTests();
     if (!argumentReportFileName.empty()) {
         ofstream report(argumentReportFileName);
         report << driver->groupStack[0]->generateReport().stringify(0);
@@ -110,7 +110,7 @@ TestingDriver::TestingDriver(const string& binaryPath):
         executor = new SmoothExecutor(argumentTestIndex);
     }
     executor->addAfterTestHook([](Test* test) {
-        test->updateGroups();
+        test->setExecuted();
     });
     if (!flagQuiet) {
         testLogger = new TestLogger(cout, argumentTestIndex != 0);
@@ -171,10 +171,6 @@ void TestingDriver::addSetUp(Executable func) {
 void TestingDriver::addTearDown(Executable func) {
     executor->checkIsInactive("tearDown");
     groupStack.back()->addTearDown(func);
-}
-
-int TestingDriver::getNumFailedTests() {
-    return globalScope->numFailedTests;
 }
 
 }

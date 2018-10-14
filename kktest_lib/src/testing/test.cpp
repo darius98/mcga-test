@@ -25,22 +25,38 @@ int Test::getIndex() const {
     return index;
 }
 
+void Test::setExecuted() {
+    if (isExecuted()) {
+        throw runtime_error("Test::setExecuted called twice on the same test!");
+    }
+    executed = true;
+    Group* parent = parentGroup;
+    while (parent != nullptr) {
+        parent->updateWithExecutedTest(this);
+        parent = parent->getParentGroup();
+    }
+}
+
+bool Test::isExecuted() const {
+    return executed;
+}
+
 bool Test::isFailed() const {
-    return failure != nullptr;
+    return isExecuted() && failure != nullptr;
 }
 
 bool Test::isPassed() const {
-    return !isFailed();
+    return isExecuted() && !isFailed();
 }
 
 void Test::setFailure(const string& message) {
-    if (isPassed()) {
+    if (failure == nullptr) {
         failure = new ExpectationFailed(message);
     }
 }
 
 void Test::setFailure(const ExpectationFailed& f) {
-    if (isPassed()) {
+    if (failure == nullptr) {
         failure = new ExpectationFailed(f);
     }
 }
@@ -66,21 +82,15 @@ JSON Test::generateReport() const {
         {"description", description},
         {"file", file},
         {"line", line},
-        {"passed", isPassed()}
+        {"executed", isExecuted()}
     };
-    if (!isPassed()) {
-        report["failureMessage"] = getFailureMessage();
+    if (isExecuted()) {
+        report["passed"] = isPassed();
+        if (!isPassed()) {
+            report["failureMessage"] = getFailureMessage();
+        }
     }
     return report;
-}
-
-void Test::updateGroups() const {
-    Group* parent = parentGroup;
-    while (parent != nullptr) {
-        parent->numTests += 1;
-        parent->numFailedTests += isFailed();
-        parent = parent->getParentGroup();
-    }
 }
 
 }

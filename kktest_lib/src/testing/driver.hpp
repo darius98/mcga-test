@@ -42,8 +42,6 @@ public:
 
     void addTearDown(Executable func);
 
-    int getNumFailedTests();
-
 private:
     Group* globalScope;
     std::vector<Group*> groupStack;

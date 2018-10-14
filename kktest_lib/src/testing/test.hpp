@@ -26,6 +26,10 @@ public:
 
     int getIndex() const;
 
+    void setExecuted();
+
+    bool isExecuted() const;
+
     bool isFailed() const;
 
     bool isPassed() const;
@@ -41,10 +45,8 @@ public:
     std::string getDescription() const;
 
     autojson::JSON generateReport() const;
-
-    void updateGroups() const;
 private:
-    Group* parentGroup = nullptr;
+    Group* parentGroup;
     int index;
 
     std::string description;
@@ -52,6 +54,7 @@ private:
     std::string file;
     int line;
 
+    bool executed = false;
     ExpectationFailed* failure = nullptr;
 };
 
