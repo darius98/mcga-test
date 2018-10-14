@@ -43,10 +43,10 @@ public:
 
     void describeMismatch(Description& description) override {
         if (failureType == 1) {
-            description << "a function that did not throw.";
+            description << "a function that did not throw";
         }
         if (failureType == 2) {
-            description << "a function that throws something else.";
+            description << "a function that throws something else";
         }
     }
 private:
