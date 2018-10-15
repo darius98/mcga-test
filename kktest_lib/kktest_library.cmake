@@ -4,12 +4,20 @@ endif()
 set(__KKTEST_LIBRARY_INCLUDE_GUARD__ TRUE)
 
 cmake_minimum_required(VERSION 3.7)
-project(KKTestLibs)
+project(KKTestLibraries)
 set(CMAKE_CXX_STANDARD 14)
 
-set(KKTEST_DIR "${CMAKE_CURRENT_LIST_DIR}/kktest_src")
-set(KKTEST_SRC_DIR "${KKTEST_DIR}/src")
-set(KKTEST_THIRD_PARTY_DIR "${KKTEST_DIR}/third_party")
+# Set KKTest library source directories
+# Allow them to be set externally for dev purposes
+if(NOT KKTEST_DIR)
+    set(KKTEST_DIR "${CMAKE_CURRENT_LIST_DIR}/kktest_src")
+endif()
+if(NOT KKTEST_SRC_DIR)
+    set(KKTEST_SRC_DIR "${KKTEST_DIR}/src")
+endif()
+if(NOT KKTEST_THIRD_PARTY_DIR)
+    set(KKTEST_THIRD_PARTY_DIR "${KKTEST_DIR}/third_party")
+endif()
 
 set(AUTOJSON_DIR "${KKTEST_THIRD_PARTY_DIR}/autojson")
 set(AUTOJSON_INCLUDE_DIR "${AUTOJSON_DIR}/include")
@@ -37,7 +45,7 @@ target_include_directories(kktest_matchers PUBLIC ${KKTEST_SRC_DIR})
 function(testcase TEST_NAME FILE_NAME)
     if (NOT TESTS_PATH)
         message(FATAL_ERROR "TESTS_PATH variable not set.")
-    endif (NOT TESTS_PATH)
+    endif ()
 
     message(STATUS "KKTEST::TEST_CASE ${TESTS_PATH}/${TEST_NAME}")
 

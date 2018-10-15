@@ -1,14 +1,12 @@
 cmake_minimum_required(VERSION 3.7)
 
-set(BIN_PATH   "${CMAKE_CURRENT_LIST_DIR}/../../cmake_build/bin")
-set(LIB_PATH   "${CMAKE_CURRENT_LIST_DIR}/../../cmake_build/lib")
 set(TESTS_PATH "${CMAKE_CURRENT_LIST_DIR}/../../cmake_build/tests")
 
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${LIB_PATH})
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${LIB_PATH})
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${BIN_PATH})
-
-include("/usr/local/include/kktest.cmake")
+if(DEV)
+    include("../kktest_library.cmake")
+else()
+    include("/usr/local/include/kktest.cmake")
+endif()
 
 set(BASE_MATCHER_CPPS
         ../src/matcher/matcher.cpp
