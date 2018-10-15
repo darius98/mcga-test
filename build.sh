@@ -1,2 +1,2 @@
-cmake -Hkktest_lib/ -Bcmake_build/cmake
+cmake -H./ -Bcmake_build/cmake
 (cd cmake_build/cmake && make)
