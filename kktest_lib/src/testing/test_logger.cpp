@@ -15,6 +15,7 @@ void TestLogger::enqueueTestForLogging(Test* test) {
     if (singleTest) {
         if (test->isFailed()) {
             stream << test->getFailureMessage();
+            stream.flush();
         }
         return;
     }
@@ -62,6 +63,7 @@ void TestLogger::logTest(Test *test) {
         stream << "PASSED\n";
         modifyOutput(0);
     }
+    stream.flush();
 }
 
 bool TestLogger::AscendingByTestIndex::operator()(Test* a, Test* b) const {
