@@ -13,6 +13,7 @@ set(BASE_MATCHER_CPPS
         ../src/matcher/description.cpp
         ../src/matcher/expect_matches.cpp)
 add_library(base_matcher_lib ${BASE_MATCHER_CPPS})
+target_link_libraries(base_matcher_lib kktest)
 target_include_directories(base_matcher_lib PUBLIC ../src)
 
 testcase(truth_matcher_test matcher/truth_matcher_test.cpp ../src/matcher/truth_matcher.cpp base_matcher_lib)
