@@ -19,9 +19,9 @@ else()
     include("/usr/local/include/kktest.cmake")
 endif()
 
-add_executable(StdVectorTests concept/std_vector_test.cpp)
-install(TARGETS StdVectorTests DESTINATION StdVectorTests)
-target_link_libraries(StdVectorTests kktest kktest_matchers)
+add_executable(concept_std_vector_test concept/std_vector_test.cpp)
+install(TARGETS concept_std_vector_test DESTINATION concept_std_vector_test)
+target_link_libraries(concept_std_vector_test kktest kktest_matchers)
 
 function(wiki_example FILE_NAME)
     set(T wiki_example_${FILE_NAME})
