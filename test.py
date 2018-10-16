@@ -3,6 +3,7 @@
 TEST_CASES = [
     "comparison_matcher_test",
     "truth_matcher_test",
+    "numeric_matchers_test",
 ]
 
 
