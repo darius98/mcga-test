@@ -5,9 +5,9 @@ TEST_CASES = [
     "truth_matcher_test",
 ]
 
-import subprocess
 
 def run(cmd):
+    import subprocess
     process = subprocess.Popen(cmd, stdout=subprocess.PIPE)
     while process.poll() is None:
         chars = process.stdout.readline()
@@ -15,6 +15,7 @@ def run(cmd):
             print(str(chars, encoding='utf-8'), end='')
     if process.returncode != 0:
         exit(process.returncode)
+
 
 run("./compile.sh")
 
