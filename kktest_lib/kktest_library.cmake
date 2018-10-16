@@ -1,11 +1,24 @@
-if(__KKTEST_LIBRARY_INCLUDE_GUARD__)
+cmake_minimum_required(VERSION 3.7)
+
+GET_PROPERTY(__LOCAL_KKTEST_LIBRARY_INCLUDE_GUARD__ GLOBAL PROPERTY __KKTEST_LIBRARY_INCLUDE_GUARD__)
+if(__LOCAL_KKTEST_LIBRARY_INCLUDE_GUARD__)
     return()
 endif()
-set(__KKTEST_LIBRARY_INCLUDE_GUARD__ TRUE)
+SET_PROPERTY(GLOBAL PROPERTY __KKTEST_LIBRARY_INCLUDE_GUARD__ TRUE)
 
-cmake_minimum_required(VERSION 3.7)
-project(KKTestLibraries)
-set(CMAKE_CXX_STANDARD 14)
+# Third party software: autojson
+set(AUTOJSON_DIR "${KKTEST_THIRD_PARTY_DIR}/autojson")
+file(GLOB AUTOJSON_SRC ${AUTOJSON_DIR}/src/*.cpp)
+add_library(autojson ${AUTOJSON_SRC})
+target_compile_definitions(autojson PUBLIC autojsonuselib)
+target_include_directories(autojson PUBLIC "${AUTOJSON_DIR}/include")
+
+# Third party software: easyflags
+set(EASYFLAGS_DIR "${KKTEST_THIRD_PARTY_DIR}/easyflags")
+add_library(easyflags "${EASYFLAGS_DIR}/src/EasyFlags.cpp")
+target_compile_definitions(easyflags PUBLIC easyflagsuselib)
+target_include_directories(easyflags PUBLIC "${EASYFLAGS_DIR}/include")
+target_link_libraries(easyflags autojson)
 
 # Set KKTest library source directories
 # Allow them to be set externally for dev purposes
@@ -18,20 +31,6 @@ endif()
 if(NOT KKTEST_THIRD_PARTY_DIR)
     set(KKTEST_THIRD_PARTY_DIR "${KKTEST_DIR}/third_party")
 endif()
-
-set(AUTOJSON_DIR "${KKTEST_THIRD_PARTY_DIR}/autojson")
-set(AUTOJSON_INCLUDE_DIR "${AUTOJSON_DIR}/include")
-file(GLOB AUTOJSON_SRC ${AUTOJSON_DIR}/src/*.cpp)
-add_library(autojson ${AUTOJSON_SRC})
-target_compile_definitions(autojson PUBLIC autojsonuselib)
-target_include_directories(autojson PUBLIC ${AUTOJSON_INCLUDE_DIR})
-
-set(EASYFLAGS_DIR "${KKTEST_THIRD_PARTY_DIR}/easyflags")
-set(EASYFLAGS_INCLUDE_DIR "${EASYFLAGS_DIR}/include")
-add_library(easyflags "${EASYFLAGS_DIR}/src/EasyFlags.cpp")
-target_compile_definitions(easyflags PUBLIC easyflagsuselib)
-target_include_directories(easyflags PUBLIC ${EASYFLAGS_INCLUDE_DIR})
-target_link_libraries(easyflags autojson)
 
 file(GLOB KKTestLibImpl ${KKTEST_SRC_DIR}/testing/*.cpp)
 add_library(kktest ${KKTestLibImpl})
