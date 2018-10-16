@@ -54,7 +54,7 @@ class IsOddMatcher: public Matcher {
 public:
     template<class T>
     bool matches(const T& object) {
-        return object % 2 == 1;
+        return abs(object % 2) == 1;
     }
 
     void describe(Description& description) override;
