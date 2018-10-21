@@ -11,7 +11,7 @@ namespace kktest {
 
 class TestLogger {
 public:
-    explicit TestLogger(std::ostream& _stream, bool _singleTest);
+    explicit TestLogger(std::ostream& _stream);
 
     void enqueueTestForLogging(Test* test);
 
@@ -28,7 +28,6 @@ private:
 
     std::ostream& stream;
 
-    bool singleTest;
     int testsLogged = 0;
     std::set<Test*, AscendingByTestIndex> testsQueue;
 };

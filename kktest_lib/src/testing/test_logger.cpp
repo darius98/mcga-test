@@ -8,17 +8,9 @@ using namespace std;
 
 namespace kktest {
 
-TestLogger::TestLogger(ostream& _stream, bool _singleTest):
-        stream(_stream), singleTest(_singleTest) {}
+TestLogger::TestLogger(ostream& _stream): stream(_stream) {}
 
 void TestLogger::enqueueTestForLogging(Test* test) {
-    if (singleTest) {
-        if (test->isFailed()) {
-            stream << test->getFailureMessage();
-            stream.flush();
-        }
-        return;
-    }
     testsQueue.insert(test);
     while (!testsQueue.empty() &&
                 (*testsQueue.begin())->getIndex() == testsLogged + 1) {

@@ -113,10 +113,19 @@ TestingDriver::TestingDriver(const string& binaryPath):
         test->setExecuted();
     });
     if (!flagQuiet) {
-        testLogger = new TestLogger(cout, argumentTestIndex != 0);
-        executor->addAfterTestHook([this](Test* test) {
-            testLogger->enqueueTestForLogging(test);
-        });
+        if (argumentTestIndex == 0) {
+            testLogger = new TestLogger(cout);
+            executor->addAfterTestHook([this](Test* test) {
+                testLogger->enqueueTestForLogging(test);
+            });
+        } else {
+            executor->addAfterTestHook([this](Test* test) {
+                if (test->isFailed()) {
+                    cout << test->getFailureMessage();
+                    cout.flush();
+                }
+            });
+        }
     }
 }
 
