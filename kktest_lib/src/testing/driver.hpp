@@ -16,7 +16,10 @@ public:
 
     static bool isDuringTest();
 
-    static void addAfterTestHook(Executor::Hook);
+    static void addBeforeTestHook(Executor::TestHook hook);
+    static void addAfterTestHook(Executor::TestHook hook);
+    static void addBeforeGroupHook(Executor::GroupHook hook);
+    static void addAfterGroupHook(Executor::GroupHook hook);
 
     static TestingDriver* getInstance();
 

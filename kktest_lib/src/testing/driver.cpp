@@ -91,8 +91,20 @@ bool TestingDriver::isDuringTest() {
             instance->executor->isDuringTest();
 }
 
-void TestingDriver::addAfterTestHook(Executor::Hook hook) {
+void TestingDriver::addBeforeTestHook(Executor::TestHook hook) {
+    getInstance()->executor->addBeforeTestHook(move(hook));
+}
+
+void TestingDriver::addAfterTestHook(Executor::TestHook hook) {
     getInstance()->executor->addAfterTestHook(move(hook));
+}
+
+void TestingDriver::addBeforeGroupHook(Executor::GroupHook hook) {
+    getInstance()->executor->addBeforeGroupHook(move(hook));
+}
+
+void TestingDriver::addAfterGroupHook(Executor::GroupHook hook) {
+    getInstance()->executor->addAfterGroupHook(move(hook));
 }
 
 TestingDriver::TestingDriver(const string& binaryPath):
@@ -145,6 +157,7 @@ void TestingDriver::addGroup(string description,
     );
     groupStack.push_back(group);
 
+    executor->beforeGroup(group);
     try {
         func();
     } catch(const exception& e) {
@@ -157,6 +170,7 @@ void TestingDriver::addGroup(string description,
             "A non-exception object was thrown inside group'" +
             group->getFullDescription() + "'");
     }
+    executor->afterGroup(group);
 
     groupStack.pop_back();
 }

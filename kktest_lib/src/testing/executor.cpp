@@ -12,17 +12,48 @@ void Executor::executeTest(const vector<Group*>& groups,
                            Test* test,
                            Executable func) {
     if (testIndexToRun == 0 || testIndexToRun == test->getIndex()) {
+        beforeTest(test);
         execute(groups, test, func);
     }
 }
 
-void Executor::addAfterTestHook(Hook hook) {
+void Executor::addBeforeTestHook(TestHook hook) {
+    beforeTestHooks.push_back(hook);
+}
+
+void Executor::addAfterTestHook(TestHook hook) {
     afterTestHooks.push_back(hook);
 }
 
-void Executor::afterTest(Test* test) const {
-    for (const Hook& hook: afterTestHooks) {
+void Executor::addBeforeGroupHook(GroupHook hook) {
+    beforeGroupHooks.push_back(hook);
+}
+
+void Executor::addAfterGroupHook(GroupHook hook) {
+    afterGroupHooks.push_back(hook);
+}
+
+void Executor::beforeTest(Test* test) const {
+    for (const TestHook& hook: beforeTestHooks) {
         hook(test);
+    }
+}
+
+void Executor::afterTest(Test* test) const {
+    for (const TestHook& hook: afterTestHooks) {
+        hook(test);
+    }
+}
+
+void Executor::beforeGroup(Group* group) const {
+    for (const GroupHook& hook: beforeGroupHooks) {
+        hook(group);
+    }
+}
+
+void Executor::afterGroup(Group* group) const {
+    for (const GroupHook& hook: afterGroupHooks) {
+        hook(group);
     }
 }
 
