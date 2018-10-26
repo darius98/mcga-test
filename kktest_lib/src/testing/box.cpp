@@ -1,17 +1,17 @@
-#include "box_wrapper.hpp"
+#include "box.hpp"
 
 using namespace autojson;
 using namespace std;
 
 namespace kktest {
 
-BoxWrapper::BoxWrapper(string _boxId, string _binaryPath):
+Box::Box(string _boxId, string _binaryPath):
     boxId(move(_boxId)),
     binaryPath(move(_binaryPath)),
     copiedBinary(false),
     available(true) {}
 
-void BoxWrapper::run(const string& runArgs) {
+void Box::run(const string& runArgs) {
     if (!available) {
         throw runtime_error("Trying to run in un-available box!");
     }
@@ -36,7 +36,7 @@ void BoxWrapper::run(const string& runArgs) {
     }
 }
 
-bool BoxWrapper::poll() {
+bool Box::poll() {
     if (available) {
         return true;
     }
@@ -54,7 +54,7 @@ bool BoxWrapper::poll() {
     return available;
 }
 
-JSON BoxWrapper::getRunStats() const {
+JSON Box::getRunStats() const {
     if (!runStatsAvailable) {
         throw runtime_error("Asked box for run stats, "
                             "but run stats are not available!");
@@ -62,15 +62,15 @@ JSON BoxWrapper::getRunStats() const {
     return runStats;
 }
 
-string BoxWrapper::getBoxDirPath() const {
+string Box::getBoxDirPath() const {
     return "/tmp/box/" + boxId + "/box/";
 }
 
-string BoxWrapper::getMetaFilePath() const {
+string Box::getMetaFilePath() const {
     return getBoxDirPath() + "meta.json";
 }
 
-string BoxWrapper::getBoxedBinaryPath() const {
+string Box::getBoxedBinaryPath() const {
     return getBoxDirPath() + "binary";
 }
 

@@ -3,20 +3,31 @@
 
 #include <vector>
 
-#include "box_wrapper.hpp"
+#include "box.hpp"
 #include "executor.hpp"
 
 
 namespace kktest {
 
+class TestContainer {
+public:
+    TestContainer(const std::string& boxId, const std::string& binaryPath);
+
+    void runTest(Test* _test);
+
+    bool tryFinalize(std::function<void(Test*, autojson::JSON)> callback);
+
+private:
+    Box box;
+    Test* test;
+};
+
 class BoxExecutor: public Executor {
 public:
     BoxExecutor(int testIndexToRun,
-                std::string binaryPath,
+                const std::string& binaryPath,
                 int boxIdBegin,
                 int boxIdEnd);
-
-    ~BoxExecutor();
 
     bool isDuringTest() const override;
 
@@ -29,12 +40,11 @@ private:
                  Test* test,
                  Executable func) override;
 
-    int pollForEmptyBox();
+    TestContainer& findEmptyContainer();
 
-    bool tryFinalizeBox(int boxId);
+    bool tryFinalizeContainer(TestContainer& container);
 
-    std::vector<std::pair<BoxWrapper*, Test*>> boxes;
-    int currentBoxIndex = 0;
+    std::vector<TestContainer> containers;
 };
 
 }

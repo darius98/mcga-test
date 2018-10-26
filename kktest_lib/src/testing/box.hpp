@@ -1,5 +1,5 @@
-#ifndef KKTEST_TESTING_BOX_WRAPPER_H_
-#define KKTEST_TESTING_BOX_WRAPPER_H_
+#ifndef KKTEST_TESTING_BOX_H_
+#define KKTEST_TESTING_BOX_H_
 
 #include <string>
 
@@ -7,9 +7,9 @@
 
 namespace kktest {
 
-class BoxWrapper {
+class Box {
 public:
-    BoxWrapper(std::string _boxId, std::string _binaryPath);
+    Box(std::string _boxId, std::string _binaryPath);
 
     void run(const std::string& runArgs);
 
