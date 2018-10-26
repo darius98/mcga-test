@@ -45,6 +45,8 @@ public:
     std::string getDescription() const;
 
     autojson::JSON generateReport() const;
+
+    Group* getParentGroup() const;
 private:
     Group* parentGroup;
     int index;

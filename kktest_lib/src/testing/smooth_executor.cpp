@@ -28,42 +28,44 @@ void SmoothExecutor::checkIsInactive(const string& methodName) const {
 
 void SmoothExecutor::finalize() {}
 
-void SmoothExecutor::execute(const vector<Group*>& groups,
-                             Test* test,
-                             Executable func) {
-    executeSetUps(groups, test);
-    executeTest(test, func);
-    executeTearDowns(groups, test);
+void SmoothExecutor::execute(Test* test, Executable func) {
+    state = SET_UP;
+    executeSetUpsRecursively(test->getParentGroup(), test);
+    state = TEST;
+    runTest(test, func);
+    state = TEAR_DOWN;
+    executeTearDownsRecursively(test->getParentGroup(), test);
+    state = INACTIVE;
     afterTest(test);
 }
 
-void SmoothExecutor::executeSetUps(const vector<Group*>& groups, Test* test) {
-    state = SET_UP;
-    for (Group* group: groups) {
-        bool failed;
-        string failMessage;
-        try {
-            group->setUp();
-            failed = false;
-        } catch(const exception& e) {
-            failed = true;
-            failMessage = "An exception was thrown during the "
-                          "setUp of group '" + group->getFullDescription()
-                          + "': " + e.what();
-        } catch(...) {
-            failed = true;
-            failMessage = "A non-exception object was thrown during the "
-                          "setUp of group '" + group->getFullDescription() + "'.";
-        }
-        if (failed) {
-            test->setFailure(failMessage);
-        }
+void SmoothExecutor::executeSetUpsRecursively(Group* group, Test* test) {
+    if (group == nullptr) {
+        return;
     }
-    state = INACTIVE;
+    executeSetUpsRecursively(group->getParentGroup(), test);
+
+    bool failed;
+    string failMessage;
+    try {
+        group->setUp();
+        failed = false;
+    } catch(const exception& e) {
+        failed = true;
+        failMessage = "An exception was thrown during the "
+                      "setUp of group '" + group->getFullDescription()
+                      + "': " + e.what();
+    } catch(...) {
+        failed = true;
+        failMessage = "A non-exception object was thrown during the "
+                      "setUp of group '" + group->getFullDescription() + "'.";
+    }
+    if (failed) {
+        test->setFailure(failMessage);
+    }
 }
 
-void SmoothExecutor::executeTest(Test *test, Executable func) {
-    state = TEST;
+void SmoothExecutor::runTest(Test *test, Executable func) {
     try {
         func();
     } catch(const ExpectationFailed& failure) {
@@ -75,35 +77,34 @@ void SmoothExecutor::executeTest(Test *test, Executable func) {
     } catch(...) {
         test->setFailure("A non-exception object was thrown during test");
     }
-    state = INACTIVE;
 }
 
-void SmoothExecutor::executeTearDowns(const vector<Group*>& groups,
-                                      Test* test) {
-    state = TEAR_DOWN;
-    for (int i = (int)groups.size() - 1; i >= 0; -- i) {
-        Group* group = groups[i];
-        bool failed;
-        string failMessage;
-        try {
-            group->tearDown();
-            failed = false;
-        } catch(const exception& e) {
-            failed = true;
-            failMessage = "An exception was thrown during the "
-                          "tearDown of group '" + group->getFullDescription()
-                          + "': " + e.what();
-        } catch(...) {
-            failed = true;
-            failMessage = "A non-exception object was thrown during the "
-                          "tearDown of group '" + group->getFullDescription()
-                          + "'.";
-        }
-        if (failed) {
-            test->setFailure(failMessage);
-        }
+void SmoothExecutor::executeTearDownsRecursively(Group* group, Test* test) {
+    if (group == nullptr) {
+        return;
     }
-    state = INACTIVE;
+
+    bool failed;
+    string failMessage;
+    try {
+        group->tearDown();
+        failed = false;
+    } catch(const exception& e) {
+        failed = true;
+        failMessage = "An exception was thrown during the "
+                              "tearDown of group '" + group->getFullDescription()
+                      + "': " + e.what();
+    } catch(...) {
+        failed = true;
+        failMessage = "A non-exception object was thrown during the "
+                              "tearDown of group '" + group->getFullDescription()
+                      + "'.";
+    }
+    if (failed) {
+        test->setFailure(failMessage);
+    }
+
+    executeTearDownsRecursively(group->getParentGroup(), test);
 }
 
 }

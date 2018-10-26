@@ -8,12 +8,10 @@ namespace kktest {
 
 Executor::Executor(int _testIndexToRun): testIndexToRun(_testIndexToRun) {}
 
-void Executor::executeTest(const vector<Group*>& groups,
-                           Test* test,
-                           Executable func) {
+void Executor::executeTest(Test* test, Executable func) {
     if (testIndexToRun == 0 || testIndexToRun == test->getIndex()) {
         beforeTest(test);
-        execute(groups, test, func);
+        execute(test, func);
     }
 }
 

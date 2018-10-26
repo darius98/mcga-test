@@ -36,9 +36,7 @@ public:
     void finalize() override;
 
 private:
-    void execute(const std::vector<Group*>& groups,
-                 Test* test,
-                 Executable func) override;
+    void execute(Test* test, Executable func) override;
 
     TestContainer& findEmptyContainer();
 

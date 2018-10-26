@@ -93,4 +93,8 @@ JSON Test::generateReport() const {
     return report;
 }
 
+Group* Test::getParentGroup() const {
+    return parentGroup;
+}
+
 }

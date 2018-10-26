@@ -183,7 +183,7 @@ void TestingDriver::addTest(string description,
     Test* test = groupStack.back()->addTest(
         move(description), move(file), line
     );
-    executor->executeTest(groupStack, test, func);
+    executor->executeTest(test, func);
 }
 
 void TestingDriver::addSetUp(Executable func) {

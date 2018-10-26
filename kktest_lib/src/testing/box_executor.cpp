@@ -45,9 +45,7 @@ bool BoxExecutor::isDuringTest() const {
     return false;
 }
 
-void BoxExecutor::execute(const vector<Group*>& groups,
-                          Test* test,
-                          Executable func) {
+void BoxExecutor::execute(Test* test, Executable func) {
     findEmptyContainer().runTest(test);
 }
 

@@ -24,14 +24,10 @@ public:
     virtual void finalize() = 0;
 
 private:
-    virtual void execute(const std::vector<Group*>& groups,
-                         Test* test,
-                         Executable func) = 0;
+    virtual void execute(Test* test, Executable func) = 0;
 
 public:
-    void executeTest(const std::vector<Group*>& groups,
-                     Test* test,
-                     Executable func);
+    void executeTest(Test* test, Executable func);
 
     void addBeforeTestHook(TestHook hook);
     void addAfterTestHook(TestHook hook);

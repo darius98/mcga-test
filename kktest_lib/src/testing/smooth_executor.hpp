@@ -25,15 +25,13 @@ public:
     void finalize() override;
 
 private:
-    void execute(const std::vector<Group*>& groups,
-                 Test* test,
-                 Executable func) override;
+    void execute(Test* test, Executable func) override;
 
-    void executeSetUps(const std::vector<Group*>& groups, Test* test);
+    void executeSetUpsRecursively(Group* group, Test* test);
 
-    void executeTearDowns(const std::vector<Group*>& groups, Test* test);
+    void executeTearDownsRecursively(Group* group, Test* test);
 
-    void executeTest(Test* test, Executable func);
+    void runTest(Test* test, Executable func);
 
     State state;
 };
