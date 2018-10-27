@@ -1,3 +1,5 @@
+#include <cstring>
+
 #include "group.hpp"
 
 using namespace autojson;
@@ -82,6 +84,48 @@ string Group::getFullDescription() const {
                           + fullDescription;
     }
     return fullDescription;
+}
+
+int Group::getIndex() const {
+    return index;
+}
+
+size_t Group::numBytes() const {
+    if (isGlobalScope()) {
+        return 0; // we don't serialize the global scope
+    }
+    return sizeof(int)         /* parentIndex */
+         + sizeof(int)         /* index */
+         + sizeof(int)         /* line */
+         + sizeof(size_t)      /* file.size() */
+         + file.size()         /* file */
+         + sizeof(size_t)      /* description.size() */
+         + description.size()  /* description */
+         ;
+}
+
+void Group::writeBytes(uint8_t* dst) const {
+    if (isGlobalScope()) {
+        return;
+    }
+    int cursor = 0;
+    int parentIndex = parentGroup->isGlobalScope() ? 0 :
+                                                     parentGroup->getIndex();
+    size_t fileSize = file.size();
+    size_t descriptionSize = description.size();
+    memcpy(dst + cursor, &parentIndex, sizeof(int));
+    cursor += sizeof(int);
+    memcpy(dst + cursor, &index, sizeof(int));
+    cursor += sizeof(int);
+    memcpy(dst + cursor, &line, sizeof(int));
+    cursor += sizeof(int);
+    memcpy(dst + cursor, &fileSize, sizeof(size_t));
+    cursor += sizeof(size_t);
+    memcpy(dst + cursor, file.c_str(), fileSize);
+    cursor += fileSize;
+    memcpy(dst + cursor, &descriptionSize, sizeof(size_t));
+    cursor += sizeof(size_t);
+    memcpy(dst + cursor, description.c_str(), descriptionSize);
 }
 
 JSON Group::toJSON() const {

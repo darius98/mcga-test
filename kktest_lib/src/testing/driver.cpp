@@ -52,6 +52,14 @@ AddArgument(int, argumentTestIndex)
     .DefaultValue(0)
     .ImplicitValue(0);
 
+AddArgument(int, argumentPipeFD)
+    .ArgumentType("FILE DESCRIPTOR ")
+    .Name("pipe_to")
+    .Short("p")
+    .Description("A file descriptor with write access for piping the test"
+                 "results as soon as they are available.")
+    .DefaultValue(-1);
+
 
 namespace kktest {
 
@@ -139,12 +147,22 @@ TestingDriver::TestingDriver(const string& binaryPath):
             });
         }
     }
+    if (argumentPipeFD != -1) {
+        testPipe = new TestPipe(argumentPipeFD);
+        executor->addBeforeGroupHook([this](Group* group) {
+            testPipe->pipeGroup(group);
+        });
+        executor->addAfterTestHook([this](Test* test) {
+            testPipe->pipeTest(test);
+        });
+    }
 }
 
 TestingDriver::~TestingDriver() {
     delete globalScope;
     delete executor;
     delete testLogger;
+    delete testPipe;
 }
 
 void TestingDriver::addGroup(string description,

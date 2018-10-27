@@ -4,6 +4,7 @@
 #include "group.hpp"
 #include "executor.hpp"
 #include "test_logger.hpp"
+#include "test_pipe.hpp"
 
 
 namespace kktest {
@@ -50,6 +51,7 @@ private:
     std::vector<Group*> groupStack;
     Executor* executor;
     TestLogger* testLogger = nullptr;
+    TestPipe* testPipe = nullptr;
 };
 
 }

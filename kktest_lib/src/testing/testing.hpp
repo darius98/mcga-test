@@ -6,4 +6,6 @@
  */
 void testCase();
 
+int testMain(int argc, char** argv);
+
 #endif

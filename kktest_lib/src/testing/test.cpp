@@ -1,3 +1,5 @@
+#include <cstring>
+
 #include "test.hpp"
 #include "group.hpp"
 
@@ -74,6 +76,49 @@ string Test::getDescriptionPrefix() const {
 
 string Test::getDescription() const {
     return description;
+}
+
+size_t Test::numBytes() const {
+    return sizeof(int)                /* parentIndex */
+         + sizeof(int)                /* index */
+         + sizeof(int)                /* line */
+         + sizeof(size_t)             /* file.size() */
+         + file.size()                /* file */
+         + sizeof(size_t)             /* description.size() */
+         + description.size()         /* description */
+         + sizeof(bool)               /* isPassed() */
+         + sizeof(size_t)             /* failure message size */
+         + getFailureMessage().size() /* failure message */
+         ;
+}
+
+void Test::writeBytes(uint8_t* dst) const {
+    int cursor = 0;
+    int parentIndex = parentGroup->getIndex();
+    size_t fileSize = file.size();
+    size_t descriptionSize = description.size();
+    bool passed = isPassed();
+    string failureMessage = getFailureMessage();
+    size_t failureMessageSize = failureMessage.size();
+    memcpy(dst + cursor, &parentIndex, sizeof(int));
+    cursor += sizeof(int);
+    memcpy(dst + cursor, &index, sizeof(int));
+    cursor += sizeof(int);
+    memcpy(dst + cursor, &line, sizeof(int));
+    cursor += sizeof(int);
+    memcpy(dst + cursor, &fileSize, sizeof(size_t));
+    cursor += sizeof(size_t);
+    memcpy(dst + cursor, file.c_str(), fileSize);
+    cursor += fileSize;
+    memcpy(dst + cursor, &descriptionSize, sizeof(size_t));
+    cursor += sizeof(size_t);
+    memcpy(dst + cursor, description.c_str(), descriptionSize);
+    cursor += descriptionSize;
+    memcpy(dst + cursor, &passed, sizeof(bool));
+    cursor += sizeof(bool);
+    memcpy(dst + cursor, &failureMessageSize, sizeof(size_t));
+    cursor += sizeof(size_t);
+    memcpy(dst + cursor, failureMessage.c_str(), failureMessageSize);
 }
 
 JSON Test::toJSON() const {

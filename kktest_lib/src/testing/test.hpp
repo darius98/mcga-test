@@ -44,6 +44,10 @@ public:
 
     std::string getDescription() const;
 
+    std::size_t numBytes() const;
+
+    void writeBytes(uint8_t* dst) const;
+
     autojson::JSON toJSON() const;
 
     Group* getParentGroup() const;

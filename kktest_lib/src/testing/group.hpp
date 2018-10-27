@@ -43,7 +43,13 @@ public:
 
     std::string getFullDescription() const;
 
+    std::size_t numBytes() const;
+
+    void writeBytes(uint8_t* dst) const;
+
     autojson::JSON toJSON() const;
+
+    int getIndex() const;
 
     Group* getParentGroup() const;
 
