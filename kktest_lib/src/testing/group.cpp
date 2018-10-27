@@ -6,11 +6,14 @@ using namespace std;
 
 namespace kktest {
 
+int Group::globalGroupIndex = 0;
+
 Group::Group(string _description, string _file, int _line, Group* _parentGroup):
         description(move(_description)),
         file(move(_file)),
         line(_line),
-        parentGroup(_parentGroup) {}
+        parentGroup(_parentGroup),
+        index(++globalGroupIndex) {}
 
 Group::~Group() {
     for (Test* test: tests) {

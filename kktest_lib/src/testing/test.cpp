@@ -13,9 +13,8 @@ Test::Test(string _description, string _file, int _line, Group* _parentGroup):
         description(move(_description)),
         file(move(_file)),
         line(_line),
-        parentGroup(_parentGroup) {
-    index = ++globalTestIndex;
-}
+        parentGroup(_parentGroup),
+        index(++globalTestIndex) {}
 
 Test::~Test() {
     delete failure;

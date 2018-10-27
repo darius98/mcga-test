@@ -14,6 +14,9 @@
 namespace kktest {
 
 class Group {
+private:
+    static int globalGroupIndex;
+
 public:
     Group(std::string _description,
           std::string _file,
@@ -47,6 +50,8 @@ public:
     void updateWithExecutedTest(Test* test);
 private:
     Group* parentGroup;
+    int index;
+
     std::vector<Group*> subGroups;
     std::vector<Test*> tests;
 
