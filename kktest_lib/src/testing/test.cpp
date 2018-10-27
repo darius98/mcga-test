@@ -76,7 +76,7 @@ string Test::getDescription() const {
     return description;
 }
 
-JSON Test::generateReport() const {
+JSON Test::toJSON() const {
     JSON report = {
         {"description", description},
         {"file", file},

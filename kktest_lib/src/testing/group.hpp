@@ -43,7 +43,7 @@ public:
 
     std::string getFullDescription() const;
 
-    autojson::JSON generateReport() const;
+    autojson::JSON toJSON() const;
 
     Group* getParentGroup() const;
 

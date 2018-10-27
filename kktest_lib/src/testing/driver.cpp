@@ -78,7 +78,7 @@ int TestingDriver::destroy() {
     int status = driver->globalScope->getNumFailedTests();
     if (!argumentReportFileName.empty()) {
         ofstream report(argumentReportFileName);
-        report << driver->groupStack[0]->generateReport().stringify(0);
+        report << driver->groupStack[0]->toJSON().stringify(0);
         report.close();
     }
     delete driver;

@@ -84,7 +84,7 @@ string Group::getFullDescription() const {
     return fullDescription;
 }
 
-JSON Group::generateReport() const {
+JSON Group::toJSON() const {
     JSON report = {
         {"numExecutedTests", numExecutedTests},
         {"numFailedTests", numFailedTests},
@@ -97,13 +97,13 @@ JSON Group::generateReport() const {
     if (!tests.empty()) {
         report["tests"] = vector<JSON>();
         for (const auto& test: tests) {
-            report["tests"].push_back(test->generateReport());
+            report["tests"].push_back(test->toJSON());
         }
     }
     if (!subGroups.empty()) {
         report["subGroups"] = vector<JSON>();
         for (const auto& subGroup: subGroups) {
-            report["subGroups"].push_back(subGroup->generateReport());
+            report["subGroups"].push_back(subGroup->toJSON());
         }
     }
     return report;
