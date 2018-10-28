@@ -1,6 +1,8 @@
 #ifndef KKTEST_TESTING_DRIVER_H_
 #define KKTEST_TESTING_DRIVER_H_
 
+#include <JSON>
+
 #include "group.hpp"
 #include "executor.hpp"
 #include "test_logger.hpp"
@@ -22,6 +24,8 @@ public:
 
     static void addAfterInitHook(CopyableExecutable hook);
     static void addBeforeDestroyHook(CopyableExecutable hook);
+
+    static autojson::JSON toJSON();
 
 private:
     static void init(const std::string& binaryPath);

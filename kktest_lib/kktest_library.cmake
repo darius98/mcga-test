@@ -33,10 +33,11 @@ if(NOT KKTEST_THIRD_PARTY_DIR)
 endif()
 
 file(GLOB KKTestLibImpl ${KKTEST_SRC_DIR}/testing/*.cpp
+        ${KKTEST_SRC_DIR}/modules/*.cpp
+        ${KKTEST_SRC_DIR}/modules/*.hpp
         ${KKTEST_SRC_DIR}/testing/*.hpp
         ${KKTEST_SRC_DIR}/utils/filename.hpp
         ${KKTEST_SRC_DIR}/kktest)
-file(GLOB KKTestLibImpl ${KKTEST_SRC_DIR}/testing/*.cpp)
 add_library(kktest ${KKTestLibImpl})
 target_include_directories(kktest PUBLIC ${KKTEST_SRC_DIR})
 target_link_libraries(kktest autojson easyflags)

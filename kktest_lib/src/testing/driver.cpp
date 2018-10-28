@@ -7,6 +7,7 @@
 #include "driver.hpp"
 #include "smooth_executor.hpp"
 
+using namespace autojson;
 using namespace easyflags;
 using namespace std;
 
@@ -17,13 +18,6 @@ AddArgument(int, flagQuiet)
     .Description("Disable STDOUT logging for this test run")
     .DefaultValue(0)
     .ImplicitValue(1);
-AddArgument(string, argumentReportFileName)
-    .Name("report")
-    .Short("r")
-    .ArgumentType("FILE ")
-    .Description("Generate a JSON test report at the end of running the tests")
-    .DefaultValue("")
-    .ImplicitValue("./report.json");
 
 AddArgument(int, flagBoxed)
     .ArgumentType("0|1 ")
@@ -92,6 +86,10 @@ void TestingDriver::addBeforeDestroyHook(CopyableExecutable hook) {
     getInstance()->beforeDestroyHooks.push_back(hook);
 }
 
+JSON TestingDriver::toJSON() {
+    return getInstance()->globalScope->toJSON();
+}
+
 TestingDriver* TestingDriver::instance = nullptr;
 
 TestingDriver* TestingDriver::getInstance() {
@@ -116,11 +114,6 @@ int TestingDriver::destroy() {
         hook();
     }
     int status = driver->globalScope->getNumFailedTests();
-    if (!argumentReportFileName.empty()) {
-        ofstream report(argumentReportFileName);
-        report << driver->globalScope->toJSON().stringify(0);
-        report.close();
-    }
     delete driver;
     instance = nullptr;
     return status;
