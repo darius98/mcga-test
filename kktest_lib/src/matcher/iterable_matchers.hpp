@@ -2,7 +2,7 @@
 #define KKTEST_MATCHER_ITERABLE_MATCHERS_H_
 
 #include "comparison_matchers.hpp"
-#include "matcher.hpp"
+#include <core/matcher.hpp>
 
 
 namespace kktest {

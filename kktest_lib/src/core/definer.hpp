@@ -4,7 +4,7 @@
 #include <string>
 
 #include "executable.hpp"
-
+#include "matcher.hpp"
 
 namespace kktest {
 
@@ -49,7 +49,27 @@ class ExpectDefiner: public Definer {
 public:
     using Definer::Definer;
 
-    virtual void operator()(const bool& result, const std::string& expr);
+    void operator()(const bool& result, const std::string& expr);
+
+    template<class T, class M, class... Args, IS_MATCHER(M)>
+    void operator()(const T& object, M* matcher, const Args... args) {
+        checkDuringTest();
+        if (matcher->matches(object)) {
+            return;
+        }
+        auto description = Description::createForExpect(file, line, "");
+        (*description) << "\n\tExpected ";
+        matcher->describe(*description);
+        (*description) << ".\n\tGot '" << object << "'.\n\tWhich is ";
+        matcher->describeMismatch(*description);
+        (*description) << ".";
+        throwExpectationFailed(description);
+    }
+
+private:
+    void throwExpectationFailed(Description* description);
+
+    void checkDuringTest();
 };
 
 }

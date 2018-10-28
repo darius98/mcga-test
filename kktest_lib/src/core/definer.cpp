@@ -25,14 +25,24 @@ void TearDownDefiner::operator()(Executable func) {
 }
 
 void ExpectDefiner::operator()(const bool& exprResult, const string& expr) {
+    checkDuringTest();
+    if (!exprResult) {
+        throw ExpectationFailed(file + ":" + to_string(line) + ": " + expr);
+    }
+}
+
+void ExpectDefiner::throwExpectationFailed(Description* description) {
+    string stringDescription = description->toString();
+    delete description;
+    throw ExpectationFailed(stringDescription);
+}
+
+void ExpectDefiner::checkDuringTest() {
     if (!TestingDriver::isDuringTest()) {
         throw runtime_error(
             file + ":" + to_string(line) + ": "
             "'expect' can only be called inside tests!"
         );
-    }
-    if (!exprResult) {
-        throw ExpectationFailed(file + ":" + to_string(line) + ": " + expr);
     }
 }
 

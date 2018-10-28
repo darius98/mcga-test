@@ -63,9 +63,6 @@
  */
 #define tearDown kktest::TearDownDefiner(__FILENAME__, __LINE__)
 
-#ifndef KKTEST_EXPECT_DEFINED
-#define KKTEST_EXPECT_DEFINED
-
 /**
  * Assertion macro.
  *
@@ -81,7 +78,5 @@
  */
 #define failTest(...) kktest::ExpectDefiner(__FILENAME__, __LINE__)            \
                                            (false, __VA_ARGS__)
-
-#endif // KKTEST_EXPECT_DEFINED
 
 #endif

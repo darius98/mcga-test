@@ -1,5 +1,4 @@
-#include <core/driver.hpp>
-
+#include "driver.hpp"
 #include "matcher.hpp"
 
 using namespace kktest;
@@ -12,12 +11,6 @@ void* Matcher::operator new(size_t size) noexcept {
     void* p = malloc(size);
     if (TestingDriver::isDuringTest()) {
         matchersAllocatedDuringTests.insert(p);
-        if (!hookedInTestingDriver) {
-            TestingDriver::addAfterTestHook([](Test*) {
-                cleanupMatchersCreatedDuringTests();
-            });
-            hookedInTestingDriver = true;
-        }
     }
     return p;
 }
@@ -35,6 +28,5 @@ void Matcher::cleanupMatchersCreatedDuringTests() {
 }
 
 set<void*> Matcher::matchersAllocatedDuringTests;
-bool Matcher::hookedInTestingDriver = false;
 
 }

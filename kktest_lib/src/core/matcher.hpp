@@ -1,5 +1,5 @@
-#ifndef KKTEST_MATCHER_MATCHER_H_
-#define KKTEST_MATCHER_MATCHER_H_
+#ifndef KKTEST_CORE_MATCHER_H_
+#define KKTEST_CORE_MATCHER_H_
 
 #include "description.hpp"
 
@@ -18,7 +18,6 @@ namespace kktest {
  * it wishes to support (we cannot define a pure-virtual template method inside
  * this interface).
  */
-
 class Matcher {
 public:
     void* operator new(std::size_t size) noexcept;
@@ -48,7 +47,7 @@ private:
 
     static std::set<void*> matchersAllocatedDuringTests;
 
-    static bool hookedInTestingDriver;
+friend class MatcherModule;
 };
 
 template<class T, class>

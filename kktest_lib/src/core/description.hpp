@@ -1,5 +1,5 @@
-#ifndef KKTEST_MATCHER_DESCRIPTION_H_
-#define KKTEST_MATCHER_DESCRIPTION_H_
+#ifndef KKTEST_CORE_DESCRIPTION_H_
+#define KKTEST_CORE_DESCRIPTION_H_
 
 #include <sstream>
 #include <string>

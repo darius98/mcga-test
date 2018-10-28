@@ -4,4 +4,13 @@
 #include <core/macros.hpp>
 #include <core/testing.hpp>
 
+#include <matcher/comparison_matchers.hpp>
+#include <matcher/composite_matchers.hpp>
+#include <matcher/functional_matchers.hpp>
+#include <matcher/iterable_matchers.hpp>
+#include <matcher/numeric_matchers.hpp>
+#include <matcher/pointer_matchers.hpp>
+#include <matcher/string_matchers.hpp>
+#include <matcher/truth_matcher.hpp>
+
 #endif

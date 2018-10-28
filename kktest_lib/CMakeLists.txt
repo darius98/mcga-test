@@ -21,7 +21,7 @@ endif()
 
 add_executable(concept_std_vector_test concept/std_vector_test.cpp)
 install(TARGETS concept_std_vector_test DESTINATION concept_std_vector_test)
-target_link_libraries(concept_std_vector_test kktest kktest_matchers)
+target_link_libraries(concept_std_vector_test kktest)
 
 function(wiki_example FILE_NAME)
     set(T wiki_example_${FILE_NAME})

@@ -33,31 +33,16 @@ if(NOT KKTEST_THIRD_PARTY_DIR)
 endif()
 
 file(GLOB KKTestLibImpl
-        ${KKTEST_SRC_DIR}/core/*.cpp
-        ${KKTEST_SRC_DIR}/core/*.hpp
-        ${KKTEST_SRC_DIR}/core/**/*.cpp
-        ${KKTEST_SRC_DIR}/core/**/*.hpp
-        ${KKTEST_SRC_DIR}/modules/*.cpp
-        ${KKTEST_SRC_DIR}/modules/*.hpp
-        ${KKTEST_SRC_DIR}/modules/**/*.cpp
-        ${KKTEST_SRC_DIR}/modules/**/*.hpp
-        ${KKTEST_SRC_DIR}/utils/filename.hpp
-        ${KKTEST_SRC_DIR}/kktest)
+        ${KKTEST_SRC_DIR}/*.cpp
+        ${KKTEST_SRC_DIR}/*.hpp
+        ${KKTEST_SRC_DIR}/*/*.cpp
+        ${KKTEST_SRC_DIR}/*/*.hpp
+        ${KKTEST_SRC_DIR}/*/*/*.cpp
+        ${KKTEST_SRC_DIR}/*/*/*.hpp
+    )
 add_library(kktest ${KKTestLibImpl})
 target_include_directories(kktest PUBLIC ${KKTEST_SRC_DIR})
 target_link_libraries(kktest autojson easyflags)
-
-file(GLOB KKTestMatchersLibImpl
-        ${KKTEST_SRC_DIR}/matcher/*.cpp
-        ${KKTEST_SRC_DIR}/matcher/*.hpp
-        ${KKTEST_SRC_DIR}/matcher/**/*.cpp
-        ${KKTEST_SRC_DIR}/matcher/**/*.hpp
-        ${KKTEST_SRC_DIR}/utils/filename.hpp
-        ${KKTEST_SRC_DIR}/utils/streamer.hpp
-        ${KKTEST_SRC_DIR}/kktest_matchers)
-add_library(kktest_matchers ${KKTestMatchersLibImpl})
-target_include_directories(kktest_matchers PUBLIC ${KKTEST_SRC_DIR})
-target_link_libraries(kktest_matchers kktest)
 
 function(testcase TEST_NAME FILE_NAME)
     if (NOT TESTS_PATH)
@@ -82,8 +67,4 @@ function(testcase TEST_NAME FILE_NAME)
     target_link_libraries(${TEST_NAME} kktest ${LIB_LIST})
 
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PREV_CMAKE_RUNTIME_OUTPUT_DIRECTORY})
-endfunction()
-
-function(matcher_testcase TEST_NAME FILE_NAME)
-    testcase(${TEST_NAME} ${FILE_NAME} kktest_matchers ${ARGN})
 endfunction()
