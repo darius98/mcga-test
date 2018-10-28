@@ -2,15 +2,15 @@
 #include <iostream>
 #include <unistd.h>
 
-#include "test_logger.hpp"
+#include "logger.hpp"
 
 using namespace std;
 
 namespace kktest {
 
-TestLogger::TestLogger(ostream& _stream): stream(_stream) {}
+Logger::Logger(ostream& _stream): stream(_stream) {}
 
-void TestLogger::enqueueTestForLogging(Test* test) {
+void Logger::enqueueTestForLogging(Test* test) {
     testsQueue.insert(test);
     while (!testsQueue.empty() &&
                 (*testsQueue.begin())->getIndex() == testsLogged + 1) {
@@ -20,11 +20,11 @@ void TestLogger::enqueueTestForLogging(Test* test) {
     }
 }
 
-bool TestLogger::isInTerminal() const {
+bool Logger::isInTerminal() const {
     return stream.rdbuf() == cout.rdbuf() && isatty(fileno(stdout)) != 0;
 }
 
-void TestLogger::modifyOutput(const int& code) {
+void Logger::modifyOutput(const int& code) {
     if (!isInTerminal()) {
         return;
     }
@@ -32,7 +32,7 @@ void TestLogger::modifyOutput(const int& code) {
     stream << output.c_str();
 }
 
-void TestLogger::logTest(Test *test) {
+void Logger::logTest(Test *test) {
     modifyOutput(90);
     stream << test->getDescriptionPrefix();
     modifyOutput(0);
@@ -58,7 +58,7 @@ void TestLogger::logTest(Test *test) {
     stream.flush();
 }
 
-bool TestLogger::AscendingByTestIndex::operator()(Test* a, Test* b) const {
+bool Logger::AscendingByTestIndex::operator()(Test* a, Test* b) const {
     return a->getIndex() < b->getIndex();
 }
 

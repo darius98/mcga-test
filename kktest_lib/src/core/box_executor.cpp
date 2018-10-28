@@ -15,7 +15,7 @@ TestContainer::TestContainer(const string& boxId, const string& binaryPath):
 
 void TestContainer::runTest(Test* _test) {
     test = _test;
-    box.run("-t " + to_string(test->getIndex()));
+    box.run("-qt " + to_string(test->getIndex()));
 }
 
 bool TestContainer::tryFinalize(function<void(Test*, JSON)> callback) {

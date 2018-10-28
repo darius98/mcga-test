@@ -1,17 +1,17 @@
-#ifndef KKTEST_CORE_TEST_LOGGER_H_
-#define KKTEST_CORE_TEST_LOGGER_H_
+#ifndef KKTEST_MODULES_LOGGING_MODULE_LOGGER_H_
+#define KKTEST_MODULES_LOGGING_MODULE_LOGGER_H_
 
 #include <ostream>
 #include <set>
 
-#include "test.hpp"
+#include <core/test.hpp>
 
 
 namespace kktest {
 
-class TestLogger {
+class Logger {
 public:
-    explicit TestLogger(std::ostream& _stream);
+    explicit Logger(std::ostream& _stream);
 
     void enqueueTestForLogging(Test* test);
 
