@@ -1,5 +1,5 @@
-#ifndef KKTEST_TESTING_TESTING_H_
-#define KKTEST_TESTING_TESTING_H_
+#ifndef KKTEST_CORE_CORE_H_
+#define KKTEST_CORE_CORE_H_
 
 namespace kktest {
 

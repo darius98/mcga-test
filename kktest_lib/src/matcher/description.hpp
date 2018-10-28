@@ -25,6 +25,7 @@ public:
     template<class T>
     Description& appendType() {
         utils::Streamer<T>::sendType(stream);
+        return *this;
     }
 
     std::string toString() const;

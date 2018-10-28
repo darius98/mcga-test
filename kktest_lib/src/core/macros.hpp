@@ -1,5 +1,5 @@
-#ifndef KKTEST_TESTING_MACROS_H_
-#define KKTEST_TESTING_MACROS_H_
+#ifndef KKTEST_CORE_MACROS_H_
+#define KKTEST_CORE_MACROS_H_
 
 #include <utils/filename.hpp>
 

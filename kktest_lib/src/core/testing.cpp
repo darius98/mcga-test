@@ -2,7 +2,7 @@
 
 #include <EasyFlags.hpp>
 
-#include <modules/report_module.hpp>
+#include <modules/report_module/report_module.hpp>
 #include "driver.hpp"
 #include "testing.hpp"
 

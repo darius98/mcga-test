@@ -1,5 +1,5 @@
-#ifndef KKTEST_TESTING_TEST_PIPE_H_
-#define KKTEST_TESTING_TEST_PIPE_H_
+#ifndef KKTEST_CORE_TEST_PIPE_H_
+#define KKTEST_CORE_TEST_PIPE_H_
 
 #include "group.hpp"
 #include "test.hpp"

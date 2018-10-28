@@ -1,7 +1,7 @@
 #ifndef KKTEST_KKTEST_H_
 #define KKTEST_KKTEST_H_
 
-#include <testing/macros.hpp>
-#include <testing/testing.hpp>
+#include <core/macros.hpp>
+#include <core/testing.hpp>
 
 #endif

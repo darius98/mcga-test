@@ -1,5 +1,5 @@
-#ifndef KKTEST_TESTING_TEST_LOGGER_H_
-#define KKTEST_TESTING_TEST_LOGGER_H_
+#ifndef KKTEST_CORE_TEST_LOGGER_H_
+#define KKTEST_CORE_TEST_LOGGER_H_
 
 #include <ostream>
 #include <set>

@@ -1,5 +1,5 @@
-#ifndef KKTEST_TESTING_DRIVER_H_
-#define KKTEST_TESTING_DRIVER_H_
+#ifndef KKTEST_CORE_DRIVER_H_
+#define KKTEST_CORE_DRIVER_H_
 
 #include <JSON>
 

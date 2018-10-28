@@ -1,5 +1,5 @@
-#ifndef KKTEST_TESTING_EXECUTOR_H_
-#define KKTEST_TESTING_EXECUTOR_H_
+#ifndef KKTEST_CORE_EXECUTOR_H_
+#define KKTEST_CORE_EXECUTOR_H_
 
 #include <set>
 

@@ -1,5 +1,5 @@
-#ifndef KKTEST_TESTING_DEFINER_H_
-#define KKTEST_TESTING_DEFINER_H_
+#ifndef KKTEST_CORE_DEFINER_H_
+#define KKTEST_CORE_DEFINER_H_
 
 #include <string>
 

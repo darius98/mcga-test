@@ -1,7 +1,7 @@
-#ifndef KKTEST_MODULES_REPORT_MODULE_H_
-#define KKTEST_MODULES_REPORT_MODULE_H_
+#ifndef KKTEST_MODULES_REPORT_MODULE_REPORT_MODULE_H_
+#define KKTEST_MODULES_REPORT_MODULE_REPORT_MODULE_H_
 
-#include <testing/module.hpp>
+#include <core/module.hpp>
 
 
 namespace kktest {

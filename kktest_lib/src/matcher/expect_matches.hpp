@@ -1,7 +1,7 @@
 #ifndef KKTEST_MATCHER_EXPECT_MATCHES_H_
 #define KKTEST_MATCHER_EXPECT_MATCHES_H_
 
-#include <testing/definer.hpp>
+#include <core/definer.hpp>
 #include <utils/filename.hpp>
 
 #include "matcher.hpp"

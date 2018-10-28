@@ -32,21 +32,29 @@ if(NOT KKTEST_THIRD_PARTY_DIR)
     set(KKTEST_THIRD_PARTY_DIR "${KKTEST_DIR}/third_party")
 endif()
 
-file(GLOB KKTestLibImpl ${KKTEST_SRC_DIR}/testing/*.cpp
+file(GLOB KKTestLibImpl
+        ${KKTEST_SRC_DIR}/core/*.cpp
+        ${KKTEST_SRC_DIR}/core/*.hpp
+        ${KKTEST_SRC_DIR}/core/**/*.cpp
+        ${KKTEST_SRC_DIR}/core/**/*.hpp
         ${KKTEST_SRC_DIR}/modules/*.cpp
         ${KKTEST_SRC_DIR}/modules/*.hpp
-        ${KKTEST_SRC_DIR}/testing/*.hpp
+        ${KKTEST_SRC_DIR}/modules/**/*.cpp
+        ${KKTEST_SRC_DIR}/modules/**/*.hpp
         ${KKTEST_SRC_DIR}/utils/filename.hpp
         ${KKTEST_SRC_DIR}/kktest)
 add_library(kktest ${KKTestLibImpl})
 target_include_directories(kktest PUBLIC ${KKTEST_SRC_DIR})
 target_link_libraries(kktest autojson easyflags)
 
-file(GLOB KKTestMatchersLibImpl ${KKTEST_SRC_DIR}/matcher/*.cpp
-                                ${KKTEST_SRC_DIR}/matcher/*.hpp
-                                ${KKTEST_SRC_DIR}/utils/filename.hpp
-                                ${KKTEST_SRC_DIR}/utils/streamer.hpp
-                                ${KKTEST_SRC_DIR}/kktest_matchers)
+file(GLOB KKTestMatchersLibImpl
+        ${KKTEST_SRC_DIR}/matcher/*.cpp
+        ${KKTEST_SRC_DIR}/matcher/*.hpp
+        ${KKTEST_SRC_DIR}/matcher/**/*.cpp
+        ${KKTEST_SRC_DIR}/matcher/**/*.hpp
+        ${KKTEST_SRC_DIR}/utils/filename.hpp
+        ${KKTEST_SRC_DIR}/utils/streamer.hpp
+        ${KKTEST_SRC_DIR}/kktest_matchers)
 add_library(kktest_matchers ${KKTestMatchersLibImpl})
 target_include_directories(kktest_matchers PUBLIC ${KKTEST_SRC_DIR})
 target_link_libraries(kktest_matchers kktest)

@@ -1,5 +1,5 @@
-#ifndef KKTEST_TESTING_GROUP_H_
-#define KKTEST_TESTING_GROUP_H_
+#ifndef KKTEST_CORE_GROUP_H_
+#define KKTEST_CORE_GROUP_H_
 
 #include <functional>
 #include <string>
