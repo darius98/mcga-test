@@ -5,7 +5,6 @@
 
 #include "group.hpp"
 #include "executor.hpp"
-#include "test_pipe.hpp"
 #include "testing.hpp"
 #include "definer.hpp"
 
@@ -56,7 +55,6 @@ private:
     Group* globalScope;
     std::vector<Group*> groupStack;
     Executor* executor;
-    TestPipe* testPipe = nullptr;
 
 friend int testMain(int argc, char** argv);
 friend class Definer;

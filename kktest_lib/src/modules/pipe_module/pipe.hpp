@@ -1,14 +1,14 @@
-#ifndef KKTEST_CORE_TEST_PIPE_H_
-#define KKTEST_CORE_TEST_PIPE_H_
+#ifndef KKTEST_MODULES_PIPE_MODULE_PIPE_H_
+#define KKTEST_MODULES_PIPE_MODULE_PIPE_H_
 
-#include "group.hpp"
-#include "test.hpp"
+#include <core/group.hpp>
+#include <core/test.hpp>
 
 namespace kktest {
 
-class TestPipe {
+class Pipe {
 public:
-    explicit TestPipe(const int& _outputFD);
+    explicit Pipe(const int& _outputFD);
 
     void pipeTest(Test* test) const;
 

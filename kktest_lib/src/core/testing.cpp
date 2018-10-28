@@ -4,6 +4,7 @@
 
 #include <modules/report_module/report_module.hpp>
 #include <modules/logging_module/logging_module.hpp>
+#include <modules/pipe_module/pipe_module.hpp>
 #include "driver.hpp"
 #include "testing.hpp"
 
@@ -18,7 +19,8 @@ int testMain(int argc, char** argv) {
     //TODO: Make a generic configureModules method/class/unit.
     vector<Module*> modules = {
         new ReportModule(),
-        new LoggingModule()
+        new LoggingModule(),
+        new PipeModule(),
     };
     for (Module* module: modules) {
         if (module->isEnabled()) {
