@@ -63,6 +63,35 @@ AddArgument(int, argumentPipeFD)
 
 namespace kktest {
 
+bool TestingDriver::isDuringTest() {
+    return instance != nullptr &&
+            instance->executor->isDuringTest();
+}
+
+void TestingDriver::addBeforeTestHook(Executor::TestHook hook) {
+    getInstance()->executor->addBeforeTestHook(move(hook));
+}
+
+void TestingDriver::addAfterTestHook(Executor::TestHook hook) {
+    getInstance()->executor->addAfterTestHook(move(hook));
+}
+
+void TestingDriver::addBeforeGroupHook(Executor::GroupHook hook) {
+    getInstance()->executor->addBeforeGroupHook(move(hook));
+}
+
+void TestingDriver::addAfterGroupHook(Executor::GroupHook hook) {
+    getInstance()->executor->addAfterGroupHook(move(hook));
+}
+
+void TestingDriver::addAfterInitHook(CopyableExecutable hook) {
+    getInstance()->afterInitHooks.push_back(hook);
+}
+
+void TestingDriver::addBeforeDestroyHook(CopyableExecutable hook) {
+    getInstance()->beforeDestroyHooks.push_back(hook);
+}
+
 TestingDriver* TestingDriver::instance = nullptr;
 
 TestingDriver* TestingDriver::getInstance() {
@@ -83,36 +112,18 @@ void TestingDriver::init(const string &binaryPath) {
 int TestingDriver::destroy() {
     TestingDriver* driver = getInstance();
     driver->executor->finalize();
+    for (CopyableExecutable hook: driver->beforeDestroyHooks) {
+        hook();
+    }
     int status = driver->globalScope->getNumFailedTests();
     if (!argumentReportFileName.empty()) {
         ofstream report(argumentReportFileName);
-        report << driver->groupStack[0]->toJSON().stringify(0);
+        report << driver->globalScope->toJSON().stringify(0);
         report.close();
     }
     delete driver;
     instance = nullptr;
     return status;
-}
-
-bool TestingDriver::isDuringTest() {
-    return instance != nullptr &&
-            instance->executor->isDuringTest();
-}
-
-void TestingDriver::addBeforeTestHook(Executor::TestHook hook) {
-    getInstance()->executor->addBeforeTestHook(move(hook));
-}
-
-void TestingDriver::addAfterTestHook(Executor::TestHook hook) {
-    getInstance()->executor->addAfterTestHook(move(hook));
-}
-
-void TestingDriver::addBeforeGroupHook(Executor::GroupHook hook) {
-    getInstance()->executor->addBeforeGroupHook(move(hook));
-}
-
-void TestingDriver::addAfterGroupHook(Executor::GroupHook hook) {
-    getInstance()->executor->addAfterGroupHook(move(hook));
 }
 
 TestingDriver::TestingDriver(const string& binaryPath):

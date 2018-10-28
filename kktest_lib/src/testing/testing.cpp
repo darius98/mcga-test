@@ -3,20 +3,23 @@
 #include "driver.hpp"
 #include "testing.hpp"
 
-using namespace easyflags;
-using namespace kktest;
-using namespace std;
+namespace kktest {
 
 int testMain(int argc, char** argv) {
-    ParseEasyFlags(argc, argv);
+    easyflags::ParseEasyFlags(argc, argv);
     TestingDriver::init(argv[0]);
+    for (auto hook: TestingDriver::getInstance()->afterInitHooks) {
+        hook();
+    }
 
     testCase();
 
     return TestingDriver::destroy();
 }
 
+}
+
 // TODO: Move this somewhere else.
 int main(int argc, char** argv) {
-    return testMain(argc, argv);
+    return kktest::testMain(argc, argv);
 }

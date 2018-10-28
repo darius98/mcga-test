@@ -5,16 +5,14 @@
 #include "executor.hpp"
 #include "test_logger.hpp"
 #include "test_pipe.hpp"
+#include "testing.hpp"
+#include "definer.hpp"
 
 
 namespace kktest {
 
 class TestingDriver {
 public:
-    static void init(const std::string& binaryPath);
-
-    static int destroy();
-
     static bool isDuringTest();
 
     static void addBeforeTestHook(Executor::TestHook hook);
@@ -22,14 +20,18 @@ public:
     static void addBeforeGroupHook(Executor::GroupHook hook);
     static void addAfterGroupHook(Executor::GroupHook hook);
 
-    static TestingDriver* getInstance();
+    static void addAfterInitHook(CopyableExecutable hook);
+    static void addBeforeDestroyHook(CopyableExecutable hook);
 
 private:
+    static void init(const std::string& binaryPath);
+    static int destroy();
+
+    static TestingDriver* getInstance();
     static TestingDriver* instance;
 
     explicit TestingDriver(const std::string& binaryPath);
 
-public:
     ~TestingDriver();
 
     void addGroup(std::string description,
@@ -46,12 +48,21 @@ public:
 
     void addTearDown(Executable func);
 
-private:
+    std::vector<CopyableExecutable> afterInitHooks;
+    std::vector<CopyableExecutable> beforeDestroyHooks;
     Group* globalScope;
     std::vector<Group*> groupStack;
     Executor* executor;
     TestLogger* testLogger = nullptr;
     TestPipe* testPipe = nullptr;
+
+friend int testMain(int argc, char** argv);
+friend class Definer;
+friend class TestDefiner;
+friend class GroupDefiner;
+friend class SetUpDefiner;
+friend class TearDownDefiner;
+friend class ExpectDefiner;
 };
 
 }
