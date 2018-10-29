@@ -57,18 +57,17 @@ public:
         if (matcher->matches(object)) {
             return;
         }
-        auto description = Description::createForExpect(
-                file, line, "\n\tExpected "
-        );
-        matcher->describe(*description);
-        (*description) << ".\n\tGot '" << object << "'.\n\tWhich is ";
-        matcher->describeMismatch(*description);
-        (*description) << ".";
-        throwExpectationFailed(description);
+        Description description;
+        description << file << ":" << line << ":\n\tExpected ";
+        matcher->describe(description);
+        description << ".\n\tGot '" << object << "'.\n\tWhich is ";
+        matcher->describeMismatch(description);
+        description << ".";
+        throwExpectationFailed(description.toString());
     }
 
 private:
-    void throwExpectationFailed(Description* description);
+    void throwExpectationFailed(const std::string& message);
 
     void checkDuringTest();
 };

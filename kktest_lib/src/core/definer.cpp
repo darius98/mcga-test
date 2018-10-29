@@ -31,10 +31,8 @@ void ExpectDefiner::operator()(const bool& exprResult, const string& expr) {
     }
 }
 
-void ExpectDefiner::throwExpectationFailed(Description* description) {
-    string stringDescription = description->toString();
-    delete description;
-    throw ExpectationFailed(stringDescription);
+void ExpectDefiner::throwExpectationFailed(const string& message) {
+    throw ExpectationFailed(message);
 }
 
 void ExpectDefiner::checkDuringTest() {
