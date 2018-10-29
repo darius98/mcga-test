@@ -9,11 +9,11 @@ namespace kktest {
 
 class LoggingModule: public Module {
 public:
-    ~LoggingModule() override;
-
     bool isEnabled() const override;
 
     void install() override;
+
+    void uninstall() override;
 
 private:
     Logger* logger = nullptr;

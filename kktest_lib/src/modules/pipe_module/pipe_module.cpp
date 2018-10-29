@@ -16,10 +16,6 @@ AddArgument(int, argumentPipeFD)
 
 namespace kktest {
 
-PipeModule::~PipeModule() {
-    delete pipe;
-}
-
 bool PipeModule::isEnabled() const {
     return argumentPipeFD != -1;
 }
@@ -32,6 +28,10 @@ void PipeModule::install() {
     TestingDriver::addAfterTestHook([this](Test* test) {
         pipe->pipeTest(test);
     });
+}
+
+void PipeModule::uninstall() {
+    delete pipe;
 }
 
 }

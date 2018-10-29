@@ -18,10 +18,6 @@ AddArgument(int, flagQuiet)
 
 namespace kktest {
 
-LoggingModule::~LoggingModule() {
-    delete logger;
-}
-
 bool LoggingModule::isEnabled() const {
     return !flagQuiet;
 }
@@ -31,6 +27,10 @@ void LoggingModule::install() {
     TestingDriver::addAfterTestHook([this](Test* test) {
         logger->enqueueTestForLogging(test);
     });
+}
+
+void LoggingModule::uninstall() {
+    delete logger;
 }
 
 }

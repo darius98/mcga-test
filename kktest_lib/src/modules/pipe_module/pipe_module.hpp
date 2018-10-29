@@ -9,11 +9,11 @@ namespace kktest {
 
 class PipeModule: public Module {
 public:
-    ~PipeModule() override;
-
     bool isEnabled() const override;
 
     void install() override;
+
+    void uninstall() override;
 
 private:
     Pipe* pipe = nullptr;

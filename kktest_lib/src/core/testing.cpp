@@ -28,7 +28,11 @@ int main(int argc, char** argv) {
     testCase();
     int retCode = TestingDriver::destroy();
 
+
     for (Module* module: modules) {
+        if (module->isEnabled()) {
+            module->uninstall();
+        }
         delete module;
     }
 

@@ -7,8 +7,6 @@ namespace kktest {
 
 class MatcherModule: public Module {
 public:
-    bool isEnabled() const override;
-
     void install() override;
 };
 
