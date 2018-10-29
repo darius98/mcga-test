@@ -1,15 +1,49 @@
 #include <iostream>
 
+#include <EasyFlags.hpp>
+
 #include "executor.hpp"
 
 using namespace std;
 
+AddArgument(int, argumentTestIndex)
+    .ArgumentType("int ")
+    .Name("test")
+    .Short("t")
+    .Description("Index of the test to run (defaults to 0 - run all tests).")
+    .DefaultValue(0)
+    .ImplicitValue(0);
+
 namespace kktest {
 
-Executor::Executor(int _testIndexToRun): testIndexToRun(_testIndexToRun) {}
+Executor::Executor() {
+    if (argumentTestIndex != 0) {
+        addAfterTestHook([this](Test *test) {
+            if (test->isFailed()) {
+                cout << test->getFailureMessage();
+                cout.flush();
+            }
+        });
+    }
+}
+
+void Executor::copyHooks(Executor* other) {
+    for (const TestHook& hook: other->beforeTestHooks) {
+        addBeforeTestHook(hook);
+    }
+    for (const TestHook& hook: other->afterTestHooks) {
+        addAfterTestHook(hook);
+    }
+    for (const GroupHook& hook: other->beforeGroupHooks) {
+        addBeforeGroupHook(hook);
+    }
+    for (const GroupHook& hook: other->afterGroupHooks) {
+        addAfterGroupHook(hook);
+    }
+}
 
 void Executor::executeTest(Test* test, Executable func) {
-    if (testIndexToRun == 0 || testIndexToRun == test->getIndex()) {
+    if (argumentTestIndex == 0 || argumentTestIndex == test->getIndex()) {
         beforeTest(test);
         execute(test, func);
     }

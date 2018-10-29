@@ -3,7 +3,7 @@
 
 #include <EasyFlags.hpp>
 
-#include "box_executor.hpp"
+#include "modules/box_module/box_executor.hpp"
 #include "driver.hpp"
 #include "smooth_executor.hpp"
 
@@ -11,38 +11,21 @@ using namespace autojson;
 using namespace easyflags;
 using namespace std;
 
-AddArgument(int, flagBoxed)
-    .ArgumentType("0|1 ")
-    .Name("boxed")
-    .Short("b")
-    .Description("Run the tests boxed (requires sudo + box installed)")
-    .DefaultValue(0)
-    .ImplicitValue(1);
-AddArgument(int, argumentFirstBox)
-    .ArgumentType("int")
-    .Name("first_box")
-    .Description("The index of the first box to use while running boxed")
-    .DefaultValue("0");
-AddArgument(int, argumentNumBoxes)
-    .ArgumentType("int")
-    .Name("num_boxes")
-    .Description("Number of boxes to use while running boxed "
-                 "(consecutive ids, starting from first_box)")
-    .DefaultValue("10");
-
-AddArgument(int, argumentTestIndex)
-    .ArgumentType("int ")
-    .Name("test")
-    .Short("t")
-    .Description("Index of the test to run (defaults to 0 - run all tests).")
-    .DefaultValue(0)
-    .ImplicitValue(0);
-
 
 namespace kktest {
 
+string TestingDriver::getBinaryPath() {
+    return getInstance()->binaryPath;
+}
+
 bool TestingDriver::isDuringTest() {
     return instance != nullptr && instance->executor->isDuringTest();
+}
+
+void TestingDriver::setExecutor(Executor* executor) {
+    executor->copyHooks(getInstance()->executor);
+    delete getInstance()->executor;
+    getInstance()->executor = executor;
 }
 
 void TestingDriver::addBeforeTestHook(Executor::TestHook hook) {
@@ -93,7 +76,7 @@ void TestingDriver::init(const string &binaryPath) {
 int TestingDriver::destroy() {
     TestingDriver* driver = getInstance();
     driver->executor->finalize();
-    for (CopyableExecutable hook: driver->beforeDestroyHooks) {
+    for (Executable hook: driver->beforeDestroyHooks) {
         hook();
     }
     int status = driver->globalScope->getNumFailedTests();
@@ -102,30 +85,14 @@ int TestingDriver::destroy() {
     return status;
 }
 
-TestingDriver::TestingDriver(const string& binaryPath):
+TestingDriver::TestingDriver(const string& _binaryPath):
+        binaryPath(_binaryPath),
         globalScope(new Group("", "", 0, nullptr)),
-        groupStack({globalScope}) {
-    if (flagBoxed) {
-        executor = new BoxExecutor(
-            argumentTestIndex,
-            binaryPath,
-            argumentFirstBox,
-            argumentFirstBox + argumentNumBoxes
-        );
-    } else {
-        executor = new SmoothExecutor(argumentTestIndex);
-    }
+        groupStack({globalScope}),
+        executor(new SmoothExecutor()) {
     executor->addAfterTestHook([](Test* test) {
         test->setExecuted();
     });
-    if (argumentTestIndex != 0) {
-        executor->addAfterTestHook([this](Test* test) {
-            if (test->isFailed()) {
-                cout << test->getFailureMessage();
-                cout.flush();
-            }
-        });
-    }
 }
 
 TestingDriver::~TestingDriver() {

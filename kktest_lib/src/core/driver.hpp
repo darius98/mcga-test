@@ -11,7 +11,11 @@ namespace kktest {
 
 class TestingDriver {
 public:
+    static std::string getBinaryPath();
+
     static bool isDuringTest();
+
+    static void setExecutor(Executor* executor);
 
     static void addBeforeTestHook(Executor::TestHook hook);
     static void addAfterTestHook(Executor::TestHook hook);
@@ -30,7 +34,7 @@ private:
     static TestingDriver* getInstance();
     static TestingDriver* instance;
 
-    explicit TestingDriver(const std::string& binaryPath);
+    explicit TestingDriver(const std::string& _binaryPath);
 
     ~TestingDriver();
 
@@ -48,6 +52,7 @@ private:
 
     void addTearDown(Executable func);
 
+    std::string binaryPath;
     std::vector<CopyableExecutable> afterInitHooks;
     std::vector<CopyableExecutable> beforeDestroyHooks;
     Group* globalScope;

@@ -16,8 +16,6 @@ private:
     };
 
 public:
-    explicit SmoothExecutor(int testIndexToRun);
-
     bool isDuringTest() const override;
 
     void checkIsInactive(const std::string& methodName) const override;
@@ -33,7 +31,7 @@ private:
 
     void runTest(Test* test, Executable func);
 
-    State state;
+    State state = State::INACTIVE;
 };
 
 }

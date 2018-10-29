@@ -15,8 +15,6 @@ public:
     typedef std::function<void(Test*)> TestHook;
     typedef std::function<void(Group*)> GroupHook;
 
-    explicit Executor(int _testIndexToRun);
-
     virtual bool isDuringTest() const = 0;
 
     virtual void checkIsInactive(const std::string& methodName) const = 0;
@@ -27,6 +25,10 @@ private:
     virtual void execute(Test* test, Executable func) = 0;
 
 public:
+    Executor();
+
+    void copyHooks(Executor* other);
+
     void executeTest(Test* test, Executable func);
 
     void addBeforeTestHook(TestHook hook);
@@ -40,8 +42,6 @@ public:
     void afterGroup(Group* group) const;
 
 private:
-    int testIndexToRun;
-
     std::vector<TestHook> beforeTestHooks;
     std::vector<TestHook> afterTestHooks;
     std::vector<GroupHook> beforeGroupHooks;

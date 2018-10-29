@@ -7,9 +7,6 @@ using namespace std;
 
 namespace kktest {
 
-SmoothExecutor::SmoothExecutor(int testIndexToRun):
-    Executor(testIndexToRun), state(INACTIVE) {}
-
 bool SmoothExecutor::isDuringTest() const {
     return state == TEST;
 }

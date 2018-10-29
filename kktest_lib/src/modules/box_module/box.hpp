@@ -1,5 +1,5 @@
-#ifndef KKTEST_CORE_BOX_H_
-#define KKTEST_CORE_BOX_H_
+#ifndef KKTEST_MODULES_BOX_MODULE_BOX_H_
+#define KKTEST_MODULES_BOX_MODULE_BOX_H_
 
 #include <string>
 

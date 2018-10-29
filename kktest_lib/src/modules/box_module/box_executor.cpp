@@ -30,10 +30,9 @@ bool TestContainer::tryFinalize(function<void(Test*, JSON)> callback) {
     return true;
 }
 
-BoxExecutor::BoxExecutor(int testIndexToRun,
-                         const string& binaryPath,
+BoxExecutor::BoxExecutor(const string& binaryPath,
                          int boxIdBegin,
-                         int boxIdEnd): Executor(testIndexToRun) {
+                         int boxIdEnd) {
     for (int boxId = boxIdBegin; boxId < boxIdEnd; ++ boxId) {
         containers.emplace_back(to_string(boxId), binaryPath);
     }

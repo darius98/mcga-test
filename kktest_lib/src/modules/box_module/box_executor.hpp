@@ -1,10 +1,10 @@
-#ifndef KKTEST_CORE_BOX_EXECUTOR_H_
-#define KKTEST_CORE_BOX_EXECUTOR_H_
+#ifndef KKTEST_MODULES_BOX_MODULE_BOX_EXECUTOR_H_
+#define KKTEST_MODULES_BOX_MODULE_BOX_EXECUTOR_H_
 
 #include <vector>
 
+#include <core/executor.hpp>
 #include "box.hpp"
-#include "executor.hpp"
 
 
 namespace kktest {
@@ -24,8 +24,7 @@ private:
 
 class BoxExecutor: public Executor {
 public:
-    BoxExecutor(int testIndexToRun,
-                const std::string& binaryPath,
+    BoxExecutor(const std::string& binaryPath,
                 int boxIdBegin,
                 int boxIdEnd);
 

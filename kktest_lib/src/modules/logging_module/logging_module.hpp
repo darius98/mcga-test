@@ -9,9 +9,7 @@ namespace kktest {
 
 class LoggingModule: public Module {
 public:
-    LoggingModule();
-
-    ~LoggingModule();
+    ~LoggingModule() override;
 
     bool isEnabled() const override;
 

@@ -9,9 +9,7 @@ namespace kktest {
 
 class PipeModule: public Module {
 public:
-    PipeModule();
-
-    ~PipeModule();
+    ~PipeModule() override;
 
     bool isEnabled() const override;
 

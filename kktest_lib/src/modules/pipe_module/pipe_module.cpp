@@ -16,12 +16,6 @@ AddArgument(int, argumentPipeFD)
 
 namespace kktest {
 
-PipeModule::PipeModule() {
-    if (isEnabled()) {
-        pipe = new Pipe(argumentPipeFD);
-    }
-}
-
 PipeModule::~PipeModule() {
     delete pipe;
 }
@@ -31,6 +25,7 @@ bool PipeModule::isEnabled() const {
 }
 
 void PipeModule::install() {
+    pipe = new Pipe(argumentPipeFD);
     TestingDriver::addBeforeGroupHook([this](Group* group) {
         pipe->pipeGroup(group);
     });
