@@ -15,6 +15,6 @@ public:
     std::string getMessage() const;
 };
 
-} // namespace kktest
+}
 
 #endif

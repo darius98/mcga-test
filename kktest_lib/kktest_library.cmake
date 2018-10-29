@@ -33,6 +33,7 @@ if(NOT KKTEST_THIRD_PARTY_DIR)
 endif()
 
 file(GLOB KKTestLibImpl
+        ${KKTEST_SRC_DIR}/kktest
         ${KKTEST_SRC_DIR}/*.cpp
         ${KKTEST_SRC_DIR}/*.hpp
         ${KKTEST_SRC_DIR}/*/*.cpp

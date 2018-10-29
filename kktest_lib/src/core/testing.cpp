@@ -10,7 +10,7 @@ using namespace std;
 
 namespace kktest {
 
-int testMain(int argc, char** argv) {
+int main(int argc, char** argv) {
     easyflags::ParseEasyFlags(argc, argv);
     TestingDriver::init(argv[0]);
 
@@ -22,7 +22,7 @@ int testMain(int argc, char** argv) {
         }
     }
 
-    for (auto hook: TestingDriver::getInstance()->afterInitHooks) {
+    for (Executable hook: TestingDriver::getInstance()->afterInitHooks) {
         hook();
     }
     testCase();
@@ -39,5 +39,5 @@ int testMain(int argc, char** argv) {
 
 // TODO: Move this somewhere else.
 int main(int argc, char** argv) {
-    return kktest::testMain(argc, argv);
+    return kktest::main(argc, argv);
 }

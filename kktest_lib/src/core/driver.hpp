@@ -5,8 +5,6 @@
 
 #include "group.hpp"
 #include "executor.hpp"
-#include "testing.hpp"
-#include "definer.hpp"
 
 
 namespace kktest {
@@ -56,7 +54,7 @@ private:
     std::vector<Group*> groupStack;
     Executor* executor;
 
-friend int testMain(int argc, char** argv);
+friend int main(int argc, char **argv);
 friend class Definer;
 friend class TestDefiner;
 friend class GroupDefiner;

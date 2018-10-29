@@ -57,8 +57,9 @@ public:
         if (matcher->matches(object)) {
             return;
         }
-        auto description = Description::createForExpect(file, line, "");
-        (*description) << "\n\tExpected ";
+        auto description = Description::createForExpect(
+                file, line, "\n\tExpected "
+        );
         matcher->describe(*description);
         (*description) << ".\n\tGot '" << object << "'.\n\tWhich is ";
         matcher->describeMismatch(*description);

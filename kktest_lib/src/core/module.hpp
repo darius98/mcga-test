@@ -5,6 +5,10 @@ namespace kktest {
 
 class Module {
 public:
+    Module() = default;
+
+    virtual ~Module() = default;
+
     virtual bool isEnabled() const = 0;
 
     virtual void install() = 0;
