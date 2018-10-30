@@ -1,7 +1,7 @@
 #include <EasyFlags.hpp>
 
 #include <core/driver.hpp>
-#include "pipe_module.hpp"
+#include "pipe_plugin.hpp"
 
 using namespace easyflags;
 using namespace std;
@@ -16,11 +16,11 @@ AddArgument(int, argumentPipeFD)
 
 namespace kktest {
 
-bool PipeModule::isEnabled() const {
+bool PipePlugin::isEnabled() const {
     return argumentPipeFD != -1;
 }
 
-void PipeModule::install() {
+void PipePlugin::install() {
     pipe = new Pipe(argumentPipeFD);
     TestingDriver::addBeforeGroupHook([this](Group* group) {
         pipe->pipeGroup(group);
@@ -30,7 +30,7 @@ void PipeModule::install() {
     });
 }
 
-void PipeModule::uninstall() {
+void PipePlugin::uninstall() {
     delete pipe;
 }
 

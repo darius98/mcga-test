@@ -2,7 +2,7 @@
 
 #include <EasyFlags.hpp>
 
-#include <modules/modules.hpp>
+#include <plugins/plugins.hpp>
 #include "driver.hpp"
 #include "testing.hpp"
 
@@ -14,8 +14,8 @@ int main(int argc, char** argv) {
     easyflags::ParseEasyFlags(argc, argv);
     TestingDriver* driver = TestingDriver::init(argv[0]);
 
-    driver->addModules(getAllModules());
-    driver->installModules();
+    driver->addPlugins(getAllPlugins());
+    driver->installPlugins();
     for (Executable hook: TestingDriver::getInstance()->afterInitHooks) {
         hook();
     }

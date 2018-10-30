@@ -5,7 +5,7 @@
 
 #include "group.hpp"
 #include "executor.hpp"
-#include "module.hpp"
+#include "plugin.hpp"
 
 
 namespace kktest {

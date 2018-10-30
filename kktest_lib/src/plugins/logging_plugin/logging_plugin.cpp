@@ -3,7 +3,7 @@
 #include <EasyFlags.hpp>
 
 #include <core/driver.hpp>
-#include "logging_module.hpp"
+#include "logging_plugin.hpp"
 
 using namespace easyflags;
 using namespace std;
@@ -18,18 +18,18 @@ AddArgument(int, flagQuiet)
 
 namespace kktest {
 
-bool LoggingModule::isEnabled() const {
+bool LoggingPlugin::isEnabled() const {
     return !flagQuiet;
 }
 
-void LoggingModule::install() {
+void LoggingPlugin::install() {
     logger = new Logger(cout);
     TestingDriver::addAfterTestHook([this](Test* test) {
         logger->enqueueTestForLogging(test);
     });
 }
 
-void LoggingModule::uninstall() {
+void LoggingPlugin::uninstall() {
     delete logger;
 }
 

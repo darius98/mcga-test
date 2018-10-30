@@ -6,6 +6,8 @@
 
 #include <utils/streamer.hpp>
 
+// TODO: Try to move this to matcher plugin.
+
 namespace kktest {
 
 class Description {
@@ -68,7 +70,7 @@ private:
 
     static std::set<void*> matchersAllocatedDuringTests;
 
-friend class MatcherModule;
+friend class MatcherPlugin;
 };
 
 template<class T, class>

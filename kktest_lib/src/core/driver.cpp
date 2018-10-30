@@ -3,7 +3,6 @@
 
 #include <EasyFlags.hpp>
 
-#include "modules/box_module/box_executor.hpp"
 #include "driver.hpp"
 #include "smooth_executor.hpp"
 
@@ -80,7 +79,6 @@ int TestingDriver::destroy() {
         hook();
     }
     int status = driver->globalScope->getNumFailedTests();
-    driver->uninstallModules();
     delete driver;
     return status;
 }

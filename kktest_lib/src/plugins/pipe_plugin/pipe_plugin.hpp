@@ -1,13 +1,13 @@
-#ifndef KKTEST_MODULES_PIPE_MODULE_PIPE_MODULE_H_
-#define KKTEST_MODULES_PIPE_MODULE_PIPE_MODULE_H_
+#ifndef KKTEST_PLUGINS_PIPE_PLUGIN_PIPE_PLUGIN_H_
+#define KKTEST_PLUGINS_PIPE_PLUGIN_PIPE_PLUGIN_H_
 
-#include <core/module.hpp>
+#include <core/plugin.hpp>
 #include "pipe.hpp"
 
 
 namespace kktest {
 
-class PipeModule: public Module {
+class PipePlugin: public Plugin {
 public:
     bool isEnabled() const override;
 

@@ -1,13 +1,13 @@
-#ifndef KKTEST_MODULES_LOGGING_MODULE_LOGGING_MODULE_H_
-#define KKTEST_MODULES_LOGGING_MODULE_LOGGING_MODULE_H_
+#ifndef KKTEST_PLUGINS_LOGGING_PLUGIN_LOGGING_PLUGIN_H_
+#define KKTEST_PLUGINS_LOGGING_PLUGIN_LOGGING_PLUGIN_H_
 
-#include <core/module.hpp>
+#include <core/plugin.hpp>
 #include "logger.hpp"
 
 
 namespace kktest {
 
-class LoggingModule: public Module {
+class LoggingPlugin: public Plugin {
 public:
     bool isEnabled() const override;
 

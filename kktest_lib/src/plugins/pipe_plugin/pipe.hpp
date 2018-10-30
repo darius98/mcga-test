@@ -1,5 +1,5 @@
-#ifndef KKTEST_MODULES_PIPE_MODULE_PIPE_H_
-#define KKTEST_MODULES_PIPE_MODULE_PIPE_H_
+#ifndef KKTEST_PLUGINS_PIPE_PLUGIN_PIPE_H_
+#define KKTEST_PLUGINS_PIPE_PLUGIN_PIPE_H_
 
 #include <core/group.hpp>
 #include <core/test.hpp>

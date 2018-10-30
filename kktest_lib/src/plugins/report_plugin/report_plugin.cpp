@@ -3,7 +3,7 @@
 #include <EasyFlags.hpp>
 
 #include <core/driver.hpp>
-#include "report_module.hpp"
+#include "report_plugin.hpp"
 
 using namespace std;
 
@@ -17,11 +17,11 @@ AddArgument(string, argumentReportFileName)
 
 namespace kktest {
 
-bool ReportModule::isEnabled() const {
+bool ReportPlugin::isEnabled() const {
     return !argumentReportFileName.empty();
 }
 
-void ReportModule::install() {
+void ReportPlugin::install() {
     TestingDriver::addBeforeDestroyHook([]() {
         ofstream report(argumentReportFileName);
         report << TestingDriver::toJSON().stringify(0);

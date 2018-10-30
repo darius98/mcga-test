@@ -1,7 +1,7 @@
 #include <EasyFlags.hpp>
 
 #include <core/driver.hpp>
-#include "box_module.hpp"
+#include "box_plugin.hpp"
 #include "box_executor.hpp"
 
 AddArgument(int, flagBoxed)
@@ -26,11 +26,11 @@ AddArgument(int, argumentNumBoxes)
 
 namespace kktest {
 
-bool BoxModule::isEnabled() const {
+bool BoxPlugin::isEnabled() const {
     return flagBoxed != 0;
 }
 
-void BoxModule::install() {
+void BoxPlugin::install() {
     TestingDriver::addAfterInitHook([]() {
         TestingDriver::setExecutor(
                 new BoxExecutor(TestingDriver::getBinaryPath(),
