@@ -72,6 +72,7 @@ void Executor::beforeTest(Test* test) const {
 }
 
 void Executor::afterTest(Test* test) const {
+    test->setExecuted();
     for (const TestHook& hook: afterTestHooks) {
         hook(test);
     }

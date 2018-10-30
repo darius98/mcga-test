@@ -43,11 +43,11 @@ bool Test::isExecuted() const {
 }
 
 bool Test::isFailed() const {
-    return failure != nullptr;
+    return isExecuted() && failure != nullptr;
 }
 
 bool Test::isPassed() const {
-    return !isFailed();
+    return isExecuted() && !isFailed();
 }
 
 void Test::setFailure(const string& message) {
