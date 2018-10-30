@@ -29,13 +29,15 @@ public:
     static autojson::JSON toJSON();
 
 private:
-    static TestingDriver* init(const std::string& binaryPath);
+    static TestingDriver* init(const std::string& binaryPath,
+                               const std::vector<Plugin*>& plugins);
     static int destroy();
 
     static TestingDriver* getInstance();
     static TestingDriver* instance;
 
-    explicit TestingDriver(const std::string& _binaryPath);
+    TestingDriver(const std::string& _binaryPath,
+                  const std::vector<Plugin*>& plugins);
 
     ~TestingDriver();
 

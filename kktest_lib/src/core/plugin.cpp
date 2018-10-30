@@ -15,7 +15,7 @@ void Plugin::install() {
 void Plugin::uninstall() {
 }
 
-Pluginable::Pluginable() = default;
+Pluginable::Pluginable(const vector<Plugin*>& _plugins): plugins(_plugins) {}
 
 Pluginable::~Pluginable() {
     for (Plugin* plugin: plugins) {
@@ -24,10 +24,6 @@ Pluginable::~Pluginable() {
         }
         delete plugin;
     }
-}
-
-void Pluginable::addPlugins(const vector<Plugin*>& newPlugins) {
-    plugins.insert(plugins.end(), newPlugins.begin(), newPlugins.end());
 }
 
 void Pluginable::installPlugins() {

@@ -12,10 +12,8 @@ namespace kktest {
 
 int main(int argc, char** argv) {
     easyflags::ParseEasyFlags(argc, argv);
-    TestingDriver* driver = TestingDriver::init(argv[0]);
+    TestingDriver* driver = TestingDriver::init(argv[0], getAllPlugins());
 
-    driver->addPlugins(getAllPlugins());
-    driver->installPlugins();
     for (Executable hook: TestingDriver::getInstance()->afterInitHooks) {
         hook();
     }

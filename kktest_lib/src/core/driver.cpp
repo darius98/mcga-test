@@ -65,11 +65,14 @@ TestingDriver* TestingDriver::getInstance() {
     return instance;
 }
 
-TestingDriver* TestingDriver::init(const string &binaryPath) {
+TestingDriver* TestingDriver::init(const string &binaryPath,
+                                   const vector<Plugin*>& plugins) {
     if (instance != nullptr) {
         throw runtime_error("TestingDriver::init called a second time!");
     }
-    return instance = new TestingDriver(binaryPath);
+    instance = new TestingDriver(binaryPath, plugins);
+    instance->installPlugins();
+    return instance;
 }
 
 int TestingDriver::destroy() {
@@ -83,7 +86,9 @@ int TestingDriver::destroy() {
     return status;
 }
 
-TestingDriver::TestingDriver(const string& _binaryPath):
+TestingDriver::TestingDriver(const string& _binaryPath,
+                             const vector<Plugin*>& plugins):
+        Pluginable(plugins),
         binaryPath(_binaryPath),
         globalScope(new Group("", "", 0, nullptr)),
         groupStack({globalScope}),
