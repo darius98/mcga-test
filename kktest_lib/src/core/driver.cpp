@@ -66,11 +66,11 @@ TestingDriver* TestingDriver::getInstance() {
     return instance;
 }
 
-void TestingDriver::init(const string &binaryPath) {
+TestingDriver* TestingDriver::init(const string &binaryPath) {
     if (instance != nullptr) {
         throw runtime_error("TestingDriver::init called a second time!");
     }
-    instance = new TestingDriver(binaryPath);
+    return instance = new TestingDriver(binaryPath);
 }
 
 int TestingDriver::destroy() {
@@ -80,8 +80,8 @@ int TestingDriver::destroy() {
         hook();
     }
     int status = driver->globalScope->getNumFailedTests();
+    driver->uninstallModules();
     delete driver;
-    instance = nullptr;
     return status;
 }
 

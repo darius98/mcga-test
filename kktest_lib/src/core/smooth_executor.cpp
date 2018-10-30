@@ -89,12 +89,12 @@ void SmoothExecutor::executeTearDownsRecursively(Group* group, Test* test) {
     } catch(const exception& e) {
         failed = true;
         failMessage = "An exception was thrown during the "
-                              "tearDown of group '" + group->getFullDescription()
+                      "tearDown of group '" + group->getFullDescription()
                       + "': " + e.what();
     } catch(...) {
         failed = true;
         failMessage = "A non-exception object was thrown during the "
-                              "tearDown of group '" + group->getFullDescription()
+                      "tearDown of group '" + group->getFullDescription()
                       + "'.";
     }
     if (failed) {

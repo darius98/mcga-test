@@ -12,30 +12,15 @@ namespace kktest {
 
 int main(int argc, char** argv) {
     easyflags::ParseEasyFlags(argc, argv);
-    TestingDriver::init(argv[0]);
+    TestingDriver* driver = TestingDriver::init(argv[0]);
 
-    vector<Module*> modules = getAllModules();
-
-    for (Module* module: modules) {
-        if (module->isEnabled()) {
-            module->install();
-        }
-    }
-
+    driver->addModules(getAllModules());
+    driver->installModules();
     for (Executable hook: TestingDriver::getInstance()->afterInitHooks) {
         hook();
     }
     testCase();
     int retCode = TestingDriver::destroy();
-
-
-    for (Module* module: modules) {
-        if (module->isEnabled()) {
-            module->uninstall();
-        }
-        delete module;
-    }
-
     return retCode;
 }
 

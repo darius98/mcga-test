@@ -5,11 +5,12 @@
 
 #include "group.hpp"
 #include "executor.hpp"
+#include "module.hpp"
 
 
 namespace kktest {
 
-class TestingDriver {
+class TestingDriver: private Pluginable {
 public:
     static std::string getBinaryPath();
 
@@ -28,7 +29,7 @@ public:
     static autojson::JSON toJSON();
 
 private:
-    static void init(const std::string& binaryPath);
+    static TestingDriver* init(const std::string& binaryPath);
     static int destroy();
 
     static TestingDriver* getInstance();
