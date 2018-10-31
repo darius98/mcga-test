@@ -33,11 +33,6 @@ void Test::setExecuted() {
         throw runtime_error("Test::setExecuted called twice on the same test!");
     }
     executed = true;
-    Group* parent = parentGroup;
-    while (parent != nullptr) {
-        parent->updateWithExecutedTest(this);
-        parent = parent->getParentGroup();
-    }
 }
 
 bool Test::isExecuted() const {

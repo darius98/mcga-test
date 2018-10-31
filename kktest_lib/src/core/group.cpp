@@ -27,7 +27,22 @@ Group::~Group() {
 }
 
 int Group::getNumFailedTests() const {
+    int numFailedTests = 0;
+    for (Test* test: tests) {
+        numFailedTests += test->isFailed();
+    }
+    for (Group* subGroup: subGroups) {
+        numFailedTests += subGroup->getNumFailedTests();
+    }
     return numFailedTests;
+}
+
+int Group::getNumTests() const {
+    int numTests = tests.size();
+    for (Group* subGroup: subGroups) {
+        numTests += subGroup->getNumTests();
+    }
+    return numTests;
 }
 
 bool Group::isGlobalScope() const {
@@ -129,15 +144,20 @@ void Group::writeBytes(uint8_t* dst) const {
 }
 
 JSON Group::toJSON() const {
-    JSON report = {
-        {"numExecutedTests", numExecutedTests},
-        {"numFailedTests", numFailedTests},
-    };
+    JSON report;
     if (!isGlobalScope()) {
-      report["line"] = line;
-      report["file"] = file;
-      report["description"] = description;
+        report = {
+            {"line", line},
+            {"file", file},
+            {"description", description}
+        };
+    } else {
+        report = {
+            {"numTests", getNumTests()},
+            {"numFailedTests", getNumFailedTests()}
+        };
     }
+
     if (!tests.empty()) {
         report["tests"] = vector<JSON>();
         for (const auto& test: tests) {
@@ -155,13 +175,6 @@ JSON Group::toJSON() const {
 
 Group* Group::getParentGroup() const {
     return parentGroup;
-}
-
-void Group::updateWithExecutedTest(Test* test) {
-    numExecutedTests += 1;
-    if (test->isFailed()) {
-        numFailedTests += 1;
-    }
 }
 
 }

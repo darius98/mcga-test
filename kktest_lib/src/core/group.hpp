@@ -26,6 +26,7 @@ public:
     ~Group();
 
     int getNumFailedTests() const;
+    int getNumTests() const;
 
     bool isGlobalScope() const;
 
@@ -53,16 +54,12 @@ public:
 
     Group* getParentGroup() const;
 
-    void updateWithExecutedTest(Test* test);
 private:
     Group* parentGroup;
     int index;
 
     std::vector<Group*> subGroups;
     std::vector<Test*> tests;
-
-    int numExecutedTests = 0;
-    int numFailedTests = 0;
 
     std::string file;
     int line;
