@@ -60,10 +60,7 @@ TestContainer& BoxExecutor::findEmptyContainer() {
 
 bool BoxExecutor::tryFinalizeContainer(TestContainer& container) {
     return container.tryFinalize([this](Test* test, JSON boxRunStats) {
-        if ((int)boxRunStats["exitCode"] != 0) {
-            string failureMessage = boxRunStats["processOutput"];
-            test->setFailure(failureMessage);
-        }
+        test->loadFromJSON(JSON::parse(boxRunStats["processOutput"]));
         afterTest(test);
     });
 }

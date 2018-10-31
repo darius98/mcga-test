@@ -33,6 +33,7 @@ void SmoothExecutor::execute(Test* test, Executable func) {
     state = TEAR_DOWN;
     executeTearDownsRecursively(test->getParentGroup(), test);
     state = INACTIVE;
+    test->setExecuted();
     afterTest(test);
 }
 

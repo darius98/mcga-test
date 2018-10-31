@@ -50,6 +50,8 @@ public:
 
     autojson::JSON toJSON() const;
 
+    void loadFromJSON(const autojson::JSON& json);
+
     Group* getParentGroup() const;
 private:
     Group* parentGroup;

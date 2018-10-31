@@ -11,18 +11,15 @@ AddArgument(int, argumentTestIndex)
     .Name("test")
     .Short("t")
     .Description("Index of the test to run (defaults to 0 - run all tests).")
-    .DefaultValue(0)
-    .ImplicitValue(0);
+    .DefaultValue(0);
 
 namespace kktest {
 
 Executor::Executor() {
     if (argumentTestIndex != 0) {
         addAfterTestHook([this](Test *test) {
-            if (test->isFailed()) {
-                cout << test->getFailureMessage();
-                cout.flush();
-            }
+            cout << test->toJSON();
+            cout.flush();
         });
     }
 }
@@ -72,7 +69,6 @@ void Executor::beforeTest(Test* test) const {
 }
 
 void Executor::afterTest(Test* test) const {
-    test->setExecuted();
     for (const TestHook& hook: afterTestHooks) {
         hook(test);
     }

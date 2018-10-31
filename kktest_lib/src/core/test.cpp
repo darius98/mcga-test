@@ -1,10 +1,12 @@
 #include <cstring>
 
+#include <utils/unescape_characters.hpp>
 #include "test.hpp"
 #include "group.hpp"
 
 using namespace autojson;
 using namespace std;
+using namespace kktest::utils;
 
 
 namespace kktest {
@@ -135,6 +137,18 @@ JSON Test::toJSON() const {
         }
     }
     return report;
+}
+
+void Test::loadFromJSON(const JSON& json) {
+    description = unescapeCharacters(json.get("description").operator string());
+    file = unescapeCharacters(json.get("file").operator string());
+    line = json.get("line").operator int();
+    executed = json.get("executed").operator bool();
+    if (executed && json.get("passed").operator bool() == false) {
+        delete failure;
+        failure = nullptr;
+        setFailure(unescapeCharacters(json.get("failureMessage").operator string()));
+    }
 }
 
 Group* Test::getParentGroup() const {
