@@ -135,14 +135,14 @@ JSON Test::toJSON() const {
 }
 
 void Test::loadFromJSON(const JSON& json) {
-    description = unescapeCharacters(json.get("description").operator string());
-    file = unescapeCharacters(json.get("file").operator string());
+    description = unescapeCharacters(json.get("description").operator std::string());
+    file = unescapeCharacters(json.get("file").operator std::string());
     line = json.get("line").operator int();
     executed = json.get("executed").operator bool();
-    if (executed && json.get("passed").operator bool() == false) {
+    if (executed && !json.get("passed").operator bool()) {
         delete failure;
         failure = nullptr;
-        setFailure(unescapeCharacters(json.get("failureMessage").operator string()));
+        setFailure(unescapeCharacters(json.get("failureMessage").operator std::string()));
     }
 }
 

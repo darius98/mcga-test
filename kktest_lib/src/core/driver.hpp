@@ -29,8 +29,9 @@ public:
     static autojson::JSON toJSON();
 
 private:
-    static TestingDriver* init(const std::string& binaryPath,
-                               const std::vector<Plugin*>& plugins);
+    static void init(int argc,
+                     char** argv,
+                     const std::vector<Plugin*>& plugins);
     static int destroy();
 
     static TestingDriver* getInstance();
@@ -39,7 +40,7 @@ private:
     TestingDriver(const std::string& _binaryPath,
                   const std::vector<Plugin*>& plugins);
 
-    ~TestingDriver();
+    ~TestingDriver() override;
 
     void addGroup(std::string description,
                   std::string file,

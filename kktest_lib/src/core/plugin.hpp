@@ -18,7 +18,7 @@ class Pluginable {
 public:
     explicit Pluginable(const std::vector<Plugin*>& _plugins);
 
-    ~Pluginable();
+    virtual ~Pluginable();
 
     void installPlugins();
 private:

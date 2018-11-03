@@ -1,5 +1,4 @@
 #include <fstream>
-#include <iostream>
 
 #include <EasyFlags.hpp>
 
@@ -65,14 +64,18 @@ TestingDriver* TestingDriver::getInstance() {
     return instance;
 }
 
-TestingDriver* TestingDriver::init(const string &binaryPath,
-                                   const vector<Plugin*>& plugins) {
+void TestingDriver::init(int argc,
+                         char** argv,
+                         const vector<Plugin*>& plugins) {
     if (instance != nullptr) {
         throw runtime_error("TestingDriver::init called a second time!");
     }
-    instance = new TestingDriver(binaryPath, plugins);
+    ParseEasyFlags(argc, argv);
+    instance = new TestingDriver(argv[0], plugins);
     instance->installPlugins();
-    return instance;
+    for (Executable hook: instance->afterInitHooks) {
+        hook();
+    }
 }
 
 int TestingDriver::destroy() {
