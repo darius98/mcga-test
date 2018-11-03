@@ -23,10 +23,10 @@ bool PipePlugin::isEnabled() const {
 void PipePlugin::install() {
     pipe = new Pipe(argumentPipeFD);
     TestingDriver::addBeforeGroupHook([this](Group* group) {
-        pipe->pipeGroup(group);
+        pipe->pipe(group);
     });
     TestingDriver::addAfterTestHook([this](Test* test) {
-        pipe->pipeTest(test);
+        pipe->pipe(test);
     });
 }
 

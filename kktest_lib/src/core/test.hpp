@@ -5,6 +5,7 @@
 
 #include <JSON>
 
+#include <utils/message.hpp>
 #include "expectation_failed.hpp"
 
 
@@ -12,7 +13,7 @@ namespace kktest {
 
 class Group;
 
-class Test {
+class Test: public MessageSerializable {
 private:
     static int globalTestIndex;
 
@@ -44,9 +45,7 @@ public:
 
     std::string getDescription() const;
 
-    std::size_t numBytes() const;
-
-    void writeBytes(uint8_t* dst) const;
+    void writeBytes(BytesConsumer& consumer) const override;
 
     autojson::JSON toJSON() const;
 

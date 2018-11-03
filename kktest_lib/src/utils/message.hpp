@@ -3,9 +3,40 @@
 
 #include <cstdlib>
 
+#include <string>
+
+
 namespace kktest {
 
-class Message {
+class BytesConsumer {
+public:
+    virtual BytesConsumer& addBytes(const void* bytes, std::size_t numBytes) = 0;
+
+    // Specialization for string, for better usage.
+    BytesConsumer& add(const std::string& str);
+
+    template<class T>
+    BytesConsumer& add(const T& obj) {
+        return addBytes(&obj, sizeof(obj));
+    }
+
+    template<class T>
+    BytesConsumer& operator<<(const T& obj) {
+        return add(obj);
+    }
+};
+
+class BytesCounter: public BytesConsumer {
+public:
+    BytesCounter& addBytes(const void* bytes, std::size_t numBytes) override;
+
+    std::size_t getNumBytesConsumed() const;
+
+private:
+    std::size_t bytesConsumed = 0;
+};
+
+class Message: public BytesConsumer {
 public:
     explicit Message(std::size_t size);
     Message(const Message& other);
@@ -13,17 +44,12 @@ public:
 
     ~Message();
 
-    Message& addBytes(void* bytes, size_t numBytes);
+    Message& addBytes(const void* bytes, size_t numBytes) override;
 
-    template<class T>
-    Message& add(const T& obj) {
-        return addBytes(&obj, sizeof(obj));
-    }
+    void* getPayload() const;
 
-    template<class T>
-    Message& operator<<(const T& obj) {
-        return addBytes(&obj, sizeof(obj));
-    }
+    std::size_t getSize() const;
+
 private:
     void* payload;
     std::size_t cursor;
@@ -31,9 +57,7 @@ private:
 
 class MessageSerializable {
 public:
-    virtual std::size_t numBytes() const = 0;
-
-    virtual void serialize(Message& message) const = 0;
+    virtual void writeBytes(BytesConsumer& consumer) const = 0;
 
     Message toMessage() const;
 };

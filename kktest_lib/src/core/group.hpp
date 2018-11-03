@@ -13,7 +13,7 @@
 
 namespace kktest {
 
-class Group {
+class Group: public MessageSerializable {
 private:
     static int globalGroupIndex;
 
@@ -44,9 +44,7 @@ public:
 
     std::string getFullDescription() const;
 
-    std::size_t numBytes() const;
-
-    void writeBytes(uint8_t* dst) const;
+    void writeBytes(BytesConsumer& consumer) const override;
 
     autojson::JSON toJSON() const;
 
