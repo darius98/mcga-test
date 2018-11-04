@@ -11,12 +11,10 @@ function(add_kktest TEST_NAME)
         message(FATAL_ERROR "TESTS_PATH variable not set.")
     endif ()
 
+    find_library(KKTEST_LIB kktest)
     if (NOT KKTEST_LIB)
         message(FATAL_ERROR "kktest library not installed.")
     endif()
-
-    find_library(KKTEST_LIB kktest)
-    message("KKTEST::TEST_CASE ${TESTS_PATH}/${TEST_NAME}")
 
     set(PREV_CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TESTS_PATH})

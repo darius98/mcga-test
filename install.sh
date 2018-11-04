@@ -9,7 +9,7 @@ git submodule update --init --recursive
 sudo cp -r kktest_lib/include/* /usr/local/include
 
 # Build the library
-cmake -Hkktest_lib -Bbuild/cmake_prod -DCMAKE_BUILD_TYPE=Release -DBUILD_TYPE:STRING=PROD
+cmake -H. -Bbuild/cmake_prod -DCMAKE_BUILD_TYPE=Release -DBUILD_TYPE:STRING=PROD
 cd build/cmake_prod && make && cd ../..
 sudo cp build/lib/libkktest.so /usr/lib/libkktest.so.1
 
