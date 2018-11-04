@@ -7,8 +7,6 @@ endif()
 SET_PROPERTY(GLOBAL PROPERTY __KKTEST_LIBRARY_INCLUDE_GUARD__ TRUE)
 
 if (NOT TARGET kktest)
-    find_library(__KKTEST_AUTOJSON_LIB autojson)
-    find_library(__KKTEST_EASYFLAGS_LIB easyflags)
     find_library(__KKTEST_KKTEST_LIB kktest)
 endif()
 
@@ -36,11 +34,7 @@ function(testcase TEST_NAME FILE_NAME)
     if (TARGET kktest)
         target_link_libraries(${TEST_NAME} kktest)
     else()
-        # TODO(darius98): This is a big hack.
-        # Try to bundle all 3 libraries into one inside installation script.
-        target_link_libraries(${TEST_NAME} ${__KKTEST_KKTEST_LIB}
-                                           ${__KKTEST_EASYFLAGS_LIB}
-                                           ${__KKTEST_AUTOJSON_LIB})
+        target_link_libraries(${TEST_NAME} ${__KKTEST_KKTEST_LIB})
     endif()
 
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PREV_CMAKE_RUNTIME_OUTPUT_DIRECTORY})

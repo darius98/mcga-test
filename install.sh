@@ -7,9 +7,7 @@ sudo cp -r kktest_lib/include/* /usr/local/include
 
 # Build the library
 ./compile_prod.sh
-sudo cp build/lib/libkktest.a /usr/lib/libkktest.a
-sudo cp build/lib/libautojson.a /usr/lib/libautojson.a
-sudo cp build/lib/libeasyflags.a /usr/lib/libeasyflags.a
+sudo cp build/lib/libkktest.so /usr/lib/libkktest.so.1
 
 # Copy the cmake library
 sudo cp kktest_lib/kktest.cmake /usr/local/include/kktest.cmake
