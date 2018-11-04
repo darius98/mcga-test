@@ -122,8 +122,10 @@ private:
     }
 };
 
+template<class...> using void_t = void;
+
 template<class S>
-struct Streamer<S, std::void_t<decltype(std::cout << std::declval<S>())>> {
+struct Streamer<S, void_t<decltype(std::cout << std::declval<S>())>> {
     static void send(std::stringstream& s, S obj) {
         s << obj;
     }
