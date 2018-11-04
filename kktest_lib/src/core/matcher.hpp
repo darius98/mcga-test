@@ -66,8 +66,10 @@ public:
     virtual void describeMismatch(Description& description) = 0;
 
 private:
+    static void setDuringTest(bool _duringTest);
     static void cleanupMatchersCreatedDuringTests();
 
+    static bool duringTest;
     static std::set<void*> matchersAllocatedDuringTests;
 
 friend class MatcherPlugin;

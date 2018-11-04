@@ -6,7 +6,12 @@
 namespace kktest {
 
 void MatcherPlugin::install() {
+    TestingDriver::addBeforeTestHook([](Test*) {
+        Matcher::setDuringTest(true);
+    });
+
     TestingDriver::addAfterTestHook([](Test*) {
+        Matcher::setDuringTest(false);
         Matcher::cleanupMatchersCreatedDuringTests();
     });
 }

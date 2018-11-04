@@ -16,10 +16,6 @@ string TestingDriver::getBinaryPath() {
     return getInstance()->binaryPath;
 }
 
-bool TestingDriver::isDuringTest() {
-    return instance != nullptr && instance->executor->isDuringTest();
-}
-
 void TestingDriver::setExecutor(Executor* executor) {
     executor->copyHooks(getInstance()->executor);
     delete getInstance()->executor;

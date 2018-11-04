@@ -14,8 +14,6 @@ class TestingDriver: private Pluginable {
 public:
     static std::string getBinaryPath();
 
-    static bool isDuringTest();
-
     static void setExecutor(Executor* executor);
 
     static void addBeforeTestHook(Executor::TestHook hook);
@@ -29,13 +27,13 @@ public:
     static autojson::JSON toJSON();
 
 private:
+    static TestingDriver* getInstance();
+    static TestingDriver* instance;
+
     static void init(int argc,
                      char** argv,
                      const std::vector<Plugin*>& plugins);
     static int destroy();
-
-    static TestingDriver* getInstance();
-    static TestingDriver* instance;
 
     TestingDriver(const std::string& _binaryPath,
                   const std::vector<Plugin*>& plugins);
@@ -63,8 +61,7 @@ private:
     std::vector<Group*> groupStack;
     Executor* executor;
 
-friend int main(int argc, char **argv);
-friend class Definer;
+friend int main(int argc, char** argv);
 friend class TestDefiner;
 friend class GroupDefiner;
 friend class SetUpDefiner;

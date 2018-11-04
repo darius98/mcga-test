@@ -13,7 +13,7 @@ string Description::toString() const {
 
 void* Matcher::operator new(size_t size) noexcept {
     void* p = malloc(size);
-    if (TestingDriver::isDuringTest()) {
+    if (duringTest) {
         matchersAllocatedDuringTests.insert(p);
     }
     return p;
@@ -24,6 +24,10 @@ void Matcher::operator delete(void* obj) noexcept {
     free(obj);
 }
 
+void Matcher::setDuringTest(bool _duringTest) {
+    duringTest = _duringTest;
+}
+
 void Matcher::cleanupMatchersCreatedDuringTests() {
     for (void* obj: matchersAllocatedDuringTests) {
         free(obj);
@@ -32,5 +36,6 @@ void Matcher::cleanupMatchersCreatedDuringTests() {
 }
 
 set<void*> Matcher::matchersAllocatedDuringTests;
+bool Matcher::duringTest;
 
 }

@@ -36,7 +36,8 @@ void ExpectDefiner::throwExpectationFailed(const string& message) {
 }
 
 void ExpectDefiner::checkDuringTest() {
-    if (!TestingDriver::isDuringTest()) {
+    if (TestingDriver::instance == nullptr ||
+        !TestingDriver::instance->executor->isDuringTest()) {
         throw runtime_error(
             file + ":" + to_string(line) + ": "
             "'expect' can only be called inside tests!"
