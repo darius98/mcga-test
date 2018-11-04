@@ -7,8 +7,6 @@ endif()
 SET_PROPERTY(GLOBAL PROPERTY __KKTEST_LIBRARY_INCLUDE_GUARD__ TRUE)
 
 function(add_kktest TEST_NAME)
-    find_library(KKTEST_LIB kktest)
-
     if (NOT TESTS_PATH)
         message(FATAL_ERROR "TESTS_PATH variable not set.")
     endif ()
@@ -17,12 +15,13 @@ function(add_kktest TEST_NAME)
         message(FATAL_ERROR "kktest library not installed.")
     endif()
 
+    find_library(KKTEST_LIB kktest)
     message("KKTEST::TEST_CASE ${TESTS_PATH}/${TEST_NAME}")
 
     set(PREV_CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TESTS_PATH})
 
-    add_executable(${TEST_NAME} ${ARGN})
+    add_executable(${ARGV})
     install(TARGETS ${TEST_NAME} DESTINATION ${TEST_NAME})
     target_link_libraries(${TEST_NAME} kktest)
 
