@@ -18,7 +18,7 @@ def run(cmd):
         exit(process.returncode)
 
 
-run("./compile.sh")
+run("./compile_dev.sh")
 
 for test in TEST_CASES:
     run(["./build/tests/{}".format(test)])
