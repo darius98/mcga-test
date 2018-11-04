@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.7)
 project(kktest VERSION 1.0.0)
 set(CMAKE_CXX_STANDARD 14)
 
+set(CMAKE_POSITION_INDEPENDENT_CODE TRUE)
+
 set(BUILD_TYPE "DEV" CACHE STRING "BUILD_TYPE")
 
 set(BIN_PATH   "${CMAKE_CURRENT_SOURCE_DIR}/../build/bin")
@@ -18,13 +20,13 @@ set(KKTEST_THIRD_PARTY_DIR ../third_party)
 # Third party software: autojson
 set(AUTOJSON_DIR "${KKTEST_THIRD_PARTY_DIR}/autojson")
 file(GLOB AUTOJSON_SRC ${AUTOJSON_DIR}/src/*.cpp)
-add_library(autojson SHARED ${AUTOJSON_SRC})
+add_library(autojson ${AUTOJSON_SRC})
 target_compile_definitions(autojson PUBLIC autojsonuselib)
 target_include_directories(autojson PUBLIC "${AUTOJSON_DIR}/include")
 
 # Third party software: easyflags
 set(EASYFLAGS_DIR "${KKTEST_THIRD_PARTY_DIR}/easyflags")
-add_library(easyflags SHARED "${EASYFLAGS_DIR}/src/EasyFlags.cpp")
+add_library(easyflags "${EASYFLAGS_DIR}/src/EasyFlags.cpp")
 target_compile_definitions(easyflags PUBLIC easyflagsuselib)
 target_include_directories(easyflags PUBLIC "${EASYFLAGS_DIR}/include")
 target_link_libraries(easyflags autojson)
