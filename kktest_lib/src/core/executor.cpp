@@ -24,6 +24,9 @@ Executor::Executor() {
     }
 }
 
+Executor::~Executor() {
+}
+
 void Executor::copyHooks(Executor* other) {
     for (const TestHook& hook: other->beforeTestHooks) {
         addBeforeTestHook(hook);

@@ -9,10 +9,12 @@ namespace kktest {
 
 BytesConsumer& BytesConsumer::add(const string& str) {
     addBytes(str.c_str(), str.size());
+    return *this;
 }
 
-BytesCounter& BytesCounter::addBytes(const void* bytes, size_t numBytes) {
+BytesCounter& BytesCounter::addBytes(const void*, size_t numBytes) {
     bytesConsumed += numBytes;
+    return *this;
 }
 
 size_t BytesCounter::getNumBytesConsumed() const {
@@ -24,14 +26,15 @@ Message::Message(size_t size): payload(malloc(size + sizeof(size_t))) {
     cursor = sizeof(size_t);
 }
 
-Message::Message(const Message& other): cursor(other.cursor) {
+Message::Message(const Message& other) {
     size_t size = *((size_t*)other.payload);
     payload = malloc(size + sizeof(size_t));
     memcpy(payload, other.payload, cursor);
+    cursor = other.cursor;
 }
 
 Message::Message(Message&& other) noexcept:
-        cursor(other.cursor), payload(other.payload) {
+        payload(other.payload), cursor(other.cursor) {
     other.payload = nullptr;
 }
 
@@ -51,6 +54,9 @@ void* Message::getPayload() const {
 
 size_t Message::getSize() const {
     return *((size_t*)payload) + sizeof(size_t);
+}
+
+MessageSerializable::~MessageSerializable() {
 }
 
 Message MessageSerializable::toMessage() const {

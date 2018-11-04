@@ -53,16 +53,15 @@ public:
     Group* getParentGroup() const;
 
 private:
-    Group* parentGroup;
-    int index;
-
     std::vector<Group*> subGroups;
     std::vector<Test*> tests;
 
+    std::string description;
     std::string file;
     int line;
 
-    std::string description;
+    Group* parentGroup;
+    int index;
 
     bool hasSetUp = false;
     CopyableExecutable setUpFunc;

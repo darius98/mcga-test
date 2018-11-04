@@ -7,6 +7,8 @@ namespace kktest {
 
 class Plugin {
 public:
+    virtual ~Plugin();
+
     virtual bool isEnabled() const;
 
     virtual void install();

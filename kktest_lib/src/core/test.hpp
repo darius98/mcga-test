@@ -53,13 +53,14 @@ public:
 
     Group* getParentGroup() const;
 private:
-    Group* parentGroup;
-    int index;
 
     std::string description;
 
     std::string file;
     int line;
+
+    Group* parentGroup;
+    int index;
 
     bool executed = false;
     ExpectationFailed* failure = nullptr;

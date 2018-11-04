@@ -27,6 +27,8 @@ private:
 public:
     Executor();
 
+    virtual ~Executor();
+
     void copyHooks(Executor* other);
 
     void executeTest(Test* test, Executable func);

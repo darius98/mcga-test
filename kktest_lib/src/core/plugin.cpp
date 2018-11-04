@@ -5,6 +5,9 @@ using namespace std;
 
 namespace kktest {
 
+Plugin::~Plugin() {
+}
+
 bool Plugin::isEnabled() const {
     return true;
 }

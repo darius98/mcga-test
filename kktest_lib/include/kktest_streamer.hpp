@@ -57,13 +57,13 @@ private:
     template<class K, class V>
     static void format(std::stringstream& s, const std::map<K, V>& obj) {
         formatMap<K, V, std::map<K, V>>(s, obj);
-    };
+    }
 
     template<class K, class V>
     static void format(std::stringstream& s,
                        const std::unordered_map<K, V>& obj) {
         formatMap<K, V, std::unordered_map<K, V>>(s, obj);
-    };
+    }
 
     template<class I, class T>
     static void formatList(std::stringstream& s,
@@ -95,7 +95,7 @@ private:
             Streamer<V>::send(s, entry.second);
         }
         s << "}";
-    };
+    }
 
     template<class T>
     static void formatType(std::stringstream& s) {

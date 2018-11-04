@@ -57,6 +57,8 @@ private:
 
 class MessageSerializable {
 public:
+    virtual ~MessageSerializable();
+
     virtual void writeBytes(BytesConsumer& consumer) const = 0;
 
     Message toMessage() const;

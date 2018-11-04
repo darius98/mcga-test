@@ -38,13 +38,13 @@ BoxExecutor::BoxExecutor(const string& binaryPath,
     }
 }
 
-void BoxExecutor::checkIsInactive(const string& methodName) const {}
+void BoxExecutor::checkIsInactive(const string&) const {}
 
 bool BoxExecutor::isDuringTest() const {
     return false;
 }
 
-void BoxExecutor::execute(Test* test, Executable func) {
+void BoxExecutor::execute(Test* test, Executable) {
     findEmptyContainer().runTest(test);
 }
 
