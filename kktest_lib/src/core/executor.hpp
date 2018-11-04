@@ -3,7 +3,7 @@
 
 #include <set>
 
-#include "executable.hpp"
+#include <kktest_executable.hpp>
 #include "group.hpp"
 #include "test.hpp"
 

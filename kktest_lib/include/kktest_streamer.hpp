@@ -1,5 +1,5 @@
-#ifndef KKTEST_UTILS_STREAMER_H_
-#define KKTEST_UTILS_STREAMER_H_
+#ifndef KKTEST_INCLUDE_KKTEST_STREAMER_H_
+#define KKTEST_INCLUDE_KKTEST_STREAMER_H_
 
 #include <cxxabi.h>
 #include <deque>

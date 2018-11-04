@@ -1,8 +1,8 @@
 #include <vector>
 
-#include <plugins/plugins.hpp>
 #include "driver.hpp"
-#include "testing.hpp"
+#include <kktest>
+#include <plugins/plugins.hpp>
 
 using namespace std;
 

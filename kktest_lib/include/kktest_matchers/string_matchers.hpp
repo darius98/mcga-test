@@ -1,9 +1,9 @@
-#ifndef KKTEST_MATCHER_STRING_MATCHERS_H_
-#define KKTEST_MATCHER_STRING_MATCHERS_H_
+#ifndef KKTEST_INCLUDE_KKTEST_MATCHERS_STRING_MATCHERS_H_
+#define KKTEST_INCLUDE_KKTEST_MATCHERS_STRING_MATCHERS_H_
 
 #include <string>
 
-#include <core/matcher.hpp>
+#include "../kktest_matcher.hpp"
 
 
 namespace kktest {

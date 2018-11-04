@@ -1,8 +1,8 @@
-#ifndef KKTEST_MATCHER_ITERABLE_MATCHERS_H_
-#define KKTEST_MATCHER_ITERABLE_MATCHERS_H_
+#ifndef KKTEST_INCLUDE_KKTEST_MATCHERS_ITERABLE_MATCHERS_H_
+#define KKTEST_INCLUDE_KKTEST_MATCHERS_ITERABLE_MATCHERS_H_
 
-#include "comparison_matchers.hpp"
-#include <core/matcher.hpp>
+#include "./comparison_matchers.hpp"
+#include "../kktest_matcher.hpp"
 
 
 namespace kktest {

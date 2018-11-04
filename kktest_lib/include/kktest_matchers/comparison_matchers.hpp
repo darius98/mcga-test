@@ -1,9 +1,9 @@
-#ifndef KKTEST_MATCHER_COMPARISON_MATCHERS_H_
-#define KKTEST_MATCHER_COMPARISON_MATCHERS_H_
+#ifndef KKTEST_INCLUDE_KKTEST_MATCHERS_COMPARISON_MATCHERS_H_
+#define KKTEST_INCLUDE_KKTEST_MATCHERS_COMPARISON_MATCHERS_H_
 
 #include <functional>
 
-#include <core/matcher.hpp>
+#include "../kktest_matcher.hpp"
 
 
 namespace kktest {

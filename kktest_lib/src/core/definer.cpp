@@ -1,4 +1,5 @@
-#include "definer.hpp"
+#include <kktest_definers.hpp>
+
 #include "driver.hpp"
 
 using namespace std;

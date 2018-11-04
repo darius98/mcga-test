@@ -1,6 +1,6 @@
 #include <cstring>
 
-#include "string_matchers.hpp"
+#include <kktest_matchers/string_matchers.hpp>
 
 
 using namespace std;

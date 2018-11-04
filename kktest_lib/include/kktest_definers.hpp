@@ -1,10 +1,10 @@
-#ifndef KKTEST_CORE_DEFINER_H_
-#define KKTEST_CORE_DEFINER_H_
+#ifndef KKTEST_INCLUDE_KKTEST_DEFINERS_H_
+#define KKTEST_INCLUDE_KKTEST_DEFINERS_H_
 
 #include <string>
 
-#include "executable.hpp"
-#include "matcher.hpp"
+#include "./kktest_executable.hpp"
+#include "./kktest_matcher.hpp"
 
 namespace kktest {
 

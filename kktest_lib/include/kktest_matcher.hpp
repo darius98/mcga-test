@@ -1,12 +1,10 @@
-#ifndef KKTEST_CORE_MATCHER_H_
-#define KKTEST_CORE_MATCHER_H_
+#ifndef KKTEST_INCLUDE_KKTEST_MATCHER_H_
+#define KKTEST_INCLUDE_KKTEST_MATCHER_H_
 
 #include <sstream>
 #include <string>
 
-#include <utils/streamer.hpp>
-
-// TODO: Try to move this to matcher plugin.
+#include "./kktest_streamer.hpp"
 
 namespace kktest {
 

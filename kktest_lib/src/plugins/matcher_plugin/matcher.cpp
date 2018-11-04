@@ -1,7 +1,7 @@
-#include "driver.hpp"
-#include "matcher.hpp"
+#include <kktest_matcher.hpp>
 
-using namespace kktest;
+#include <core/driver.hpp>
+
 using namespace std;
 
 
