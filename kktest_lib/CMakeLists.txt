@@ -30,7 +30,6 @@ target_include_directories(easyflags PUBLIC "${EASYFLAGS_DIR}/include")
 target_link_libraries(easyflags autojson)
 
 file(GLOB KKTestLibImpl
-        ${KKTEST_SRC_DIR}/kktest
         ${KKTEST_SRC_DIR}/*.cpp
         ${KKTEST_SRC_DIR}/*.hpp
         ${KKTEST_SRC_DIR}/*/*.cpp

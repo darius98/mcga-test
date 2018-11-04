@@ -2,6 +2,7 @@
 #define KKTEST_INCLUDE_KKTEST_
 
 #include "./kktest_macros.hpp"
+#include "./kktest_testcase.hpp"
 
 #include "./kktest_matchers/comparison_matchers.hpp"
 #include "./kktest_matchers/composite_matchers.hpp"
@@ -11,10 +12,5 @@
 #include "./kktest_matchers/pointer_matchers.hpp"
 #include "./kktest_matchers/string_matchers.hpp"
 #include "./kktest_matchers/truth_matcher.hpp"
-
-/**
- * Implement this function in each test case target.
- */
-void testCase();
 
 #endif

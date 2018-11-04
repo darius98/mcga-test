@@ -1,7 +1,7 @@
 #include <vector>
 
-#include "driver.hpp"
-#include <kktest>
+#include <kktest_testcase.hpp>
+#include <core/driver.hpp>
 #include <plugins/plugins.hpp>
 
 using namespace std;
