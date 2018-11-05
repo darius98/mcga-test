@@ -22,7 +22,10 @@ void Box::run(const string& runArgs) {
         string copyCommand =   "mkdir -p " + getBoxDirPath()
                              + " && "
                              + "cp " + binaryPath + " " + getBoxedBinaryPath();
-        system(copyCommand.c_str());
+        if (system(copyCommand.c_str()) == -1) {
+            perror("cp");
+            exit(errno);
+        }
         copiedBinary = true;
     }
 

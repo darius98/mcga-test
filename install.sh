@@ -10,8 +10,11 @@ sudo cp -r kktest_lib/include/* /usr/local/include
 
 # Build the library
 cmake -H. -Bbuild/cmake_prod -DCMAKE_BUILD_TYPE=Release -DBUILD_TYPE:STRING=PROD
-cd build/cmake_prod && make && cd ../..
-sudo cp build/lib/libkktest.so /usr/lib/libkktest.so.1
+cd build/cmake_prod && make -j4 && cd ../..
+sudo cp build/lib/libkktest.so   /usr/local/lib/libkktest.so
+sudo cp build/lib/libkktest.so   /usr/lib/libkktest.so
+sudo cp build/lib/libkktest.so.1 /usr/local/lib/libkktest.so.1
+sudo cp build/lib/libkktest.so.1 /usr/lib/libkktest.so.1
 
 # Copy the cmake library
 sudo cp kktest_lib/kktest.cmake /usr/local/include/kktest.cmake

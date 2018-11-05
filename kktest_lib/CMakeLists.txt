@@ -3,6 +3,9 @@ project(kktest VERSION 1.0.0)
 set(CMAKE_CXX_STANDARD 14)
 
 file(GLOB KKTestLibImpl
+        include/kktest
+        include/*.hpp
+        include/*/*.hpp
         src/*.cpp
         src/*.hpp
         src/*/*.cpp
