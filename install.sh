@@ -25,3 +25,6 @@ if ! [ -x "$(command -v box)" ]; then
     sudo touch /eval/isolate.log
 fi
 sudo box --init
+
+# Copy the kktest_runner binary to a binary path
+sudo cp build/bin/kktest_runner /usr/local/bin/kktest
