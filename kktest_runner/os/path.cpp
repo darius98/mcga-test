@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include <utils/string.hpp>
+#include "folder.hpp"
 #include "path.hpp"
 
 using namespace std;
@@ -48,6 +49,13 @@ bool Path::isRelative() const {
 
 bool Path::isAbsolute() const {
     return !relative;
+}
+
+Path Path::absolute() const {
+    if (isAbsolute()) {
+        return *this;
+    }
+    return Folder::currentWorkingFolder().getPath() + *this;
 }
 
 string Path::last() const {

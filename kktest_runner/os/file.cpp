@@ -95,6 +95,15 @@ bool File::exists() const {
     return (info.st_mode & S_IFREG) != 0;
 }
 
+bool File::isExecutable() const {
+    struct stat info;
+    int errCode = stat(toString().c_str(), &info);
+    if(errCode != 0) {
+        return false;
+    }
+    return (info.st_mode & S_IXUSR) != 0;
+}
+
 string File::toString() const {
     return path.toString() + name();
 }

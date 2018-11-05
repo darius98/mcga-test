@@ -27,6 +27,7 @@ public:
     Path getFolderPath() const;
 
     bool exists() const;
+    bool isExecutable() const;
 
     std::string toString() const;
 

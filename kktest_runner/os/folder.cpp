@@ -22,17 +22,17 @@ Folder Folder::parent(const Folder& folder) {
     return Folder(folder.path.parent());
 }
 
-Folder::Folder(const Path& path): path(path) {}
+Folder::Folder(const Path& path): path(path.absolute()) {}
 
-Folder::Folder(Path&& path): path(path) {}
+Folder::Folder(Path&& path): path(path.absolute()) {}
 
 Folder::Folder(const Folder& other): path(other.path) {}
 
 Folder::Folder(Folder&& other): path(move(other.path)) {}
 
-Folder::Folder(const string& str): path(str) {}
+Folder::Folder(const string& str): path(Path(str).absolute()) {}
 
-Folder::Folder(string&& str): path(str) {}
+Folder::Folder(string&& str): path(Path(str).absolute()) {}
 
 Folder& Folder::operator=(const Folder& other) {
     path = other.path;

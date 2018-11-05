@@ -75,6 +75,8 @@ public:
     bool isRelative() const;
     bool isAbsolute() const;
 
+    Path absolute() const;
+
     std::string last() const;
     std::string toString() const;
     std::vector<std::string> getParts() const;
@@ -87,6 +89,7 @@ public:
     Path parent() const;
     Path& operator--();
     Path operator--(int);
+
 private:
     bool applySpecialPart(const std::string& part);
     void addPart(const std::string& part);
