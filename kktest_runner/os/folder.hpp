@@ -13,15 +13,15 @@ public:
 
     static Folder parent(const Folder& folder);
 
-    Folder(const Path& path);
-    Folder(Path&& path);
+    explicit Folder(const Path& path);
+    explicit Folder(Path&& path);
     Folder(const Folder& other);
-    Folder(Folder&& other);
-    Folder(const std::string& str);
-    Folder(std::string&& str);
+    Folder(Folder&& other) noexcept;
+    explicit Folder(const std::string& str);
+    explicit Folder(std::string&& str);
 
     Folder& operator=(const Folder& other);
-    Folder& operator=(Folder&& other);
+    Folder& operator=(Folder&& other) noexcept;
 
     std::string last() const;
 

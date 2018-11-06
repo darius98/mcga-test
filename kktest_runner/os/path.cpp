@@ -2,7 +2,6 @@
 
 #include <utils/string.hpp>
 #include "folder.hpp"
-#include "path.hpp"
 
 using namespace std;
 
@@ -12,8 +11,7 @@ const char Path::SEP = '/';
 const char* Path::SELF_FOLDER = ".";
 const char* Path::PARENT_FOLDER = "..";
 
-Path::Path(const string& path) {
-    relative = !startsWith(path, SEP);
+Path::Path(const string& path): relative(!startsWith(path, SEP)) {
     size_t prev = 0, pos = 0;
     while ((pos = path.find(SEP, pos)) != string::npos) {
         string part = path.substr(prev, pos - prev);
@@ -29,7 +27,8 @@ Path::Path(const string& path) {
 
 Path::Path(const Path& other): parts(other.parts), relative(other.relative) {}
 
-Path::Path(Path&& other): parts(move(other.parts)), relative(other.relative) {}
+Path::Path(Path&& other) noexcept:
+        parts(move(other.parts)), relative(other.relative) {}
 
 Path& Path::operator=(const Path& other) {
     parts = other.parts;
@@ -37,7 +36,7 @@ Path& Path::operator=(const Path& other) {
     return *this;
 }
 
-Path& Path::operator=(Path&& other) {
+Path& Path::operator=(Path&& other) noexcept {
     parts = move(other.parts);
     relative = other.relative;
     return *this;
@@ -89,7 +88,7 @@ bool Path::applySpecialPart(const string& part) {
         if (!parts.empty() && parts.back() != PARENT_FOLDER) {
             parts.pop_back();
         } else {
-            parts.push_back(PARENT_FOLDER);
+            parts.emplace_back(PARENT_FOLDER);
         }
         return true;
     }
@@ -148,7 +147,7 @@ Path Path::operator--(int) {
 }
 
 Path Path::join(const Path& a, const Path& b) {
-    Path joined = a;
+    Path joined(a);
     for (const string& part: b.parts) {
         joined.addPart(part);
     }

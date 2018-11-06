@@ -12,8 +12,13 @@ namespace kktest_runner {
 
 class File: public Comparable<std::string> {
 public:
-    File(const std::string& path);
-    File(const Path& path);
+    explicit File(const std::string& path);
+    explicit File(const Path& path);
+    File(const File& other);
+    File(File&& other) noexcept;
+
+    File& operator=(const File& other);
+    File& operator=(File&& other) noexcept;
 
     bool hasExtension() const;
     std::vector<Extension> getAllExtensions() const;

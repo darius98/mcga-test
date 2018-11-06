@@ -45,11 +45,11 @@ public:
         return join(join(a, b), args...);
     }
 
-    Path(const std::string& path);
+    explicit Path(const std::string& path);
 
     Path(const Path& other);
 
-    Path(Path&& other);
+    Path(Path&& other) noexcept;
 
     template<typename... Args>
     Path(const Path& a, const Path& b, const Args... args):
@@ -68,9 +68,7 @@ public:
             Path(join(a, b, args...)) {}
 
     Path& operator=(const Path& other);
-    Path& operator=(Path&& other);
-
-    bool operator==(const Path& other) const;
+    Path& operator=(Path&& other) noexcept;
 
     bool isRelative() const;
     bool isAbsolute() const;

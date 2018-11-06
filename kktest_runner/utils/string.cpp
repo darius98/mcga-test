@@ -54,17 +54,17 @@ bool containsCharacter(const string& str, char ch) {
     return str.find(ch) != string::npos;
 }
 
-string StripTrailingWhitespace(string str) {
+string stripTrailingWhitespace(string str) {
     while (!str.empty() && isspace(str[str.length() - 1])) {
         str.erase(str.length() - 1);
     }
     return str;
 }
 
-string Strip(string str) {
-    str = StripTrailingWhitespace(str);
+string strip(string str) {
+    str = stripTrailingWhitespace(str);
     reverse(str.begin(), str.end());
-    str = StripTrailingWhitespace(str);
+    str = stripTrailingWhitespace(str);
     reverse(str.begin(), str.end());
     return str;
 }

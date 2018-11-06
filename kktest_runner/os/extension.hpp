@@ -10,12 +10,12 @@ namespace kktest_runner {
 
 class Extension: public Comparable<std::string> {
 public:
-    Extension(const std::string& _extension);
+    explicit Extension(const std::string& _extension);
     Extension(const Extension& other);
-    Extension(Extension&& other);
+    Extension(Extension&& other) noexcept;
 
     Extension& operator=(const Extension& other);
-    Extension& operator=(Extension&& other);
+    Extension& operator=(Extension&& other) noexcept;
 
     std::string toString() const;
 private:

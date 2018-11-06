@@ -15,7 +15,7 @@ namespace kktest_runner {
 Folder Folder::currentWorkingFolder() {
     char buff[FILENAME_MAX];
     getcwd(buff, FILENAME_MAX);
-    return string(buff);
+    return Folder(buff);
 }
 
 Folder Folder::parent(const Folder& folder) {
@@ -28,7 +28,7 @@ Folder::Folder(Path&& path): path(path.absolute()) {}
 
 Folder::Folder(const Folder& other): path(other.path) {}
 
-Folder::Folder(Folder&& other): path(move(other.path)) {}
+Folder::Folder(Folder&& other) noexcept: path(move(other.path)) {}
 
 Folder::Folder(const string& str): path(Path(str).absolute()) {}
 
@@ -39,7 +39,7 @@ Folder& Folder::operator=(const Folder& other) {
     return *this;
 }
 
-Folder& Folder::operator=(Folder&& other) {
+Folder& Folder::operator=(Folder&& other) noexcept {
     path = move(other.path);
     return *this;
 }

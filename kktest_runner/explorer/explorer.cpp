@@ -1,6 +1,3 @@
-#include <sys/types.h>
-#include <sys/wait.h>
-
 #include <algorithm>
 
 #include <EasyFlags.hpp>
@@ -65,7 +62,7 @@ bool Explorer::isTestCase(const File& file) {
 }
 
 vector<File> explore() {
-    return Explorer(argumentRootFolder).findTestCases();
+    return Explorer(Folder(argumentRootFolder)).findTestCases();
 }
 
 }

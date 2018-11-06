@@ -40,6 +40,30 @@ File::File(const Path& _path): path(_path.parent()) {
     }
 }
 
+File::File(const File& other):
+        path(other.path),
+        rawName(other.rawName),
+        extensions(other.extensions) {}
+
+File::File(File&& other) noexcept:
+        path(move(other.path)),
+        rawName(move(other.rawName)),
+        extensions(move(other.extensions)) {}
+
+File& File::operator=(File&& other) noexcept {
+    path = move(other.path);
+    rawName = move(other.rawName);
+    extensions = move(other.extensions);
+    return *this;
+}
+
+File& File::operator=(const File& other) {
+    path = other.path;
+    rawName = other.rawName;
+    extensions = other.extensions;
+    return *this;
+}
+
 bool File::hasExtension() const {
     return !extensions.empty();
 }

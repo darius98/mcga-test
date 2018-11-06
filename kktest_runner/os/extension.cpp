@@ -24,7 +24,7 @@ Extension::Extension(const string& _extension) {
 Extension::Extension(const Extension& other):
         extension(other.extension) {}
 
-Extension::Extension(Extension&& other):
+Extension::Extension(Extension&& other) noexcept:
         extension(move(other.extension)) {}
 
 Extension& Extension::operator=(const Extension& other) {
@@ -32,7 +32,7 @@ Extension& Extension::operator=(const Extension& other) {
     return *this;
 }
 
-Extension& Extension::operator=(Extension&& other) {
+Extension& Extension::operator=(Extension&& other) noexcept {
     extension = move(other.extension);
     return *this;
 }
