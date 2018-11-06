@@ -2,5 +2,5 @@
 
 git submodule update --init --recursive
 
-./compile.sh Release PROD
+./compile.sh Debug DEV
 ./copy.sh
