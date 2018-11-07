@@ -27,9 +27,7 @@ bool BoxPlugin::isEnabled() const {
 
 void BoxPlugin::install() {
     TestingDriver::addAfterInitHook([]() {
-        TestingDriver::setExecutor(
-            new BoxExecutor(TestingDriver::getBinaryPath(), argumentNumBoxes)
-        );
+        TestingDriver::setExecutor(new BoxExecutor(argumentNumBoxes));
     });
 }
 

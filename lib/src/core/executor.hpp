@@ -27,9 +27,9 @@ public:
 
     virtual ~Executor();
 
-    virtual bool isDuringTest() const;
+    bool isDuringTest() const;
 
-    virtual void checkIsInactive(const std::string& methodName) const;
+    void checkIsInactive(const std::string& methodName) const;
 
     virtual void finalize();
 
@@ -47,12 +47,15 @@ public:
     void beforeGroup(Group* group) const;
     void afterGroup(Group* group) const;
 
+protected:
+    void run(Test* test, Executable func);
+
 private:
     virtual void execute(Test* test, Executable func);
 
-    void executeSetUpsRecursively(Group* group, Test* test);
+    void runSetUpsRecursively(Group* group, Test* test);
 
-    void executeTearDownsRecursively(Group* group, Test* test);
+    void runTearDownsRecursively(Group* group, Test* test);
 
     void runTest(Test* test, Executable func);
 

@@ -4,28 +4,14 @@
 #include <vector>
 
 #include <core/executor.hpp>
-#include "subprocess_caller.hpp"
+#include "test_container.hpp"
 
 
 namespace kktest {
 
-class TestContainer {
-public:
-    explicit TestContainer(const std::string& _binaryPath);
-
-    void runTest(Test* _test);
-
-    bool tryFinalize(std::function<void(Test*, const std::string&)> callback);
-
-private:
-    std::string binaryPath;
-    SubprocessCaller subprocessCaller;
-    Test* test;
-};
-
 class BoxExecutor: public Executor {
 public:
-    BoxExecutor(const std::string& binaryPath, int numBoxes);
+    BoxExecutor(int numBoxes);
 
     void finalize() override;
 

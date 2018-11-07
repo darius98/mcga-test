@@ -1,3 +1,5 @@
+#include <unistd.h>
+
 #include <iostream>
 
 #include <EasyFlags.hpp>
@@ -10,42 +12,45 @@ using namespace std;
 
 namespace kktest {
 
-// TODO(darius98): Use a simple fork for running each test.
-// Make the child execute the test using an underlying SmoothExecutor and the
-// main process poll for all parallel tests in the BoxExecutor.
-// This should also fix the minor hacks within Executor & SmoothExecutor core
-// code that deals with single-test execution corner cases.
-// The current implementation is inefficient: each test subprocess must execute
-// (hollowly) all the framework's overhead up to the current test.
-
-TestContainer::TestContainer(const string& _binaryPath):
-        binaryPath(_binaryPath), subprocessCaller(), test(nullptr) {}
-
-void TestContainer::runTest(Test* _test) {
-    test = _test;
-    subprocessCaller.run(binaryPath + " -qt " + to_string(test->getIndex()));
-}
-
-bool TestContainer::tryFinalize(function<void(Test*, const string&)> callback) {
-    if (!subprocessCaller.poll()) {
-        return false;
-    }
-    if (test == nullptr) {
-        return true;
-    }
-    callback(test, subprocessCaller.getOutput());
-    test = nullptr;
-    return true;
-}
-
-BoxExecutor::BoxExecutor(const string& binaryPath, int numBoxes) {
+BoxExecutor::BoxExecutor(int numBoxes) {
     for (int i = 0; i < numBoxes; ++ i) {
-        containers.emplace_back(binaryPath);
+        containers.emplace_back();
     }
 }
 
-void BoxExecutor::execute(Test* test, Executable) {
-    findEmptyContainer().runTest(test);
+void BoxExecutor::execute(Test* test, Executable func) {
+    TestContainer& container = findEmptyContainer();
+    int fd[2];
+    if (pipe(fd) < 0) {
+        perror("pipe");
+        exit(errno);
+    }
+    int pid = fork();
+    if (pid < 0) {
+        perror("fork");
+        exit(errno);
+    }
+    if (pid == 0) { // child
+        close(fd[0]);
+        // TODO: Close read end of the pipe
+        run(test, func);
+        string output = test->toJSON().stringify();
+        int bytesToWrite = output.size() + 1;
+        const char* bytes = output.c_str();
+        int numBytesWritten = 0;
+        while (bytesToWrite > 0) {
+            int blockSize = write(fd[1], bytes + numBytesWritten, bytesToWrite);
+            if (blockSize < 0) {
+                perror("write");
+                exit(errno);
+            }
+            bytesToWrite -= blockSize;
+            numBytesWritten += blockSize;
+        }
+        exit(0);
+    }
+    close(fd[1]);
+    container.fill(test, fd[0]);
 }
 
 TestContainer& BoxExecutor::findEmptyContainer() {
@@ -59,10 +64,15 @@ TestContainer& BoxExecutor::findEmptyContainer() {
 }
 
 bool BoxExecutor::tryFinalizeContainer(TestContainer& container) {
-    return container.tryFinalize([this](Test* test, const string& procOutput) {
-        test->loadFromJSON(JSON::parse(procOutput));
-        afterTest(test);
-    });
+    Test* test = container.getTest();
+    if (container.tryFinalize()) {
+        if (test != nullptr) {
+            test->loadFromJSON(JSON::parse(container.getOutput()));
+            afterTest(test);
+        }
+        return true;
+    }
+    return false;
 }
 
 void BoxExecutor::finalize() {

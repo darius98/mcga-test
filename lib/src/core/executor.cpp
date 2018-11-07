@@ -108,22 +108,26 @@ void Executor::checkIsInactive(const string& methodName) const {
 void Executor::finalize() {}
 
 void Executor::execute(Test* test, Executable func) {
-    state = SET_UP;
-    executeSetUpsRecursively(test->getParentGroup(), test);
-    state = TEST;
-    runTest(test, func);
-    state = TEAR_DOWN;
-    executeTearDownsRecursively(test->getParentGroup(), test);
-    state = INACTIVE;
-    test->setExecuted();
+    run(test, func);
     afterTest(test);
 }
 
-void Executor::executeSetUpsRecursively(Group* group, Test* test) {
+void Executor::run(Test* test, Executable func) {
+    state = SET_UP;
+    runSetUpsRecursively(test->getParentGroup(), test);
+    state = TEST;
+    runTest(test, func);
+    state = TEAR_DOWN;
+    runTearDownsRecursively(test->getParentGroup(), test);
+    state = INACTIVE;
+    test->setExecuted();
+}
+
+void Executor::runSetUpsRecursively(Group* group, Test* test) {
     if (group == nullptr) {
         return;
     }
-    executeSetUpsRecursively(group->getParentGroup(), test);
+    runSetUpsRecursively(group->getParentGroup(), test);
 
     bool failed;
     string failMessage;
@@ -159,7 +163,7 @@ void Executor::runTest(Test *test, Executable func) {
     }
 }
 
-void Executor::executeTearDownsRecursively(Group* group, Test* test) {
+void Executor::runTearDownsRecursively(Group* group, Test* test) {
     if (group == nullptr) {
         return;
     }
@@ -184,7 +188,7 @@ void Executor::executeTearDownsRecursively(Group* group, Test* test) {
         test->setFailure(failMessage);
     }
 
-    executeTearDownsRecursively(group->getParentGroup(), test);
+    runTearDownsRecursively(group->getParentGroup(), test);
 }
 
 }
