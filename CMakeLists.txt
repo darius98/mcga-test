@@ -13,23 +13,23 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${LIB_PATH})
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${LIB_PATH})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${BIN_PATH})
 
-set(KKTEST_DIR kktest_lib)
-set(KKTEST_SRC_DIR kktest_lib/src)
-set(KKTEST_THIRD_PARTY_DIR third_party)
+set(KKTEST_LIB_DIR lib)
+set(KKTEST_LIB_SRC_DIR ${KKTEST_DIR}/src)
+set(THIRD_PARTY_DIR third_party)
 
 # Third party software: autojson
-set(AUTOJSON_DIR "${KKTEST_THIRD_PARTY_DIR}/autojson")
+set(AUTOJSON_DIR "${THIRD_PARTY_DIR}/autojson")
 file(GLOB AUTOJSON_SRC ${AUTOJSON_DIR}/src/*.cpp)
 add_library(autojson ${AUTOJSON_SRC})
 target_compile_definitions(autojson PUBLIC autojsonuselib)
 target_include_directories(autojson PUBLIC "${AUTOJSON_DIR}/include")
 
 # Third party software: easyflags
-set(EASYFLAGS_DIR "${KKTEST_THIRD_PARTY_DIR}/easyflags")
+set(EASYFLAGS_DIR "${THIRD_PARTY_DIR}/easyflags")
 add_library(easyflags "${EASYFLAGS_DIR}/src/EasyFlags.cpp")
 target_compile_definitions(easyflags PUBLIC easyflagsuselib)
 target_include_directories(easyflags PUBLIC "${EASYFLAGS_DIR}/include")
 target_link_libraries(easyflags autojson)
 
-add_subdirectory(kktest_lib)
-add_subdirectory(kktest_runner)
+add_subdirectory(lib)
+add_subdirectory(runner)

@@ -9,10 +9,10 @@ sudo cp build/lib/libkktest.so.1 /usr/local/lib/libkktest.so.1
 sudo cp build/lib/libkktest.so.1 /usr/lib/libkktest.so.1
 
 # Copy public include files to include folder
-sudo cp -r kktest_lib/include/* /usr/local/include
+sudo cp -r lib/include/* /usr/local/include
 
 # Copy the cmake library
-sudo cp kktest_lib/kktest.cmake /usr/local/include/kktest.cmake
+sudo cp lib/kktest.cmake /usr/local/include/kktest.cmake
 
 # Install and init box
 if ! [ -x "$(command -v box)" ]; then
@@ -24,5 +24,5 @@ if ! [ -x "$(command -v box)" ]; then
 fi
 sudo box --init
 
-# Copy the kktest_runner binary to a binary path
-sudo cp build/bin/kktest_runner /usr/local/bin/kktest
+# Copy the runner binary to a binary path
+sudo cp build/bin/runner /usr/local/bin/kktest
