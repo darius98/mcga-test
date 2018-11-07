@@ -1,14 +1,14 @@
 #include <stdexcept>
 
-#include "box.hpp"
+#include "subprocess_caller.hpp"
 
 using namespace std;
 
 namespace kktest {
 
-Box::Box(string _binaryPath): binaryPath(move(_binaryPath)), available(true) {}
+SubprocessCaller::SubprocessCaller() {}
 
-void Box::run(const string& runArgs) {
+void SubprocessCaller::run(const string& procCommand) {
     if (!available) {
         throw runtime_error("Trying to run in un-available box!");
     }
@@ -17,14 +17,13 @@ void Box::run(const string& runArgs) {
 
     processOutput.clear();
 
-    string procCommand = binaryPath + " " + runArgs;
     processFileDescriptor = popen(procCommand.c_str(), "r");
     if (!processFileDescriptor) {
         throw runtime_error("popen() failed!");
     }
 }
 
-bool Box::poll() {
+bool SubprocessCaller::poll() {
     if (available) {
         return true;
     }
@@ -40,7 +39,7 @@ bool Box::poll() {
     return available;
 }
 
-string Box::getOutput() const {
+string SubprocessCaller::getOutput() const {
     if (!outputAvailable) {
         throw runtime_error("Asked box for run stats, "
                             "but run stats are not available!");

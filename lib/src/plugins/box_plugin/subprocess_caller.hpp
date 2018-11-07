@@ -1,23 +1,21 @@
-#ifndef KKTEST_PLUGINS_BOX_PLUGIN_BOX_H_
-#define KKTEST_PLUGINS_BOX_PLUGIN_BOX_H_
+#ifndef KKTEST_PLUGINS_BOX_PLUGIN_SUBPROCESS_CALLER_H_
+#define KKTEST_PLUGINS_BOX_PLUGIN_SUBPROCESS_CALLER_H_
 
 #include <string>
 
 namespace kktest {
 
-class Box {
+class SubprocessCaller {
 public:
-    Box(std::string _binaryPath);
+    SubprocessCaller();
 
-    void run(const std::string& runArgs);
+    void run(const std::string& procCommand);
 
     bool poll();
 
     std::string getOutput() const;
 
 private:
-
-    std::string binaryPath;
 
     bool available = true;
     bool outputAvailable = false;

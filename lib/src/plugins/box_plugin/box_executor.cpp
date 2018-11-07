@@ -10,22 +10,22 @@ using namespace std;
 
 namespace kktest {
 
-TestContainer::TestContainer(const string& binaryPath):
-        box(binaryPath), test(nullptr) {}
+TestContainer::TestContainer(const string& _binaryPath):
+        binaryPath(_binaryPath), subprocessCaller(), test(nullptr) {}
 
 void TestContainer::runTest(Test* _test) {
     test = _test;
-    box.run("-qt " + to_string(test->getIndex()));
+    subprocessCaller.run(binaryPath + " -qt " + to_string(test->getIndex()));
 }
 
 bool TestContainer::tryFinalize(function<void(Test*, const string&)> callback) {
-    if (!box.poll()) {
+    if (!subprocessCaller.poll()) {
         return false;
     }
     if (test == nullptr) {
         return true;
     }
-    callback(test, box.getOutput());
+    callback(test, subprocessCaller.getOutput());
     test = nullptr;
     return true;
 }
