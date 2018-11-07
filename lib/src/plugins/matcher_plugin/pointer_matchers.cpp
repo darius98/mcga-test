@@ -1,4 +1,4 @@
-#include <kktest_matchers/pointer_matchers.hpp>
+#include <matchers/pointer_matchers.hpp>
 
 
 namespace kktest {

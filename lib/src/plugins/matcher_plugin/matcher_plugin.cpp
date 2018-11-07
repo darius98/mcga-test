@@ -1,5 +1,5 @@
 #include <core/driver.hpp>
-#include <kktest_matcher.hpp>
+#include <core/matcher.hpp>
 
 #include "matcher_plugin.hpp"
 

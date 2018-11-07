@@ -1,8 +1,8 @@
-#ifndef KKTEST_INCLUDE_KKTEST_MACROS_H_
-#define KKTEST_INCLUDE_KKTEST_MACROS_H_
+#ifndef KKTEST_INCLUDE_KKTEST_PUBLIC_CORE_MACROS_H_
+#define KKTEST_INCLUDE_KKTEST_PUBLIC_CORE_MACROS_H_
 
-#include "./kktest_definers.hpp"
-#include "./kktest_filename.hpp"
+#include "./definers.hpp"
+#include "./filename.hpp"
 
 /**
  * Create a test.

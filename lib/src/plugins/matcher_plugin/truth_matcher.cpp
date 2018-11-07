@@ -1,4 +1,4 @@
-#include <kktest_matchers/truth_matcher.hpp>
+#include <matchers/truth_matcher.hpp>
 
 
 namespace kktest {

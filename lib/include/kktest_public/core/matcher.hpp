@@ -1,10 +1,10 @@
-#ifndef KKTEST_INCLUDE_KKTEST_MATCHER_H_
-#define KKTEST_INCLUDE_KKTEST_MATCHER_H_
+#ifndef KKTEST_INCLUDE_KKTEST_PUBLIC_CORE_MATCHER_H_
+#define KKTEST_INCLUDE_KKTEST_PUBLIC_CORE_MATCHER_H_
 
 #include <sstream>
 #include <string>
 
-#include "./kktest_streamer.hpp"
+#include "./streamer.hpp"
 
 namespace kktest {
 

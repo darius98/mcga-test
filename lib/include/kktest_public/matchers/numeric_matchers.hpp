@@ -1,9 +1,9 @@
-#ifndef KKTEST_INCLUDE_KKTEST_MATCHERS_NUMERIC_MATCHERS_H_
-#define KKTEST_INCLUDE_KKTEST_MATCHERS_NUMERIC_MATCHERS_H_
+#ifndef KKTEST_INCLUDE_KKTEST_PUBLIC_MATCHERS_NUMERIC_MATCHERS_H_
+#define KKTEST_INCLUDE_KKTEST_PUBLIC_MATCHERS_NUMERIC_MATCHERS_H_
 
 #include <cmath>
 
-#include "../kktest_matcher.hpp"
+#include <kktest_public/core/matcher.hpp>
 
 
 namespace kktest {

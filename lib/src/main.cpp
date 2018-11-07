@@ -1,6 +1,6 @@
 #include <vector>
 
-#include <kktest_testcase.hpp>
+#include <kktest_public/core/testcase.hpp>
 #include <core/driver.hpp>
 #include <plugins/plugins.hpp>
 

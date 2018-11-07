@@ -16,7 +16,7 @@ file(GLOB KKTestLibImpl
 add_library(kktest SHARED ${KKTestLibImpl})
 target_compile_options(kktest PRIVATE -Wall -Wextra -pedantic -Werror)
 target_include_directories(kktest PRIVATE src)
-target_include_directories(kktest PRIVATE include)
+target_include_directories(kktest PRIVATE include/kktest_public)
 target_link_libraries(kktest autojson easyflags)
 set_target_properties(kktest PROPERTIES
     VERSION ${PROJECT_VERSION}

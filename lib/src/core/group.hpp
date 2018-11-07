@@ -7,7 +7,7 @@
 
 #include <JSON>
 
-#include <kktest_executable.hpp>
+#include <core/executable.hpp>
 #include "test.hpp"
 
 
