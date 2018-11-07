@@ -12,8 +12,6 @@ namespace kktest {
 
 class TestingDriver: private Pluginable {
 public:
-    static std::string getBinaryPath();
-
     static void setExecutor(Executor* executor);
 
     static void addBeforeTestHook(Executor::TestHook hook);
@@ -30,13 +28,10 @@ private:
     static TestingDriver* getInstance();
     static TestingDriver* instance;
 
-    static void init(int argc,
-                     char** argv,
-                     const std::vector<Plugin*>& plugins);
+    static void init(const std::vector<Plugin*>& plugins);
     static int destroy();
 
-    TestingDriver(const std::string& _binaryPath,
-                  const std::vector<Plugin*>& plugins);
+    TestingDriver(const std::vector<Plugin*>& plugins);
 
     ~TestingDriver() override;
 
@@ -54,7 +49,6 @@ private:
 
     void addTearDown(Executable func);
 
-    std::string binaryPath;
     std::vector<CopyableExecutable> afterInitHooks;
     std::vector<CopyableExecutable> beforeDestroyHooks;
     Group* globalScope;

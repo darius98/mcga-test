@@ -1,19 +1,12 @@
 #include <fstream>
 
-#include <EasyFlags.hpp>
-
 #include "driver.hpp"
 
 using namespace autojson;
-using namespace easyflags;
 using namespace std;
 
 
 namespace kktest {
-
-string TestingDriver::getBinaryPath() {
-    return getInstance()->binaryPath;
-}
 
 void TestingDriver::setExecutor(Executor* executor) {
     executor->copyHooks(getInstance()->executor);
@@ -59,14 +52,11 @@ TestingDriver* TestingDriver::getInstance() {
     return instance;
 }
 
-void TestingDriver::init(int argc,
-                         char** argv,
-                         const vector<Plugin*>& plugins) {
+void TestingDriver::init(const vector<Plugin*>& plugins) {
     if (instance != nullptr) {
         throw runtime_error("TestingDriver::init called a second time!");
     }
-    ParseEasyFlags(argc, argv);
-    instance = new TestingDriver(argv[0], plugins);
+    instance = new TestingDriver(plugins);
     instance->installPlugins();
     for (Executable hook: instance->afterInitHooks) {
         hook();
@@ -84,10 +74,8 @@ int TestingDriver::destroy() {
     return status;
 }
 
-TestingDriver::TestingDriver(const string& _binaryPath,
-                             const vector<Plugin*>& plugins):
+TestingDriver::TestingDriver(const vector<Plugin*>& plugins):
         Pluginable(plugins),
-        binaryPath(_binaryPath),
         globalScope(new Group("", "", 0, nullptr)),
         groupStack({globalScope}),
         executor(new Executor()) {}

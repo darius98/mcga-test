@@ -1,15 +1,19 @@
 #include <vector>
 
+#include <EasyFlags.hpp>
+
 #include <core/driver.hpp>
 #include <core/testcase.hpp>
 #include <plugins/plugins.hpp>
 
+using namespace easyflags;
 using namespace std;
 
 namespace kktest {
 
 int main(int argc, char** argv) {
-    TestingDriver::init(argc, argv, getAllPlugins());
+    ParseEasyFlags(argc, argv);
+    TestingDriver::init(getAllPlugins());
     testCase();
     return TestingDriver::destroy();
 }
