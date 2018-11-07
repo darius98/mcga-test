@@ -3,7 +3,6 @@
 #include <EasyFlags.hpp>
 
 #include "driver.hpp"
-#include "smooth_executor.hpp"
 
 using namespace autojson;
 using namespace easyflags;
@@ -91,7 +90,7 @@ TestingDriver::TestingDriver(const string& _binaryPath,
         binaryPath(_binaryPath),
         globalScope(new Group("", "", 0, nullptr)),
         groupStack({globalScope}),
-        executor(new SmoothExecutor()) {}
+        executor(new Executor()) {}
 
 TestingDriver::~TestingDriver() {
     delete globalScope;

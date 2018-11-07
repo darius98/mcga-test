@@ -11,7 +11,7 @@ namespace kktest {
 
 class TestContainer {
 public:
-    TestContainer(const std::string& _binaryPath);
+    explicit TestContainer(const std::string& _binaryPath);
 
     void runTest(Test* _test);
 
@@ -26,10 +26,6 @@ private:
 class BoxExecutor: public Executor {
 public:
     BoxExecutor(const std::string& binaryPath, int numBoxes);
-
-    bool isDuringTest() const override;
-
-    void checkIsInactive(const std::string& methodName) const override;
 
     void finalize() override;
 

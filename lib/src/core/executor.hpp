@@ -11,23 +11,27 @@
 namespace kktest {
 
 class Executor {
+private:
+    enum State {
+        INACTIVE = 0,
+        SET_UP = 1,
+        TEST = 2,
+        TEAR_DOWN = 3
+    };
+
 public:
     typedef std::function<void(Test*)> TestHook;
     typedef std::function<void(Group*)> GroupHook;
 
-    virtual bool isDuringTest() const = 0;
-
-    virtual void checkIsInactive(const std::string& methodName) const = 0;
-
-    virtual void finalize() = 0;
-
-private:
-    virtual void execute(Test* test, Executable func) = 0;
-
-public:
     Executor();
 
     virtual ~Executor();
+
+    virtual bool isDuringTest() const;
+
+    virtual void checkIsInactive(const std::string& methodName) const;
+
+    virtual void finalize();
 
     void copyHooks(Executor* other);
 
@@ -44,10 +48,20 @@ public:
     void afterGroup(Group* group) const;
 
 private:
+    virtual void execute(Test* test, Executable func);
+
+    void executeSetUpsRecursively(Group* group, Test* test);
+
+    void executeTearDownsRecursively(Group* group, Test* test);
+
+    void runTest(Test* test, Executable func);
+
     std::vector<TestHook> beforeTestHooks;
     std::vector<TestHook> afterTestHooks;
     std::vector<GroupHook> beforeGroupHooks;
     std::vector<GroupHook> afterGroupHooks;
+
+    State state = State::INACTIVE;
 };
 
 }
