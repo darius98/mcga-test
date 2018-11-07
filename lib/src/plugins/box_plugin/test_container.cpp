@@ -1,7 +1,5 @@
 #include <unistd.h>
 
-#include <functional>
-
 #include "test_container.hpp"
 
 using namespace std;

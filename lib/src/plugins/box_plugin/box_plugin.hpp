@@ -2,7 +2,6 @@
 #define KKTEST_PLUGINS_BOX_PLUGIN_BOX_PLUGIN_H_
 
 #include <core/plugin.hpp>
-#include <core/executor.hpp>
 
 
 namespace kktest {
