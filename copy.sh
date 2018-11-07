@@ -17,8 +17,10 @@ sudo cp lib/kktest.cmake /usr/local/include/kktest.cmake
 # Install and init box
 if ! [ -x "$(command -v box)" ]; then
     sudo apt install -y acl
-    cd third_party/sandman && make build && cd ../..
-    sudo mv third_party/sandman/box /usr/local/bin/box
+    git clone https://github.com/establishment/sandman sandman
+    cd sandman && make build && cd ..
+    sudo mv sandman/box /usr/local/bin/box
+    rm -rf sandman
     sudo mkdir -p /eval
     sudo touch /eval/isolate.log
 fi
