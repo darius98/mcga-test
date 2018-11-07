@@ -6,26 +6,7 @@
 
 using namespace std;
 
-AddArgument(int, argumentTestIndex)
-    .ArgumentType("int ")
-    .Name("test")
-    .Short("t")
-    .Description("Index of the test to run (defaults to 0 - run all tests).")
-    .DefaultValue(0);
-
 namespace kktest {
-
-Executor::Executor() {
-    if (argumentTestIndex != 0) {
-        addAfterTestHook([this](Test *test) {
-            cout << test->toJSON();
-            cout.flush();
-        });
-    }
-}
-
-Executor::~Executor() {
-}
 
 void Executor::copyHooks(Executor* other) {
     for (const TestHook& hook: other->beforeTestHooks) {
@@ -43,10 +24,8 @@ void Executor::copyHooks(Executor* other) {
 }
 
 void Executor::executeTest(Test* test, Executable func) {
-    if (argumentTestIndex == 0 || argumentTestIndex == test->getIndex()) {
-        beforeTest(test);
-        execute(test, func);
-    }
+    beforeTest(test);
+    execute(test, func);
 }
 
 void Executor::addBeforeTestHook(TestHook hook) {
@@ -137,12 +116,12 @@ void Executor::runSetUpsRecursively(Group* group, Test* test) {
     } catch(const exception& e) {
         failed = true;
         failMessage = "An exception was thrown during the "
-                              "setUp of group '" + group->getFullDescription()
+                      "setUp of group '" + group->getFullDescription()
                       + "': " + e.what();
     } catch(...) {
         failed = true;
         failMessage = "A non-exception object was thrown during the "
-                              "setUp of group '" + group->getFullDescription() + "'.";
+                      "setUp of group '" + group->getFullDescription() + "'.";
     }
     if (failed) {
         test->setFailure(failMessage);
@@ -176,12 +155,12 @@ void Executor::runTearDownsRecursively(Group* group, Test* test) {
     } catch(const exception& e) {
         failed = true;
         failMessage = "An exception was thrown during the "
-                              "tearDown of group '" + group->getFullDescription()
+                      "tearDown of group '" + group->getFullDescription()
                       + "': " + e.what();
     } catch(...) {
         failed = true;
         failMessage = "A non-exception object was thrown during the "
-                              "tearDown of group '" + group->getFullDescription()
+                      "tearDown of group '" + group->getFullDescription()
                       + "'.";
     }
     if (failed) {

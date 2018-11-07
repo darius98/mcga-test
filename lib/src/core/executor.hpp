@@ -23,9 +23,7 @@ public:
     typedef std::function<void(Test*)> TestHook;
     typedef std::function<void(Group*)> GroupHook;
 
-    Executor();
-
-    virtual ~Executor();
+    virtual ~Executor() = default;
 
     bool isDuringTest() const;
 
