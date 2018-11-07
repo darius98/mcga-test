@@ -10,6 +10,14 @@ using namespace std;
 
 namespace kktest {
 
+// TODO(darius98): Use a simple fork for running each test.
+// Make the child exectute the test using an underlying SmoothExecutor and the
+// main process poll for all parallel tests in the BoxExecutor.
+// This should also fix the minor hacks within Executor & SmoothExecutor core
+// code that deals with single-test execution corner cases.
+// The current implementation is inneficient: each test subprocess must execute
+// (hollowly) all the framework's overhead up to the current test.
+
 TestContainer::TestContainer(const string& _binaryPath):
         binaryPath(_binaryPath), subprocessCaller(), test(nullptr) {}
 
