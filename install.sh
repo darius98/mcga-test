@@ -2,5 +2,5 @@
 
 git submodule update --init --recursive
 
-./compile.sh Release PROD
+./compile.sh Release PROD cmake_prod
 ./copy.sh

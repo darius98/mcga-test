@@ -2,5 +2,5 @@
 
 git submodule update --init --recursive
 
-./compile.sh Debug DEV
+./compile.sh Debug DEV cmake_dev
 ./copy.sh
