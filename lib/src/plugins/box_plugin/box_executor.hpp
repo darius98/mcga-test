@@ -16,7 +16,7 @@ public:
     void finalize() override;
 
 private:
-    void execute(Test* test, Executable func) override;
+    void execute(Test* test, Executable func, Executable after) override;
 
     TestContainer& findEmptyContainer();
 

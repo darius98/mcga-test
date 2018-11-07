@@ -9,25 +9,24 @@ using namespace std;
 namespace kktest {
 
 void TestingDriver::setExecutor(Executor* executor) {
-    executor->copyHooks(getInstance()->executor);
     delete getInstance()->executor;
     getInstance()->executor = executor;
 }
 
-void TestingDriver::addBeforeTestHook(Executor::TestHook hook) {
-    getInstance()->executor->addBeforeTestHook(move(hook));
+void TestingDriver::addBeforeTestHook(TestHook hook) {
+    getInstance()->beforeTestHooks.emplace_back(move(hook));
 }
 
-void TestingDriver::addAfterTestHook(Executor::TestHook hook) {
-    getInstance()->executor->addAfterTestHook(move(hook));
+void TestingDriver::addAfterTestHook(TestHook hook) {
+    getInstance()->afterTestHooks.emplace_back(move(hook));
 }
 
-void TestingDriver::addBeforeGroupHook(Executor::GroupHook hook) {
-    getInstance()->executor->addBeforeGroupHook(move(hook));
+void TestingDriver::addBeforeGroupHook(GroupHook hook) {
+    getInstance()->beforeGroupHooks.emplace_back(move(hook));
 }
 
-void TestingDriver::addAfterGroupHook(Executor::GroupHook hook) {
-    getInstance()->executor->addAfterGroupHook(move(hook));
+void TestingDriver::addAfterGroupHook(GroupHook hook) {
+    getInstance()->afterGroupHooks.emplace_back(move(hook));
 }
 
 void TestingDriver::addAfterInitHook(CopyableExecutable hook) {
@@ -95,7 +94,7 @@ void TestingDriver::addGroup(string description,
     );
     groupStack.push_back(group);
 
-    executor->beforeGroup(group);
+    beforeGroup(group);
     try {
         func();
     } catch(const exception& e) {
@@ -108,7 +107,7 @@ void TestingDriver::addGroup(string description,
             "A non-exception object was thrown inside group'" +
             group->getFullDescription() + "'");
     }
-    executor->afterGroup(group);
+    afterGroup(group);
 
     groupStack.pop_back();
 }
@@ -121,7 +120,10 @@ void TestingDriver::addTest(string description,
     Test* test = groupStack.back()->addTest(
         move(description), move(file), line
     );
-    executor->executeTest(test, func);
+    beforeTest(test);
+    executor->execute(test, func, [this, test]() {
+        afterTest(test);
+    });
 }
 
 void TestingDriver::addSetUp(Executable func) {
@@ -132,6 +134,30 @@ void TestingDriver::addSetUp(Executable func) {
 void TestingDriver::addTearDown(Executable func) {
     executor->checkIsInactive("tearDown");
     groupStack.back()->addTearDown(func);
+}
+
+void TestingDriver::beforeTest(Test* test) const {
+    for (const TestHook& hook: beforeTestHooks) {
+        hook(test);
+    }
+}
+
+void TestingDriver::afterTest(Test* test) const {
+    for (const TestHook& hook: afterTestHooks) {
+        hook(test);
+    }
+}
+
+void TestingDriver::beforeGroup(Group* group) const {
+    for (const GroupHook& hook: beforeGroupHooks) {
+        hook(group);
+    }
+}
+
+void TestingDriver::afterGroup(Group* group) const {
+    for (const GroupHook& hook: afterGroupHooks) {
+        hook(group);
+    }
 }
 
 }

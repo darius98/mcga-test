@@ -3,27 +3,14 @@
 
 #include <string>
 
+#include <core/executable.hpp>
 #include <core/test.hpp>
 
 namespace kktest {
 
-class SubprocessCaller {
-public:
-    SubprocessCaller();
-
-    void setFD(int fd);
-
-    bool poll();
-
-    std::string getOutput() const;
-
-private:
-
-};
-
 class TestContainer {
 public:
-    void fill(Test* _test, int fd);
+    void fill(Test* _test, int fd, Executable _after);
 
     bool tryFinalize();
 
@@ -31,10 +18,14 @@ public:
 
     std::string getOutput() const;
 
+    void executeAfter() const;
+
 private:
     bool poll();
 
     Test* test = nullptr;
+
+    CopyableExecutable after;
 
     bool available = true;
     bool outputAvailable = false;

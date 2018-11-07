@@ -18,7 +18,7 @@ BoxExecutor::BoxExecutor(int numBoxes) {
     }
 }
 
-void BoxExecutor::execute(Test* test, Executable func) {
+void BoxExecutor::execute(Test* test, Executable func, Executable after) {
     TestContainer& container = findEmptyContainer();
     int fd[2];
     if (pipe(fd) < 0) {
@@ -50,7 +50,7 @@ void BoxExecutor::execute(Test* test, Executable func) {
         exit(0);
     }
     close(fd[1]);
-    container.fill(test, fd[0]);
+    container.fill(test, fd[0], after);
 }
 
 TestContainer& BoxExecutor::findEmptyContainer() {
@@ -68,7 +68,7 @@ bool BoxExecutor::tryFinalizeContainer(TestContainer& container) {
     if (container.tryFinalize()) {
         if (test != nullptr) {
             test->loadFromJSON(JSON::parse(container.getOutput()));
-            afterTest(test);
+            container.executeAfter();
         }
         return true;
     }

@@ -12,12 +12,15 @@ namespace kktest {
 
 class TestingDriver: private Pluginable {
 public:
+    typedef std::function<void(Test*)> TestHook;
+    typedef std::function<void(Group*)> GroupHook;
+
     static void setExecutor(Executor* executor);
 
-    static void addBeforeTestHook(Executor::TestHook hook);
-    static void addAfterTestHook(Executor::TestHook hook);
-    static void addBeforeGroupHook(Executor::GroupHook hook);
-    static void addAfterGroupHook(Executor::GroupHook hook);
+    static void addBeforeTestHook(TestHook hook);
+    static void addAfterTestHook(TestHook hook);
+    static void addBeforeGroupHook(GroupHook hook);
+    static void addAfterGroupHook(GroupHook hook);
 
     static void addAfterInitHook(CopyableExecutable hook);
     static void addBeforeDestroyHook(CopyableExecutable hook);
@@ -49,8 +52,19 @@ private:
 
     void addTearDown(Executable func);
 
+    void afterTest(Test* test) const;
+    void beforeTest(Test* test) const;
+    void beforeGroup(Group* group) const;
+    void afterGroup(Group* group) const;
+
+    // Hooks
     std::vector<CopyableExecutable> afterInitHooks;
+    std::vector<TestHook> beforeTestHooks;
+    std::vector<TestHook> afterTestHooks;
+    std::vector<GroupHook> beforeGroupHooks;
+    std::vector<GroupHook> afterGroupHooks;
     std::vector<CopyableExecutable> beforeDestroyHooks;
+
     Group* globalScope;
     std::vector<Group*> groupStack;
     Executor* executor;

@@ -8,7 +8,7 @@ using namespace std;
 
 namespace kktest {
 
-void TestContainer::fill(Test* _test, int fd) {
+void TestContainer::fill(Test* _test, int fd, Executable _after) {
     if (!available) {
         throw runtime_error("Trying to run in un-available box!");
     }
@@ -18,6 +18,7 @@ void TestContainer::fill(Test* _test, int fd) {
     available = false;
     processOutput.clear();
     processFileDescriptor = fd;
+    after = _after;
 }
 
 bool TestContainer::tryFinalize() {
@@ -40,6 +41,10 @@ string TestContainer::getOutput() const {
         throw runtime_error("Output not available!");
     }
     return processOutput;
+}
+
+void TestContainer::executeAfter() const {
+    after();
 }
 
 bool TestContainer::poll() {
