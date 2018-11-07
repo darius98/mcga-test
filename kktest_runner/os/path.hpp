@@ -79,14 +79,10 @@ public:
     std::string toString() const;
     std::vector<std::string> getParts() const;
 
-    Path& operator+=(const Path& other);
-    Path& operator+=(const std::string& other);
     Path operator+(const Path& other) const;
     Path operator+(const std::string& other) const;
 
     Path parent() const;
-    Path& operator--();
-    Path operator--(int);
 
 private:
     bool applySpecialPart(const std::string& part);
