@@ -8,14 +8,9 @@ AddArgument(int, flagBoxed)
     .ArgumentType("0|1 ")
     .Name("boxed")
     .Short("b")
-    .Description("Run the tests boxed (requires sudo + box installed)")
+    .Description("Run the tests in isolated processes (boxed)")
     .DefaultValue(0)
     .ImplicitValue(1);
-AddArgument(int, argumentFirstBox)
-    .ArgumentType("int")
-    .Name("first_box")
-    .Description("The index of the first box to use while running boxed")
-    .DefaultValue("0");
 AddArgument(int, argumentNumBoxes)
     .ArgumentType("int")
     .Name("num_boxes")
@@ -33,9 +28,7 @@ bool BoxPlugin::isEnabled() const {
 void BoxPlugin::install() {
     TestingDriver::addAfterInitHook([]() {
         TestingDriver::setExecutor(
-                new BoxExecutor(TestingDriver::getBinaryPath(),
-                                argumentFirstBox,
-                                argumentFirstBox + argumentNumBoxes)
+            new BoxExecutor(TestingDriver::getBinaryPath(), argumentNumBoxes)
         );
     });
 }

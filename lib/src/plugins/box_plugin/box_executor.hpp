@@ -11,11 +11,11 @@ namespace kktest {
 
 class TestContainer {
 public:
-    TestContainer(const std::string& boxId, const std::string& binaryPath);
+    TestContainer(const std::string& binaryPath);
 
     void runTest(Test* _test);
 
-    bool tryFinalize(std::function<void(Test*, autojson::JSON)> callback);
+    bool tryFinalize(std::function<void(Test*, const std::string&)> callback);
 
 private:
     Box box;
@@ -24,9 +24,7 @@ private:
 
 class BoxExecutor: public Executor {
 public:
-    BoxExecutor(const std::string& binaryPath,
-                int boxIdBegin,
-                int boxIdEnd);
+    BoxExecutor(const std::string& binaryPath, int numBoxes);
 
     bool isDuringTest() const override;
 
