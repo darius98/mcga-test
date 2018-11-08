@@ -68,7 +68,7 @@ bool File::hasExtension() const {
     return !extensions.empty();
 }
 
-std::vector<Extension> File::getAllExtensions() const {
+vector<Extension> File::getAllExtensions() const {
     return extensions;
 }
 
@@ -79,12 +79,12 @@ Extension File::getExtension() const {
     return extensions.back();
 }
 
-std::string File::nameWithoutAllExtensions() const {
+string File::nameWithoutAllExtensions() const {
     return rawName;
 }
 
-std::string File::nameWithoutExtension() const {
-    std::string ret = rawName;
+string File::nameWithoutExtension() const {
+    string ret = rawName;
     for (size_t i = 0; i + 1 < extensions.size(); ++ i) {
         ret += '.';
         ret += extensions[i].toString();
@@ -151,7 +151,7 @@ void File::remove() const {
     }
 }
 
-std::string File::key() const {
+string File::key() const {
     return toString();
 }
 

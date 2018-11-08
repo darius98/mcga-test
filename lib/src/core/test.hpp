@@ -23,7 +23,7 @@ public:
          int _line,
          Group* _parentGroup);
 
-    ~Test();
+    ~Test() override;
 
     int getIndex() const;
 

@@ -23,7 +23,7 @@ public:
           int _line,
           Group* _parentGroup);
 
-    ~Group();
+    ~Group() override;
 
     int getNumFailedTests() const;
     int getNumTests() const;

@@ -30,8 +30,6 @@ public:
 
     virtual void finalize();
 
-    void afterTest(Test* test) const;
-
 protected:
     void run(Test* test, Executable func);
 

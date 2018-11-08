@@ -1,5 +1,3 @@
-#include <vector>
-
 #include <EasyFlags.hpp>
 
 #include <core/driver.hpp>

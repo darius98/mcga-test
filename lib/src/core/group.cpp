@@ -38,7 +38,7 @@ int Group::getNumFailedTests() const {
 }
 
 int Group::getNumTests() const {
-    int numTests = tests.size();
+    auto numTests = (int)tests.size();
     for (Group* subGroup: subGroups) {
         numTests += subGroup->getNumTests();
     }
