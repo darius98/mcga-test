@@ -9,30 +9,27 @@
 namespace kktest {
 
 class TestContainer {
+private:
+    static constexpr const std::size_t PROCESS_READ_BUFFER_SIZE = 1u << 10;
+
 public:
-    void fill(Test* _test, int fd, Executable _after);
+    TestContainer(Test *_test,
+                  int _testProcessPipeFD,
+                  int _testProcessPID,
+                  CopyableExecutable _afterTestCallback);
 
-    bool tryFinalize();
+    bool operator <(const TestContainer& other) const;
 
-    Test* getTest() const;
-
-    std::string getOutput() const;
-
-    void executeAfter() const;
+    bool isTestFinished() const;
 
 private:
-    bool poll();
-
     Test* test = nullptr;
+    int testProcessPipeFD;
+    pid_t testProcessPID;
+    CopyableExecutable afterTestCallback;
 
-    CopyableExecutable after;
-
-    bool available = true;
-    bool outputAvailable = false;
-
-    int processFileDescriptor;
-    char processOutputReadBuffer[32];
-    std::string processOutput;
+    mutable char processOutputReadBuffer[PROCESS_READ_BUFFER_SIZE];
+    mutable std::string processOutput;
 };
 
 }

@@ -1,56 +1,31 @@
+#include <JSON>
+
 #include <unistd.h>
 
 #include "test_container.hpp"
 
+using namespace autojson;
 using namespace std;
 
 namespace kktest {
 
-void TestContainer::fill(Test* _test, int fd, Executable _after) {
-    if (!available) {
-        throw runtime_error("Trying to run in un-available box!");
-    }
+TestContainer::TestContainer(Test *_test,
+                             int _testProcessPipeFD,
+                             int _testProcessPID,
+                             CopyableExecutable _afterTestCallback):
+        test(_test),
+        testProcessPipeFD(_testProcessPipeFD),
+        testProcessPID(_testProcessPID),
+        afterTestCallback(move(_afterTestCallback)) {}
 
-    test = _test;
-    outputAvailable = false;
-    available = false;
-    processOutput.clear();
-    processFileDescriptor = fd;
-    after = _after;
+bool TestContainer::operator<(const TestContainer &other) const {
+    return testProcessPID < other.testProcessPID;
 }
 
-bool TestContainer::tryFinalize() {
-    if (test == nullptr) {
-        return true;
-    }
-    if (!poll()) {
-        return false;
-    }
-    test = nullptr;
-    return true;
-}
-
-Test* TestContainer::getTest() const {
-    return test;
-}
-
-string TestContainer::getOutput() const {
-    if (!outputAvailable) {
-        throw runtime_error("Output not available!");
-    }
-    return processOutput;
-}
-
-void TestContainer::executeAfter() const {
-    after();
-}
-
-bool TestContainer::poll() {
-    if (available) {
-        return true;
-    }
-
-    int numBytesRead = read(processFileDescriptor, processOutputReadBuffer, 31);
+bool TestContainer::isTestFinished() const {
+    ssize_t numBytesRead = read(testProcessPipeFD,
+                                processOutputReadBuffer,
+                                PROCESS_READ_BUFFER_SIZE - 1);
     if (numBytesRead < 0) {
         perror("read");
         exit(errno);
@@ -62,11 +37,12 @@ bool TestContainer::poll() {
     processOutput += processOutputReadBuffer;
     if (processOutputReadBuffer[numBytesRead - 1] == 0) {
         // reading is done on encountering zero.
-        close(processFileDescriptor);
-        outputAvailable = true;
-        available = true;
+        close(testProcessPipeFD);
+        test->loadFromJSON(JSON::parse(processOutput));
+        afterTestCallback();
+        return true;
     }
-    return available;
+    return false;
 }
 
 }
