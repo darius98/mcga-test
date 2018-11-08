@@ -53,8 +53,6 @@ public:
     Group* getParentGroup() const;
 
 private:
-    std::vector<Test*> tests;
-
     std::string description;
     std::string file;
     int line;

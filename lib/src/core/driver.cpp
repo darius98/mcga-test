@@ -108,9 +108,11 @@ void TestingDriver::addGroup(string description,
             "A non-exception object was thrown inside group'" +
             group->getFullDescription() + "'");
     }
+
+    // TODO: This cannot be synchronous, since it breaks tests inside this group
+    // that finish their execution after this point!
     afterGroup(group);
 
-    delete groupStack.back();
     groupStack.pop_back();
 }
 
@@ -149,6 +151,7 @@ void TestingDriver::afterTest(Test* test) const {
     for (const TestHook& hook: afterTestHooks) {
         hook(test);
     }
+    delete test;
 }
 
 void TestingDriver::beforeGroup(Group* group) const {
@@ -161,6 +164,7 @@ void TestingDriver::afterGroup(Group* group) const {
     for (const GroupHook& hook: afterGroupHooks) {
         hook(group);
     }
+    delete group;
 }
 
 }

@@ -16,11 +16,7 @@ Group::Group(string _description, string _file, int _line, Group* _parentGroup):
         parentGroup(_parentGroup),
         index(++globalGroupIndex) {}
 
-Group::~Group() {
-    for (Test* test: tests) {
-        delete test;
-    }
-}
+Group::~Group() = default;
 
 string Group::getDescription() const {
     return description;
@@ -39,9 +35,7 @@ bool Group::isGlobalScope() const {
 }
 
 Test* Group::addTest(string description, string file, int line, int index) {
-    Test* test = new Test(move(description), move(file), line, this, index);
-    tests.push_back(test);
-    return test;
+    return new Test(move(description), move(file), line, this, index);
 }
 
 void Group::addSetUp(Executable func) {
