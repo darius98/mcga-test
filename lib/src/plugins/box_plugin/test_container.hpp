@@ -18,9 +18,9 @@ public:
                   int _testProcessPID,
                   CopyableExecutable _afterTestCallback);
 
-    bool operator <(const TestContainer& other) const;
+    ~TestContainer();
 
-    bool isTestFinished() const;
+    bool isTestFinished();
 
 private:
     Test* test = nullptr;
@@ -28,8 +28,8 @@ private:
     pid_t testProcessPID;
     CopyableExecutable afterTestCallback;
 
-    mutable char processOutputReadBuffer[PROCESS_READ_BUFFER_SIZE];
-    mutable std::string processOutput;
+    char processOutputReadBuffer[PROCESS_READ_BUFFER_SIZE];
+    std::string processOutput;
 };
 
 }

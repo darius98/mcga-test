@@ -21,7 +21,7 @@ private:
     void ensureFreeContainers(std::size_t numContainers);
 
     std::size_t maxNumContainers;
-    std::set<TestContainer> containers;
+    std::set<TestContainer*> openContainers;
 };
 
 }

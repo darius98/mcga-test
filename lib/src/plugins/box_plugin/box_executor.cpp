@@ -50,7 +50,7 @@ void BoxExecutor::execute(Test* test, Executable func, Executable after) {
         exit(0);
     }
     close(fd[1]);
-    containers.insert(TestContainer(test, fd[0], pid, after));
+    openContainers.insert(new TestContainer(test, fd[0], pid, after));
 }
 
 void BoxExecutor::finalize() {
@@ -58,10 +58,12 @@ void BoxExecutor::finalize() {
 }
 
 void BoxExecutor::ensureFreeContainers(size_t numContainers) {
-    while (containers.size() > maxNumContainers - numContainers) {
-        for (auto it = containers.begin(); it != containers.end();) {
-            if (it->isTestFinished()) {
-                it = containers.erase(it);
+    while (openContainers.size() > maxNumContainers - numContainers) {
+        auto it = openContainers.begin();
+        while (it != openContainers.end()) {
+            if ((*it)->isTestFinished()) {
+                delete (*it);
+                it = openContainers.erase(it);
             } else {
                 ++ it;
             }
