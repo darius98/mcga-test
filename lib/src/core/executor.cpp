@@ -1,7 +1,5 @@
 #include <iostream>
 
-#include <EasyFlags.hpp>
-
 #include "executor.hpp"
 
 using namespace std;
