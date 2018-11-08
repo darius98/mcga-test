@@ -2,7 +2,6 @@
 
 #include "driver.hpp"
 
-using namespace autojson;
 using namespace std;
 
 
@@ -38,10 +37,6 @@ void TestingDriver::addAfterInitHook(CopyableExecutable hook) {
 
 void TestingDriver::addBeforeDestroyHook(CopyableExecutable hook) {
     getInstance()->beforeDestroyHooks.push_back(hook);
-}
-
-JSON TestingDriver::toJSON() {
-    return getInstance()->globalScope->toJSON();
 }
 
 TestingDriver* TestingDriver::instance = nullptr;

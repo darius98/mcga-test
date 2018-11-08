@@ -5,6 +5,7 @@
 #include <core/driver.hpp>
 #include "report_plugin.hpp"
 
+using namespace autojson;
 using namespace std;
 
 AddArgument(string, argumentReportFileName)
@@ -22,10 +23,57 @@ bool ReportPlugin::isEnabled() const {
 }
 
 void ReportPlugin::install() {
-    TestingDriver::addBeforeDestroyHook([]() {
-        ofstream report(argumentReportFileName);
-        report << TestingDriver::toJSON().stringify(0);
-        report.close();
+    report["numTests"] = 0;
+    report["numFailedTests"] = 0;
+
+    TestingDriver::addBeforeGroupHook([this](Group* group) {
+        partialGroupJSONs.push_back(map<string, JSON>{
+            {"line", group->getLine()},
+            {"file", group->getFilename()},
+            {"description", group->getDescription()}
+        });
+    });
+
+    TestingDriver::addAfterGroupHook([this](Group*) {
+        JSON groupJSON = partialGroupJSONs.back();
+        partialGroupJSONs.pop_back();
+        JSON& parentJSON = partialGroupJSONs.empty() ?
+                                    report : partialGroupJSONs.back();
+        if (!parentJSON.exists("subGroups")) {
+            parentJSON["subGroups"] = vector<JSON>();
+        }
+        parentJSON["subGroups"].push_back(groupJSON);
+    });
+
+    TestingDriver::addAfterTestHook([this](Test* test) {
+        JSON testJSON = {
+            {"description", test->getDescription()},
+            {"file", test->getFilename()},
+            {"line", test->getLine()},
+            {"executed", test->isExecuted()},
+            {"index", test->getIndex()}
+        };
+        if (test->isExecuted()) {
+            report["numTests"] = (int)report["numTests"] + 1;
+            testJSON["passed"] = test->isPassed();
+            if (!test->isPassed()) {
+                report["numFailedTests"] = (int)report["numFailedTests"] + 1;
+                testJSON["failureMessage"] = test->getFailureMessage();
+            }
+        }
+
+        JSON& parentJSON = partialGroupJSONs.empty() ?
+                                    report : partialGroupJSONs.back();
+        if (!parentJSON.exists("tests")) {
+            parentJSON["tests"] = vector<JSON>();
+        }
+        parentJSON["tests"].push_back(testJSON);
+    });
+
+    TestingDriver::addBeforeDestroyHook([this]() {
+        ofstream reportFile(argumentReportFileName);
+        reportFile << report.stringify(0);
+        reportFile.close();
     });
 }
 

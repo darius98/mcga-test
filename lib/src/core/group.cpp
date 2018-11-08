@@ -45,6 +45,18 @@ int Group::getNumTests() const {
     return numTests;
 }
 
+string Group::getDescription() const {
+    return description;
+}
+
+string Group::getFilename() const {
+    return file;
+}
+
+int Group::getLine() const {
+    return line;
+}
+
 bool Group::isGlobalScope() const {
     return parentGroup == nullptr;
 }
@@ -117,36 +129,6 @@ void Group::writeBytes(BytesConsumer& consumer) const {
         << file
         << description.size()
         << description;
-}
-
-JSON Group::toJSON() const {
-    JSON report;
-    if (!isGlobalScope()) {
-        report = {
-            {"line", line},
-            {"file", file},
-            {"description", description}
-        };
-    } else {
-        report = {
-            {"numTests", getNumTests()},
-            {"numFailedTests", getNumFailedTests()}
-        };
-    }
-
-    if (!tests.empty()) {
-        report["tests"] = vector<JSON>();
-        for (const auto& test: tests) {
-            report["tests"].push_back(test->toJSON());
-        }
-    }
-    if (!subGroups.empty()) {
-        report["subGroups"] = vector<JSON>();
-        for (const auto& subGroup: subGroups) {
-            report["subGroups"].push_back(subGroup->toJSON());
-        }
-    }
-    return report;
 }
 
 Group* Group::getParentGroup() const {

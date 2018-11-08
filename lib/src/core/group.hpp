@@ -5,8 +5,6 @@
 #include <string>
 #include <vector>
 
-#include <JSON>
-
 #include <core/executable.hpp>
 #include "test.hpp"
 
@@ -24,6 +22,12 @@ public:
           Group* _parentGroup);
 
     ~Group() override;
+
+    std::string getDescription() const;
+
+    std::string getFilename() const;
+
+    int getLine() const;
 
     int getNumFailedTests() const;
     int getNumTests() const;
@@ -45,8 +49,6 @@ public:
     std::string getFullDescription() const;
 
     void writeBytes(BytesConsumer& consumer) const override;
-
-    autojson::JSON toJSON() const;
 
     int getIndex() const;
 

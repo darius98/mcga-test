@@ -1,6 +1,8 @@
 #ifndef KKTEST_PLUGINS_REPORT_PLUGIN_REPORT_PLUGIN_H_
 #define KKTEST_PLUGINS_REPORT_PLUGIN_REPORT_PLUGIN_H_
 
+#include <JSON>
+
 #include <core/plugin.hpp>
 
 
@@ -11,6 +13,10 @@ public:
     bool isEnabled() const override;
 
     void install() override;
+
+private:
+    autojson::JSON report;
+    std::vector<autojson::JSON> partialGroupJSONs;
 };
 
 }

@@ -28,6 +28,14 @@ int Test::getIndex() const {
     return index;
 }
 
+string Test::getFilename() const {
+    return file;
+}
+
+int Test::getLine() const {
+    return line;
+}
+
 void Test::setExecuted() {
     if (isExecuted()) {
         throw runtime_error("Test::setExecuted called twice on the same test!");
@@ -91,10 +99,11 @@ void Test::writeBytes(BytesConsumer& consumer) const {
 
 JSON Test::toJSON() const {
     JSON report = {
-        {"description", description},
-        {"file", file},
-        {"line", line},
-        {"executed", isExecuted()}
+        {"description", getDescription()},
+        {"file", getFilename()},
+        {"line", getLine()},
+        {"executed", isExecuted()},
+        {"index", getIndex()}
     };
     if (isExecuted()) {
         report["passed"] = isPassed();

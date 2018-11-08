@@ -27,6 +27,10 @@ public:
 
     int getIndex() const;
 
+    std::string getFilename() const;
+
+    int getLine() const;
+
     void setExecuted();
 
     bool isExecuted() const;
