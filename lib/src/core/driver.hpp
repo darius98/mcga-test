@@ -68,6 +68,7 @@ private:
     Group* globalScope;
     std::vector<Group*> groupStack;
     Executor* executor;
+    bool useImplicitExecutor = true;
 
 friend int main(int argc, char** argv);
 friend class TestDefiner;

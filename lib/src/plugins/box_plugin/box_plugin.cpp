@@ -2,7 +2,6 @@
 
 #include <core/driver.hpp>
 #include "box_plugin.hpp"
-#include "box_executor.hpp"
 
 using namespace std;
 
@@ -31,9 +30,14 @@ void BoxPlugin::install() {
     if (argumentNumBoxes <= 0) {
         throw runtime_error("Invalid number of boxes.");
     }
-    TestingDriver::addAfterInitHook([]() {
-        TestingDriver::setExecutor(new BoxExecutor((size_t)argumentNumBoxes));
+    boxExecutor = new BoxExecutor((size_t)argumentNumBoxes);
+    TestingDriver::addAfterInitHook([this]() {
+        TestingDriver::setExecutor(boxExecutor);
     });
+}
+
+void BoxPlugin::uninstall() {
+    delete boxExecutor;
 }
 
 }

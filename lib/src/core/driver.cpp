@@ -9,7 +9,10 @@ using namespace std;
 namespace kktest {
 
 void TestingDriver::setExecutor(Executor* executor) {
-    delete getInstance()->executor;
+    if (getInstance()->useImplicitExecutor) {
+        delete getInstance()->executor;
+        getInstance()->useImplicitExecutor = false;
+    }
     getInstance()->executor = executor;
 }
 
@@ -81,7 +84,9 @@ TestingDriver::TestingDriver(const vector<Plugin*>& plugins):
 
 TestingDriver::~TestingDriver() {
     delete globalScope;
-    delete executor;
+    if (useImplicitExecutor) {
+        delete executor;
+    }
 }
 
 void TestingDriver::addGroup(string description,
