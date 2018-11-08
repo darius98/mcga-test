@@ -67,8 +67,8 @@ Group* Group::addSubGroup(string description, string file, int line) {
     return subGroup;
 }
 
-Test* Group::addTest(string description, string file, int line) {
-    Test* test = new Test(move(description), move(file), line, this);
+Test* Group::addTest(string description, string file, int line, int index) {
+    Test* test = new Test(move(description), move(file), line, this, index);
     tests.push_back(test);
     return test;
 }

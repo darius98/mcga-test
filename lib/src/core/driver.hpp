@@ -65,6 +65,7 @@ private:
     std::vector<Group*> groupStack;
     Executor* executor;
     bool useImplicitExecutor = true;
+    int currentTestIndex = 0;
 
 friend int main(int argc, char** argv);
 friend class TestDefiner;

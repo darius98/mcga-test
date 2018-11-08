@@ -11,14 +11,16 @@ using namespace kktest::utils;
 
 namespace kktest {
 
-int Test::globalTestIndex = 0;
-
-Test::Test(string _description, string _file, int _line, Group* _parentGroup):
+Test::Test(string _description,
+           string _file,
+           int _line,
+           Group* _parentGroup,
+           int _index):
         description(move(_description)),
         file(move(_file)),
         line(_line),
         parentGroup(_parentGroup),
-        index(++globalTestIndex) {}
+        index(_index) {}
 
 Test::~Test() {
     delete failure;

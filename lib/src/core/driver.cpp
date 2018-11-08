@@ -118,7 +118,7 @@ void TestingDriver::addTest(string description,
                             Executable func) {
     executor->checkIsInactive("test");
     Test* test = groupStack.back()->addTest(
-        move(description), move(file), line
+        move(description), move(file), line, ++ currentTestIndex
     );
     beforeTest(test);
     executor->execute(test, func, [this, test]() {

@@ -14,14 +14,12 @@ namespace kktest {
 class Group;
 
 class Test: public MessageSerializable {
-private:
-    static int globalTestIndex;
-
 public:
     Test(std::string _description,
          std::string _file,
          int _line,
-         Group* _parentGroup);
+         Group* _parentGroup,
+         int _index);
 
     ~Test() override;
 

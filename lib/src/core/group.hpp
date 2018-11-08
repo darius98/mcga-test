@@ -36,7 +36,10 @@ public:
 
     Group* addSubGroup(std::string description, std::string file, int line);
 
-    Test* addTest(std::string description, std::string file, int line);
+    Test* addTest(std::string description,
+                  std::string file,
+                  int line,
+                  int index);
 
     void addSetUp(Executable func);
 
