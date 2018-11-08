@@ -17,7 +17,8 @@ public:
           std::string _file,
           int _line,
           Group* _parentGroup,
-          int _index);
+          int _index,
+          Executable _afterAllTestsCallback = nullptr);
 
     ~Group() override;
 
@@ -45,6 +46,12 @@ public:
 
     Group* getParentGroup() const;
 
+    void markTestStartedExecution();
+
+    void markTestFinishedExecution();
+
+    void markAllTestsStartedExecution();
+
 private:
     std::string description;
     std::string file;
@@ -58,6 +65,11 @@ private:
 
     bool hasTearDown = false;
     CopyableExecutable tearDownFunc;
+
+    int testsStarted = 0;
+    int testsFinished = 0;
+    bool allTestsStarted = false;
+    CopyableExecutable afterAllTestsCallback;
 };
 
 }

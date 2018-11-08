@@ -61,6 +61,8 @@ private:
     std::vector<GroupHook> afterGroupHooks;
     std::vector<CopyableExecutable> beforeDestroyHooks;
 
+    // TODO: I don't think the global state needs to be a group anymore.
+    // Refactor it.
     Group* globalScope;
     std::vector<Group*> groupStack;
     Executor* executor;

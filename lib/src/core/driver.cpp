@@ -93,7 +93,10 @@ void TestingDriver::addGroup(string description,
                              move(file),
                              line,
                              groupStack.back(),
-                             ++ currentGroupIndex);
+                             ++ currentGroupIndex,
+                             [this, group]() {
+                                 afterGroup(group);
+                             });
     groupStack.push_back(group);
 
     beforeGroup(group);
@@ -109,10 +112,6 @@ void TestingDriver::addGroup(string description,
             "A non-exception object was thrown inside group'" +
             group->getFullDescription() + "'");
     }
-
-    // TODO: This cannot be synchronous, since it breaks tests inside this group
-    // that finish their execution after this point!
-    afterGroup(group);
 
     groupStack.pop_back();
 }

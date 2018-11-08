@@ -11,12 +11,14 @@ Group::Group(string _description,
              string _file,
              int _line,
              Group* _parentGroup,
-             int _index):
+             int _index,
+             Executable _afterAllTestsCallback):
         description(move(_description)),
         file(move(_file)),
         line(_line),
         parentGroup(_parentGroup),
-        index(_index) {}
+        index(_index),
+        afterAllTestsCallback(_afterAllTestsCallback) {}
 
 Group::~Group() = default;
 
@@ -96,6 +98,21 @@ void Group::writeBytes(BytesConsumer& consumer) const {
 
 Group* Group::getParentGroup() const {
     return parentGroup;
+}
+
+void Group::markTestStartedExecution() {
+    ++ testsStarted;
+}
+
+void Group::markTestFinishedExecution() {
+    ++ testsFinished;
+    if (testsFinished == testsStarted && allTestsStarted) {
+        afterAllTestsCallback();
+    }
+}
+
+void Group::markAllTestsStartedExecution() {
+    allTestsStarted = true;
 }
 
 }
