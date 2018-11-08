@@ -7,16 +7,53 @@
 using namespace autojson;
 using namespace std;
 
+
+namespace {
+
+void writeStringToPipe(const std::string& output, int pipeFD) {
+    size_t bytesToWrite = output.size() + 1;
+    const char* bytes = output.c_str();
+    int written = 0;
+    while (bytesToWrite > 0) {
+        ssize_t blockSize = write(pipeFD, bytes + written, bytesToWrite);
+        if (blockSize < 0) {
+            perror("write");
+            exit(errno);
+        }
+        bytesToWrite -= blockSize;
+        written += blockSize;
+    }
+}
+
+}
+
+
 namespace kktest {
 
 TestContainer::TestContainer(Test *_test,
-                             int _testProcessPipeFD,
-                             int _testProcessPID,
+                             Executable run,
                              CopyableExecutable _afterTestCallback):
         test(_test),
-        testProcessPipeFD(_testProcessPipeFD),
-        testProcessPID(_testProcessPID),
-        afterTestCallback(move(_afterTestCallback)) {}
+        afterTestCallback(move(_afterTestCallback)) {
+    int fd[2];
+    if (pipe(fd) < 0) {
+        perror("pipe");
+        exit(errno);
+    }
+    testProcessPipeFD = fd[0];
+    testProcessPID = fork();
+    if (testProcessPID < 0) {
+        perror("fork");
+        exit(errno);
+    }
+    if (testProcessPID == 0) { // child
+        close(testProcessPipeFD);
+        run();
+        writeStringToPipe(test->toJSON().stringify(), fd[1]);
+        exit(0);
+    }
+    close(fd[1]);
+}
 
 TestContainer::~TestContainer() {
     close(testProcessPipeFD);

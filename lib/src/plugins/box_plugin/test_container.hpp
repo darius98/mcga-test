@@ -14,8 +14,7 @@ private:
 
 public:
     TestContainer(Test* _test,
-                  int _testProcessPipeFD,
-                  int _testProcessPID,
+                  Executable testFunc,
                   CopyableExecutable _afterTestCallback);
 
     ~TestContainer();
