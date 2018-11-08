@@ -12,14 +12,12 @@
 namespace kktest {
 
 class Group: public MessageSerializable {
-private:
-    static int globalGroupIndex;
-
 public:
     Group(std::string _description,
           std::string _file,
           int _line,
-          Group* _parentGroup);
+          Group* _parentGroup,
+          int _index);
 
     ~Group() override;
 
@@ -30,11 +28,6 @@ public:
     int getLine() const;
 
     bool isGlobalScope() const;
-
-    Test* addTest(std::string description,
-                  std::string file,
-                  int line,
-                  int index);
 
     void addSetUp(Executable func);
 

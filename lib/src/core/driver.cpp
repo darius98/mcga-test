@@ -73,7 +73,7 @@ int TestingDriver::destroy() {
 
 TestingDriver::TestingDriver(const vector<Plugin*>& plugins):
         Pluginable(plugins),
-        globalScope(new Group("", "", 0, nullptr)),
+        globalScope(new Group("", "", 0, nullptr, -1)),
         groupStack({globalScope}),
         executor(new Executor()) {}
 
@@ -92,7 +92,8 @@ void TestingDriver::addGroup(string description,
     Group* group = new Group(move(description),
                              move(file),
                              line,
-                             groupStack.back());
+                             groupStack.back(),
+                             ++ currentGroupIndex);
     groupStack.push_back(group);
 
     beforeGroup(group);
@@ -121,8 +122,8 @@ void TestingDriver::addTest(string description,
                             int line,
                             Executable func) {
     executor->checkIsInactive("test");
-    Test* test = groupStack.back()->addTest(
-        move(description), move(file), line, ++ currentTestIndex
+    Test* test = new Test(
+        move(description), move(file), line, groupStack.back(), ++ currentTestIndex
     );
     beforeTest(test);
     executor->execute(test, func, [this, test]() {

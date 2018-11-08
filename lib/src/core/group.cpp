@@ -7,14 +7,16 @@ using namespace std;
 
 namespace kktest {
 
-int Group::globalGroupIndex = 0;
-
-Group::Group(string _description, string _file, int _line, Group* _parentGroup):
+Group::Group(string _description,
+             string _file,
+             int _line,
+             Group* _parentGroup,
+             int _index):
         description(move(_description)),
         file(move(_file)),
         line(_line),
         parentGroup(_parentGroup),
-        index(++globalGroupIndex) {}
+        index(_index) {}
 
 Group::~Group() = default;
 
@@ -32,10 +34,6 @@ int Group::getLine() const {
 
 bool Group::isGlobalScope() const {
     return parentGroup == nullptr;
-}
-
-Test* Group::addTest(string description, string file, int line, int index) {
-    return new Test(move(description), move(file), line, this, index);
 }
 
 void Group::addSetUp(Executable func) {

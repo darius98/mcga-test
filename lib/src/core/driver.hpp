@@ -66,6 +66,7 @@ private:
     Executor* executor;
     bool useImplicitExecutor = true;
     int currentTestIndex = 0;
+    int currentGroupIndex = 0;
     mutable int numFailedTests = 0;
 
 friend int main(int argc, char** argv);
