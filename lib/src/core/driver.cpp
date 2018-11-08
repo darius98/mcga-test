@@ -66,7 +66,7 @@ int TestingDriver::destroy() {
     for (Executable hook: driver->beforeDestroyHooks) {
         hook();
     }
-    int status = driver->globalScope->getNumFailedTests();
+    int status = driver->numFailedTests;
     delete driver;
     return status;
 }
@@ -89,9 +89,10 @@ void TestingDriver::addGroup(string description,
                              int line,
                              Executable func) {
     executor->checkIsInactive("group");
-    Group* group = groupStack.back()->addSubGroup(
-        move(description), move(file), line
-    );
+    Group* group = new Group(move(description),
+                             move(file),
+                             line,
+                             groupStack.back());
     groupStack.push_back(group);
 
     beforeGroup(group);
@@ -109,6 +110,7 @@ void TestingDriver::addGroup(string description,
     }
     afterGroup(group);
 
+    delete groupStack.back();
     groupStack.pop_back();
 }
 
@@ -143,6 +145,7 @@ void TestingDriver::beforeTest(Test* test) const {
 }
 
 void TestingDriver::afterTest(Test* test) const {
+    numFailedTests += test->isFailed();
     for (const TestHook& hook: afterTestHooks) {
         hook(test);
     }

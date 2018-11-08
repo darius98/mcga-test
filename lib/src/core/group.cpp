@@ -20,28 +20,6 @@ Group::~Group() {
     for (Test* test: tests) {
         delete test;
     }
-    for (Group* subGroup: subGroups) {
-        delete subGroup;
-    }
-}
-
-int Group::getNumFailedTests() const {
-    int numFailedTests = 0;
-    for (Test* test: tests) {
-        numFailedTests += test->isFailed();
-    }
-    for (Group* subGroup: subGroups) {
-        numFailedTests += subGroup->getNumFailedTests();
-    }
-    return numFailedTests;
-}
-
-int Group::getNumTests() const {
-    auto numTests = (int)tests.size();
-    for (Group* subGroup: subGroups) {
-        numTests += subGroup->getNumTests();
-    }
-    return numTests;
 }
 
 string Group::getDescription() const {
@@ -58,12 +36,6 @@ int Group::getLine() const {
 
 bool Group::isGlobalScope() const {
     return parentGroup == nullptr;
-}
-
-Group* Group::addSubGroup(string description, string file, int line) {
-    Group* subGroup = new Group(move(description), move(file), line, this);
-    subGroups.push_back(subGroup);
-    return subGroup;
 }
 
 Test* Group::addTest(string description, string file, int line, int index) {

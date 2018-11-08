@@ -29,12 +29,7 @@ public:
 
     int getLine() const;
 
-    int getNumFailedTests() const;
-    int getNumTests() const;
-
     bool isGlobalScope() const;
-
-    Group* addSubGroup(std::string description, std::string file, int line);
 
     Test* addTest(std::string description,
                   std::string file,
@@ -58,7 +53,6 @@ public:
     Group* getParentGroup() const;
 
 private:
-    std::vector<Group*> subGroups;
     std::vector<Test*> tests;
 
     std::string description;
