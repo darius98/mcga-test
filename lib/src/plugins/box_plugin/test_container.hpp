@@ -13,7 +13,7 @@ private:
     static constexpr const std::size_t PROCESS_READ_BUFFER_SIZE = 1u << 10;
 
 public:
-    TestContainer(Test *_test,
+    TestContainer(Test* _test,
                   int _testProcessPipeFD,
                   int _testProcessPID,
                   CopyableExecutable _afterTestCallback);
@@ -23,7 +23,7 @@ public:
     bool isTestFinished();
 
 private:
-    Test* test = nullptr;
+    Test* test;
     int testProcessPipeFD;
     pid_t testProcessPID;
     CopyableExecutable afterTestCallback;
