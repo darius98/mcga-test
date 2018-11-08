@@ -2,9 +2,11 @@
 
 #include <unistd.h>
 
+#include <utils/unescape_characters.hpp>
 #include "test_container.hpp"
 
 using namespace autojson;
+using namespace kktest::utils;
 using namespace std;
 
 
@@ -49,7 +51,10 @@ TestContainer::TestContainer(Test *_test,
     if (testProcessPID == 0) { // child
         close(testProcessPipeFD);
         run();
-        writeStringToPipe(test->toJSON().stringify(), fd[1]);
+        writeStringToPipe(JSON(map<string, JSON>{
+            {"passed", test->isPassed()},
+            {"failureMessage", test->getFailureMessage()}
+        }).stringify(), fd[1]);
         exit(0);
     }
     close(fd[1]);
@@ -57,7 +62,13 @@ TestContainer::TestContainer(Test *_test,
 
 TestContainer::~TestContainer() {
     close(testProcessPipeFD);
-    test->loadFromJSON(JSON::parse(processOutput));
+    auto json = JSON::parse(processOutput);
+    test->setExecuted();
+    if (!json.get("passed").operator bool()) {
+        test->setFailure(unescapeCharacters(
+                json.get("failureMessage").operator std::string()
+        ));
+    }
     afterTestCallback();
 }
 

@@ -3,8 +3,6 @@
 
 #include <string>
 
-#include <JSON>
-
 #include <utils/message.hpp>
 #include "expectation_failed.hpp"
 
@@ -48,10 +46,6 @@ public:
     std::string getDescription() const;
 
     void writeBytes(BytesConsumer& consumer) const override;
-
-    autojson::JSON toJSON() const;
-
-    void loadFromJSON(const autojson::JSON& json);
 
     Group* getParentGroup() const;
 private:

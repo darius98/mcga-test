@@ -2,7 +2,6 @@
 
 #include "group.hpp"
 
-using namespace autojson;
 using namespace std;
 
 

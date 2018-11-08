@@ -1,12 +1,9 @@
 #include <cstring>
 
-#include <utils/unescape_characters.hpp>
 #include "test.hpp"
 #include "group.hpp"
 
-using namespace autojson;
 using namespace std;
-using namespace kktest::utils;
 
 
 namespace kktest {
@@ -70,6 +67,9 @@ void Test::setFailure(const ExpectationFailed& f) {
 }
 
 string Test::getFailureMessage() const {
+    if (!failure) {
+        return "";
+    }
     return failure->getMessage();
 }
 
@@ -97,35 +97,6 @@ void Test::writeBytes(BytesConsumer& consumer) const {
         << isPassed()
         << getFailureMessage().size()
         << getFailureMessage();
-}
-
-JSON Test::toJSON() const {
-    JSON report = {
-        {"description", getDescription()},
-        {"file", getFilename()},
-        {"line", getLine()},
-        {"executed", isExecuted()},
-        {"index", getIndex()}
-    };
-    if (isExecuted()) {
-        report["passed"] = isPassed();
-        if (!isPassed()) {
-            report["failureMessage"] = getFailureMessage();
-        }
-    }
-    return report;
-}
-
-void Test::loadFromJSON(const JSON& json) {
-    description = unescapeCharacters(json.get("description").operator std::string());
-    file = unescapeCharacters(json.get("file").operator std::string());
-    line = json.get("line").operator int();
-    executed = json.get("executed").operator bool();
-    if (executed && !json.get("passed").operator bool()) {
-        delete failure;
-        failure = nullptr;
-        setFailure(unescapeCharacters(json.get("failureMessage").operator std::string()));
-    }
 }
 
 Group* Test::getParentGroup() const {

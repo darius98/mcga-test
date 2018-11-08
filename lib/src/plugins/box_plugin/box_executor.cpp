@@ -1,6 +1,5 @@
 #include "box_executor.hpp"
 
-using namespace autojson;
 using namespace std;
 
 
