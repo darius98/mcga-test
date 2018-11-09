@@ -8,7 +8,8 @@ namespace kktest {
 
 struct TestConfig {
     std::string description = "-";
-    int timeLimit = 1;
+    bool optional = false;
+    int timeTicksLimit = 1;
 };
 
 }

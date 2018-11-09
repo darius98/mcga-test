@@ -21,6 +21,10 @@ Test::~Test() {
     delete failure;
 }
 
+const TestConfig& Test::getConfig() const {
+    return config;
+}
+
 int Test::getIndex() const {
     return index;
 }
@@ -79,10 +83,6 @@ string Test::getDescriptionPrefix() const {
     return prefix;
 }
 
-string Test::getDescription() const {
-    return config.description;
-}
-
 void Test::writeBytes(BytesConsumer& consumer) const {
     consumer
         << parentGroup->getIndex()
@@ -90,6 +90,7 @@ void Test::writeBytes(BytesConsumer& consumer) const {
         << line
         << file.size()
         << file
+        << config.optional
         << config.description.size()
         << config.description
         << isPassed()

@@ -121,6 +121,9 @@ void TestingDriver::addTest(const TestConfig& config,
     Test* test = new Test(config, file, line, groupStack.back(), ++ currentTestIndex);
     beforeTest(test);
     executor->execute(test, func, [this, test]() {
+        if (!test->getConfig().optional) {
+            numFailedTests += test->isFailed();
+        }
         afterTest(test);
     });
 }
@@ -146,7 +149,6 @@ void TestingDriver::afterTest(Test* test) const {
     for (const TestHook& hook: afterTestHooks) {
         hook(test);
     }
-    numFailedTests += test->isFailed();
     test->getParentGroup()->markTestFinishedExecution();
     delete test;
 }

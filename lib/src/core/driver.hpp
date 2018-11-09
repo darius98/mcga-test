@@ -61,15 +61,13 @@ private:
     std::vector<GroupHook> afterGroupHooks;
     std::vector<CopyableExecutable> beforeDestroyHooks;
 
-    // TODO: I don't think the global state needs to be a group anymore.
-    // Refactor it.
     Group* globalScope;
     std::vector<Group*> groupStack;
     Executor* executor;
     bool useImplicitExecutor = true;
     int currentTestIndex = 0;
     int currentGroupIndex = 0;
-    mutable int numFailedTests = 0;
+    int numFailedTests = 0;
 
 friend int main(int argc, char** argv);
 friend class TestDefiner;

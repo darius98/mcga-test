@@ -37,7 +37,8 @@ void testCase() {
         expect(v.empty()); // Fails!
     });
 
-    test("Vector is initially empty - 2 (F)", [&]() {
+    test(testConfig($.description = "Vector is initially empty - 2 (F)",
+                    $.optional = true), [&]() {
         // When the vector is not empty, the isEmpty expectation will fail.
         v = {1, 2, 3};
 

@@ -36,7 +36,7 @@ void Logger::logTest(Test *test) {
     modifyOutput(90);
     stream << test->getDescriptionPrefix();
     modifyOutput(0);
-    stream << test->getDescription();
+    stream << test->getConfig().description;
     stream << ": ";
     if (test->isFailed()) {
         modifyOutput(31);

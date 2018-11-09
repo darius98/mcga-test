@@ -47,7 +47,8 @@ void ReportPlugin::install() {
 
     TestingDriver::addAfterTestHook([this](Test* test) {
         JSON testJSON = {
-            {"description", test->getDescription()},
+            {"description", test->getConfig().description},
+            {"optional", test->getConfig().optional},
             {"file", test->getFilename()},
             {"line", test->getLine()},
             {"executed", test->isExecuted()},

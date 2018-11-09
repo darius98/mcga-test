@@ -22,6 +22,8 @@ public:
 
     ~Test() override;
 
+    const TestConfig& getConfig() const;
+
     int getIndex() const;
 
     std::string getFilename() const;
@@ -43,8 +45,6 @@ public:
     void setFailure(const ExpectationFailed& f);
 
     std::string getDescriptionPrefix() const;
-
-    std::string getDescription() const;
 
     void writeBytes(BytesConsumer& consumer) const override;
 
