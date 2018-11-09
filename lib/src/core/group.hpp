@@ -17,10 +17,7 @@ public:
           std::string _file,
           int _line,
           Group* _parentGroup,
-          int _index,
-          Executable _afterAllTestsCallback = nullptr);
-
-    ~Group() override;
+          int _index);
 
     std::string getDescription() const;
 
@@ -50,7 +47,7 @@ public:
 
     void markTestFinishedExecution();
 
-    void markAllTestsStartedExecution();
+    void markAllTestsStartedExecution(Executable _afterAllTestsCallback);
 
 private:
     std::string description;

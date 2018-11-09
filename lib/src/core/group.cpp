@@ -1,5 +1,3 @@
-#include <cstring>
-
 #include "group.hpp"
 
 using namespace std;
@@ -11,16 +9,12 @@ Group::Group(string _description,
              string _file,
              int _line,
              Group* _parentGroup,
-             int _index,
-             Executable _afterAllTestsCallback):
+             int _index):
         description(move(_description)),
         file(move(_file)),
         line(_line),
         parentGroup(_parentGroup),
-        index(_index),
-        afterAllTestsCallback(_afterAllTestsCallback) {}
-
-Group::~Group() = default;
+        index(_index) {}
 
 string Group::getDescription() const {
     return description;
@@ -111,8 +105,13 @@ void Group::markTestFinishedExecution() {
     }
 }
 
-void Group::markAllTestsStartedExecution() {
+void Group::markAllTestsStartedExecution(Executable _afterAllTestsCallback) {
     allTestsStarted = true;
+    if (testsFinished == testsStarted) {
+        _afterAllTestsCallback();
+    } else {
+        afterAllTestsCallback = _afterAllTestsCallback;
+    }
 }
 
 }

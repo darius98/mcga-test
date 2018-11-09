@@ -56,8 +56,7 @@ size_t Message::getSize() const {
     return *((size_t*)payload) + sizeof(size_t);
 }
 
-MessageSerializable::~MessageSerializable() {
-}
+MessageSerializable::~MessageSerializable() = default;
 
 Message MessageSerializable::toMessage() const {
     BytesCounter counter;

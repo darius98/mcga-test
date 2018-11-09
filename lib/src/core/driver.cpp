@@ -1,5 +1,3 @@
-#include <fstream>
-
 #include "driver.hpp"
 
 using namespace std;
@@ -93,10 +91,7 @@ void TestingDriver::addGroup(string description,
                              move(file),
                              line,
                              groupStack.back(),
-                             ++ currentGroupIndex,
-                             [this, group]() {
-                                 afterGroup(group);
-                             });
+                             ++ currentGroupIndex);
     groupStack.push_back(group);
 
     beforeGroup(group);
@@ -112,7 +107,9 @@ void TestingDriver::addGroup(string description,
             "A non-exception object was thrown inside group'" +
             group->getFullDescription() + "'");
     }
-
+    group->markAllTestsStartedExecution([this, group]() {
+        afterGroup(group);
+    });
     groupStack.pop_back();
 }
 
@@ -141,16 +138,18 @@ void TestingDriver::addTearDown(Executable func) {
 }
 
 void TestingDriver::beforeTest(Test* test) const {
+    test->getParentGroup()->markTestStartedExecution();
     for (const TestHook& hook: beforeTestHooks) {
         hook(test);
     }
 }
 
 void TestingDriver::afterTest(Test* test) const {
-    numFailedTests += test->isFailed();
     for (const TestHook& hook: afterTestHooks) {
         hook(test);
     }
+    numFailedTests += test->isFailed();
+    test->getParentGroup()->markTestFinishedExecution();
     delete test;
 }
 
