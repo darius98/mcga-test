@@ -1,8 +1,6 @@
 #ifndef KKTEST_CORE_EXECUTOR_H_
 #define KKTEST_CORE_EXECUTOR_H_
 
-#include <set>
-
 #include <core/executable.hpp>
 #include "group.hpp"
 #include "test.hpp"

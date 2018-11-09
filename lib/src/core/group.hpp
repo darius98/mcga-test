@@ -1,9 +1,7 @@
 #ifndef KKTEST_CORE_GROUP_H_
 #define KKTEST_CORE_GROUP_H_
 
-#include <functional>
 #include <string>
-#include <vector>
 
 #include <core/executable.hpp>
 #include "test.hpp"

@@ -1,5 +1,3 @@
-#include <iostream>
-
 #include "executor.hpp"
 
 using namespace std;
