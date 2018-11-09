@@ -12,8 +12,17 @@ string Description::toString() const {
 
 void* Matcher::operator new(size_t size) noexcept {
     void* p = malloc(size);
-    if (duringTest) {
-        matchersAllocatedDuringTests.insert(p);
+    if (testingStarted) {
+        if (duringTest) {
+            matchersAllocatedDuringTests.insert(p);
+        } else {
+            if (!matcherPluginEnabled) {
+                cout << "Unable to use matchers, matcher plugin is not enabled.\n";
+            } else {
+                cout << "Matcher instantiated outside tests!\n";
+            }
+            exit(0);
+        }
     }
     return p;
 }
@@ -21,10 +30,6 @@ void* Matcher::operator new(size_t size) noexcept {
 void Matcher::operator delete(void* obj) noexcept {
     matchersAllocatedDuringTests.erase(obj);
     free(obj);
-}
-
-void Matcher::setDuringTest(bool _duringTest) {
-    duringTest = _duringTest;
 }
 
 void Matcher::cleanupMatchersCreatedDuringTests() {
@@ -35,6 +40,8 @@ void Matcher::cleanupMatchersCreatedDuringTests() {
 }
 
 set<void*> Matcher::matchersAllocatedDuringTests;
-bool Matcher::duringTest;
+bool Matcher::duringTest = false;
+bool Matcher::testingStarted = false;
+bool Matcher::matcherPluginEnabled = false;
 
 }

@@ -7,6 +7,10 @@ namespace kktest {
 
 class MatcherPlugin: public Plugin {
 public:
+    MatcherPlugin();
+
+    bool isEnabled() const override;
+
     void install() override;
 };
 
