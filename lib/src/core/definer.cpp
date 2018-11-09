@@ -10,7 +10,11 @@ namespace kktest {
 Definer::Definer(string _file, int _line): file(move(_file)), line(_line) {}
 
 void TestDefiner::operator()(string description, Executable func) {
-    TestingDriver::getInstance()->addTest(move(description), file, line, func);
+    (*this)(testConfig($.description = move(description)), func);
+}
+
+void TestDefiner::operator()(const TestConfig& config, Executable func) {
+    TestingDriver::getInstance()->addTest(config, file, line, func);
 }
 
 void GroupDefiner::operator()(string description, Executable func) {

@@ -30,7 +30,7 @@ private:
     static void init(const std::vector<Plugin*>& plugins);
     static int destroy();
 
-    TestingDriver(const std::vector<Plugin*>& plugins);
+    explicit TestingDriver(const std::vector<Plugin*>& plugins);
 
     ~TestingDriver() override;
 
@@ -39,8 +39,8 @@ private:
                   int line,
                   Executable func);
 
-    void addTest(std::string description,
-                 std::string file,
+    void addTest(const TestConfig& config,
+                 const std::string& file,
                  int line,
                  Executable func);
 

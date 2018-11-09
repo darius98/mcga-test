@@ -6,12 +6,12 @@ using namespace std;
 
 namespace kktest {
 
-Test::Test(string _description,
+Test::Test(const TestConfig& _config,
            string _file,
            int _line,
            Group* _parentGroup,
            int _index):
-        description(move(_description)),
+        config(_config),
         file(move(_file)),
         line(_line),
         parentGroup(_parentGroup),
@@ -80,7 +80,7 @@ string Test::getDescriptionPrefix() const {
 }
 
 string Test::getDescription() const {
-    return description;
+    return config.description;
 }
 
 void Test::writeBytes(BytesConsumer& consumer) const {
@@ -90,8 +90,8 @@ void Test::writeBytes(BytesConsumer& consumer) const {
         << line
         << file.size()
         << file
-        << description.size()
-        << description
+        << config.description.size()
+        << config.description
         << isPassed()
         << getFailureMessage().size()
         << getFailureMessage();

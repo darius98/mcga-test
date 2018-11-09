@@ -12,6 +12,9 @@ public:
     bool isEnabled() const override;
 
     void install() override;
+
+private:
+    int testsRunningCounter = 0;
 };
 
 }

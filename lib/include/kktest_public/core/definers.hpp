@@ -5,6 +5,7 @@
 
 #include "./executable.hpp"
 #include "./matcher.hpp"
+#include "./test_config.hpp"
 
 namespace kktest {
 
@@ -20,6 +21,8 @@ protected:
 class TestDefiner: public Definer {
 public:
     using Definer::Definer;
+
+    void operator()(const TestConfig& config, Executable func);
 
     void operator()(std::string description, Executable func);
 };

@@ -113,14 +113,12 @@ void TestingDriver::addGroup(string description,
     groupStack.pop_back();
 }
 
-void TestingDriver::addTest(string description,
-                            string file,
+void TestingDriver::addTest(const TestConfig& config,
+                            const string& file,
                             int line,
                             Executable func) {
     executor->checkIsInactive("test");
-    Test* test = new Test(
-        move(description), move(file), line, groupStack.back(), ++ currentTestIndex
-    );
+    Test* test = new Test(config, file, line, groupStack.back(), ++ currentTestIndex);
     beforeTest(test);
     executor->execute(test, func, [this, test]() {
         afterTest(test);

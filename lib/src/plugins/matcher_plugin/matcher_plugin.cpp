@@ -26,13 +26,17 @@ bool MatcherPlugin::isEnabled() const {
 
 void MatcherPlugin::install() {
     Matcher::matcherPluginEnabled = true;
-    TestingDriver::addBeforeTestHook([](Test*) {
+    TestingDriver::addBeforeTestHook([this](Test*) {
+        testsRunningCounter += 1;
         Matcher::duringTest = true;
     });
 
-    TestingDriver::addAfterTestHook([](Test*) {
-        Matcher::duringTest = false;
-        Matcher::cleanupMatchersCreatedDuringTests();
+    TestingDriver::addAfterTestHook([this](Test*) {
+        testsRunningCounter -= 1;
+        if (testsRunningCounter == 0) {
+            Matcher::duringTest = false;
+            Matcher::cleanupMatchersCreatedDuringTests();
+        }
     });
 }
 

@@ -3,6 +3,7 @@
 
 #include <string>
 
+#include <core/test_config.hpp>
 #include <utils/message.hpp>
 #include "expectation_failed.hpp"
 
@@ -13,7 +14,7 @@ class Group;
 
 class Test: public MessageSerializable {
 public:
-    Test(std::string _description,
+    Test(const TestConfig& _config,
          std::string _file,
          int _line,
          Group* _parentGroup,
@@ -50,7 +51,7 @@ public:
     Group* getParentGroup() const;
 private:
 
-    std::string description;
+    TestConfig config;
 
     std::string file;
     int line;
