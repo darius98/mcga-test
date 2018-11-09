@@ -16,7 +16,7 @@ public:
 
 private:
     autojson::JSON report;
-    std::vector<autojson::JSON> partialGroupJSONs;
+    std::map<Group*, autojson::JSON> partialGroupJSONs;
 };
 
 }

@@ -27,18 +27,17 @@ void ReportPlugin::install() {
     report["numFailedTests"] = 0;
 
     TestingDriver::addBeforeGroupHook([this](Group* group) {
-        partialGroupJSONs.push_back(map<string, JSON>{
+        partialGroupJSONs[group] = map<string, JSON>{
             {"line", group->getLine()},
             {"file", group->getFilename()},
             {"description", group->getDescription()}
-        });
+        };
     });
 
-    TestingDriver::addAfterGroupHook([this](Group*) {
-        JSON groupJSON = partialGroupJSONs.back();
-        partialGroupJSONs.pop_back();
-        JSON& parentJSON = partialGroupJSONs.empty() ?
-                                    report : partialGroupJSONs.back();
+    TestingDriver::addAfterGroupHook([this](Group* group) {
+        JSON groupJSON = partialGroupJSONs[group];
+        JSON& parentJSON = group->getParentGroup()->isGlobalScope() ? report:
+                                partialGroupJSONs[group->getParentGroup()];
         if (!parentJSON.exists("subGroups")) {
             parentJSON["subGroups"] = vector<JSON>();
         }
@@ -62,8 +61,8 @@ void ReportPlugin::install() {
             }
         }
 
-        JSON& parentJSON = partialGroupJSONs.empty() ?
-                                    report : partialGroupJSONs.back();
+        JSON& parentJSON = test->getParentGroup()->isGlobalScope() ? report:
+                                partialGroupJSONs[test->getParentGroup()];
         if (!parentJSON.exists("tests")) {
             parentJSON["tests"] = vector<JSON>();
         }
