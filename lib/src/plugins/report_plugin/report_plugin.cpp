@@ -30,7 +30,8 @@ void ReportPlugin::install() {
         partialGroupJSONs[group] = map<string, JSON>{
             {"line", group->getLine()},
             {"file", group->getFilename()},
-            {"description", group->getDescription()}
+            {"description", group->getDescription()},
+            {"index", group->getIndex()}
         };
     });
 
