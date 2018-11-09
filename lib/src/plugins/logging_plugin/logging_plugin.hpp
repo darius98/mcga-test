@@ -1,7 +1,7 @@
 #ifndef KKTEST_PLUGINS_LOGGING_PLUGIN_LOGGING_PLUGIN_H_
 #define KKTEST_PLUGINS_LOGGING_PLUGIN_LOGGING_PLUGIN_H_
 
-#include <core/plugin.hpp>
+#include <utils/plugin.hpp>
 #include "logger.hpp"
 
 

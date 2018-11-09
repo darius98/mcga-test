@@ -1,5 +1,5 @@
-#ifndef KKTEST_CORE_PLUGIN_H_
-#define KKTEST_CORE_PLUGIN_H_
+#ifndef KKTEST_UTILS_PLUGIN_H_
+#define KKTEST_UTILS_PLUGIN_H_
 
 #include <vector>
 

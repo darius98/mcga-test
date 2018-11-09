@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include <core/plugin.hpp>
+#include <utils/plugin.hpp>
 
 
 namespace kktest {

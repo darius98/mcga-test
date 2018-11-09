@@ -1,7 +1,7 @@
 #ifndef KKTEST_PLUGINS_MATCHER_PLUGIN_MATCHER_PLUGIN_H_
 #define KKTEST_PLUGINS_MATCHER_PLUGIN_MATCHER_PLUGIN_H_
 
-#include <core/plugin.hpp>
+#include <utils/plugin.hpp>
 
 namespace kktest {
 

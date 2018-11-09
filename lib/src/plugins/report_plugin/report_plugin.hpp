@@ -3,7 +3,7 @@
 
 #include <JSON>
 
-#include <core/plugin.hpp>
+#include <utils/plugin.hpp>
 
 
 namespace kktest {
