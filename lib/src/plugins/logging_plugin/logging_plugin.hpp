@@ -17,6 +17,9 @@ public:
 
 private:
     Logger* logger = nullptr;
+    int numPassedTests = 0;
+    int numFailedTests = 0;
+    int numFailedOptionalTests = 0;
 };
 
 }

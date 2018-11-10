@@ -15,6 +15,8 @@ public:
 
     void enqueueTestForLogging(Test* test);
 
+    void logFinalInformation(int passedTests, int failedTests, int failedOptionalTests);
+
 private:
     bool isInTerminal() const;
 

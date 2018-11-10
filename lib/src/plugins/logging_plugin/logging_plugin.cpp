@@ -26,6 +26,13 @@ void LoggingPlugin::install() {
     logger = new Logger(cout);
     TestingDriver::addAfterTestHook([this](Test* test) {
         logger->enqueueTestForLogging(test);
+        numPassedTests += test->isPassed();
+        numFailedTests += test->isFailed();
+        numFailedOptionalTests += test->isFailed() && test->getConfig().optional;
+    });
+
+    TestingDriver::addBeforeDestroyHook([this]() {
+        logger->logFinalInformation(numPassedTests, numFailedTests, numFailedOptionalTests);
     });
 }
 

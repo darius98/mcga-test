@@ -20,6 +20,26 @@ void Logger::enqueueTestForLogging(Test* test) {
     }
 }
 
+void Logger::logFinalInformation(int passedTests, int failedTests, int failedOptionalTests) {
+    stream << "\n";
+    stream << "Tests passed: ";
+    modifyOutput(32);
+    stream << passedTests;
+    modifyOutput(0);
+    stream << "\nTests failed: ";
+    modifyOutput(31);
+    stream << failedTests;
+    modifyOutput(0);
+    if (failedOptionalTests) {
+        stream << " (";
+        modifyOutput(33);
+        stream << failedOptionalTests;
+        modifyOutput(0);
+        stream << " " << (failedOptionalTests == 1 ? "was" : "were") << " optional)";
+    }
+    stream << "\n";
+}
+
 bool Logger::isInTerminal() const {
     return stream.rdbuf() == cout.rdbuf() && isatty(fileno(stdout)) != 0;
 }

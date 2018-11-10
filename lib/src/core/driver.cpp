@@ -64,7 +64,7 @@ int TestingDriver::destroy() {
     for (Executable hook: driver->beforeDestroyHooks) {
         hook();
     }
-    int status = driver->numFailedTests;
+    int status = driver->failedAnyNonOptionalTest ? 1 : 0;
     delete driver;
     return status;
 }
@@ -122,7 +122,7 @@ void TestingDriver::addTest(const TestConfig& config,
     beforeTest(test);
     executor->execute(test, func, [this, test]() {
         if (!test->getConfig().optional) {
-            numFailedTests += test->isFailed();
+            failedAnyNonOptionalTest |= test->isFailed();
         }
         afterTest(test);
     });

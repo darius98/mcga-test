@@ -67,7 +67,8 @@ private:
     bool useImplicitExecutor = true;
     int currentTestIndex = 0;
     int currentGroupIndex = 0;
-    int numFailedTests = 0;
+
+    bool failedAnyNonOptionalTest = false;
 
 friend int main(int argc, char** argv);
 friend class TestDefiner;
