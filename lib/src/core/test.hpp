@@ -30,13 +30,15 @@ public:
 
     int getLine() const;
 
-    void setExecuted();
+    void setExecuted(double _executionTimeTicks);
 
     bool isExecuted() const;
 
     bool isFailed() const;
 
     bool isPassed() const;
+
+    double getExecutionTimeTicks() const;
 
     std::string getFailureMessage() const;
 
@@ -61,6 +63,7 @@ private:
 
     bool executed = false;
     ExpectationFailed* failure = nullptr;
+    double executionTimeTicks = -1.0;
 };
 
 }

@@ -31,6 +31,8 @@ public:
 protected:
     void run(Test* test, Executable func);
 
+     // TODO: Don't hardcode this, calculate it based on the current device's performance
+    double timeTickLengthMs = 1.0;
 private:
     void runSetUpsRecursively(Group* group, Test* test);
 

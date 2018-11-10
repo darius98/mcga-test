@@ -37,11 +37,12 @@ int Test::getLine() const {
     return line;
 }
 
-void Test::setExecuted() {
+void Test::setExecuted(double _executionTimeTicks) {
     if (isExecuted()) {
         throw runtime_error("Test::setExecuted called twice on the same test!");
     }
     executed = true;
+    executionTimeTicks = _executionTimeTicks;
 }
 
 bool Test::isExecuted() const {
@@ -73,6 +74,10 @@ string Test::getFailureMessage() const {
         return "";
     }
     return failure->getMessage();
+}
+
+double Test::getExecutionTimeTicks() const {
+    return executionTimeTicks;
 }
 
 string Test::getDescriptionPrefix() const {

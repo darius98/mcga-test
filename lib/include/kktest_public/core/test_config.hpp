@@ -9,7 +9,7 @@ namespace kktest {
 struct TestConfig {
     std::string description = "-";
     bool optional = false;
-    int timeTicksLimit = 1;
+    double timeTicksLimit = 1000.0;
 };
 
 }

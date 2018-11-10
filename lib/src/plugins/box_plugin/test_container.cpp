@@ -9,6 +9,7 @@
 using namespace autojson;
 using namespace kktest::utils;
 using namespace std;
+using namespace std::chrono;
 
 
 namespace {
@@ -54,9 +55,11 @@ string readStringFromPipe(int pipeFD, int maxReadAttempts=1024) {
 namespace kktest {
 
 TestContainer::TestContainer(Test *_test,
+                             double _testProcessTimeLimitMs,
                              Executable run,
                              CopyableExecutable _afterTestCallback):
         test(_test),
+        testProcessTimeLimitMs(_testProcessTimeLimitMs),
         afterTestCallback(move(_afterTestCallback)) {
     int fd[2];
     if (pipe(fd) < 0) {
@@ -74,11 +77,13 @@ TestContainer::TestContainer(Test *_test,
         run();
         writeStringToPipe(JSON(map<string, JSON>{
             {"passed", test->isPassed()},
-            {"failureMessage", test->getFailureMessage()}
+            {"failureMessage", test->getFailureMessage()},
+            {"executionTimeTicks", test->getExecutionTimeTicks()}
         }).stringify(), fd[1]);
         exit(0);
     }
     close(fd[1]);
+    testProcessStartTime = high_resolution_clock::now();
 }
 
 bool TestContainer::isTestFinished() {
@@ -89,11 +94,31 @@ bool TestContainer::isTestFinished() {
         exit(errno);
     }
     if (ret == 0) {
+        auto currentTime = high_resolution_clock::now();
+        double elapsedTimeMs = duration_cast<milliseconds>
+                                   (currentTime - testProcessStartTime).count();
+        if (elapsedTimeMs > testProcessTimeLimitMs) {
+            int killStatus = kill(testProcessPID, SIGKILL);
+            if (killStatus < 0) {
+                if (errno == ESRCH) {
+                    // The child might have finished during a context switch.
+                    // In this case, return false so we can retry waiting later.
+                    return false;
+                }
+                perror("kill");
+                exit(errno);
+            }
+            test->setExecuted(-1.0);
+            test->setFailure("Execution time limit exceeded.");
+            close(testProcessPipeFD);
+            afterTestCallback();
+            return true;
+        }
         // The child process (test) did not exit yet.
         return false;
     }
     // Process exited.
-    test->setExecuted();
+    double timeTicks = -1.0;
     if (WIFEXITED(wStatus)) {
         int exitStatus = WEXITSTATUS(wStatus);
         if (exitStatus != 0) {
@@ -103,13 +128,17 @@ bool TestContainer::isTestFinished() {
             auto json = JSON::parse(processOutput);
             if (json.type != JSONType::OBJECT ||
                     !json.isBool("passed") ||
+                    !json.isReal("executionTimeTicks") ||
                     (!json.get("passed").operator bool() &&
                         !json.isString("failureMessage"))) {
                 test->setFailure("Test unexpectedly exited with code 0");
-            } else if (!json.get("passed").operator bool()) {
-                test->setFailure(unescapeCharacters(
-                        json.get("failureMessage").operator std::string()
-                ));
+            } else {
+                if (!json.get("passed").operator bool()) {
+                    test->setFailure(unescapeCharacters(
+                            json.get("failureMessage").operator std::string()
+                    ));
+                }
+                timeTicks = json.get("executionTimeTicks").operator double();
             }
         }
     } else if (WIFSIGNALED(wStatus)) {
@@ -117,6 +146,7 @@ bool TestContainer::isTestFinished() {
     } else {
         test->setFailure("Unknown error occured.");
     }
+    test->setExecuted(timeTicks);
     close(testProcessPipeFD);
     afterTestCallback();
     return true;

@@ -1,6 +1,9 @@
+#include <chrono>
+
 #include "executor.hpp"
 
 using namespace std;
+using namespace std::chrono;
 
 namespace kktest {
 
@@ -29,13 +32,18 @@ void Executor::execute(Test* test, Executable func, Executable after) {
 
 void Executor::run(Test* test, Executable func) {
     state = SET_UP;
+    auto begin = high_resolution_clock::now();
     runSetUpsRecursively(test->getParentGroup(), test);
     state = TEST;
     runTest(test, func);
     state = TEAR_DOWN;
     runTearDownsRecursively(test->getParentGroup(), test);
+    auto end = high_resolution_clock::now();
     state = INACTIVE;
-    test->setExecuted();
+    test->setExecuted(duration_cast<milliseconds>(end - begin).count() / timeTickLengthMs);
+    if (test->getExecutionTimeTicks() > test->getConfig().timeTicksLimit) {
+        test->setFailure("Execution time limit exceeded.");
+    }
 }
 
 void Executor::runSetUpsRecursively(Group* group, Test* test) {

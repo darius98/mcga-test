@@ -10,9 +10,14 @@ BoxExecutor::BoxExecutor(std::size_t _maxNumContainers):
 
 void BoxExecutor::execute(Test* test, Executable func, Executable after) {
     ensureFreeContainers(1);
-    openContainers.insert(new TestContainer(test, [func, test, this]() {
-        run(test, func);
-    }, after));
+    openContainers.insert(new TestContainer(
+        test,
+        test->getConfig().timeTicksLimit * timeTickLengthMs + 100.0,
+        [func, test, this]() {
+            run(test, func);
+        },
+        after
+    ));
 }
 
 void BoxExecutor::finalize() {
