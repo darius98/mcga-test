@@ -8,8 +8,12 @@
 
 namespace kktest {
 
+extern Plugin* reportPlugin;
+
 class ReportPlugin: public Plugin {
 public:
+    using Plugin::Plugin;
+
     bool isEnabled() const override;
 
     void install() override;

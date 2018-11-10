@@ -7,8 +7,12 @@
 
 namespace kktest {
 
+extern Plugin* loggingPlugin;
+
 class LoggingPlugin: public Plugin {
 public:
+    using Plugin::Plugin;
+
     bool isEnabled() const override;
 
     void install() override;

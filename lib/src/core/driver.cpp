@@ -46,11 +46,11 @@ TestingDriver* TestingDriver::getInstance() {
     return instance;
 }
 
-void TestingDriver::init(const vector<Plugin*>& plugins) {
+void TestingDriver::init() {
     if (instance != nullptr) {
         throw runtime_error("TestingDriver::init called a second time!");
     }
-    instance = new TestingDriver(plugins);
+    instance = new TestingDriver();
     instance->installPlugins();
     for (Executable hook: instance->afterInitHooks) {
         hook();
@@ -68,8 +68,8 @@ int TestingDriver::destroy() {
     return status;
 }
 
-TestingDriver::TestingDriver(const vector<Plugin*>& plugins):
-        Pluginable(plugins),
+TestingDriver::TestingDriver():
+        Pluginable("kktest"),
         globalScope(new Group(GroupConfig(), nullptr, -1)),
         groupStack({globalScope}),
         executor(new Executor()) {}

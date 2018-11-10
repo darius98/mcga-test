@@ -27,10 +27,10 @@ private:
     static TestingDriver* getInstance();
     static TestingDriver* instance;
 
-    static void init(const std::vector<Plugin*>& plugins);
+    static void init();
     static int destroy();
 
-    explicit TestingDriver(const std::vector<Plugin*>& plugins);
+    TestingDriver();
 
     ~TestingDriver() override;
 

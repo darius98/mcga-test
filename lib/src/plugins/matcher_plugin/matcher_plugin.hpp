@@ -5,9 +5,11 @@
 
 namespace kktest {
 
+extern Plugin* matcherPlugin;
+
 class MatcherPlugin: public Plugin {
 public:
-    MatcherPlugin();
+    using Plugin::Plugin;
 
     bool isEnabled() const override;
 

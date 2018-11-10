@@ -22,6 +22,8 @@ AddArgument(int, argumentNumBoxes)
 
 namespace kktest {
 
+Plugin* boxPlugin = new BoxPlugin("kktest");
+
 bool BoxPlugin::isEnabled() const {
     return flagBoxed != 0;
 }

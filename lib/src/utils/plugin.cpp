@@ -5,6 +5,15 @@ using namespace std;
 
 namespace kktest {
 
+map<string, vector<Plugin*>> Plugin::plugins;
+
+Plugin::Plugin(const string& groupName) {
+    if (!plugins.count(groupName)) {
+        plugins[groupName] = vector<Plugin*>();
+    }
+    plugins[groupName].push_back(this);
+}
+
 Plugin::~Plugin() = default;
 
 bool Plugin::isEnabled() const {
@@ -17,19 +26,18 @@ void Plugin::install() {
 void Plugin::uninstall() {
 }
 
-Pluginable::Pluginable(const vector<Plugin*>& _plugins): plugins(_plugins) {}
+Pluginable::Pluginable(const std::string& _pluginGroupName): pluginGroupName(_pluginGroupName) {}
 
 Pluginable::~Pluginable() {
-    for (Plugin* plugin: plugins) {
+    for (Plugin* plugin: Plugin::plugins[pluginGroupName]) {
         if (plugin->isEnabled()) {
             plugin->uninstall();
         }
-        delete plugin;
     }
 }
 
 void Pluginable::installPlugins() {
-    for (Plugin* plugin: plugins) {
+    for (Plugin* plugin: Plugin::plugins[pluginGroupName]) {
         if (plugin->isEnabled()) {
             plugin->install();
         }

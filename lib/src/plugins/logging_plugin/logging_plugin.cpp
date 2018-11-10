@@ -18,6 +18,8 @@ AddArgument(int, flagQuiet)
 
 namespace kktest {
 
+Plugin* loggingPlugin = new LoggingPlugin("kktest");
+
 bool LoggingPlugin::isEnabled() const {
     return !flagQuiet;
 }

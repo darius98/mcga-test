@@ -16,11 +16,10 @@ AddArgument(int, flagEnableMatchers)
 
 namespace kktest {
 
-MatcherPlugin::MatcherPlugin() {
-    Matcher::testingStarted = true;
-}
+Plugin* matcherPlugin = new MatcherPlugin("kktest");
 
 bool MatcherPlugin::isEnabled() const {
+    Matcher::testingStarted = true;
     return flagEnableMatchers != 0;
 }
 

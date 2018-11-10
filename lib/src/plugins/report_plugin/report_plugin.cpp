@@ -18,6 +18,8 @@ AddArgument(string, argumentReportFileName)
 
 namespace kktest {
 
+Plugin* reportPlugin = new ReportPlugin("kktest");
+
 bool ReportPlugin::isEnabled() const {
     return !argumentReportFileName.empty();
 }

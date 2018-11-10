@@ -16,6 +16,8 @@ AddArgument(int, argumentPipeFD)
 
 namespace kktest {
 
+Plugin* pipePlugin = new PipePlugin("kktest");
+
 bool PipePlugin::isEnabled() const {
     return argumentPipeFD != -1;
 }
