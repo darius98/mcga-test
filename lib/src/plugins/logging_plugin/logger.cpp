@@ -26,7 +26,7 @@ void Logger::logFinalInformation(int passedTests, int failedTests, int failedOpt
     stream << passedTests;
     modifyOutput(0);
     stream << "\nTests failed: ";
-    modifyOutput((failedTests == failedOptionalTests ? 33 : 31));
+    modifyOutput((failedTests == failedOptionalTests ? (failedTests == 0 ? 32 : 33) : 31));
     stream << failedTests;
     modifyOutput(0);
     if (failedOptionalTests) {
