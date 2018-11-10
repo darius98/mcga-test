@@ -11,7 +11,7 @@ void BoxExecutor::execute(Test* test, Executable func, Executable after) {
     ensureFreeContainers(1);
     openContainers.insert(new TestContainer(
         test,
-        test->getConfig().timeTicksLimit * timeTickLengthMs + 100.0,
+        test->getConfig().timeTicksLimit * getTimeTickLengthMs() + 100.0,
         [this, func, test]() {
             run(test, func);
         },

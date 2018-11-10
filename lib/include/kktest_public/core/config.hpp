@@ -11,7 +11,7 @@ struct TestConfig {
     int line = -1;
     std::string description = "-";
     bool optional = false;
-    double timeTicksLimit = 1000.0;
+    double timeTicksLimit = 1.0;
 };
 
 struct GroupConfig {

@@ -18,11 +18,15 @@ private:
     };
 
 public:
-    virtual ~Executor() = default;
+    Executor();
+
+    virtual ~Executor();
 
     bool isDuringTest() const;
 
     void checkIsInactive(const std::string& methodName) const;
+
+    double getTimeTickLengthMs() const;
 
     virtual void execute(Test* test, Executable func, Executable after);
 
@@ -31,8 +35,6 @@ public:
 protected:
     void run(Test* test, Executable func);
 
-     // TODO: Don't hardcode this, calculate it based on the current device's performance
-    double timeTickLengthMs = 1.0;
 private:
     void runSetUpsRecursively(Group* group, Test* test);
 
@@ -41,6 +43,7 @@ private:
     void runTest(Test* test, Executable func);
 
     State state = State::INACTIVE;
+    double timeTickLengthMs;
 };
 
 }

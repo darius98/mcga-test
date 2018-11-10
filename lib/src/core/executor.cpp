@@ -1,11 +1,32 @@
 #include <chrono>
 
+#include <EasyFlags.hpp>
+
+#include <utils/time_tick_length.hpp>
 #include "executor.hpp"
 
+using namespace kktest::utils;
 using namespace std;
 using namespace std::chrono;
 
+AddArgument(double, argumentTimeTickLength)
+    .ArgumentType("floating point number")
+    .Name("tick")
+    .Description("Length of time tick considered. If left default, will be computed at the start"
+                 " of each test run.")
+    .DefaultValue("-1");
+
 namespace kktest {
+
+Executor::Executor() {
+    if (argumentTimeTickLength != -1.0) {
+        timeTickLengthMs = argumentTimeTickLength;
+    } else {
+        timeTickLengthMs = computeTimeTickLengthFromHardware();
+    }
+}
+
+Executor::~Executor() = default;
 
 bool Executor::isDuringTest() const {
     return state == TEST;
@@ -21,6 +42,10 @@ void Executor::checkIsInactive(const string& methodName) const {
     if (state == TEAR_DOWN) {
         throw runtime_error("Cannot call " + methodName + " within tearDown!");
     }
+}
+
+double Executor::getTimeTickLengthMs() const {
+    return timeTickLengthMs;
 }
 
 void Executor::finalize() {}
