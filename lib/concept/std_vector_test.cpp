@@ -11,6 +11,7 @@
 #include <vector>
 
 #include <kktest>
+#include <kktest_matchers>
 
 using namespace kktest;
 using namespace std;

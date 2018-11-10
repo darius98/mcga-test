@@ -1,4 +1,5 @@
 #include <kktest>
+#include <kktest_matchers>
 
 using namespace kktest;
 
