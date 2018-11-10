@@ -9,15 +9,10 @@
 namespace kktest {
 
 class TestContainer {
-private:
-    static constexpr const std::size_t PROCESS_READ_BUFFER_SIZE = 1u << 10;
-
 public:
     TestContainer(Test* _test,
                   Executable testFunc,
                   CopyableExecutable _afterTestCallback);
-
-    ~TestContainer();
 
     bool isTestFinished();
 
@@ -26,9 +21,6 @@ private:
     int testProcessPipeFD;
     pid_t testProcessPID;
     CopyableExecutable afterTestCallback;
-
-    char processOutputReadBuffer[PROCESS_READ_BUFFER_SIZE];
-    std::string processOutput;
 };
 
 }
