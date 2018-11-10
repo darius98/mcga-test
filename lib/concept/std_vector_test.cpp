@@ -239,4 +239,12 @@ void testCase() {
             expect([&]() { v.at(2); }, throwsA<out_of_range>()); // Fails!
         });
     });
+
+    test(testConfig($.description = "This test should timeout (F)",
+                    $.timeTicksLimit = 0.001,
+                    $.optional = true), [&]() {
+        for (int i = 0; i < 1000000; ++ i) {
+            v.push_back(i);
+        }
+    });
 }
