@@ -63,6 +63,7 @@ int TestingDriver::destroy() {
     for (Executable hook: driver->beforeDestroyHooks) {
         hook();
     }
+    driver->uninstallPlugins();
     int status = driver->failedAnyNonOptionalTest ? 1 : 0;
     delete driver;
     return status;

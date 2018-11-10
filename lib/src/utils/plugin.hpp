@@ -33,6 +33,8 @@ public:
 
     void installPlugins();
 
+    void uninstallPlugins();
+
 private:
     std::string pluginGroupName;
 };

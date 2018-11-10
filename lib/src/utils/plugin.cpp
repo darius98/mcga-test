@@ -28,18 +28,20 @@ void Plugin::uninstall() {
 
 Pluginable::Pluginable(const std::string& _pluginGroupName): pluginGroupName(_pluginGroupName) {}
 
-Pluginable::~Pluginable() {
-    for (Plugin* plugin: Plugin::plugins[pluginGroupName]) {
-        if (plugin->isEnabled()) {
-            plugin->uninstall();
-        }
-    }
-}
+Pluginable::~Pluginable() = default;
 
 void Pluginable::installPlugins() {
     for (Plugin* plugin: Plugin::plugins[pluginGroupName]) {
         if (plugin->isEnabled()) {
             plugin->install();
+        }
+    }
+}
+
+void Pluginable::uninstallPlugins() {
+    for (Plugin* plugin: Plugin::plugins[pluginGroupName]) {
+        if (plugin->isEnabled()) {
+            plugin->uninstall();
         }
     }
 }
