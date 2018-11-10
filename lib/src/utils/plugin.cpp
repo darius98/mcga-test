@@ -26,7 +26,7 @@ void Plugin::install() {
 void Plugin::uninstall() {
 }
 
-Pluginable::Pluginable(const std::string& _pluginGroupName): pluginGroupName(_pluginGroupName) {}
+Pluginable::Pluginable(const string& _pluginGroupName): pluginGroupName(_pluginGroupName) {}
 
 Pluginable::~Pluginable() = default;
 

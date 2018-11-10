@@ -63,7 +63,7 @@ void IsSubstringMatcher::describeMismatch(Description& description) {
     description << "not a substring of '" << container << "'";
 }
 
-IsSubstringMatcher* isSubstringOf(const std::string& s) {
+IsSubstringMatcher* isSubstringOf(const string& s) {
     return new IsSubstringMatcher(s);
 }
 

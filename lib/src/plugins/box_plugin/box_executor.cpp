@@ -5,7 +5,7 @@ using namespace std;
 
 namespace kktest {
 
-BoxExecutor::BoxExecutor(std::size_t _maxNumContainers): maxNumContainers(_maxNumContainers) {}
+BoxExecutor::BoxExecutor(size_t _maxNumContainers): maxNumContainers(_maxNumContainers) {}
 
 void BoxExecutor::execute(Test* test, Executable func, Executable after) {
     ensureFreeContainers(1);

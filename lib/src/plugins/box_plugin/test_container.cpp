@@ -14,7 +14,7 @@ using namespace std::chrono;
 
 namespace {
 
-void writeStringToPipe(const std::string& output, int pipeFD) {
+void writeStringToPipe(const string& output, int pipeFD) {
     size_t bytesToWrite = output.size() + 1;
     const char* bytes = output.c_str();
     int written = 0;
