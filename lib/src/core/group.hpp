@@ -11,17 +11,9 @@ namespace kktest {
 
 class Group: public MessageSerializable {
 public:
-    Group(std::string _description,
-          std::string _file,
-          int _line,
-          Group* _parentGroup,
-          int _index);
+    Group(const GroupConfig& _config, Group* _parentGroup, int _index);
 
-    std::string getDescription() const;
-
-    std::string getFilename() const;
-
-    int getLine() const;
+    const GroupConfig& getConfig() const;
 
     bool isGlobalScope() const;
 
@@ -48,9 +40,7 @@ public:
     void markAllTestsStartedExecution(Executable _afterAllTestsCallback);
 
 private:
-    std::string description;
-    std::string file;
-    int line;
+    GroupConfig config;
 
     Group* parentGroup;
     int index;

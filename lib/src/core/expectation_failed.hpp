@@ -11,6 +11,7 @@ class ExpectationFailed: std::runtime_error {
 public:
     explicit ExpectationFailed(const std::string& str);
     ExpectationFailed(const ExpectationFailed& other) noexcept;
+    ExpectationFailed(ExpectationFailed&& other) noexcept;
 
     std::string getMessage() const;
 };

@@ -34,15 +34,9 @@ private:
 
     ~TestingDriver() override;
 
-    void addGroup(std::string description,
-                  std::string file,
-                  int line,
-                  Executable func);
+    void addGroup(const GroupConfig& config, Executable func);
 
-    void addTest(const TestConfig& config,
-                 const std::string& file,
-                 int line,
-                 Executable func);
+    void addTest(const TestConfig& config, Executable func);
 
     void addSetUp(Executable func);
 

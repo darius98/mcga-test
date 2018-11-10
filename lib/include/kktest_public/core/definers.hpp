@@ -5,7 +5,7 @@
 
 #include "./executable.hpp"
 #include "./matcher.hpp"
-#include "./test_config.hpp"
+#include "./config.hpp"
 
 namespace kktest {
 
@@ -30,6 +30,8 @@ public:
 class GroupDefiner: public Definer {
 public:
     using Definer::Definer;
+
+    void operator()(const GroupConfig& config, Executable func);
 
     void operator()(std::string description, Executable func);
 };

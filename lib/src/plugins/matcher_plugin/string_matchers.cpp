@@ -7,8 +7,7 @@ using namespace std;
 
 namespace kktest {
 
-CharInStringMatcher::CharInStringMatcher(const char* _container,
-                                         const char* _expectation) noexcept:
+CharInStringMatcher::CharInStringMatcher(const char* _container, const char* _expectation) noexcept:
         container(_container), expectation(_expectation) {}
 
 bool CharInStringMatcher::matches(const char& ch) {
@@ -34,8 +33,7 @@ void CharInStringMatcher::describeMismatch(Description& description) {
 CharInStringMatcher* isLetter = new CharInStringMatcher(
         "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", "a letter");
 
-CharInStringMatcher* isDigit  = new CharInStringMatcher(
-        "0123456789", "a digit");
+CharInStringMatcher* isDigit  = new CharInStringMatcher("0123456789", "a digit");
 
 CharInStringMatcher* isLowercaseLetter = new CharInStringMatcher(
         "abcdefghijklmnopqrstuvwxyz", "a lowercase letter");
@@ -43,20 +41,15 @@ CharInStringMatcher* isLowercaseLetter = new CharInStringMatcher(
 CharInStringMatcher* isUppercaseLetter = new CharInStringMatcher(
         "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "an uppercase letter");
 
-CharInStringMatcher* isBinaryDigit = new CharInStringMatcher(
-        "01", "a binary digit");
+CharInStringMatcher* isBinaryDigit = new CharInStringMatcher("01", "a binary digit");
 
-CharInStringMatcher* isOctDigit = new CharInStringMatcher(
-        "01234567", "an oct digit");
+CharInStringMatcher* isOctDigit = new CharInStringMatcher("01234567", "an oct digit");
 
-CharInStringMatcher* isHexDigit = new CharInStringMatcher(
-        "0123456789ABCDEFabcdef", "a hex digit");
+CharInStringMatcher* isHexDigit = new CharInStringMatcher("0123456789ABCDEFabcdef", "a hex digit");
 
-CharInStringMatcher* isWhitespace = new CharInStringMatcher(
-        " \t\r\n", "a whitespace character");
+CharInStringMatcher* isWhitespace = new CharInStringMatcher(" \t\r\n", "a whitespace character");
 
-IsSubstringMatcher::IsSubstringMatcher(string _container):
-    container(move(_container)) {}
+IsSubstringMatcher::IsSubstringMatcher(string _container): container(move(_container)) {}
 
 bool IsSubstringMatcher::matches(const string& object) {
     return container.find(object) != string::npos;

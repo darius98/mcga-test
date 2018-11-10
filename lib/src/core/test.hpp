@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include <core/test_config.hpp>
+#include <core/config.hpp>
 #include <utils/message.hpp>
 #include "expectation_failed.hpp"
 
@@ -14,23 +14,19 @@ class Group;
 
 class Test: public MessageSerializable {
 public:
-    Test(const TestConfig& _config,
-         std::string _file,
-         int _line,
-         Group* _parentGroup,
-         int _index);
+    Test(const TestConfig& _config, Group* _parentGroup, int _index);
 
     ~Test() override;
+
+    void setExecuted(double _executionTimeTicks);
+
+    void setFailure(const std::string& message);
+
+    void setFailure(const ExpectationFailed& f);
 
     const TestConfig& getConfig() const;
 
     int getIndex() const;
-
-    std::string getFilename() const;
-
-    int getLine() const;
-
-    void setExecuted(double _executionTimeTicks);
 
     bool isExecuted() const;
 
@@ -42,21 +38,14 @@ public:
 
     std::string getFailureMessage() const;
 
-    void setFailure(const std::string& message);
-
-    void setFailure(const ExpectationFailed& f);
-
     std::string getDescriptionPrefix() const;
 
     void writeBytes(BytesConsumer& consumer) const override;
 
     Group* getParentGroup() const;
+
 private:
-
     TestConfig config;
-
-    std::string file;
-    int line;
 
     Group* parentGroup;
     int index;

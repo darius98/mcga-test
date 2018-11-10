@@ -6,35 +6,11 @@ using namespace std;
 
 namespace kktest {
 
-Test::Test(const TestConfig& _config,
-           string _file,
-           int _line,
-           Group* _parentGroup,
-           int _index):
-        config(_config),
-        file(move(_file)),
-        line(_line),
-        parentGroup(_parentGroup),
-        index(_index) {}
+Test::Test(const TestConfig& _config, Group* _parentGroup, int _index):
+        config(_config), parentGroup(_parentGroup), index(_index) {}
 
 Test::~Test() {
     delete failure;
-}
-
-const TestConfig& Test::getConfig() const {
-    return config;
-}
-
-int Test::getIndex() const {
-    return index;
-}
-
-string Test::getFilename() const {
-    return file;
-}
-
-int Test::getLine() const {
-    return line;
 }
 
 void Test::setExecuted(double _executionTimeTicks) {
@@ -43,18 +19,6 @@ void Test::setExecuted(double _executionTimeTicks) {
     }
     executed = true;
     executionTimeTicks = _executionTimeTicks;
-}
-
-bool Test::isExecuted() const {
-    return executed;
-}
-
-bool Test::isFailed() const {
-    return isExecuted() && failure != nullptr;
-}
-
-bool Test::isPassed() const {
-    return isExecuted() && !isFailed();
 }
 
 void Test::setFailure(const string& message) {
@@ -69,6 +33,26 @@ void Test::setFailure(const ExpectationFailed& f) {
     }
 }
 
+const TestConfig& Test::getConfig() const {
+    return config;
+}
+
+int Test::getIndex() const {
+    return index;
+}
+
+bool Test::isExecuted() const {
+    return executed;
+}
+
+bool Test::isFailed() const {
+    return isExecuted() && failure != nullptr;
+}
+
+bool Test::isPassed() const {
+    return isExecuted() && !isFailed();
+}
+
 string Test::getFailureMessage() const {
     if (!failure) {
         return "";
@@ -81,7 +65,7 @@ double Test::getExecutionTimeTicks() const {
 }
 
 string Test::getDescriptionPrefix() const {
-    string prefix = file + ":" + to_string(line) + "::";
+    string prefix = config.file + ":" + to_string(config.line) + "::";
     if (!parentGroup->isGlobalScope()) {
         prefix += parentGroup->getFullDescription() + "::";
     }
@@ -92,9 +76,9 @@ void Test::writeBytes(BytesConsumer& consumer) const {
     consumer
         << parentGroup->getIndex()
         << index
-        << line
-        << file.size()
-        << file
+        << config.line
+        << config.file.size()
+        << config.file
         << config.optional
         << config.description.size()
         << config.description

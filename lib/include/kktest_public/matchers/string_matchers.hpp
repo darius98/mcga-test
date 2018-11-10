@@ -10,8 +10,7 @@ namespace kktest {
 
 class CharInStringMatcher: public Matcher {
 public:
-    explicit CharInStringMatcher(const char* _container,
-                                 const char* _expectation=nullptr) noexcept;
+    explicit CharInStringMatcher(const char* _container, const char* _expectation=nullptr) noexcept;
 
     bool matches(const char& ch);
 

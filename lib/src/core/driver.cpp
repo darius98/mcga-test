@@ -41,8 +41,7 @@ TestingDriver* TestingDriver::instance = nullptr;
 
 TestingDriver* TestingDriver::getInstance() {
     if (instance == nullptr) {
-        throw runtime_error("TestingDriver::getInstance() called "
-                            "before TestingDriver::init.");
+        throw runtime_error("TestingDriver::getInstance() called before TestingDriver::init.");
     }
     return instance;
 }
@@ -71,7 +70,7 @@ int TestingDriver::destroy() {
 
 TestingDriver::TestingDriver(const vector<Plugin*>& plugins):
         Pluginable(plugins),
-        globalScope(new Group("", "", 0, nullptr, -1)),
+        globalScope(new Group(GroupConfig(), nullptr, -1)),
         groupStack({globalScope}),
         executor(new Executor()) {}
 
@@ -82,16 +81,9 @@ TestingDriver::~TestingDriver() {
     }
 }
 
-void TestingDriver::addGroup(string description,
-                             string file,
-                             int line,
-                             Executable func) {
+void TestingDriver::addGroup(const GroupConfig& config, Executable func) {
     executor->checkIsInactive("group");
-    Group* group = new Group(move(description),
-                             move(file),
-                             line,
-                             groupStack.back(),
-                             ++ currentGroupIndex);
+    Group* group = new Group(config, groupStack.back(), ++ currentGroupIndex);
     groupStack.push_back(group);
 
     beforeGroup(group);
@@ -99,9 +91,7 @@ void TestingDriver::addGroup(string description,
         func();
     } catch(const exception& e) {
         throw runtime_error("An exception was thrown inside group '" +
-            group->getFullDescription() +
-            "': " +
-            e.what());
+            group->getFullDescription() + "': " + e.what());
     } catch(...) {
         throw runtime_error(
             "A non-exception object was thrown inside group'" +
@@ -113,12 +103,9 @@ void TestingDriver::addGroup(string description,
     groupStack.pop_back();
 }
 
-void TestingDriver::addTest(const TestConfig& config,
-                            const string& file,
-                            int line,
-                            Executable func) {
+void TestingDriver::addTest(const TestConfig& config, Executable func) {
     executor->checkIsInactive("test");
-    Test* test = new Test(config, file, line, groupStack.back(), ++ currentTestIndex);
+    Test* test = new Test(config, groupStack.back(), ++ currentTestIndex);
     beforeTest(test);
     executor->execute(test, func, [this, test]() {
         if (!test->getConfig().optional) {

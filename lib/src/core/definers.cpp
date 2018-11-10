@@ -10,15 +10,25 @@ namespace kktest {
 Definer::Definer(string _file, int _line): file(move(_file)), line(_line) {}
 
 void TestDefiner::operator()(string description, Executable func) {
-    (*this)(testConfig($.description = move(description)), func);
+    (*this)(testConfig($.description = description), func);
 }
 
 void TestDefiner::operator()(const TestConfig& config, Executable func) {
-    TestingDriver::getInstance()->addTest(config, file, line, func);
+    TestConfig fullConfig(config);
+    fullConfig.file = file;
+    fullConfig.line = line;
+    TestingDriver::getInstance()->addTest(fullConfig, func);
 }
 
 void GroupDefiner::operator()(string description, Executable func) {
-    TestingDriver::getInstance()->addGroup(move(description), file, line, func);
+    (*this)(groupConfig($.description = description), func);
+}
+
+void GroupDefiner::operator()(const GroupConfig& config, Executable func) {
+    GroupConfig fullConfig(config);
+    fullConfig.file = file;
+    fullConfig.line = line;
+    TestingDriver::getInstance()->addGroup(fullConfig, func);
 }
 
 void SetUpDefiner::operator()(Executable func) {
@@ -44,8 +54,7 @@ void ExpectDefiner::checkDuringTest() {
     if (TestingDriver::instance == nullptr ||
         !TestingDriver::instance->executor->isDuringTest()) {
         throw runtime_error(
-            file + ":" + to_string(line) + ": "
-            "'expect' can only be called inside tests!"
+            file + ":" + to_string(line) + ": 'expect' can only be called inside tests!"
         );
     }
 }

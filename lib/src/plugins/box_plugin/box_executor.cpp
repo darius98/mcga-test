@@ -5,15 +5,14 @@ using namespace std;
 
 namespace kktest {
 
-BoxExecutor::BoxExecutor(std::size_t _maxNumContainers):
-        maxNumContainers(_maxNumContainers) {}
+BoxExecutor::BoxExecutor(std::size_t _maxNumContainers): maxNumContainers(_maxNumContainers) {}
 
 void BoxExecutor::execute(Test* test, Executable func, Executable after) {
     ensureFreeContainers(1);
     openContainers.insert(new TestContainer(
         test,
         test->getConfig().timeTicksLimit * timeTickLengthMs + 100.0,
-        [func, test, this]() {
+        [this, func, test]() {
             run(test, func);
         },
         after

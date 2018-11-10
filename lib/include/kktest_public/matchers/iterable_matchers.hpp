@@ -58,8 +58,7 @@ private:
 template<class M, IS_MATCHER(M)>
 class IterableEachMatcher: public Matcher {
 public:
-    explicit IterableEachMatcher(M* _elementMatcher):
-            elementMatcher(_elementMatcher) {}
+    explicit IterableEachMatcher(M* _elementMatcher): elementMatcher(_elementMatcher) {}
 
     template<class T>
     bool matches(const T& iterable) {
@@ -95,8 +94,7 @@ private:
 template<class M, IS_MATCHER(M)>
 class IterableAnyMatcher: public Matcher {
 public:
-    explicit IterableAnyMatcher(M* _elementMatcher):
-            elementMatcher(_elementMatcher) {}
+    explicit IterableAnyMatcher(M* _elementMatcher): elementMatcher(_elementMatcher) {}
 
     template<class T>
     bool matches(const T& collection) {

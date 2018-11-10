@@ -81,8 +81,7 @@ extern IsZeroMatcher* isZero;
 template<class T>
 class IsAlmostEqualMatcher: public Matcher {
 public:
-    explicit IsAlmostEqualMatcher(const T& target, const double& eps):
-            target(target), eps(eps) {}
+    explicit IsAlmostEqualMatcher(const T& target, const double& eps): target(target), eps(eps) {}
 
     bool matches(const T& object) {
         return fabs(object - target) < eps;
@@ -101,8 +100,7 @@ private:
 };
 
 template<class T>
-IsAlmostEqualMatcher<T>* isAlmostEqualTo(const T& target,
-                                         const double& eps=0.000001) {
+IsAlmostEqualMatcher<T>* isAlmostEqualTo(const T& target, const double& eps=0.000001) {
     return new IsAlmostEqualMatcher<T>(target, eps);
 }
 

@@ -94,9 +94,8 @@ bool TestContainer::isTestFinished() {
         exit(errno);
     }
     if (ret == 0) {
-        auto currentTime = high_resolution_clock::now();
-        double elapsedTimeMs = duration_cast<milliseconds>
-                                   (currentTime - testProcessStartTime).count();
+        auto now = high_resolution_clock::now();
+        double elapsedTimeMs = duration_cast<milliseconds>(now - testProcessStartTime).count();
         if (elapsedTimeMs > testProcessTimeLimitMs) {
             int killStatus = kill(testProcessPID, SIGKILL);
             if (killStatus < 0) {
@@ -129,14 +128,11 @@ bool TestContainer::isTestFinished() {
             if (json.type != JSONType::OBJECT ||
                     !json.isBool("passed") ||
                     !json.isReal("executionTimeTicks") ||
-                    (!json.get("passed").operator bool() &&
-                        !json.isString("failureMessage"))) {
+                    (!bool(json.get("passed")) && !json.isString("failureMessage"))) {
                 test->setFailure("Test unexpectedly exited with code 0");
             } else {
-                if (!json.get("passed").operator bool()) {
-                    test->setFailure(unescapeCharacters(
-                            json.get("failureMessage").operator std::string()
-                    ));
+                if (!bool(json.get("passed"))) {
+                    test->setFailure(unescapeCharacters(string(json.get("failureMessage"))));
                 }
                 timeTicks = json.get("executionTimeTicks").operator double();
             }

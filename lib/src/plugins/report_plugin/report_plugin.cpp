@@ -28,9 +28,9 @@ void ReportPlugin::install() {
 
     TestingDriver::addBeforeGroupHook([this](Group* group) {
         partialGroupJSONs[group] = map<string, JSON>{
-            {"line", group->getLine()},
-            {"file", group->getFilename()},
-            {"description", group->getDescription()},
+            {"line", group->getConfig().line},
+            {"file", group->getConfig().file},
+            {"description", group->getConfig().description},
             {"index", group->getIndex()}
         };
     });
@@ -49,8 +49,8 @@ void ReportPlugin::install() {
         JSON testJSON = {
             {"description", test->getConfig().description},
             {"optional", test->getConfig().optional},
-            {"file", test->getFilename()},
-            {"line", test->getLine()},
+            {"file", test->getConfig().file},
+            {"line", test->getConfig().line},
             {"executed", test->isExecuted()},
             {"index", test->getIndex()}
         };

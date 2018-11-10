@@ -3,7 +3,7 @@
 
 #include "./kktest_public/core/macros.hpp"
 #include "./kktest_public/core/testcase.hpp"
-#include "./kktest_public/core/test_config.hpp"
+#include "./kktest_public/core/config.hpp"
 
 #include "./kktest_public/matchers/comparison_matchers.hpp"
 #include "./kktest_public/matchers/composite_matchers.hpp"

@@ -12,8 +12,7 @@ Logger::Logger(ostream& _stream): stream(_stream) {}
 
 void Logger::enqueueTestForLogging(Test* test) {
     testsQueue.insert(test);
-    while (!testsQueue.empty() &&
-                (*testsQueue.begin())->getIndex() == testsLogged + 1) {
+    while (!testsQueue.empty() && (*testsQueue.begin())->getIndex() == testsLogged + 1) {
         logTest(*testsQueue.begin());
         testsQueue.erase(testsQueue.begin());
         testsLogged += 1;
@@ -27,7 +26,7 @@ void Logger::logFinalInformation(int passedTests, int failedTests, int failedOpt
     stream << passedTests;
     modifyOutput(0);
     stream << "\nTests failed: ";
-    modifyOutput(31);
+    modifyOutput((failedTests == failedOptionalTests ? 33 : 31));
     stream << failedTests;
     modifyOutput(0);
     if (failedOptionalTests) {

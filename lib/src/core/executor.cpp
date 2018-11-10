@@ -59,13 +59,12 @@ void Executor::runSetUpsRecursively(Group* group, Test* test) {
         failed = false;
     } catch(const exception& e) {
         failed = true;
-        failMessage = "An exception was thrown during the "
-                      "setUp of group '" + group->getFullDescription()
-                      + "': " + e.what();
+        failMessage = "An exception was thrown during the setUp of group '"
+                      + group->getFullDescription() + "': " + e.what();
     } catch(...) {
         failed = true;
-        failMessage = "A non-exception object was thrown during the "
-                      "setUp of group '" + group->getFullDescription() + "'.";
+        failMessage = "A non-exception object was thrown during the setUp of group '"
+                      + group->getFullDescription() + "'.";
     }
     if (failed) {
         test->setFailure(failMessage);
@@ -78,9 +77,7 @@ void Executor::runTest(Test *test, Executable func) {
     } catch(const ExpectationFailed& failure) {
         test->setFailure(failure);
     } catch(const exception& e) {
-        test->setFailure(
-                "An exception was thrown during test: " + string(e.what())
-        );
+        test->setFailure("An exception was thrown during test: " + string(e.what()));
     } catch(...) {
         test->setFailure("A non-exception object was thrown during test");
     }
@@ -98,14 +95,12 @@ void Executor::runTearDownsRecursively(Group* group, Test* test) {
         failed = false;
     } catch(const exception& e) {
         failed = true;
-        failMessage = "An exception was thrown during the "
-                      "tearDown of group '" + group->getFullDescription()
-                      + "': " + e.what();
+        failMessage = "An exception was thrown during the tearDown of group '"
+                      + group->getFullDescription() + "': " + e.what();
     } catch(...) {
         failed = true;
-        failMessage = "A non-exception object was thrown during the "
-                      "tearDown of group '" + group->getFullDescription()
-                      + "'.";
+        failMessage = "A non-exception object was thrown during the tearDown of group '"
+                      + group->getFullDescription() + "'.";
     }
     if (failed) {
         test->setFailure(failMessage);

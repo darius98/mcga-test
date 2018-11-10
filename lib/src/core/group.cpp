@@ -5,27 +5,11 @@ using namespace std;
 
 namespace kktest {
 
-Group::Group(string _description,
-             string _file,
-             int _line,
-             Group* _parentGroup,
-             int _index):
-        description(move(_description)),
-        file(move(_file)),
-        line(_line),
-        parentGroup(_parentGroup),
-        index(_index) {}
+Group::Group(const GroupConfig& _config, Group* _parentGroup, int _index):
+        config(_config), parentGroup(_parentGroup), index(_index) {}
 
-string Group::getDescription() const {
-    return description;
-}
-
-string Group::getFilename() const {
-    return file;
-}
-
-int Group::getLine() const {
-    return line;
+const GroupConfig& Group::getConfig() const {
+    return config;
 }
 
 bool Group::isGlobalScope() const {
@@ -34,8 +18,7 @@ bool Group::isGlobalScope() const {
 
 void Group::addSetUp(Executable func) {
     if (hasSetUp) {
-        throw runtime_error("Group '" + getFullDescription() +
-                            "' already has a setUp!");
+        throw runtime_error("Group '" + getFullDescription() + "' already has a setUp!");
     }
     hasSetUp = true;
     setUpFunc = func;
@@ -49,8 +32,7 @@ void Group::setUp() const {
 
 void Group::addTearDown(Executable func) {
     if (hasTearDown) {
-        throw runtime_error("Group '" + getFullDescription() +
-                            "' already has a tearDown!");
+        throw runtime_error("Group '" + getFullDescription() + "' already has a tearDown!");
     }
     hasTearDown = true;
     tearDownFunc = func;
@@ -63,11 +45,9 @@ void Group::tearDown() const {
 }
 
 string Group::getFullDescription() const {
-    string fullDescription = description;
+    string fullDescription = config.description;
     if (!parentGroup->isGlobalScope()) {
-        fullDescription = parentGroup->getFullDescription()
-                          + "::"
-                          + fullDescription;
+        fullDescription = parentGroup->getFullDescription() + "::" + fullDescription;
     }
     return fullDescription;
 }
@@ -83,11 +63,11 @@ void Group::writeBytes(BytesConsumer& consumer) const {
     consumer
         << (parentGroup->isGlobalScope() ? 0 : parentGroup->getIndex())
         << index
-        << line
-        << file.size()
-        << file
-        << description.size()
-        << description;
+        << config.line
+        << config.file.size()
+        << config.file
+        << config.description.size()
+        << config.description;
 }
 
 Group* Group::getParentGroup() const {
