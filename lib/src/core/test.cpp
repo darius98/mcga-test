@@ -9,10 +9,6 @@ namespace kktest {
 Test::Test(const TestConfig& _config, Group* _parentGroup, int _index):
         config(_config), parentGroup(_parentGroup), index(_index) {}
 
-Test::~Test() {
-    delete failure;
-}
-
 void Test::setExecuted(double _executionTimeTicks) {
     if (isExecuted()) {
         throw runtime_error("Test::setExecuted called twice on the same test!");
@@ -21,15 +17,10 @@ void Test::setExecuted(double _executionTimeTicks) {
     executionTimeTicks = _executionTimeTicks;
 }
 
-void Test::setFailure(const string& message) {
-    if (failure == nullptr) {
-        failure = new ExpectationFailed(message);
-    }
-}
-
-void Test::setFailure(const ExpectationFailed& f) {
-    if (failure == nullptr) {
-        failure = new ExpectationFailed(f);
+void Test::setFailure(const string& message, bool force) {
+    if (passed || force) {
+        passed = false;
+        failureMessage = message;
     }
 }
 
@@ -46,18 +37,15 @@ bool Test::isExecuted() const {
 }
 
 bool Test::isFailed() const {
-    return isExecuted() && failure != nullptr;
+    return isExecuted() && !isPassed();
 }
 
 bool Test::isPassed() const {
-    return isExecuted() && !isFailed();
+    return isExecuted() && passed;
 }
 
 string Test::getFailureMessage() const {
-    if (!failure) {
-        return "";
-    }
-    return failure->getMessage();
+    return isFailed() ? failureMessage : "";
 }
 
 double Test::getExecutionTimeTicks() const {

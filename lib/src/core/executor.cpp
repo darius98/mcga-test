@@ -4,6 +4,7 @@
 
 #include <utils/time_tick_length.hpp>
 #include "executor.hpp"
+#include "expectation_failed.hpp"
 
 using namespace kktest::utils;
 using namespace std;
@@ -100,7 +101,7 @@ void Executor::runTest(Test *test, Executable func) {
     try {
         func();
     } catch(const ExpectationFailed& failure) {
-        test->setFailure(failure);
+        test->setFailure(failure.what());
     } catch(const exception& e) {
         test->setFailure("An exception was thrown during test: " + string(e.what()));
     } catch(...) {

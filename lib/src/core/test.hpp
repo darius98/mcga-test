@@ -5,7 +5,6 @@
 
 #include <core/config.hpp>
 #include <utils/message.hpp>
-#include "expectation_failed.hpp"
 
 
 namespace kktest {
@@ -16,13 +15,9 @@ class Test: public MessageSerializable {
 public:
     Test(const TestConfig& _config, Group* _parentGroup, int _index);
 
-    ~Test() override;
-
     void setExecuted(double _executionTimeTicks);
 
-    void setFailure(const std::string& message);
-
-    void setFailure(const ExpectationFailed& f);
+    void setFailure(const std::string& message, bool force=false);
 
     const TestConfig& getConfig() const;
 
@@ -51,7 +46,8 @@ private:
     int index;
 
     bool executed = false;
-    ExpectationFailed* failure = nullptr;
+    bool passed = true;
+    std::string failureMessage = "";
     double executionTimeTicks = -1.0;
 };
 

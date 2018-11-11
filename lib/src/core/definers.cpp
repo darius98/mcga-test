@@ -1,6 +1,7 @@
 #include <core/definers.hpp>
 
 #include "driver.hpp"
+#include "expectation_failed.hpp"
 
 using namespace std;
 
@@ -42,7 +43,7 @@ void TearDownDefiner::operator()(Executable func) {
 void ExpectDefiner::operator()(const bool& exprResult, const string& expr) {
     checkDuringTest();
     if (!exprResult) {
-        throw ExpectationFailed(file + ":" + to_string(line) + ": " + expr);
+        throwExpectationFailed(file + ":" + to_string(line) + ": " + expr);
     }
 }
 
@@ -51,8 +52,7 @@ void ExpectDefiner::throwExpectationFailed(const string& message) {
 }
 
 void ExpectDefiner::checkDuringTest() {
-    if (TestingDriver::instance == nullptr ||
-        !TestingDriver::instance->executor->isDuringTest()) {
+    if (TestingDriver::instance == nullptr || !TestingDriver::instance->executor->isDuringTest()) {
         throw runtime_error(
             file + ":" + to_string(line) + ": 'expect' can only be called inside tests!"
         );
