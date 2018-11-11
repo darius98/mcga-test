@@ -79,8 +79,12 @@ void Test::writeBytes(BytesConsumer& consumer) const {
         << getFailureMessage();
 }
 
-Group* Test::getParentGroup() const {
+Group* Test::getGroup() const {
     return parentGroup;
+}
+
+int Test::getGroupIndex() const {
+    return parentGroup->getIndex();
 }
 
 }

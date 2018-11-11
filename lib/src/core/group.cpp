@@ -71,6 +71,10 @@ Group* Group::getParentGroup() const {
     return parentGroup;
 }
 
+int Group::getParentGroupIndex() const {
+    return parentGroup->getIndex();
+}
+
 void Group::markTestStartedExecution() {
     ++ testsStarted;
 }

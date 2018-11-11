@@ -39,7 +39,9 @@ public:
 
     void writeBytes(BytesConsumer& consumer) const override;
 
-    Group* getParentGroup() const;
+    int getGroupIndex() const;
+
+    Group* getGroup() const;
 
 private:
     TestConfig config;

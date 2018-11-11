@@ -106,12 +106,15 @@ void TestingDriver::addGroup(const GroupConfig& config, Executable func) {
 
 void TestingDriver::addTest(const TestConfig& config, Executable func) {
     executor->checkIsInactive("test");
-    Test* test = new Test(config, groupStack.back(), ++ currentTestIndex);
+    Group* parentGroup = groupStack.back();
+    Test* test = new Test(config, parentGroup, ++ currentTestIndex);
+    parentGroup->markTestStartedExecution();
     beforeTest(test);
-    executor->execute(test, func, [this, test]() {
+    executor->execute(test, func, [this, parentGroup, test]() {
         if (!test->getConfig().optional) {
             failedAnyNonOptionalTest |= test->isFailed();
         }
+        parentGroup->markTestFinishedExecution();
         afterTest(test);
     });
 }
@@ -127,7 +130,6 @@ void TestingDriver::addTearDown(Executable func) {
 }
 
 void TestingDriver::beforeTest(Test* test) const {
-    test->getParentGroup()->markTestStartedExecution();
     for (const TestHook& hook: beforeTestHooks) {
         hook(test);
     }
@@ -137,7 +139,6 @@ void TestingDriver::afterTest(Test* test) const {
     for (const TestHook& hook: afterTestHooks) {
         hook(test);
     }
-    test->getParentGroup()->markTestFinishedExecution();
     delete test;
 }
 

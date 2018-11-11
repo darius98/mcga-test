@@ -59,11 +59,11 @@ void Executor::execute(Test* test, Executable func, Executable after) {
 void Executor::run(Test* test, Executable func) {
     state = SET_UP;
     auto begin = high_resolution_clock::now();
-    runSetUpsRecursively(test->getParentGroup(), test);
+    runSetUpsRecursively(test->getGroup(), test);
     state = TEST;
     runTest(test, func);
     state = TEAR_DOWN;
-    runTearDownsRecursively(test->getParentGroup(), test);
+    runTearDownsRecursively(test->getGroup(), test);
     auto end = high_resolution_clock::now();
     state = INACTIVE;
     test->setExecuted(duration_cast<milliseconds>(end - begin).count() / timeTickLengthMs);

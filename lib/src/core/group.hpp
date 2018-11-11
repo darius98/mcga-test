@@ -17,6 +17,17 @@ public:
 
     bool isTopLevel() const;
 
+    std::string getFullDescription() const;
+
+    void writeBytes(BytesConsumer& consumer) const override;
+
+    int getIndex() const;
+
+    int getParentGroupIndex() const;
+
+    Group* getParentGroup() const;
+
+private:
     void addSetUp(Executable func);
 
     void setUp() const;
@@ -25,21 +36,12 @@ public:
 
     void tearDown() const;
 
-    std::string getFullDescription() const;
-
-    void writeBytes(BytesConsumer& consumer) const override;
-
-    int getIndex() const;
-
-    Group* getParentGroup() const;
-
     void markTestStartedExecution();
 
     void markTestFinishedExecution();
 
     void markAllTestsStartedExecution(Executable _afterAllTestsCallback);
 
-private:
     GroupConfig config;
 
     Group* parentGroup;
@@ -55,6 +57,9 @@ private:
     int testsFinished = 0;
     bool allTestsStarted = false;
     CopyableExecutable afterAllTestsCallback;
+
+friend class Executor;
+friend class TestingDriver;
 };
 
 }

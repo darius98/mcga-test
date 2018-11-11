@@ -20,7 +20,7 @@ public:
 
 private:
     autojson::JSON report;
-    std::map<Group*, autojson::JSON> groupJSONs;
+    std::map<int, autojson::JSON> groupJSONs;
 };
 
 }
