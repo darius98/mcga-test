@@ -11,9 +11,6 @@ class BytesConsumer {
 public:
     virtual BytesConsumer& addBytes(const void* bytes, std::size_t numBytes) = 0;
 
-    // Specialization for string, for better usage.
-    BytesConsumer& add(const std::string& str);
-
     template<class T>
     BytesConsumer& add(const T& obj) {
         return addBytes(&obj, sizeof(obj));

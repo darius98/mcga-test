@@ -6,6 +6,7 @@ using namespace std;
 
 namespace kktest {
 
+template<>
 BytesConsumer& BytesConsumer::add(const string& str) {
     add(str.size());
     addBytes(str.c_str(), str.size());
