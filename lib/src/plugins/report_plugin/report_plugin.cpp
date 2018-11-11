@@ -29,7 +29,7 @@ void ReportPlugin::install() {
     report["numFailedTests"] = 0;
 
     TestingDriver::addBeforeGroupHook([this](Group* group) {
-        partialGroupJSONs[group] = map<string, JSON>{
+        groupJSONs[group] = map<string, JSON>{
             {"line", group->getConfig().line},
             {"file", group->getConfig().file},
             {"description", group->getConfig().description},
@@ -38,9 +38,8 @@ void ReportPlugin::install() {
     });
 
     TestingDriver::addAfterGroupHook([this](Group* group) {
-        JSON groupJSON = partialGroupJSONs[group];
-        JSON& parentJSON = group->getParentGroup()->isGlobalScope() ? report:
-                                partialGroupJSONs[group->getParentGroup()];
+        JSON groupJSON = groupJSONs[group];
+        JSON& parentJSON = group->isTopLevel() ? report : groupJSONs[group->getParentGroup()];
         if (!parentJSON.exists("subGroups")) {
             parentJSON["subGroups"] = vector<JSON>();
         }
@@ -65,8 +64,7 @@ void ReportPlugin::install() {
             }
         }
 
-        JSON& parentJSON = test->getParentGroup()->isGlobalScope() ? report:
-                                partialGroupJSONs[test->getParentGroup()];
+        JSON& parentJSON = test->isTopLevel() ? report : groupJSONs[test->getParentGroup()];
         if (!parentJSON.exists("tests")) {
             parentJSON["tests"] = vector<JSON>();
         }

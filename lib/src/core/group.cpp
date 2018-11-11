@@ -12,8 +12,8 @@ const GroupConfig& Group::getConfig() const {
     return config;
 }
 
-bool Group::isGlobalScope() const {
-    return parentGroup == nullptr;
+bool Group::isTopLevel() const {
+    return parentGroup != nullptr && parentGroup->parentGroup == nullptr;
 }
 
 void Group::addSetUp(Executable func) {
@@ -46,7 +46,7 @@ void Group::tearDown() const {
 
 string Group::getFullDescription() const {
     string fullDescription = config.description;
-    if (!parentGroup->isGlobalScope()) {
+    if (!isTopLevel()) {
         fullDescription = parentGroup->getFullDescription() + "::" + fullDescription;
     }
     return fullDescription;
@@ -57,11 +57,8 @@ int Group::getIndex() const {
 }
 
 void Group::writeBytes(BytesConsumer& consumer) const {
-    if (isGlobalScope()) {
-        return;
-    }
     consumer
-        << (parentGroup->isGlobalScope() ? 0 : parentGroup->getIndex())
+        << (isTopLevel() ? 0 : parentGroup->getIndex())
         << index
         << config.line
         << config.file.size()

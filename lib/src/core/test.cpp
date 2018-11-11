@@ -28,6 +28,10 @@ const TestConfig& Test::getConfig() const {
     return config;
 }
 
+bool Test::isTopLevel() const {
+    return parentGroup->getParentGroup() == nullptr;
+}
+
 int Test::getIndex() const {
     return index;
 }
@@ -54,7 +58,7 @@ double Test::getExecutionTimeTicks() const {
 
 string Test::getDescriptionPrefix() const {
     string prefix = config.file + ":" + to_string(config.line) + "::";
-    if (!parentGroup->isGlobalScope()) {
+    if (!isTopLevel()) {
         prefix += parentGroup->getFullDescription() + "::";
     }
     return prefix;

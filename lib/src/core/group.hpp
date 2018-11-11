@@ -15,7 +15,7 @@ public:
 
     const GroupConfig& getConfig() const;
 
-    bool isGlobalScope() const;
+    bool isTopLevel() const;
 
     void addSetUp(Executable func);
 

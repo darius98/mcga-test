@@ -21,6 +21,8 @@ public:
 
     const TestConfig& getConfig() const;
 
+    bool isTopLevel() const;
+
     int getIndex() const;
 
     bool isExecuted() const;
