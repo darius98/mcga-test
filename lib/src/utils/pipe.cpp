@@ -35,29 +35,38 @@ InputPipe::~InputPipe() {
 
 Message InputPipe::getNextMessage(int readAttempts) {
     char block[128];
+    size_t messageSize;
     for (int i = 0; i < readAttempts; ++ i) {
         ssize_t numBytesRead = read(inputFD, block, 128);
         if (numBytesRead < 0) {
             perror("read");
             exit(errno);
         }
-        while (bufferCapacity < bufferSize + numBytesRead) {
-            void* newBuffer = malloc(2 * bufferCapacity);
-            memcpy(newBuffer, buffer, bufferSize);
-            free(buffer);
-            buffer = newBuffer;
-            bufferCapacity *= 2;
-        }
+        resizeBufferToFit(numBytesRead);
         memcpy((uint8_t*)buffer + bufferSize, block, numBytesRead);
         bufferSize += numBytesRead;
-        if (Message::isSane(buffer, bufferSize)) {
+        messageSize = Message::isSane(buffer, bufferSize);
+        if (messageSize != 0) {
             break;
         }
     }
-    size_t messageSize = Message::isSane(buffer, bufferSize);
     if (!messageSize) {
         return Message(nullptr);
     }
+    return extractMessageFromBuffer(messageSize);
+}
+
+void InputPipe::resizeBufferToFit(size_t extraBytes) {
+    while (bufferCapacity < bufferSize + extraBytes) {
+        void* newBuffer = malloc(2 * bufferCapacity);
+        memcpy(newBuffer, buffer, bufferSize);
+        free(buffer);
+        buffer = newBuffer;
+        bufferCapacity *= 2;
+    }
+}
+
+Message InputPipe::extractMessageFromBuffer(size_t messageSize) {
     void* messagePayload = malloc(messageSize);
     memcpy(messagePayload, buffer, messageSize);
     memcpy(buffer, (uint8_t*)buffer + messageSize, bufferSize - messageSize);

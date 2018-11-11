@@ -25,10 +25,14 @@ public:
     Message getNextMessage(int readAttempts=1024);
 
 private:
+    void resizeBufferToFit(std::size_t extraBytes);
+
+    Message extractMessageFromBuffer(std::size_t messageSize);
+
     int inputFD;
     void* buffer;
-    int bufferSize;
-    int bufferCapacity;
+    std::size_t bufferSize;
+    std::size_t bufferCapacity;
 };
 
 }
