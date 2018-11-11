@@ -10,11 +10,9 @@ class Pipe {
 public:
     explicit Pipe(const int& _outputFD);
 
-    void pipe(const MessageSerializable* messageSerializable) const;
+    void pipe(const Message& messageSerializable) const;
 
 private:
-    void writeBytes(const void* bytes, std::size_t numBytes) const;
-
     int outputFD;
 };
 

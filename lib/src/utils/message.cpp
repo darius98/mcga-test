@@ -1,4 +1,3 @@
-#include <cstdint>
 #include <cstring>
 
 #include "message.hpp"
@@ -19,6 +18,14 @@ BytesCounter& BytesCounter::addBytes(const void*, size_t numBytes) {
 
 size_t BytesCounter::getNumBytesConsumed() const {
     return bytesConsumed;
+}
+
+Message Message::build(const function<void(BytesConsumer&)>& builder) {
+    BytesCounter counter;
+    builder(counter);
+    Message message(counter.getNumBytesConsumed());
+    builder(message);
+    return message;
 }
 
 Message::Message(size_t size): payload(malloc(size + sizeof(size_t))) {
@@ -53,16 +60,6 @@ void* Message::getPayload() const {
 
 size_t Message::getSize() const {
     return *((size_t*)payload) + sizeof(size_t);
-}
-
-MessageSerializable::~MessageSerializable() = default;
-
-Message MessageSerializable::toMessage() const {
-    BytesCounter counter;
-    writeBytes(counter);
-    Message message(counter.getNumBytesConsumed());
-    writeBytes(message);
-    return message;
 }
 
 }

@@ -64,21 +64,6 @@ string Test::getDescriptionPrefix() const {
     return prefix;
 }
 
-void Test::writeBytes(BytesConsumer& consumer) const {
-    consumer
-        << parentGroup->getIndex()
-        << index
-        << config.line
-        << config.file.size()
-        << config.file
-        << config.optional
-        << config.description.size()
-        << config.description
-        << isPassed()
-        << getFailureMessage().size()
-        << getFailureMessage();
-}
-
 Group* Test::getGroup() const {
     return parentGroup;
 }

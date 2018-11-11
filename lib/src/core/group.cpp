@@ -56,17 +56,6 @@ int Group::getIndex() const {
     return index;
 }
 
-void Group::writeBytes(BytesConsumer& consumer) const {
-    consumer
-        << (isTopLevel() ? 0 : parentGroup->getIndex())
-        << index
-        << config.line
-        << config.file.size()
-        << config.file
-        << config.description.size()
-        << config.description;
-}
-
 Group* Group::getParentGroup() const {
     return parentGroup;
 }

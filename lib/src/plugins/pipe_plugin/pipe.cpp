@@ -9,12 +9,9 @@ namespace kktest {
 
 Pipe::Pipe(const int& _outputFD): outputFD(_outputFD) {}
 
-void Pipe::pipe(const MessageSerializable* messageSerializable) const {
-    Message message = messageSerializable->toMessage();
-    writeBytes(message.getPayload(), message.getSize());
-}
-
-void Pipe::writeBytes(const void* bytes, size_t numBytes) const {
+void Pipe::pipe(const Message& message) const {
+    const void* bytes = message.getPayload();
+    size_t numBytes = message.getSize();
     size_t written = 0;
     while (written < numBytes) {
         uint8_t* target = ((uint8_t*)bytes) + written;

@@ -4,14 +4,13 @@
 #include <string>
 
 #include <core/config.hpp>
-#include <utils/message.hpp>
 
 
 namespace kktest {
 
 class Group;
 
-class Test: public MessageSerializable {
+class Test {
 public:
     Test(const TestConfig& _config, Group* _parentGroup, int _index);
 
@@ -36,8 +35,6 @@ public:
     std::string getFailureMessage() const;
 
     std::string getDescriptionPrefix() const;
-
-    void writeBytes(BytesConsumer& consumer) const override;
 
     int getGroupIndex() const;
 

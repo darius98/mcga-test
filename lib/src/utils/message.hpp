@@ -1,8 +1,7 @@
 #ifndef KKTEST_UTILS_MESSAGE_H_
 #define KKTEST_UTILS_MESSAGE_H_
 
-#include <cstdlib>
-
+#include <functional>
 #include <string>
 
 
@@ -38,6 +37,8 @@ private:
 
 class Message: public BytesConsumer {
 public:
+    static Message build(const std::function<void(BytesConsumer&)>& builder);
+
     explicit Message(std::size_t size);
     Message(const Message& other);
     Message(Message&& other) noexcept;
@@ -53,15 +54,6 @@ public:
 private:
     void* payload;
     std::size_t cursor;
-};
-
-class MessageSerializable {
-public:
-    virtual ~MessageSerializable();
-
-    virtual void writeBytes(BytesConsumer& consumer) const = 0;
-
-    Message toMessage() const;
 };
 
 }

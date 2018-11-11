@@ -9,7 +9,7 @@
 
 namespace kktest {
 
-class Group: public MessageSerializable {
+class Group {
 public:
     Group(const GroupConfig& _config, Group* _parentGroup, int _index);
 
@@ -18,8 +18,6 @@ public:
     bool isTopLevel() const;
 
     std::string getFullDescription() const;
-
-    void writeBytes(BytesConsumer& consumer) const override;
 
     int getIndex() const;
 
