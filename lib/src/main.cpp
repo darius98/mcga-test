@@ -11,7 +11,7 @@ namespace kktest {
 int main(int argc, char** argv) {
     ParseEasyFlags(argc, argv);
     TestingDriver::init();
-    testCase();
+    kkTestCase();
     return TestingDriver::destroy();
 }
 

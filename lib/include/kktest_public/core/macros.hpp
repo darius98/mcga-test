@@ -4,17 +4,17 @@
 #include "./definers.hpp"
 #include "./filename.hpp"
 
-#define test kktest::TestDefiner(__FILENAME__, __LINE__)
+#define kkTest kktest::TestDefiner(__FILENAME__, __LINE__)
 
-#define group kktest::GroupDefiner(__FILENAME__, __LINE__)
+#define kkGroup kktest::GroupDefiner(__FILENAME__, __LINE__)
 
-#define setUp kktest::SetUpDefiner(__FILENAME__, __LINE__)
+#define kkSetUp kktest::SetUpDefiner(__FILENAME__, __LINE__)
 
-#define tearDown kktest::TearDownDefiner(__FILENAME__, __LINE__)
+#define kkTearDown kktest::TearDownDefiner(__FILENAME__, __LINE__)
 
-#define expect(...) kktest::ExpectDefiner(__FILENAME__, __LINE__)                                  \
+#define kkExpect(...) kktest::ExpectDefiner(__FILENAME__, __LINE__)                                \
                                          (__VA_ARGS__, #__VA_ARGS__ " is false")
 
-#define failTest(...) kktest::ExpectDefiner(__FILENAME__, __LINE__)(false, __VA_ARGS__)
+#define kkFail(...) kktest::ExpectDefiner(__FILENAME__, __LINE__)(false, __VA_ARGS__)
 
 #endif

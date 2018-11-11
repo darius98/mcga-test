@@ -4,6 +4,6 @@
 /**
  * Implement this function in each test case target.
  */
-void testCase();
+void kkTestCase();
 
 #endif
