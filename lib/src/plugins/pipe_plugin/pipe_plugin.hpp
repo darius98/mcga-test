@@ -2,7 +2,7 @@
 #define KKTEST_PLUGINS_PIPE_PLUGIN_PIPE_PLUGIN_H_
 
 #include <utils/plugin.hpp>
-#include "pipe.hpp"
+#include <utils/pipe.hpp>
 
 
 namespace kktest {
@@ -20,7 +20,7 @@ public:
     void uninstall() override;
 
 private:
-    Pipe* pipe = nullptr;
+    OutputPipe* pipe = nullptr;
 };
 
 }

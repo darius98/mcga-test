@@ -1,55 +1,16 @@
 #include <unistd.h>
 #include <sys/wait.h>
 
-#include <JSON>
+#include <cstring>
 
+#include <utils/message.hpp>
+#include <utils/pipe.hpp>
 #include <utils/unescape_characters.hpp>
 #include "test_container.hpp"
 
-using namespace autojson;
 using namespace kktest::utils;
 using namespace std;
 using namespace std::chrono;
-
-
-namespace {
-
-void writeStringToPipe(const string& output, int pipeFD) {
-    size_t bytesToWrite = output.size() + 1;
-    const char* bytes = output.c_str();
-    int written = 0;
-    while (bytesToWrite > 0) {
-        ssize_t blockSize = write(pipeFD, bytes + written, bytesToWrite);
-        if (blockSize < 0) {
-            perror("write");
-            exit(errno);
-        }
-        bytesToWrite -= blockSize;
-        written += blockSize;
-    }
-}
-
-string readStringFromPipe(int pipeFD, int maxReadAttempts=1024) {
-    string output;
-    char buffer[128];
-    for (int i = 0; i < maxReadAttempts; ++ i) {
-        ssize_t numBytesRead = read(pipeFD, buffer, 127);
-        if (numBytesRead < 0) {
-            perror("read");
-            exit(errno);
-        }
-        buffer[numBytesRead] = 0;
-        output += buffer;
-
-        // reading is done on encountering '\0'.
-        if (numBytesRead > 0 && buffer[numBytesRead - 1] == 0) {
-            break;
-        }
-    }
-    return output;
-}
-
-}
 
 
 namespace kktest {
@@ -75,11 +36,11 @@ TestContainer::TestContainer(Test *_test,
     if (testProcessPID == 0) { // child
         close(testProcessPipeFD);
         run();
-        writeStringToPipe(JSON(map<string, JSON>{
-            {"passed", test->isPassed()},
-            {"failureMessage", test->getFailureMessage()},
-            {"executionTimeTicks", test->getExecutionTimeTicks()}
-        }).stringify(), fd[1]);
+        OutputPipe(fd[1]).pipe(Message::build([this](BytesConsumer& consumer) {
+            consumer << test->isPassed()
+                     << test->getExecutionTimeTicks()
+                     << test->getFailureMessage();
+        }));
         exit(0);
     }
     close(fd[1]);
@@ -123,18 +84,18 @@ bool TestContainer::isTestFinished() {
         if (exitStatus != 0) {
             test->setFailure("Non-zero exit code: " + to_string(exitStatus));
         } else {
-            string processOutput = readStringFromPipe(testProcessPipeFD);
-            auto json = JSON::parse(processOutput);
-            if (json.type != JSONType::OBJECT ||
-                    !json.isBool("passed") ||
-                    !json.isReal("executionTimeTicks") ||
-                    (!bool(json.get("passed")) && !json.isString("failureMessage"))) {
+            Message message = InputPipe(testProcessPipeFD).getNextMessage();
+            if (message.getPayload() == nullptr) {
                 test->setFailure("Test unexpectedly exited with code 0");
             } else {
-                if (!bool(json.get("passed"))) {
-                    test->setFailure(unescapeCharacters(string(json.get("failureMessage"))));
+                MessageReader reader(message);
+                bool isPassed = reader.read<bool>();
+                double ticks = reader.read<double>();
+                string failureMessage = reader.read<string>();
+                if (!isPassed) {
+                    test->setFailure(unescapeCharacters(failureMessage));
                 }
-                timeTicks = json.get("executionTimeTicks").operator double();
+                timeTicks = ticks;
             }
         }
     } else if (WIFSIGNALED(wStatus)) {

@@ -23,16 +23,14 @@ bool PipePlugin::isEnabled() const {
 }
 
 void PipePlugin::install() {
-    pipe = new Pipe(argumentPipeFD);
+    pipe = new OutputPipe(argumentPipeFD);
     TestingDriver::addBeforeGroupHook([this](Group* group) {
         pipe->pipe(Message::build([group](BytesConsumer& consumer) {
             consumer
                 << group->getParentGroupIndex()
                 << group->getIndex()
                 << group->getConfig().line
-                << group->getConfig().file.size()
                 << group->getConfig().file
-                << group->getConfig().description.size()
                 << group->getConfig().description;
         }));
     });
@@ -42,13 +40,10 @@ void PipePlugin::install() {
                 << test->getGroupIndex()
                 << test->getIndex()
                 << test->getConfig().line
-                << test->getConfig().file.size()
                 << test->getConfig().file
                 << test->getConfig().optional
-                << test->getConfig().description.size()
                 << test->getConfig().description
                 << test->isPassed()
-                << test->getFailureMessage().size()
                 << test->getFailureMessage();
         }));
     });
