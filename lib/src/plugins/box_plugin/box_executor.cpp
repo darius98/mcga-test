@@ -15,8 +15,8 @@ void BoxExecutor::execute(Test* test, Executable func, Executable after) {
         [this, func, test]() {
             run(test, func);
         },
-        [after, test](double ticks, bool passed, string failureMessage) {
-            test->setExecuted(ticks, passed, failureMessage);
+        [this, test, after](double ticks, bool passed, string failureMessage) {
+            setTestExecuted(test, ticks, passed, failureMessage);
             after();
         }
     ));

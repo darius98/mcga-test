@@ -72,11 +72,18 @@ void Executor::run(Test* test, Executable func) {
     if (setUpFailure.second) {
         setUpFailure = tearDownFailure;
     }
-    test->setExecuted(
+    setTestExecuted(test,
         /* executionTimeTicks=*/duration_cast<milliseconds>(end - begin).count() / timeTickLengthMs,
         /*             passed=*/setUpFailure.second,
         /*     failureMessage=*/setUpFailure.first
     );
+}
+
+void Executor::setTestExecuted(Test* test,
+                               double executionTimeTicks,
+                               bool passed,
+                               string failureMessage) {
+    test->setExecuted(executionTimeTicks, passed, failureMessage);
 }
 
 pair<string, bool> Executor::runSetUpsRecursively(Group* group) {

@@ -35,6 +35,11 @@ public:
 protected:
     void run(Test* test, Executable func);
 
+    void setTestExecuted(Test* test,
+                         double executionTimeTicks,
+                         bool passed,
+                         std::string failureMessage);
+
 private:
     std::pair<std::string, bool> runSetUpsRecursively(Group* group);
 

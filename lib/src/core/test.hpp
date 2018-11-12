@@ -14,8 +14,6 @@ class Test {
 public:
     Test(const TestConfig& _config, Group* _parentGroup, int _index);
 
-    void setExecuted(double _executionTimeTicks, bool _passed=true, std::string _failureMessage="");
-
     const TestConfig& getConfig() const;
 
     bool isTopLevel() const;
@@ -39,6 +37,8 @@ public:
     Group* getGroup() const;
 
 private:
+    void setExecuted(double _executionTimeTicks, bool _passed=true, std::string _failureMessage="");
+
     TestConfig config;
 
     Group* parentGroup;
@@ -48,6 +48,8 @@ private:
     bool passed = true;
     std::string failureMessage = "";
     double executionTimeTicks = -1.0;
+
+friend class Executor;
 };
 
 }
