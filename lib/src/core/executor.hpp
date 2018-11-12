@@ -36,11 +36,11 @@ protected:
     void run(Test* test, Executable func);
 
 private:
-    void runSetUpsRecursively(Group* group, Test* test);
+    std::pair<std::string, bool> runSetUpsRecursively(Group* group);
 
-    void runTearDownsRecursively(Group* group, Test* test);
+    std::pair<std::string, bool> runTearDownsRecursively(Group* group);
 
-    void runTest(Test* test, Executable func);
+    std::pair<std::string, bool> runTest(Executable func);
 
     State state = State::INACTIVE;
     double timeTickLengthMs;

@@ -59,21 +59,31 @@ void Executor::execute(Test* test, Executable func, Executable after) {
 void Executor::run(Test* test, Executable func) {
     state = SET_UP;
     auto begin = high_resolution_clock::now();
-    runSetUpsRecursively(test->getGroup(), test);
+    pair<string, bool> setUpFailure = runSetUpsRecursively(test->getGroup());
     state = TEST;
-    runTest(test, func);
+    pair<string, bool> testFailure = runTest(func);
     state = TEAR_DOWN;
-    runTearDownsRecursively(test->getGroup(), test);
+    pair<string, bool> tearDownFailure = runTearDownsRecursively(test->getGroup());
     auto end = high_resolution_clock::now();
     state = INACTIVE;
-    test->setExecuted(duration_cast<milliseconds>(end - begin).count() / timeTickLengthMs);
+    if (setUpFailure.second) {
+        setUpFailure = testFailure;
+    }
+    if (setUpFailure.second) {
+        setUpFailure = tearDownFailure;
+    }
+    test->setExecuted(
+        /* executionTimeTicks=*/duration_cast<milliseconds>(end - begin).count() / timeTickLengthMs,
+        /*             passed=*/setUpFailure.second,
+        /*     failureMessage=*/setUpFailure.first
+    );
 }
 
-void Executor::runSetUpsRecursively(Group* group, Test* test) {
+pair<string, bool> Executor::runSetUpsRecursively(Group* group) {
     if (group == nullptr) {
-        return;
+        return {"", true};
     }
-    runSetUpsRecursively(group->getParentGroup(), test);
+    pair<string, bool> recursiveFailure = runSetUpsRecursively(group->getParentGroup());
 
     bool failed;
     string failMessage;
@@ -89,26 +99,28 @@ void Executor::runSetUpsRecursively(Group* group, Test* test) {
         failMessage = "A non-exception object was thrown during the setUp of group '"
                       + group->getFullDescription() + "'.";
     }
-    if (failed) {
-        test->setFailure(failMessage);
+    if (recursiveFailure.second) {
+        return {failMessage, !failed};
     }
+    return recursiveFailure;
 }
 
-void Executor::runTest(Test *test, Executable func) {
+pair<string, bool> Executor::runTest(Executable func) {
     try {
         func();
     } catch(const ExpectationFailed& failure) {
-        test->setFailure(failure.what());
+        return {failure.what(), false};
     } catch(const exception& e) {
-        test->setFailure("An exception was thrown during test: " + string(e.what()));
+        return {"An exception was thrown during test: " + string(e.what()), false};
     } catch(...) {
-        test->setFailure("A non-exception object was thrown during test");
+        return {"A non-exception object was thrown during test", false};
     }
+    return {"", true};
 }
 
-void Executor::runTearDownsRecursively(Group* group, Test* test) {
+pair<string, bool> Executor::runTearDownsRecursively(Group* group) {
     if (group == nullptr) {
-        return;
+        return {"", true};
     }
 
     bool failed;
@@ -125,11 +137,12 @@ void Executor::runTearDownsRecursively(Group* group, Test* test) {
         failMessage = "A non-exception object was thrown during the tearDown of group '"
                       + group->getFullDescription() + "'.";
     }
-    if (failed) {
-        test->setFailure(failMessage);
-    }
 
-    runTearDownsRecursively(group->getParentGroup(), test);
+    pair<string, bool> recursiveFailure = runTearDownsRecursively(group->getParentGroup());
+    if (!failed) {
+        return recursiveFailure;
+    }
+    return {failMessage, !failed};
 }
 
 }

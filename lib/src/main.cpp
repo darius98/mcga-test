@@ -8,8 +8,7 @@ using namespace std;
 
 namespace kktest {
 
-int main(int argc, char** argv) {
-    ParseEasyFlags(argc, argv);
+int main() {
     TestingDriver::init();
     kkTestCase();
     return TestingDriver::destroy();
@@ -19,5 +18,6 @@ int main(int argc, char** argv) {
 
 // TODO: Move this somewhere else.
 int main(int argc, char** argv) {
-    return kktest::main(argc, argv);
+    ParseEasyFlags(argc, argv);
+    return kktest::main();
 }

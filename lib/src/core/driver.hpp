@@ -64,7 +64,7 @@ private:
 
     bool failedAnyNonOptionalTest = false;
 
-friend int main(int argc, char** argv);
+friend int main();
 friend class TestDefiner;
 friend class GroupDefiner;
 friend class SetUpDefiner;

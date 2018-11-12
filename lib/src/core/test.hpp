@@ -14,9 +14,7 @@ class Test {
 public:
     Test(const TestConfig& _config, Group* _parentGroup, int _index);
 
-    void setExecuted(double _executionTimeTicks);
-
-    void setFailure(const std::string& message, bool force=false);
+    void setExecuted(double _executionTimeTicks, bool _passed=true, std::string _failureMessage="");
 
     const TestConfig& getConfig() const;
 

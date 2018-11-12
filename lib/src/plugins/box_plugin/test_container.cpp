@@ -18,7 +18,7 @@ namespace kktest {
 TestContainer::TestContainer(Test *_test,
                              double _testProcessTimeLimitMs,
                              Executable run,
-                             CopyableExecutable _afterTestCallback):
+                             function<void(double, bool, string)> _afterTestCallback):
         test(_test),
         testProcessTimeLimitMs(_testProcessTimeLimitMs),
         afterTestCallback(move(_afterTestCallback)) {
@@ -63,40 +63,28 @@ bool TestContainer::isTestFinished() {
         return false;
     }
     if (WIFEXITED(wStatus) && WEXITSTATUS(wStatus) != 0) {
-        test->setExecuted(-1.0);
-        test->setFailure("Non-zero exit code: " + to_string(WEXITSTATUS(wStatus)));
-        return finish();
+        return finish(-1.0, false, "Non-zero exit code: " + to_string(WEXITSTATUS(wStatus)));
     }
     if (WIFSIGNALED(wStatus)) {
-        test->setExecuted(-1.0);
-        test->setFailure("Killed by signal " + to_string(WTERMSIG(wStatus)));
-        return finish();
+        return finish(-1.0, false, "Killed by signal " + to_string(WTERMSIG(wStatus)));
     }
     if (!WIFSIGNALED(wStatus) && !WIFEXITED(wStatus)) {
-        test->setExecuted(-1.0);
-        test->setFailure("Unknown error occurred.");
-        return finish();
+        return finish(-1.0, false, "Unknown error occurred.");
     }
     Message message = InputPipe(testProcessPipeFD).getNextMessage();
     if (message.getPayload() == nullptr) {
-        test->setExecuted(-1.0);
-        test->setFailure("Test unexpectedly exited with code 0");
-        return finish();
+        return finish(-1.0, false, "Test unexpectedly exited with code 0");
     }
     MessageReader reader(message);
     auto isPassed = reader.read<bool>();
     auto ticks = reader.read<double>();
     string failureMessage = reader.read<string>();
-    test->setExecuted(ticks);
-    if (!isPassed) {
-        test->setFailure(unescapeCharacters(failureMessage));
-    }
-    return finish();
+    return finish(ticks, isPassed, unescapeCharacters(failureMessage));
 }
 
-bool TestContainer::finish() {
+bool TestContainer::finish(double ticks, bool passed, string failureMessage) {
     close(testProcessPipeFD);
-    afterTestCallback();
+    afterTestCallback(ticks, passed, failureMessage);
     return true;
 }
 
@@ -111,8 +99,7 @@ bool TestContainer::killTestProcess() {
         perror("kill");
         exit(errno);
     }
-    test->setExecuted(-1.0);
-    return finish();
+    return finish(-1.0);
 }
 
 }

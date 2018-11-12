@@ -14,12 +14,12 @@ public:
     TestContainer(Test* _test,
                   double _testProcessTimeLimitMs,
                   Executable testFunc,
-                  CopyableExecutable _afterTestCallback);
+                  std::function<void(double, bool, std::string)> _afterTestCallback);
 
     bool isTestFinished();
 
 private:
-    bool finish();
+    bool finish(double ticks, bool passed=true, std::string failureMessage="");
 
     bool killTestProcess();
 
@@ -27,7 +27,7 @@ private:
     double testProcessTimeLimitMs;
     int testProcessPipeFD;
     pid_t testProcessPID;
-    CopyableExecutable afterTestCallback;
+    std::function<void(double, bool, std::string)> afterTestCallback;
     std::chrono::time_point<std::chrono::high_resolution_clock> testProcessStartTime;
 };
 

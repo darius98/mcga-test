@@ -9,22 +9,18 @@ namespace kktest {
 Test::Test(const TestConfig& _config, Group* _parentGroup, int _index):
         config(_config), parentGroup(_parentGroup), index(_index) {}
 
-void Test::setExecuted(double _executionTimeTicks) {
+void Test::setExecuted(double _executionTimeTicks, bool _passed, string _failureMessage) {
     if (isExecuted()) {
         throw runtime_error("Test::setExecuted called twice on the same test!");
     }
     executed = true;
     executionTimeTicks = _executionTimeTicks;
-    if (executionTimeTicks == -1.0 || executionTimeTicks > getConfig().timeTicksLimit) {
-        setFailure("Execution time limit exceeded.");
+    if (executionTimeTicks == -1 || executionTimeTicks > getConfig().timeTicksLimit) {
+        _passed = false;
+        _failureMessage = "Execution timed out.";
     }
-}
-
-void Test::setFailure(const string& message, bool force) {
-    if (passed || force) {
-        passed = false;
-        failureMessage = message;
-    }
+    passed = _passed;
+    failureMessage = _failureMessage;
 }
 
 const TestConfig& Test::getConfig() const {
