@@ -4,6 +4,7 @@ set(CMAKE_CXX_STANDARD 11)
 
 file(GLOB KKTestLibImpl
         include/kktest
+        include/kktest_matchers
         include/*.hpp
         include/*/*.hpp
         include/*/*/*.hpp
@@ -32,11 +33,13 @@ endif ()
 add_executable(concept_std_vector_test concept/std_vector_test.cpp)
 install(TARGETS concept_std_vector_test DESTINATION concept_std_vector_test)
 target_link_libraries(concept_std_vector_test kktest)
+target_include_directories(concept_std_vector_test PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 function(wiki_example FILE_NAME)
     set(T wiki_example_${FILE_NAME})
     add_executable(${T} wiki_examples/${FILE_NAME}.cpp)
     target_link_libraries(${T} kktest)
+    target_include_directories(${T} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
     install(TARGETS ${T} DESTINATION ${T})
 endfunction()
 

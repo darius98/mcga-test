@@ -6,6 +6,8 @@ if(__LOCAL_KKTEST_LIBRARY_INCLUDE_GUARD__)
 endif()
 SET_PROPERTY(GLOBAL PROPERTY __KKTEST_LIBRARY_INCLUDE_GUARD__ TRUE)
 
+set(KKTEST_DEV_INCLUDE_DIR ${CMAKE_CURRENT_LIST_DIR}/include)
+
 function(add_kktest TEST_NAME)
     if (NOT TESTS_PATH)
         message(FATAL_ERROR "TESTS_PATH variable not set.")
@@ -22,6 +24,9 @@ function(add_kktest TEST_NAME)
     add_executable(${ARGV})
     install(TARGETS ${TEST_NAME} DESTINATION ${TEST_NAME})
     target_link_libraries(${TEST_NAME} kktest)
+    if (BUILD_TYPE STREQUAL "DEV")
+        target_include_directories(${TEST_NAME} PRIVATE ${KKTEST_DEV_INCLUDE_DIR})
+    endif()
 
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PREV_CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 endfunction()
