@@ -15,6 +15,9 @@ void Test::setExecuted(double _executionTimeTicks) {
     }
     executed = true;
     executionTimeTicks = _executionTimeTicks;
+    if (executionTimeTicks == -1.0 || executionTimeTicks > getConfig().timeTicksLimit) {
+        setFailure("Execution time limit exceeded.");
+    }
 }
 
 void Test::setFailure(const string& message, bool force) {

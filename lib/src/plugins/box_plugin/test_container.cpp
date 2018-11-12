@@ -69,7 +69,6 @@ bool TestContainer::isTestFinished() {
                 exit(errno);
             }
             test->setExecuted(-1.0);
-            test->setFailure("Execution time limit exceeded.");
             close(testProcessPipeFD);
             afterTestCallback();
             return true;
@@ -89,8 +88,8 @@ bool TestContainer::isTestFinished() {
                 test->setFailure("Test unexpectedly exited with code 0");
             } else {
                 MessageReader reader(message);
-                bool isPassed = reader.read<bool>();
-                double ticks = reader.read<double>();
+                auto isPassed = reader.read<bool>();
+                auto ticks = reader.read<double>();
                 string failureMessage = reader.read<string>();
                 if (!isPassed) {
                     test->setFailure(unescapeCharacters(failureMessage));

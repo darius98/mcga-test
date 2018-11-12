@@ -67,9 +67,6 @@ void Executor::run(Test* test, Executable func) {
     auto end = high_resolution_clock::now();
     state = INACTIVE;
     test->setExecuted(duration_cast<milliseconds>(end - begin).count() / timeTickLengthMs);
-    if (test->getExecutionTimeTicks() > test->getConfig().timeTicksLimit) {
-        test->setFailure("Execution time limit exceeded.");
-    }
 }
 
 void Executor::runSetUpsRecursively(Group* group, Test* test) {
