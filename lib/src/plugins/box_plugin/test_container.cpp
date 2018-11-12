@@ -99,7 +99,7 @@ bool TestContainer::killTestProcess() {
         perror("kill");
         exit(errno);
     }
-    return finish(-1.0);
+    return finish(-1.0, false, "Execution timed out.");
 }
 
 }

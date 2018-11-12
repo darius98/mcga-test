@@ -15,7 +15,7 @@ void Test::setExecuted(double _executionTimeTicks, bool _passed, string _failure
     }
     executed = true;
     executionTimeTicks = _executionTimeTicks;
-    if (executionTimeTicks == -1 || executionTimeTicks > getConfig().timeTicksLimit) {
+    if (executionTimeTicks > getConfig().timeTicksLimit) {
         _passed = false;
         _failureMessage = "Execution timed out.";
     }
