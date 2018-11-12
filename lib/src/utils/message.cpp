@@ -7,9 +7,9 @@ using namespace std;
 namespace kktest {
 
 template<>
-BytesConsumer& BytesConsumer::add(const string& str) {
-    add(str.size());
-    addBytes(str.c_str(), str.size());
+BytesConsumer& BytesConsumer::add(const string& obj) {
+    add(obj.size());
+    addBytes(obj.c_str(), obj.size());
     return *this;
 }
 
@@ -78,7 +78,7 @@ MessageReader::MessageReader(const Message& _message): message(_message) {}
 
 template<>
 std::string MessageReader::read() {
-    std::size_t size = read<std::size_t>();
+    auto size = read<string::size_type>();
     std::string ans((char*)message.getPayload() + cursor,
                     (char*)message.getPayload() + cursor + size);
     cursor += size;

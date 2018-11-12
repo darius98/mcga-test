@@ -35,15 +35,15 @@ InputPipe::~InputPipe() {
 
 Message InputPipe::getNextMessage(int readAttempts) {
     char block[128];
-    size_t messageSize;
+    size_t messageSize = 0;
     for (int i = 0; i < readAttempts; ++ i) {
         ssize_t numBytesRead = read(inputFD, block, 128);
         if (numBytesRead < 0) {
             perror("read");
             exit(errno);
         }
-        resizeBufferToFit(numBytesRead);
-        memcpy((uint8_t*)buffer + bufferSize, block, numBytesRead);
+        resizeBufferToFit((size_t)numBytesRead);
+        memcpy((uint8_t*)buffer + bufferSize, block, (size_t)numBytesRead);
         bufferSize += numBytesRead;
         messageSize = Message::isSane(buffer, bufferSize);
         if (messageSize != 0) {

@@ -149,7 +149,7 @@ void kkTestCase() {
             kkExpect(v, eachElement(isNot(isNegative)));
         });
 
-        kkGroup("Failing versions of above kkTest", [&]() {
+        kkGroup("Failing versions of above test", [&]() {
             kkSetUp([&]() { v = {10, 11, 12, 13, 14, 0, 15, 16}; });
 
             kkTest("1 (F)", [&]() {
@@ -239,7 +239,7 @@ void kkTestCase() {
         });
     });
 
-    kkTest(kkTestConfig($.description = "This kkTest should timeout (F)",
+    kkTest(kkTestConfig($.description = "This test should timeout (F)",
                         $.timeTicksLimit = 0.001,
                         $.optional = true), [&]() {
         for (int i = 0; i < 1000000; ++ i) {

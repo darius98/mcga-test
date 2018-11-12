@@ -84,7 +84,7 @@ TestingDriver::~TestingDriver() {
 
 void TestingDriver::addGroup(const GroupConfig& config, Executable func) {
     executor->checkIsInactive("group");
-    Group* group = new Group(config, groupStack.back(), ++ currentGroupIndex);
+    auto group = new Group(config, groupStack.back(), ++ currentGroupIndex);
     groupStack.push_back(group);
 
     beforeGroup(group);
@@ -107,15 +107,15 @@ void TestingDriver::addGroup(const GroupConfig& config, Executable func) {
 void TestingDriver::addTest(const TestConfig& config, Executable func) {
     executor->checkIsInactive("test");
     Group* parentGroup = groupStack.back();
-    Test* test = new Test(config, parentGroup, ++ currentTestIndex);
+    auto test = new Test(config, parentGroup, ++ currentTestIndex);
     parentGroup->markTestStartedExecution();
     beforeTest(test);
     executor->execute(test, func, [this, parentGroup, test]() {
         if (!test->getConfig().optional) {
             failedAnyNonOptionalTest |= test->isFailed();
         }
-        parentGroup->markTestFinishedExecution();
         afterTest(test);
+        parentGroup->markTestFinishedExecution();
     });
 }
 

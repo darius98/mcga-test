@@ -66,12 +66,19 @@ int Group::getParentGroupIndex() const {
 
 void Group::markTestStartedExecution() {
     ++ testsStarted;
+    if (parentGroup != nullptr) {
+        parentGroup->markTestStartedExecution();
+    }
 }
 
 void Group::markTestFinishedExecution() {
     ++ testsFinished;
+    Group* parent = parentGroup;
     if (testsFinished == testsStarted && allTestsStarted) {
         afterAllTestsCallback();
+    }
+    if (parent != nullptr) {
+        parent->markTestFinishedExecution();
     }
 }
 
