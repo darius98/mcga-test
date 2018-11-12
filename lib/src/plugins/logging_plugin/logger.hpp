@@ -18,20 +18,16 @@ public:
     void logFinalInformation(int passedTests, int failedTests, int failedOptionalTests);
 
 private:
+    std::string getTestMessage(Test* test);
+
     bool isInTerminal() const;
 
-    void modifyOutput(const int& code);
-
-    void logTest(Test* test);
-
-    struct AscendingByTestIndex {
-        bool operator()(Test* a, Test* b) const;
-    };
+    void modifyOutput(const int& code, std::ostream& streamToChange);
 
     std::ostream& stream;
 
     int testsLogged = 0;
-    std::set<Test*, AscendingByTestIndex> testsQueue;
+    std::set<std::pair<int, std::string>> testsQueue;
 };
 
 }
