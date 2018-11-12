@@ -19,6 +19,10 @@ public:
     bool isTestFinished();
 
 private:
+    bool finish();
+
+    bool killTestProcess();
+
     Test* test;
     double testProcessTimeLimitMs;
     int testProcessPipeFD;

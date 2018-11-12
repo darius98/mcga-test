@@ -58,54 +58,61 @@ bool TestContainer::isTestFinished() {
         auto now = high_resolution_clock::now();
         double elapsedTimeMs = duration_cast<milliseconds>(now - testProcessStartTime).count();
         if (elapsedTimeMs > testProcessTimeLimitMs) {
-            int killStatus = kill(testProcessPID, SIGKILL);
-            if (killStatus < 0) {
-                if (errno == ESRCH) {
-                    // The child might have finished during a context switch.
-                    // In this case, return false so we can retry waiting later.
-                    return false;
-                }
-                perror("kill");
-                exit(errno);
-            }
-            test->setExecuted(-1.0);
-            close(testProcessPipeFD);
-            afterTestCallback();
-            return true;
+            return killTestProcess();
         }
-        // The child process (test) did not exit yet.
         return false;
     }
-    // Process exited.
-    double timeTicks = -1.0;
-    if (WIFEXITED(wStatus)) {
-        int exitStatus = WEXITSTATUS(wStatus);
-        if (exitStatus != 0) {
-            test->setFailure("Non-zero exit code: " + to_string(exitStatus));
-        } else {
-            Message message = InputPipe(testProcessPipeFD).getNextMessage();
-            if (message.getPayload() == nullptr) {
-                test->setFailure("Test unexpectedly exited with code 0");
-            } else {
-                MessageReader reader(message);
-                auto isPassed = reader.read<bool>();
-                auto ticks = reader.read<double>();
-                string failureMessage = reader.read<string>();
-                if (!isPassed) {
-                    test->setFailure(unescapeCharacters(failureMessage));
-                }
-                timeTicks = ticks;
-            }
-        }
-    } else if (WIFSIGNALED(wStatus)) {
-        test->setFailure("Killed by signal " + to_string(WTERMSIG(wStatus)));
-    } else {
-        test->setFailure("Unknown error occured.");
+    if (WIFEXITED(wStatus) && WEXITSTATUS(wStatus) != 0) {
+        test->setExecuted(-1.0);
+        test->setFailure("Non-zero exit code: " + to_string(WEXITSTATUS(wStatus)));
+        return finish();
     }
-    test->setExecuted(timeTicks);
+    if (WIFSIGNALED(wStatus)) {
+        test->setExecuted(-1.0);
+        test->setFailure("Killed by signal " + to_string(WTERMSIG(wStatus)));
+        return finish();
+    }
+    if (!WIFSIGNALED(wStatus) && !WIFEXITED(wStatus)) {
+        test->setExecuted(-1.0);
+        test->setFailure("Unknown error occurred.");
+        return finish();
+    }
+    Message message = InputPipe(testProcessPipeFD).getNextMessage();
+    if (message.getPayload() == nullptr) {
+        test->setExecuted(-1.0);
+        test->setFailure("Test unexpectedly exited with code 0");
+        return finish();
+    }
+    MessageReader reader(message);
+    auto isPassed = reader.read<bool>();
+    auto ticks = reader.read<double>();
+    string failureMessage = reader.read<string>();
+    test->setExecuted(ticks);
+    if (!isPassed) {
+        test->setFailure(unescapeCharacters(failureMessage));
+    }
+    return finish();
+}
+
+bool TestContainer::finish() {
     close(testProcessPipeFD);
     afterTestCallback();
     return true;
+}
+
+bool TestContainer::killTestProcess() {
+    int killStatus = kill(testProcessPID, SIGKILL);
+    if (killStatus < 0) {
+        if (errno == ESRCH) {
+            // The child might have finished during a context switch.
+            // In this case, return false so we can retry waiting it later.
+            return false;
+        }
+        perror("kill");
+        exit(errno);
+    }
+    test->setExecuted(-1.0);
+    return finish();
 }
 
 }
