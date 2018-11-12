@@ -58,9 +58,13 @@ void Logger::logTest(Test *test) {
     stream << test->getConfig().description;
     stream << ": ";
     if (test->isFailed()) {
-        modifyOutput(31);
-        stream << "FAILED\n";
+        modifyOutput(test->getConfig().optional ? 33: 31);
+        stream << "FAILED";
         modifyOutput(0);
+        if (test->getConfig().optional) {
+            stream << " (optional)";
+        }
+        stream << "\n";
         string failureMessage = test->getFailureMessage();
         // TODO(darius98): This should be somewhere else (in utils maybe?)
         size_t pos = 0;
