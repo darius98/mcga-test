@@ -74,15 +74,4 @@ size_t Message::getSize() const {
     return *((size_t*)payload) + sizeof(size_t);
 }
 
-MessageReader::MessageReader(const Message& _message): message(_message) {}
-
-template<>
-std::string MessageReader::read() {
-    auto size = read<string::size_type>();
-    std::string ans((char*)message.getPayload() + cursor,
-                    (char*)message.getPayload() + cursor + size);
-    cursor += size;
-    return ans;
-}
-
 }

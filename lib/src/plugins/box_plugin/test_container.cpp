@@ -3,8 +3,7 @@
 
 #include <cstring>
 
-#include <message.hpp>
-#include <pipe.hpp>
+#include <messaging>
 
 #include <utils/unescape_characters.hpp>
 #include "test_container.hpp"

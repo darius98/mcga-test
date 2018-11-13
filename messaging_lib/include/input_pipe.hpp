@@ -1,20 +1,10 @@
-#ifndef MESSAGING_LIB_INCLUDE_PIPE_H_
-#define MESSAGING_LIB_INCLUDE_PIPE_H_
+#ifndef MESSAGING_LIB_INCLUDE_INPUT_PIPE_H_
+#define MESSAGING_LIB_INCLUDE_INPUT_PIPE_H_
 
 #include "message.hpp"
 
 
 namespace messaging {
-
-class OutputPipe {
-public:
-    explicit OutputPipe(const int& _outputFD);
-
-    void pipe(const Message& message) const;
-
-private:
-    int outputFD;
-};
 
 class InputPipe {
 public:

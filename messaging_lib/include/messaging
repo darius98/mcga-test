@@ -1,0 +1,9 @@
+#ifndef MESSAGING_LIB_INCLUDE_MESSAGING_
+#define MESSAGING_LIB_INCLUDE_MESSAGING_
+
+#include "./message.hpp"
+#include "./message_reader.hpp"
+#include "./input_pipe.hpp"
+#include "./output_pipe.hpp"
+
+#endif

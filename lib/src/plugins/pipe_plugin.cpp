@@ -1,7 +1,7 @@
 #include <EasyFlags.hpp>
 
 #include <core/driver.hpp>
-#include <pipe.hpp>
+#include <messaging>
 
 using namespace easyflags;
 using namespace messaging;
