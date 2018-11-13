@@ -57,16 +57,16 @@ public:
     void operator()(const bool& result, const std::string& expr);
 
     template<class T, class M, class... Args, IS_MATCHER(M)>
-    void operator()(const T& object, M* matcher, const Args... args) {
+    void operator()(const T& object, M matcher, const Args... args) {
         checkDuringTest();
-        if (matcher->matches(object)) {
+        if (matcher.matches(object)) {
             return;
         }
         Description description;
         description << file << ":" << line << ":\n\tExpected ";
-        matcher->describe(description);
+        matcher.describe(description);
         description << ".\n\tGot '" << object << "'.\n\tWhich is ";
-        matcher->describeMismatch(description);
+        matcher.describeMismatch(description);
         description << ".";
         throwExpectationFailed(description.toString());
     }

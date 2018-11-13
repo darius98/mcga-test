@@ -2,9 +2,9 @@
 
 namespace kktest {
 
-IsEmptyMatcher* isEmpty = new IsEmptyMatcher();
+IsEmptyMatcher isEmpty;
 
-IsNotEmptyMatcher* isNotEmpty = new IsNotEmptyMatcher();
+IsNotEmptyMatcher isNotEmpty;
 
 void IsEmptyMatcher::describe(Description& description) {
     description << "empty iterable";

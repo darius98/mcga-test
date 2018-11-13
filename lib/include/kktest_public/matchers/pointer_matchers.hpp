@@ -15,7 +15,7 @@ public:
     void describeMismatch(Description& description) override;
 };
 
-extern IsNullptrMatcher* isNull;
+extern IsNullptrMatcher isNull;
 
 class IsNotNullptrMatcher: public Matcher {
 public:
@@ -26,7 +26,7 @@ public:
     void describeMismatch(Description& description) override;
 };
 
-extern IsNotNullptrMatcher* isNotNull;
+extern IsNotNullptrMatcher isNotNull;
 
 }
 

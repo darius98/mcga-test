@@ -57,33 +57,33 @@ private:
 };
 
 template<class T>
-ComparisonMatcher<T>* isEqualTo(const T& object) {
-    return new ComparisonMatcher<T>(object, std::equal_to<T>(), "");
+ComparisonMatcher<T> isEqualTo(const T& object) {
+    return ComparisonMatcher<T>(object, std::equal_to<T>(), "");
 }
 
 template<class T>
-ComparisonMatcher<T>* isLessThan(const T &object) {
-    return new ComparisonMatcher<T>(object, std::less<T>(), "< ");
+ComparisonMatcher<T> isLessThan(const T& object) {
+    return ComparisonMatcher<T>(object, std::less<T>(), "< ");
 }
 
 template<class T>
-ComparisonMatcher<T>* isLessThanEqual(const T &object) {
-    return new ComparisonMatcher<T>(object, std::less_equal<T>(), "<= ");
+ComparisonMatcher<T> isLessThanEqual(const T& object) {
+    return ComparisonMatcher<T>(object, std::less_equal<T>(), "<= ");
 }
 
 template<class T>
-ComparisonMatcher<T>* isGreaterThan(const T &object) {
-    return new ComparisonMatcher<T>(object, std::greater<T>(), "> ");
+ComparisonMatcher<T> isGreaterThan(const T& object) {
+    return ComparisonMatcher<T>(object, std::greater<T>(), "> ");
 }
 
 template<class T>
-ComparisonMatcher<T>* isGreaterThanEqual(const T &object) {
-    return new ComparisonMatcher<T>(object, std::greater_equal<T>(), ">= ");
+ComparisonMatcher<T> isGreaterThanEqual(const T& object) {
+    return ComparisonMatcher<T>(object, std::greater_equal<T>(), ">= ");
 }
 
 template<class T>
-IdentityMatcher<T>* isIdenticalTo(const T& object) {
-    return new IdentityMatcher<T>(object);
+IdentityMatcher<T> isIdenticalTo(const T& object) {
+    return IdentityMatcher<T>(object);
 }
 
 } // namespace kktest

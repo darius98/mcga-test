@@ -34,38 +34,38 @@ public:
 template<class M, IS_MATCHER(M)>
 class IterableSizeMatcher: public Matcher {
 public:
-    explicit IterableSizeMatcher(M* _sizeMatcher): sizeMatcher(_sizeMatcher) {}
+    explicit IterableSizeMatcher(M _sizeMatcher): sizeMatcher(_sizeMatcher) {}
 
     template<class T>
     bool matches(const T& object) {
-        return sizeMatcher->matches(object.size());
+        return sizeMatcher.matches(object.size());
     }
 
     void describe(Description& description) override {
         description << "iterable where size is ";
-        sizeMatcher->describe(description);
+        sizeMatcher.describe(description);
     }
 
     void describeMismatch(Description& description) override {
         description << "iterable where size is ";
-        sizeMatcher->describeMismatch(description);
+        sizeMatcher.describeMismatch(description);
     }
 private:
-    M* sizeMatcher;
+    M sizeMatcher;
 };
 
 template<class M, IS_MATCHER(M)>
 class IterableEachMatcher: public Matcher {
 public:
-    explicit IterableEachMatcher(M* _elementMatcher): elementMatcher(_elementMatcher) {}
+    explicit IterableEachMatcher(M _elementMatcher): elementMatcher(_elementMatcher) {}
 
     template<class T>
     bool matches(const T& iterable) {
         index = -1;
         for (const auto& obj: iterable) {
             index += 1;
-            if (!elementMatcher->matches(obj)) {
-                elementMatcher->describeMismatch(elementFailureDescription);
+            if (!elementMatcher.matches(obj)) {
+                elementMatcher.describeMismatch(elementFailureDescription);
                 return false;
             }
         }
@@ -74,7 +74,7 @@ public:
 
     void describe(Description& description) override {
         description << "an iterable where each element is ";
-        elementMatcher->describe(description);
+        elementMatcher.describe(description);
     }
 
     void describeMismatch(Description& description) override {
@@ -85,7 +85,7 @@ public:
     }
 
 private:
-    M* elementMatcher;
+    M elementMatcher;
     Description elementFailureDescription;
     int index = -1;
 };
@@ -93,14 +93,14 @@ private:
 template<class M, IS_MATCHER(M)>
 class IterableAnyMatcher: public Matcher {
 public:
-    explicit IterableAnyMatcher(M* _elementMatcher): elementMatcher(_elementMatcher) {}
+    explicit IterableAnyMatcher(M _elementMatcher): elementMatcher(_elementMatcher) {}
 
     template<class T>
     bool matches(const T& collection) {
         index = -1;
         for (const auto& obj: collection) {
             index += 1;
-            if (elementMatcher->matches(obj)) {
+            if (elementMatcher.matches(obj)) {
                 return true;
             }
         }
@@ -109,50 +109,47 @@ public:
 
     void describe(Description& description) override {
         description << "an iterable where at least one element is ";
-        elementMatcher->describe(description);
+        elementMatcher.describe(description);
     }
 
     void describeMismatch(Description& description) override {
         description << "an iterable where no element is ";
-        elementMatcher->describe(description);
+        elementMatcher.describe(description);
     }
 private:
-    M* elementMatcher;
+    M elementMatcher;
     int index = -1;
 };
 
-extern IsEmptyMatcher* isEmpty;
+extern IsEmptyMatcher isEmpty;
 
-extern IsNotEmptyMatcher* isNotEmpty;
+extern IsNotEmptyMatcher isNotEmpty;
 
-template<class M, IS_MATCHER(M)>
-IterableSizeMatcher<M>* hasSize(M* sizeMatcher) {
-    return new IterableSizeMatcher<M>(sizeMatcher);
+template<class T>
+auto hasSize(const T& size) {
+    if constexpr (std::is_base_of<Matcher, T>::value) {
+        return IterableSizeMatcher<T>(size);
+    } else {
+        return IterableSizeMatcher<ComparisonMatcher<T>>(isEqualTo(size));
+    }
 }
 
 template<class T>
-IterableSizeMatcher<ComparisonMatcher<T>>* hasSize(const T& object) {
-    return new IterableSizeMatcher<ComparisonMatcher<T>>(isEqualTo(object));
-}
-
-template<class M, IS_MATCHER(M)>
-IterableEachMatcher<M>* eachElement(M* elementMatcher) {
-    return new IterableEachMatcher<M>(elementMatcher);
-}
-
-template<class T>
-IterableEachMatcher<ComparisonMatcher<T>>* eachElement(const T &object) {
-    return new IterableEachMatcher<ComparisonMatcher<T>>(isEqualTo(object));
-}
-
-template<class M, IS_MATCHER(M)>
-IterableAnyMatcher<M>* anyElement(M *elementMatcher) {
-    return new IterableAnyMatcher<M>(elementMatcher);
+auto eachElement(const T& each) {
+    if constexpr (std::is_base_of<Matcher, T>::value) {
+        return IterableEachMatcher<T>(each);
+    } else {
+        return IterableEachMatcher<ComparisonMatcher<T>>(isEqualTo(each));
+    }
 }
 
 template<class T>
-IterableAnyMatcher<ComparisonMatcher<T>>* anyElement(const T &object) {
-    return new IterableAnyMatcher<ComparisonMatcher<T>>(isEqualTo(object));
+auto anyElement(const T& any) {
+    if constexpr (std::is_base_of<Matcher, T>::value) {
+        return IterableAnyMatcher<T>(any);
+    } else {
+        return IterableAnyMatcher<ComparisonMatcher<T>>(isEqualTo(any));
+    }
 }
 
 }

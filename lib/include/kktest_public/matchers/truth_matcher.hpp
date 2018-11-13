@@ -15,7 +15,7 @@ public:
     void describeMismatch(Description& description) override;
 };
 
-extern IsTrueMatcher* isTrue;
+extern IsTrueMatcher isTrue;
 
 class IsFalseMatcher: public Matcher {
 public:
@@ -26,7 +26,7 @@ public:
     void describeMismatch(Description& description) override;
 };
 
-extern IsFalseMatcher* isFalse;
+extern IsFalseMatcher isFalse;
 
 } // namespace kktest
 

@@ -22,6 +22,6 @@ void ThrowsAnythingMatcher::describeMismatch(Description& description) {
     description << "a function that did not throw";
 }
 
-ThrowsAnythingMatcher* throws = new ThrowsAnythingMatcher();
+ThrowsAnythingMatcher throws;
 
 }

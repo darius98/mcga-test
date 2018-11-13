@@ -30,24 +30,21 @@ void CharInStringMatcher::describeMismatch(Description& description) {
     }
 }
 
-CharInStringMatcher* isLetter = new CharInStringMatcher(
-        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", "a letter");
+CharInStringMatcher isLetter("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", "a letter");
 
-CharInStringMatcher* isDigit  = new CharInStringMatcher("0123456789", "a digit");
+CharInStringMatcher isDigit("0123456789", "a digit");
 
-CharInStringMatcher* isLowercaseLetter = new CharInStringMatcher(
-        "abcdefghijklmnopqrstuvwxyz", "a lowercase letter");
+CharInStringMatcher isLowercaseLetter("abcdefghijklmnopqrstuvwxyz", "a lowercase letter");
 
-CharInStringMatcher* isUppercaseLetter = new CharInStringMatcher(
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "an uppercase letter");
+CharInStringMatcher isUppercaseLetter("ABCDEFGHIJKLMNOPQRSTUVWXYZ", "an uppercase letter");
 
-CharInStringMatcher* isBinaryDigit = new CharInStringMatcher("01", "a binary digit");
+CharInStringMatcher isBinaryDigit("01", "a binary digit");
 
-CharInStringMatcher* isOctDigit = new CharInStringMatcher("01234567", "an oct digit");
+CharInStringMatcher isOctDigit("01234567", "an oct digit");
 
-CharInStringMatcher* isHexDigit = new CharInStringMatcher("0123456789ABCDEFabcdef", "a hex digit");
+CharInStringMatcher isHexDigit("0123456789ABCDEFabcdef", "a hex digit");
 
-CharInStringMatcher* isWhitespace = new CharInStringMatcher(" \t\r\n", "a whitespace character");
+CharInStringMatcher isWhitespace(" \t\r\n", "a whitespace character");
 
 IsSubstringMatcher::IsSubstringMatcher(string _container): container(move(_container)) {}
 
@@ -63,8 +60,8 @@ void IsSubstringMatcher::describeMismatch(Description& description) {
     description << "not a substring of '" << container << "'";
 }
 
-IsSubstringMatcher* isSubstringOf(const string& s) {
-    return new IsSubstringMatcher(s);
+IsSubstringMatcher isSubstringOf(const string& s) {
+    return IsSubstringMatcher(s);
 }
 
 }

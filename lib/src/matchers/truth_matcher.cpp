@@ -15,7 +15,7 @@ void IsTrueMatcher::describeMismatch(Description& description) {
     description << "false";
 }
 
-IsTrueMatcher* isTrue = new IsTrueMatcher();
+IsTrueMatcher isTrue;
 
 bool IsFalseMatcher::matches(const bool& object) {
     return !object;
@@ -29,6 +29,6 @@ void IsFalseMatcher::describeMismatch(Description& description) {
     description << "true";
 }
 
-IsFalseMatcher* isFalse = new IsFalseMatcher();
+IsFalseMatcher isFalse;
 
 }

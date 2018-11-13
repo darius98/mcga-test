@@ -17,7 +17,7 @@ public:
     void describeMismatch(Description& description) override;
 };
 
-extern ThrowsAnythingMatcher* throws;
+extern ThrowsAnythingMatcher throws;
 
 template<class E>
 class ThrowsSpecificMatcher: public Matcher {
@@ -54,8 +54,8 @@ private:
 };
 
 template<class E>
-ThrowsSpecificMatcher<E>* throwsA() {
-    return new ThrowsSpecificMatcher<E>();
+ThrowsSpecificMatcher<E> throwsA() {
+    return ThrowsSpecificMatcher<E>();
 }
 
 }
