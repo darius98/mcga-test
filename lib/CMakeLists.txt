@@ -16,7 +16,7 @@ file(GLOB KKTestLibImpl
         src/*/*/*.hpp
     )
 add_library(kktest SHARED ${KKTestLibImpl})
-target_compile_options(kktest PRIVATE -Wall -Wextra -pedantic -Werror)
+target_compile_options(kktest PRIVATE -Wall -Wextra -pedantic)
 target_include_directories(kktest PRIVATE src)
 target_include_directories(kktest PRIVATE include)
 target_include_directories(kktest PRIVATE include/kktest_public)

@@ -11,7 +11,7 @@ namespace kktest {
 Definer::Definer(string _file, int _line): file(move(_file)), line(_line) {}
 
 void TestDefiner::operator()(string description, Executable func) {
-    (*this)(kkTestConfig($.description = description), func);
+    (*this)(kkTestConfig(_.description = description), func);
 }
 
 void TestDefiner::operator()(const TestConfig& config, Executable func) {
@@ -22,7 +22,7 @@ void TestDefiner::operator()(const TestConfig& config, Executable func) {
 }
 
 void GroupDefiner::operator()(string description, Executable func) {
-    (*this)(kkGroupConfig($.description = description), func);
+    (*this)(kkGroupConfig(_.description = description), func);
 }
 
 void GroupDefiner::operator()(const GroupConfig& config, Executable func) {

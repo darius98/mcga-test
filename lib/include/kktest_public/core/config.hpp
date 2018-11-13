@@ -22,7 +22,7 @@ struct GroupConfig {
 
 }
 
-#define kkTestConfig(...) ([&]{kktest::TestConfig $;__VA_ARGS__; return $;}())
-#define kkGroupConfig(...) ([&]{kktest::GroupConfig $;__VA_ARGS__; return $;}())
+#define kkTestConfig(...) ([&]{kktest::TestConfig _;__VA_ARGS__; return _;}())
+#define kkGroupConfig(...) ([&]{kktest::GroupConfig _;__VA_ARGS__; return _;}())
 
 #endif

@@ -23,7 +23,7 @@ void kkTestCase() {
         kkTest("Does not match negative numbers", [&]() {
             kkExpect(!isPositive.matches(-3));
             kkExpect(!isPositive.matches(-10));
-            kkExpect(!isPositive.matches((-1LL << 60)));
+            kkExpect(!isPositive.matches(-(1LL << 60)));
             kkExpect(!isPositive.matches(-35.03));
             kkExpect(!isPositive.matches(-3.503f));
         });
@@ -48,7 +48,7 @@ void kkTestCase() {
         kkTest("Matches negative numbers", [&]() {
             kkExpect(isNegative.matches(-3));
             kkExpect(isNegative.matches(-10));
-            kkExpect(isNegative.matches((-1LL << 60)));
+            kkExpect(isNegative.matches(-(1LL << 60)));
             kkExpect(isNegative.matches(-35.03));
             kkExpect(isNegative.matches(-3.503f));
         });
@@ -109,7 +109,7 @@ void kkTestCase() {
         kkTest("Does not match negative numbers", [&]() {
             kkExpect(!isZero.matches(-3));
             kkExpect(!isZero.matches(-10));
-            kkExpect(!isZero.matches((-1LL << 60)));
+            kkExpect(!isZero.matches(-(1LL << 60)));
             kkExpect(!isZero.matches(-35.03));
             kkExpect(!isZero.matches(-3.503f));
         });

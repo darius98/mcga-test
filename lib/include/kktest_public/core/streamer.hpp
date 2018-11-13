@@ -109,7 +109,7 @@ private:
      * In case all else fails.
      */
     template<class T>
-    static void format(std::stringstream& s, T obj) {
+    static void format(std::stringstream& s, T) {
         s << "[OBJECT OF TYPE ";
         Streamer<T>::sendType(s);
         s << "]";

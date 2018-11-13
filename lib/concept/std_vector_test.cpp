@@ -37,8 +37,8 @@ void kkTestCase() {
         kkExpect(v.empty()); // Fails!
     });
 
-    kkTest(kkTestConfig($.description = "Vector is initially empty - 2 (F)",
-                        $.optional = true), [&]() {
+    kkTest(kkTestConfig(_.description = "Vector is initially empty - 2 (F)",
+                        _.optional = true), [&]() {
         // When the vector is not empty, the isEmpty expectation will fail.
         v = {1, 2, 3};
 
@@ -239,9 +239,9 @@ void kkTestCase() {
         });
     });
 
-    kkTest(kkTestConfig($.description = "This test should timeout (F)",
-                        $.timeTicksLimit = 0.001,
-                        $.optional = true), [&]() {
+    kkTest(kkTestConfig(_.description = "This test should timeout (F)",
+                        _.timeTicksLimit = 0.001,
+                        _.optional = true), [&]() {
         for (int i = 0; i < 1000000; ++ i) {
             v.push_back(i);
         }
