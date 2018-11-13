@@ -19,7 +19,7 @@ public:
     bool isTestFinished();
 
 private:
-    bool finish(double ticks, bool passed=true, std::string failureMessage="");
+    bool finish(double ticks, bool passed=true, const std::string& failureMessage="");
 
     bool killTestProcess();
 

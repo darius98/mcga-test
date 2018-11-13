@@ -82,7 +82,7 @@ void Executor::run(Test* test, Executable func) {
 void Executor::setTestExecuted(Test* test,
                                double executionTimeTicks,
                                bool passed,
-                               string failureMessage) {
+                               const string& failureMessage) {
     test->setExecuted(executionTimeTicks, passed, failureMessage);
 }
 

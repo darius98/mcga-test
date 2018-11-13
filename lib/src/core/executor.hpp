@@ -38,7 +38,7 @@ protected:
     void setTestExecuted(Test* test,
                          double executionTimeTicks,
                          bool passed,
-                         std::string failureMessage);
+                         const std::string& failureMessage);
 
 private:
     std::pair<std::string, bool> runSetUpsRecursively(Group* group);

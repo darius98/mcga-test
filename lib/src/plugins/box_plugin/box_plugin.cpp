@@ -1,7 +1,7 @@
 #include <EasyFlags.hpp>
 
 #include <core/driver.hpp>
-#include "box_plugin.hpp"
+#include "box_executor.hpp"
 
 using namespace std;
 
@@ -22,24 +22,32 @@ AddArgument(int, argumentNumBoxes)
 
 namespace kktest {
 
-Plugin* boxPlugin = new BoxPlugin("kktest");
+class BoxPlugin: public Plugin {
+public:
+    using Plugin::Plugin;
 
-bool BoxPlugin::isEnabled() const {
-    return flagBoxed != 0;
-}
-
-void BoxPlugin::install() {
-    if (argumentNumBoxes <= 0) {
-        throw runtime_error("Invalid number of boxes.");
+    bool isEnabled() const override {
+        return flagBoxed != 0;
     }
-    boxExecutor = new BoxExecutor((size_t)argumentNumBoxes);
-    TestingDriver::addAfterInitHook([this]() {
-        TestingDriver::setExecutor(boxExecutor);
-    });
-}
 
-void BoxPlugin::uninstall() {
-    delete boxExecutor;
-}
+    void install() override {
+        if (argumentNumBoxes <= 0) {
+            throw runtime_error("Invalid number of boxes.");
+        }
+        boxExecutor = new BoxExecutor((size_t)argumentNumBoxes);
+        TestingDriver::addAfterInitHook([this]() {
+            TestingDriver::setExecutor(boxExecutor);
+        });
+    }
+
+    void uninstall() override {
+        delete boxExecutor;
+    }
+
+private:
+    BoxExecutor* boxExecutor = nullptr;
+};
+
+BoxPlugin boxPlugin("kktest");
 
 }

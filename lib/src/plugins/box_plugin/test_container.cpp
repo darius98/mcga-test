@@ -78,11 +78,11 @@ bool TestContainer::isTestFinished() {
     MessageReader reader(message);
     auto isPassed = reader.read<bool>();
     auto ticks = reader.read<double>();
-    string failureMessage = reader.read<string>();
+    auto failureMessage = reader.read<string>();
     return finish(ticks, isPassed, unescapeCharacters(failureMessage));
 }
 
-bool TestContainer::finish(double ticks, bool passed, string failureMessage) {
+bool TestContainer::finish(double ticks, bool passed, const string& failureMessage) {
     close(testProcessPipeFD);
     afterTestCallback(ticks, passed, failureMessage);
     return true;

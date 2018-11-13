@@ -9,7 +9,7 @@ namespace kktest {
 
 class Plugin {
 public:
-    explicit Plugin(const std::string& group);
+    explicit Plugin(const std::string& _group);
 
     virtual ~Plugin();
 
@@ -20,7 +20,11 @@ public:
     virtual void uninstall();
 
 private:
-    static std::map<std::string, std::vector<Plugin*>> plugins;
+    std::string group;
+
+    static Plugin** plugins;
+    static int numPlugins;
+    static int pluginsCapacity;
 
 friend class Pluginable;
 };

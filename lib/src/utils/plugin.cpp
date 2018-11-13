@@ -1,17 +1,29 @@
 #include "plugin.hpp"
 
+#include <iostream>
+#include <cstring>
+
 using namespace std;
 
 
 namespace kktest {
 
-map<string, vector<Plugin*>> Plugin::plugins;
+Plugin** Plugin::plugins = nullptr;
+int Plugin::numPlugins = 0;
+int Plugin::pluginsCapacity = 0;
 
-Plugin::Plugin(const string& groupName) {
-    if (!plugins.count(groupName)) {
-        plugins[groupName] = vector<Plugin*>();
+Plugin::Plugin(const string& _group): group(_group) {
+    if (numPlugins == 0) {
+        plugins = (Plugin**)malloc(sizeof(Plugin*) * 10);
+        pluginsCapacity = 10;
     }
-    plugins[groupName].push_back(this);
+    if (pluginsCapacity == numPlugins) {
+        auto newPluginsArray = (Plugin**)malloc(sizeof(Plugin*) * (2 * pluginsCapacity));
+        memcpy(newPluginsArray, plugins, numPlugins * sizeof(Plugin*));
+        free(plugins);
+        plugins = newPluginsArray;
+    }
+    plugins[numPlugins++] = this;
 }
 
 Plugin::~Plugin() = default;
@@ -31,16 +43,18 @@ Pluginable::Pluginable(const string& _pluginGroupName): pluginGroupName(_pluginG
 Pluginable::~Pluginable() = default;
 
 void Pluginable::installPlugins() {
-    for (Plugin* plugin: Plugin::plugins[pluginGroupName]) {
-        if (plugin->isEnabled()) {
+    for (int i = 0; i < Plugin::numPlugins; ++ i) {
+        auto plugin = Plugin::plugins[i];
+        if (plugin->group == pluginGroupName && plugin->isEnabled()) {
             plugin->install();
         }
     }
 }
 
 void Pluginable::uninstallPlugins() {
-    for (Plugin* plugin: Plugin::plugins[pluginGroupName]) {
-        if (plugin->isEnabled()) {
+    for (int i = 0; i < Plugin::numPlugins; ++ i) {
+        Plugin* plugin = Plugin::plugins[i];
+        if (plugin->group == pluginGroupName && plugin->isEnabled()) {
             plugin->uninstall();
         }
     }
