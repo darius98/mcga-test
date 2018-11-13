@@ -6,7 +6,7 @@
 
 using namespace std;
 
-namespace kktest {
+namespace messaging {
 
 OutputPipe::OutputPipe(const int& _outputFD): outputFD(_outputFD) {}
 

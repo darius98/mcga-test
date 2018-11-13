@@ -4,7 +4,7 @@
 
 using namespace std;
 
-namespace kktest {
+namespace messaging {
 
 template<>
 BytesConsumer& BytesConsumer::add(const string& obj) {

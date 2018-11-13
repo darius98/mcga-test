@@ -3,12 +3,14 @@
 
 #include <cstring>
 
-#include <utils/message.hpp>
-#include <utils/pipe.hpp>
+#include <message.hpp>
+#include <pipe.hpp>
+
 #include <utils/unescape_characters.hpp>
 #include "test_container.hpp"
 
 using namespace kktest::utils;
+using namespace messaging;
 using namespace std;
 using namespace std::chrono;
 

@@ -1,9 +1,10 @@
 #include <EasyFlags.hpp>
 
 #include <core/driver.hpp>
-#include <utils/pipe.hpp>
+#include <pipe.hpp>
 
 using namespace easyflags;
+using namespace messaging;
 using namespace std;
 
 AddArgument(int, argumentPipeFD)

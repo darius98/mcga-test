@@ -1,11 +1,11 @@
-#ifndef KKTEST_UTILS_MESSAGE_H_
-#define KKTEST_UTILS_MESSAGE_H_
+#ifndef MESSAGING_LIB_INCLUDE_MESSAGE_H_
+#define MESSAGING_LIB_INCLUDE_MESSAGE_H_
 
 #include <functional>
 #include <string>
 
 
-namespace kktest {
+namespace messaging {
 
 class BytesConsumer {
 public:

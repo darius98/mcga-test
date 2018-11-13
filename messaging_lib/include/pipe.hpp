@@ -1,10 +1,10 @@
-#ifndef KKTEST_PLUGINS_PIPE_PLUGIN_PIPE_H_
-#define KKTEST_PLUGINS_PIPE_PLUGIN_PIPE_H_
+#ifndef MESSAGING_LIB_INCLUDE_PIPE_H_
+#define MESSAGING_LIB_INCLUDE_PIPE_H_
 
-#include <utils/message.hpp>
+#include "message.hpp"
 
 
-namespace kktest {
+namespace messaging {
 
 class OutputPipe {
 public:
