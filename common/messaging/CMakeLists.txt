@@ -3,11 +3,11 @@ project(messaginglib VERSION 1.0.0)
 set(CMAKE_CXX_STANDARD 11)
 
 add_library(messaginglib
+    include/messaging
     include/message.hpp
     include/message_reader.hpp
     include/input_pipe.hpp
     include/output_pipe.hpp
-    include/messaging
     src/message.cpp
     src/message_reader.cpp
     src/input_pipe.cpp

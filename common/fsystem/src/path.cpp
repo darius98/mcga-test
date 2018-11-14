@@ -1,11 +1,11 @@
 #include <iostream>
 
-#include <utils/string.hpp>
 #include "folder.hpp"
 
+using namespace strutil;
 using namespace std;
 
-namespace kktest_runner {
+namespace fsystem {
 
 const char Path::SEP = '/';
 const char* Path::SELF_FOLDER = ".";

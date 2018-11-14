@@ -20,7 +20,7 @@ target_compile_options(kktest PRIVATE -Wall -Wextra -pedantic)
 target_include_directories(kktest PRIVATE src)
 target_include_directories(kktest PRIVATE include)
 target_include_directories(kktest PRIVATE include/kktest_public)
-target_link_libraries(kktest messaginglib autojson easyflags)
+target_link_libraries(kktest messaginglib strutillib autojson easyflags)
 set_target_properties(kktest PROPERTIES
     VERSION ${PROJECT_VERSION}
     SOVERSION 1)

@@ -1,5 +1,5 @@
-#ifndef MESSAGING_LIB_INCLUDE_MESSAGING_
-#define MESSAGING_LIB_INCLUDE_MESSAGING_
+#ifndef COMMON_MESSAGING_INCLUDE_MESSAGING_
+#define COMMON_MESSAGING_INCLUDE_MESSAGING_
 
 #include "./message.hpp"
 #include "./message_reader.hpp"

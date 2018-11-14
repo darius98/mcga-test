@@ -4,12 +4,12 @@
 #include <cstring>
 
 #include <messaging>
+#include <strutil>
 
-#include <utils/unescape_characters.hpp>
 #include "test_container.hpp"
 
-using namespace kktest::utils;
 using namespace messaging;
+using namespace strutil;
 using namespace std;
 using namespace std::chrono;
 

@@ -9,6 +9,7 @@
 
 using namespace easyflags;
 using namespace kktest_runner;
+using namespace fsystem;
 using namespace std;
 
 AddArgument(int, flagVersion)

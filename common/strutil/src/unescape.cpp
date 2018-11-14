@@ -1,9 +1,8 @@
-#include "unescape_characters.hpp"
+#include "unescape.hpp"
 
 using namespace std;
 
-namespace kktest {
-namespace utils {
+namespace strutil {
 
 string unescapeCharacters(const string& s) {
     string unescaped;
@@ -29,5 +28,4 @@ string unescapeCharacters(const string& s) {
     return unescaped;
 }
 
-}
 }

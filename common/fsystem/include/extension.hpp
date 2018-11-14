@@ -1,14 +1,14 @@
-#ifndef KKTEST_RUNNER_OS_EXTENSION_H_
-#define KKTEST_RUNNER_OS_EXTENSION_H_
+#ifndef COMMON_FSYSTEM_INCLUDE_EXTENSION_H_
+#define COMMON_FSYSTEM_INCLUDE_EXTENSION_H_
 
 #include <string>
 
-#include <utils/comparable.hpp>
+#include <strutil>
 
 
-namespace kktest_runner {
+namespace fsystem {
 
-class Extension: public Comparable<std::string> {
+class Extension: public strutil::StringKeyComparable {
 public:
     explicit Extension(const std::string& _extension);
     Extension(const Extension& other);
@@ -18,6 +18,7 @@ public:
     Extension& operator=(Extension&& other) noexcept;
 
     std::string toString() const;
+
 private:
     std::string extension;
 

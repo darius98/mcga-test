@@ -1,16 +1,16 @@
-#ifndef KKTEST_RUNNER_OS_FILE_H_
-#define KKTEST_RUNNER_OS_FILE_H_
+#ifndef COMMON_FSYSTEM_INCLUDE_FILE_H_
+#define COMMON_FSYSTEM_INCLUDE_FILE_H_
 
 #include <string>
 
-#include <utils/comparable.hpp>
+#include <strutil>
 #include "extension.hpp"
 #include "path.hpp"
 
 
-namespace kktest_runner {
+namespace fsystem {
 
-class File: public Comparable<std::string> {
+class File: public strutil::StringKeyComparable {
 public:
     explicit File(const std::string& path);
     explicit File(const Path& path);

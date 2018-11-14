@@ -1,13 +1,13 @@
-#ifndef KKTEST_RUNNER_OS_FOLDER_H_
-#define KKTEST_RUNNER_OS_FOLDER_H_
+#ifndef COMMON_FSYSTEM_INCLUDE_FOLDER_H_
+#define COMMON_FSYSTEM_INCLUDE_FOLDER_H_
 
 #include "file.hpp"
 #include "path.hpp"
 
 
-namespace kktest_runner {
+namespace fsystem {
 
-class Folder: public Comparable<std::string> {
+class Folder: public strutil::StringKeyComparable {
 public:
     static Folder currentWorkingFolder();
 
@@ -34,6 +34,7 @@ public:
     Path getPath() const;
 
     std::pair<std::vector<File>, std::vector<Folder>> children() const;
+
 private:
     Path path;
 

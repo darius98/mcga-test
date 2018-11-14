@@ -17,7 +17,7 @@ set(KKTEST_LIB_DIR lib)
 set(KKTEST_LIB_SRC_DIR ${KKTEST_DIR}/src)
 set(THIRD_PARTY_DIR third_party)
 
-add_subdirectory(messaging_lib)
+add_subdirectory(common)
 
 # Third party software: autojson
 set(AUTOJSON_DIR "${THIRD_PARTY_DIR}/autojson")

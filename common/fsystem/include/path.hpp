@@ -1,16 +1,16 @@
-#ifndef KKTEST_RUNNER_OS_PATH_H_
-#define KKTEST_RUNNER_OS_PATH_H_
+#ifndef COMMON_FSYSTEM_INCLUDE_PATH_H_
+#define COMMON_FSYSTEM_INCLUDE_PATH_H_
 
 #include <string>
 #include <vector>
 
-#include <utils/comparable.hpp>
+#include <strutil>
 #include "error.hpp"
 
 
-namespace kktest_runner {
+namespace fsystem {
 
-class Path: public Comparable<std::string> {
+class Path: public strutil::StringKeyComparable {
 public:
     static const char  SEP;
     static const char* SELF_FOLDER;

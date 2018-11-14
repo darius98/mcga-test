@@ -3,7 +3,7 @@
 
 using namespace std;
 
-namespace kktest_runner {
+namespace fsystem {
 
 Extension::Extension(const string& _extension) {
     if (_extension.empty() ||

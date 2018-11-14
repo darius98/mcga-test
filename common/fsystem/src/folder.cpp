@@ -10,7 +10,7 @@
 
 using namespace std;
 
-namespace kktest_runner {
+namespace fsystem {
 
 Folder Folder::currentWorkingFolder() {
     char buff[FILENAME_MAX];

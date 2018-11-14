@@ -8,7 +8,7 @@
 
 using namespace std;
 
-namespace kktest_runner {
+namespace fsystem {
 
 File::File(const string& _path): File(Path(_path)) {}
 

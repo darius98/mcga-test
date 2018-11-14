@@ -2,10 +2,11 @@
 
 #include <EasyFlags.hpp>
 
-#include <os/folder.hpp>
 #include <utils/string.hpp>
 #include "explorer.hpp"
 
+using namespace fsystem;
+using namespace strutil;
 using namespace std;
 
 AddArgument(string, argumentRootFolder)
