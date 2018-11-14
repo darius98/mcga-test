@@ -17,8 +17,6 @@ set(KKTEST_LIB_DIR lib)
 set(KKTEST_LIB_SRC_DIR ${KKTEST_DIR}/src)
 set(THIRD_PARTY_DIR third_party)
 
-add_subdirectory(common)
-
 # Third party software: autojson
 set(AUTOJSON_DIR "${THIRD_PARTY_DIR}/autojson")
 file(GLOB AUTOJSON_SRC ${AUTOJSON_DIR}/src/*.cpp)
@@ -33,5 +31,6 @@ target_compile_definitions(easyflags PUBLIC easyflagsuselib)
 target_include_directories(easyflags PUBLIC "${EASYFLAGS_DIR}/include")
 target_link_libraries(easyflags autojson)
 
+add_subdirectory(common)
 add_subdirectory(lib)
 add_subdirectory(runner)

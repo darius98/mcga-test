@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.7)
-project(messaginglib VERSION 1.0.0)
+project(Messaging VERSION 1.0.0)
 set(CMAKE_CXX_STANDARD 11)
 
-add_library(messaginglib
+add_library(messaging
     include/messaging
     include/messaging_public/message.hpp
     include/messaging_public/message_reader.hpp
@@ -13,5 +13,5 @@ add_library(messaginglib
     src/input_pipe.cpp
     src/output_pipe.cpp
 )
-target_include_directories(messaginglib PUBLIC include)
-target_include_directories(messaginglib PRIVATE include/messaging_public)
+target_include_directories(messaging PUBLIC include)
+target_include_directories(messaging PRIVATE include/messaging_public)

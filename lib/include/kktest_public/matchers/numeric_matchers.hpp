@@ -1,8 +1,6 @@
 #ifndef KKTEST_INCLUDE_KKTEST_PUBLIC_MATCHERS_NUMERIC_MATCHERS_H_
 #define KKTEST_INCLUDE_KKTEST_PUBLIC_MATCHERS_NUMERIC_MATCHERS_H_
 
-#include <cmath>
-
 #include "../core/matcher.hpp"
 
 
@@ -54,7 +52,7 @@ class IsOddMatcher: public Matcher {
 public:
     template<class T>
     bool matches(const T& object) {
-        return std::abs(object % 2) == 1;
+        return object % 2 == 1 || object % 2 == -1;
     }
 
     void describe(Description& description) override;
@@ -84,7 +82,8 @@ public:
     explicit IsAlmostEqualMatcher(const T& target, const double& eps): target(target), eps(eps) {}
 
     bool matches(const T& object) {
-        return fabs(object - target) < eps;
+        T delta = object - target;
+        return -eps < delta && delta < eps;
     }
 
     void describe(Description& description) override {
