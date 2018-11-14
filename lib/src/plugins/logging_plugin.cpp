@@ -2,10 +2,11 @@
 
 #include <EasyFlags.hpp>
 
+#include <logging>
 #include <core/driver.hpp>
-#include "logger.hpp"
 
 using namespace easyflags;
+using namespace logging;
 using namespace std;
 
 AddArgument(int, flagQuiet)
@@ -25,16 +26,18 @@ public:
     }
 
     void install() override {
-        logger = new Logger(cout);
+        logger = new TestLogger(cout);
         TestingDriver::addAfterTestHook([this](Test* test) {
-            logger->enqueueTestForLogging(test);
-            numPassedTests += test->isPassed();
-            numFailedTests += test->isFailed();
-            numFailedOptionalTests += test->isFailed() && test->getConfig().optional;
+            logger->logTest(test->getIndex(),
+                            test->getDescriptionPrefix(),
+                            test->getConfig().description,
+                            test->getConfig().optional,
+                            test->isPassed(),
+                            test->getFailureMessage());
         });
 
         TestingDriver::addBeforeDestroyHook([this]() {
-            logger->logFinalInformation(numPassedTests, numFailedTests, numFailedOptionalTests);
+            logger->logFinalInformation();
         });
     }
 
@@ -43,10 +46,7 @@ public:
     }
 
 private:
-    Logger* logger = nullptr;
-    int numPassedTests = 0;
-    int numFailedTests = 0;
-    int numFailedOptionalTests = 0;
+    TestLogger* logger = nullptr;
 };
 
 LoggingPlugin loggingPlugin;

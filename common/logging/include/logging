@@ -1,0 +1,6 @@
+#ifndef COMMON_LOGGING_INCLUDE_LOGGING_
+#define COMMON_LOGGING_INCLUDE_LOGGING_
+
+#include "./logging_public/test_logger.hpp"
+
+#endif

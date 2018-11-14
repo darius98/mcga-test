@@ -31,6 +31,8 @@ struct KKTestCaseInfo {
     std::string testExecutablePath;
     std::map<int, GroupInfo> groups;
     std::vector<TestInfo> tests;
+
+    std::string getRecursiveGroupDescription(int groupId) const;
 };
 
 }

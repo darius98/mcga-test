@@ -44,6 +44,5 @@ int main(int argc, char** argv) {
         cout << "No test cases found. Exiting.\n";
         return 0;
     }
-    executionLoop->join();
-    return 0;
+    return executionLoop->join();
 }

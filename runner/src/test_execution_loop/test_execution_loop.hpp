@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 
+#include <logging>
 #include "test_execution_cycle.hpp"
 
 namespace kktest_runner {
@@ -18,9 +19,11 @@ public:
 
     void step();
 
-    void join();
+    int join();
 
 private:
+    bool failedAnyTest = false;
+    logging::TestLogger testLogger;
     int concurrentRunningCyclesLimit;
     int runningCycles = 0;
     std::vector<TestExecutionCycle> cycles;

@@ -11,4 +11,4 @@ add_executable(runner
         ${TEST_EXECUTION_LOOP}
     )
 target_include_directories(runner PRIVATE ${SRC_FOLDER})
-target_link_libraries(runner easyflags messaging fsystem)
+target_link_libraries(runner easyflags messaging fsystem logging)
