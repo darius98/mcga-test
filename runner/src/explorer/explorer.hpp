@@ -3,7 +3,6 @@
 
 #include <fsystem>
 
-
 namespace kktest_runner {
 
 void explore(const std::function<void(fsystem::File)>& onTestFound);

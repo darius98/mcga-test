@@ -17,6 +17,8 @@ private:
         TEAR_DOWN = 3
     };
 
+    static double computeTimeTickLengthFromHardware();
+
 public:
     Executor();
 

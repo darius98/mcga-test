@@ -24,8 +24,6 @@ namespace kktest {
 
 class BoxPlugin: public Plugin {
 public:
-    using Plugin::Plugin;
-
     bool isEnabled() const override {
         return flagBoxed != 0;
     }
@@ -48,6 +46,6 @@ private:
     BoxExecutor* boxExecutor = nullptr;
 };
 
-BoxPlugin boxPlugin("kktest");
+BoxPlugin boxPlugin;
 
 }

@@ -70,7 +70,6 @@ int TestingDriver::destroy() {
 }
 
 TestingDriver::TestingDriver():
-        Pluginable("kktest"),
         globalScope(new Group(GroupConfig(), nullptr, -1)),
         groupStack({globalScope}),
         executor(new Executor()) {}

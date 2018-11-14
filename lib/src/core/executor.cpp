@@ -1,33 +1,21 @@
 #include <chrono>
 
-#include <EasyFlags.hpp>
-
-#include <utils/time_tick_length.hpp>
 #include "executor.hpp"
 #include "expectation_failed.hpp"
 
-using namespace kktest::utils;
 using namespace std;
 using namespace std::chrono;
 
-AddArgument(double, argumentTimeTickLength)
-    .ArgumentType("floating point number")
-    .Name("tick")
-    .Description("Length of time tick considered. If left default, will be computed at the start"
-                 " of each test run.")
-    .DefaultValue("-1");
-
 namespace kktest {
 
-Executor::Executor() {
-    if (argumentTimeTickLength != -1.0) {
-        timeTickLengthMs = argumentTimeTickLength;
-    } else {
-        timeTickLengthMs = computeTimeTickLengthFromHardware();
-    }
-}
+Executor::Executor(): timeTickLengthMs(computeTimeTickLengthFromHardware()) {}
 
 Executor::~Executor() = default;
+
+double Executor::computeTimeTickLengthFromHardware() {
+     // TODO: Don't hardcode this, estimate it based on how much a series of computations takes.
+    return 1000.0;
+}
 
 bool Executor::isDuringTest() const {
     return state == TEST;

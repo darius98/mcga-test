@@ -20,8 +20,6 @@ namespace kktest {
 
 class LoggingPlugin: public Plugin {
 public:
-    using Plugin::Plugin;
-
     bool isEnabled() const override {
         return !flagQuiet;
     }
@@ -51,6 +49,6 @@ private:
     int numFailedOptionalTests = 0;
 };
 
-LoggingPlugin loggingPlugin("kktest");
+LoggingPlugin loggingPlugin;
 
 }

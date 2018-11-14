@@ -12,7 +12,7 @@ Plugin** Plugin::plugins = nullptr;
 int Plugin::numPlugins = 0;
 int Plugin::pluginsCapacity = 0;
 
-Plugin::Plugin(const string& _group): group(_group) {
+Plugin::Plugin() {
     if (numPlugins == 0) {
         plugins = (Plugin**)malloc(sizeof(Plugin*) * 10);
         pluginsCapacity = 10;
@@ -38,14 +38,12 @@ void Plugin::install() {
 void Plugin::uninstall() {
 }
 
-Pluginable::Pluginable(const string& _pluginGroupName): pluginGroupName(_pluginGroupName) {}
-
 Pluginable::~Pluginable() = default;
 
 void Pluginable::installPlugins() {
     for (int i = 0; i < Plugin::numPlugins; ++ i) {
         auto plugin = Plugin::plugins[i];
-        if (plugin->group == pluginGroupName && plugin->isEnabled()) {
+        if (plugin->isEnabled()) {
             plugin->install();
         }
     }
@@ -54,7 +52,7 @@ void Pluginable::installPlugins() {
 void Pluginable::uninstallPlugins() {
     for (int i = 0; i < Plugin::numPlugins; ++ i) {
         Plugin* plugin = Plugin::plugins[i];
-        if (plugin->group == pluginGroupName && plugin->isEnabled()) {
+        if (plugin->isEnabled()) {
             plugin->uninstall();
         }
     }

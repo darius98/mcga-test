@@ -21,8 +21,6 @@ namespace kktest {
 
 class PipePlugin: public Plugin {
 public:
-    using Plugin::Plugin;
-
     bool isEnabled() const override {
         return !argumentPipeFileName.empty();
     }
@@ -70,6 +68,6 @@ private:
     OutputPipe* pipe = nullptr;
 };
 
-PipePlugin pipePlugin("kktest");
+PipePlugin pipePlugin;
 
 }

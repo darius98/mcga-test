@@ -19,8 +19,6 @@ namespace kktest {
 
 class ReportPlugin: public Plugin {
 public:
-    using Plugin::Plugin;
-
     bool isEnabled() const override {
         return !argumentReportFileName.empty();
     }
@@ -84,6 +82,6 @@ private:
     std::map<int, autojson::JSON> groupJSONs;
 };
 
-ReportPlugin reportPlugin("kktest");
+ReportPlugin reportPlugin;
 
 }
