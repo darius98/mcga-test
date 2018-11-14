@@ -77,9 +77,10 @@ bool TestContainer::isTestFinished() {
         return finish(-1.0, false, "Test unexpectedly exited with code 0");
     }
     MessageReader reader(message);
-    auto isPassed = reader.read<bool>();
-    auto ticks = reader.read<double>();
-    auto failureMessage = reader.read<string>();
+    bool isPassed;
+    double ticks;
+    string failureMessage;
+    reader << isPassed << ticks << failureMessage;
     return finish(ticks, isPassed, unescapeCharacters(failureMessage));
 }
 

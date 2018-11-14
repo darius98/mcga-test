@@ -6,7 +6,6 @@ using namespace std;
 
 namespace messaging {
 
-template<>
 BytesConsumer& BytesConsumer::add(const string& obj) {
     add(obj.size());
     addBytes(obj.c_str(), obj.size());

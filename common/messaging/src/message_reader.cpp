@@ -6,12 +6,12 @@ namespace messaging {
 
 MessageReader::MessageReader(const Message& _message): message(_message) {}
 
-template<>
-string MessageReader::read() {
-    auto size = read<string::size_type>();
-    string ans((char*)message.getPayload() + cursor, (char*)message.getPayload() + cursor + size);
+MessageReader& MessageReader::operator<<(string& obj) {
+    string::size_type size;
+    (*this) << size;
+    obj = string((char*)message.getPayload() + cursor, (char*)message.getPayload() + cursor + size);
     cursor += size;
-    return ans;
+    return *this;
 }
 
 }

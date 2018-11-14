@@ -11,22 +11,22 @@ TestExecutionLoop::TestExecutionLoop(int _concurrentRunningCyclesLimit):
         testLogger(cout, false) {}
 
 void TestExecutionLoop::addToLoop(const std::string& testPath, int maxParallelTests) {
-    cycles.push_back(TestExecutionCycle(
-            testPath,
-            maxParallelTests,
-            [this](const KKTestCaseInfo& info) {
-                const TestInfo& testInfo = info.tests.back();
-                failedAnyTest |= !testInfo.passed;
-                string descriptionPrefix = testInfo.file + ":" + to_string(testInfo.line) + "::";
-                descriptionPrefix += info.getRecursiveGroupDescription(testInfo.groupIndex);
-                testLogger.logTest(testInfo.index,
-                                   descriptionPrefix,
-                                   testInfo.description,
-                                   testInfo.optional,
-                                   testInfo.passed,
-                                   testInfo.failureMessage);
-            }
-    ));
+    cycles.emplace_back(
+        testPath,
+        maxParallelTests,
+        [this](const KKTestCaseInfo& info) {
+            const TestInfo& testInfo = info.tests.back();
+            failedAnyTest |= !testInfo.passed;
+            string descriptionPrefix = testInfo.file + ":" + to_string(testInfo.line) + "::";
+            descriptionPrefix += info.getRecursiveGroupDescription(testInfo.groupIndex);
+            testLogger.logTest(testInfo.index,
+                               descriptionPrefix,
+                               testInfo.description,
+                               testInfo.optional,
+                               testInfo.passed,
+                               testInfo.failureMessage);
+        }
+    );
 }
 
 bool TestExecutionLoop::isEmpty() const {

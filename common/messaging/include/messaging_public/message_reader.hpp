@@ -10,11 +10,13 @@ class MessageReader {
 public:
     explicit MessageReader(const Message& _message);
 
+    MessageReader& operator<<(std::string& obj);
+
     template<class T>
-    T read() {
-        T obj = *((T*)((std::uint8_t*)message.getPayload() + cursor));
+    MessageReader& operator<<(T& obj) {
+        obj = *((T*)((std::uint8_t*)message.getPayload() + cursor));
         cursor += sizeof(T);
-        return obj;
+        return *this;
     }
 
 private:

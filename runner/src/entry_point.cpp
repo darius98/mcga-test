@@ -5,7 +5,7 @@
 #include <explorer/explorer.hpp>
 #include <test_execution_loop/test_execution_loop.hpp>
 
-#define VERSION "0.0.1"
+#define VERSION "0.0.2"
 
 using namespace easyflags;
 using namespace kktest_runner;

@@ -88,6 +88,10 @@ void TestExecutionCycle::step() {
     }
     if (ret != 0) { // process finished
         int removeStat = remove(pipeName.c_str());
+        if (removeStat < 0) {
+            perror("remove pipe");
+            exit(errno);
+        }
         close(pipeFD);
         finished = true;
     }
@@ -99,26 +103,27 @@ bool TestExecutionCycle::isDone() const {
 
 void TestExecutionCycle::processMessage(const Message& message) {
     MessageReader reader(message);
-    auto type = reader.read<int>();
+    int type;
+    reader << type;
     // TODO: Make an enum in a shared space with the kktest library.
     if (type == 0) { // group
         GroupInfo groupInfo;
-        groupInfo.parentGroupIndex = reader.read<int>();
-        groupInfo.index = reader.read<int>();
-        groupInfo.line = reader.read<int>();
-        groupInfo.file = reader.read<string>();
-        groupInfo.description = reader.read<string>();
+        reader << groupInfo.parentGroupIndex
+               << groupInfo.index
+               << groupInfo.line
+               << groupInfo.file
+               << groupInfo.description;
         info.groups[groupInfo.index] = groupInfo;
     } else if (type == 1) { // test
         TestInfo testInfo;
-        testInfo.groupIndex = reader.read<int>();
-        testInfo.index = reader.read<int>();
-        testInfo.line = reader.read<int>();
-        testInfo.file = reader.read<string>();
-        testInfo.optional = reader.read<bool>();
-        testInfo.description = reader.read<string>();
-        testInfo.passed = reader.read<bool>();
-        testInfo.failureMessage = reader.read<string>();
+        reader << testInfo.groupIndex
+               << testInfo.index
+               << testInfo.line
+               << testInfo.file
+               << testInfo.optional
+               << testInfo.description
+               << testInfo.passed
+               << testInfo.failureMessage;
         info.tests.push_back(testInfo);
         onTestCallback(info);
     }
