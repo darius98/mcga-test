@@ -1,9 +1,9 @@
 #ifndef COMMON_STRUTIL_INCLUDE_STRUTIL_
 #define COMMON_STRUTIL_INCLUDE_STRUTIL_
 
-#include "./casing.hpp"
-#include "./string_key_comparable.hpp"
-#include "./substr_utils.hpp"
-#include "./unescape.hpp"
+#include "./strutil_public/casing.hpp"
+#include "./strutil_public/string_key_comparable.hpp"
+#include "./strutil_public/substr_utils.hpp"
+#include "./strutil_public/unescape.hpp"
 
 #endif

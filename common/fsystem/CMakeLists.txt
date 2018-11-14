@@ -4,11 +4,11 @@ set(CMAKE_CXX_STANDARD 11)
 
 add_library(fsystemlib
     include/fsystem
-    include/error.hpp
-    include/extension.hpp
-    include/file.hpp
-    include/folder.hpp
-    include/path.hpp
+    include/fsystem_public/error.hpp
+    include/fsystem_public/extension.hpp
+    include/fsystem_public/file.hpp
+    include/fsystem_public/folder.hpp
+    include/fsystem_public/path.hpp
     src/error.cpp
     src/extension.cpp
     src/file.cpp
@@ -16,4 +16,5 @@ add_library(fsystemlib
     src/path.cpp
 )
 target_include_directories(fsystemlib PUBLIC include)
+target_include_directories(fsystemlib PRIVATE include/fsystem_public)
 target_link_libraries(fsystemlib strutillib)

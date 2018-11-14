@@ -4,13 +4,14 @@ set(CMAKE_CXX_STANDARD 11)
 
 add_library(strutillib
     include/strutil
-    include/casing.hpp
-    include/string_key_comparable.hpp
-    include/substr_utils.hpp
-    include/unescape.hpp
+    include/strutil_public/casing.hpp
+    include/strutil_public/string_key_comparable.hpp
+    include/strutil_public/substr_utils.hpp
+    include/strutil_public/unescape.hpp
     src/casing.cpp
     src/string_key_comparable.cpp
     src/substr_utils.cpp
     src/unescape.cpp
 )
 target_include_directories(strutillib PUBLIC include)
+target_include_directories(strutillib PRIVATE include/strutil_public)
