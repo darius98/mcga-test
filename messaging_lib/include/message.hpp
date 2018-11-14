@@ -45,6 +45,9 @@ public:
 
     ~Message();
 
+    Message& operator=(const Message& other);
+    Message& operator=(Message&& other) noexcept;
+
     Message& addBytes(const void* bytes, size_t numBytes) override;
 
     void* getPayload() const;

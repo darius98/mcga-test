@@ -1,3 +1,6 @@
+#include <unistd.h>
+#include <fcntl.h>
+
 #include <EasyFlags.hpp>
 
 #include <core/driver.hpp>
@@ -7,13 +10,12 @@ using namespace easyflags;
 using namespace messaging;
 using namespace std;
 
-AddArgument(int, argumentPipeFD)
-    .ArgumentType("FILE DESCRIPTOR ")
+AddArgument(string, argumentPipeFileName)
+    .ArgumentType("FILE ")
     .Name("pipe_to")
     .Short("p")
-    .Description("A file descriptor with write access for piping the test"
-                 "results as soon as they are available.")
-    .DefaultValue(-1);
+    .Description("A file with write access for piping the test results as they become available.")
+    .DefaultValue("");
 
 namespace kktest {
 
@@ -22,14 +24,20 @@ public:
     using Plugin::Plugin;
 
     bool isEnabled() const override {
-        return argumentPipeFD != -1;
+        return !argumentPipeFileName.empty();
     }
 
     void install() override {
-        pipe = new OutputPipe(argumentPipeFD);
+        int pipeFD = open(argumentPipeFileName.c_str(), O_WRONLY | O_NONBLOCK);
+        if (pipeFD < 0) {
+            perror("open");
+            exit(errno);
+        }
+        pipe = new OutputPipe(pipeFD);
         TestingDriver::addBeforeGroupHook([this](Group* group) {
             pipe->pipe(Message::build([group](BytesConsumer& consumer) {
                 consumer
+                        << 0
                         << group->getParentGroupIndex()
                         << group->getIndex()
                         << group->getConfig().line
@@ -40,6 +48,7 @@ public:
         TestingDriver::addAfterTestHook([this](Test* test) {
             pipe->pipe(Message::build([test](BytesConsumer& consumer) {
                 consumer
+                        << 1
                         << test->getGroupIndex()
                         << test->getIndex()
                         << test->getConfig().line
@@ -53,6 +62,7 @@ public:
     }
 
     void uninstall() override {
+        pipe->close();
         delete pipe;
     }
 

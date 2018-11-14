@@ -10,6 +10,8 @@ class OutputPipe {
 public:
     explicit OutputPipe(const int& _outputFD);
 
+    void close();
+
     void pipe(const Message& message) const;
 
 private:

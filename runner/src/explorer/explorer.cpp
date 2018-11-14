@@ -19,32 +19,26 @@ class Explorer {
 public:
     explicit Explorer(const Folder& _rootFolder): rootFolder(_rootFolder) {}
 
-    vector<File> findTestCases() const {
-        vector<File> testCases;
+    void findTestCases(const function<void(File)>& onTestFound) const {
+        // TODO: Optimize this! For now, ignore some
+        // common heavy but useless folders
+        if (containsSubstring(rootFolder.toString(), ".git") ||
+                containsSubstring(rootFolder.toString(), "CMakeFiles")) {
+            return;
+        }
         pair<vector<File>, vector<Folder>> children = rootFolder.children();
         for (const File& file: children.first) {
             if (isTestCase(file)) {
-                testCases.push_back(file);
+                onTestFound(file);
             }
         }
         for (const Folder& folder: children.second) {
-            vector<File> subTestCases = Explorer(folder).findTestCases();
-            testCases.insert(testCases.end(),
-                             subTestCases.begin(), subTestCases.end());
+            Explorer(folder).findTestCases(onTestFound);
         }
-        sort(testCases.begin(), testCases.end());
-        return testCases;
     }
 
 private:
     static bool isTestCase(const File& file) {
-        // TODO: Optimize this! For now, ignore some
-        // common heavy but useless folders
-        if (containsSubstring(file.toString(), ".git") ||
-                containsSubstring(file.toString(), "CMakeFiles")) {
-            return false;
-        }
-
         if (!file.isExecutable()) {
             return false;
         }
@@ -66,10 +60,10 @@ private:
     }
 
     Folder rootFolder;
-}; 
+};
 
-vector<File> explore() {
-    return Explorer(Folder(argumentRootFolder)).findTestCases();
+void explore(const function<void(File)>& onTestFound) {
+    Explorer(Folder(argumentRootFolder)).findTestCases(onTestFound);
 }
 
 }

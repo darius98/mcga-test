@@ -15,15 +15,25 @@ InputPipe::~InputPipe() {
     free(buffer);
 }
 
-Message InputPipe::getNextMessage(int readAttempts) {
+Message InputPipe::getNextMessage(int maxConsecutiveFailedReadAttempts) {
     char block[128];
     size_t messageSize = 0;
-    for (int i = 0; i < readAttempts; ++ i) {
+    int failedAttempts = 0;
+    while (failedAttempts <= maxConsecutiveFailedReadAttempts) {
         ssize_t numBytesRead = read(inputFD, block, 128);
         if (numBytesRead < 0) {
+            if (errno == EWOULDBLOCK || errno == EAGAIN) {
+                failedAttempts += 1;
+                continue;
+            }
             perror("read");
             exit(errno);
         }
+        if (numBytesRead == 0) {
+            failedAttempts += 1;
+            continue;
+        }
+        failedAttempts = 0;
         resizeBufferToFit((size_t)numBytesRead);
         memcpy((uint8_t*)buffer + bufferSize, block, (size_t)numBytesRead);
         bufferSize += numBytesRead;
@@ -36,6 +46,14 @@ Message InputPipe::getNextMessage(int readAttempts) {
         return Message(nullptr);
     }
     return extractMessageFromBuffer(messageSize);
+}
+
+void InputPipe::close() {
+    int ret = ::close(inputFD);
+    if (ret < 0) {
+        perror("close");
+        exit(errno);
+    }
 }
 
 void InputPipe::resizeBufferToFit(size_t extraBytes) {

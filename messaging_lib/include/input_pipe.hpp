@@ -12,7 +12,9 @@ public:
 
     ~InputPipe();
 
-    Message getNextMessage(int readAttempts=1024);
+    void close();
+
+    Message getNextMessage(int maxConsecutiveFailedReadAttempts=32);
 
 private:
     void resizeBufferToFit(std::size_t extraBytes);

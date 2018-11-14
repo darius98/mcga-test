@@ -6,7 +6,7 @@
 
 namespace kktest_runner {
 
-std::vector<File> explore();
+void explore(const std::function<void(File)>& onTestFound);
 
 }
 

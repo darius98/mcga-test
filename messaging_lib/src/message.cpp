@@ -57,7 +57,30 @@ Message::Message(Message&& other) noexcept: payload(other.payload), cursor(other
 Message::Message(void* _payload): payload(_payload), cursor(0) {}
 
 Message::~Message() {
-    free(payload);
+    if (payload != nullptr) {
+        free(payload);
+    }
+}
+
+Message& Message::operator=(const Message& other) {
+    if (payload != nullptr) {
+        free(payload);
+    }
+    size_t size = *((size_t*)other.payload);
+    payload = malloc(size + sizeof(size_t));
+    memcpy(payload, other.payload, cursor);
+    cursor = other.cursor;
+    return *this;
+}
+
+Message& Message::operator=(Message&& other) noexcept {
+    if (this == &other) {
+        return *this;
+    }
+    payload = other.payload;
+    cursor = other.cursor;
+    other.payload = nullptr;
+    return *this;
 }
 
 Message& Message::addBytes(const void* bytes, size_t numBytes) {
