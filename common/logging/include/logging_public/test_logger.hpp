@@ -35,6 +35,7 @@ private:
     std::ostream& stream;
 
     bool maintainTestIndexOrder;
+    int testCasesReceived = 0;
     int passedTests = 0;
     int failedTests = 0;
     int failedOptionalTests = 0;

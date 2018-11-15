@@ -25,6 +25,7 @@ void TestLogger::logTest(int testIndex,
     passedTests += isPassed;
     failedTests += !isPassed;
     failedOptionalTests += !isPassed && isOptional;
+    testCasesReceived += (testIndex == 1);
     while (!testsQueue.empty() &&
                 (testsQueue.begin()->first == testsLogged + 1 || !maintainTestIndexOrder)) {
         stream << testsQueue.begin()->second;
@@ -35,6 +36,10 @@ void TestLogger::logTest(int testIndex,
 
 void TestLogger::logFinalInformation() {
     stream << "\n";
+    if (testCasesReceived > 1) {
+        stream << "Test cases executed: " << testCasesReceived << "\n";
+        stream << "Total tests executed: " << passedTests + failedTests << "\n";
+    }
     stream << "Tests passed: ";
     modifyOutput(32, stream);
     stream << passedTests;
