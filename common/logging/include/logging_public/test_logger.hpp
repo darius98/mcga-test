@@ -19,7 +19,7 @@ public:
                  bool isPassed,
                  const std::string& failureMessage);
 
-    void logFinalInformation();
+    void logFinalInformation(bool logNumTests=false);
 
 private:
     std::string getTestMessage(const std::string& groupDescription,

@@ -57,7 +57,7 @@ int TestExecutionLoop::join() {
     while (!isEmpty()) {
         step();
     }
-    testLogger.logFinalInformation();
+    testLogger.logFinalInformation(true);
     return failedAnyTest;
 }
 

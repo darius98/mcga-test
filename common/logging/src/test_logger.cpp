@@ -34,9 +34,9 @@ void TestLogger::logTest(int testIndex,
     }
 }
 
-void TestLogger::logFinalInformation() {
+void TestLogger::logFinalInformation(bool logNumTests) {
     stream << "\n";
-    if (testCasesReceived > 1) {
+    if (logNumTests) {
         stream << "Test cases executed: " << testCasesReceived << "\n";
         stream << "Total tests executed: " << passedTests + failedTests << "\n";
     }
