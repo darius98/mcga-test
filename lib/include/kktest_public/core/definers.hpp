@@ -56,8 +56,8 @@ public:
 
     void operator()(const bool& result, const std::string& expr);
 
-    template<class T, class M, class... Args, IS_MATCHER(M)>
-    void operator()(const T& object, M matcher, const Args...) {
+    template<class T, class M, class E, class... Args>
+    void operator()(const T& object, M matcher, const E&, const Args...) {
         checkDuringTest();
         if (matcher.matches(object)) {
             return;

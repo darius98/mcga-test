@@ -9,6 +9,7 @@
 #include <map>
 #include <set>
 #include <sstream>
+#include <string>
 #include <tuple>
 #include <unordered_map>
 #include <unordered_set>
@@ -16,7 +17,6 @@
 
 
 namespace kktest {
-namespace utils {
 
 template<class S, class=void>
 struct Streamer {
@@ -125,7 +125,6 @@ struct Streamer<S, void_t<decltype(std::cout << std::declval<S>())>> {
     }
 };
 
-}
 }
 
 #endif

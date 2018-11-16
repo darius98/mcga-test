@@ -31,7 +31,7 @@ public:
     void describeMismatch(Description& description) override;
 };
 
-template<class M, IS_MATCHER(M)>
+template<class M>
 class IterableSizeMatcher: public Matcher {
 public:
     explicit IterableSizeMatcher(M _sizeMatcher): sizeMatcher(_sizeMatcher) {}
@@ -54,7 +54,7 @@ private:
     M sizeMatcher;
 };
 
-template<class M, IS_MATCHER(M)>
+template<class M>
 class IterableEachMatcher: public Matcher {
 public:
     explicit IterableEachMatcher(M _elementMatcher): elementMatcher(_elementMatcher) {}
@@ -90,7 +90,7 @@ private:
     int index = -1;
 };
 
-template<class M, IS_MATCHER(M)>
+template<class M>
 class IterableAnyMatcher: public Matcher {
 public:
     explicit IterableAnyMatcher(M _elementMatcher): elementMatcher(_elementMatcher) {}

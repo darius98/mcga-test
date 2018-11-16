@@ -2,12 +2,16 @@
 #define KKTEST_INCLUDE_KKTEST_PUBLIC_MATCHERS_COMPOSITE_MATCHERS_H_
 
 #include "../core/matcher.hpp"
+#include "./comparison_matchers.hpp"
 
 
 namespace kktest {
 
-template<class M1, class M2, IS_MATCHER(M1), IS_MATCHER(M2)>
+template<class M1, class M2>
 class AndMatcher: public Matcher {
+    static_assert(std::is_base_of<Matcher, M1>::value, "AndMatcher only supports other matchers.");
+    static_assert(std::is_base_of<Matcher, M2>::value, "AndMatcher only supports other matchers.");
+
 public:
     AndMatcher(M1 _m1, M2 _m2): m1(_m1), m2(_m2) {}
 
@@ -39,8 +43,11 @@ private:
     bool m2Matches = false;
 };
 
-template<class M1, class M2, IS_MATCHER(M1), IS_MATCHER(M2)>
+template<class M1, class M2>
 class OrMatcher: public Matcher {
+    static_assert(std::is_base_of<Matcher, M1>::value, "OrMatcher only supports other matchers.");
+    static_assert(std::is_base_of<Matcher, M2>::value, "OrMatcher only supports other matchers.");
+
 public:
     OrMatcher(M1 _m1, M2 _m2): m1(_m1), m2(_m2) {}
 
@@ -70,8 +77,10 @@ private:
     bool m2Matches = false;
 };
 
-template<class M, IS_MATCHER(M)>
+template<class M>
 class NotMatcher: public Matcher {
+    static_assert(std::is_base_of<Matcher, M>::value, "NotMatcher only supports other matchers.");
+
 public:
     explicit NotMatcher(M _matcher): matcher(_matcher) {}
 
@@ -92,19 +101,41 @@ private:
     M matcher;
 };
 
-template<class M1, class M2, IS_MATCHER(M1), IS_MATCHER(M2)>
-AndMatcher<M1, M2> both(M1 m1, M2 m2) {
-    return AndMatcher<M1, M2>(m1, m2);
+template<class M1, class M2>
+auto both(M1 m1, M2 m2) {
+    if constexpr (std::is_base_of<Matcher, M1>::value && std::is_base_of<Matcher, M2>::value) {
+        return AndMatcher<M1, M2>(m1, m2);
+    } else if constexpr (std::is_base_of<Matcher, M1>::value) {
+        return AndMatcher<M1, ComparisonMatcher<M2>>(m1, isEqualTo(m2));
+    } else if constexpr (std::is_base_of<Matcher, M2>::value) {
+        return AndMatcher<ComparisonMatcher<M1>, M2>(isEqualTo(m1), m2);
+    } else {
+        return AndMatcher<ComparisonMatcher<M1>,ComparisonMatcher<M2>>(
+                isEqualTo(m1), isEqualTo(m2));
+    }
 }
 
-template<class M1, class M2, IS_MATCHER(M1), IS_MATCHER(M2)>
-OrMatcher<M1, M2> either(M1 m1, M2 m2) {
-    return OrMatcher<M1, M2>(m1, m2);
+template<class M1, class M2>
+auto either(M1 m1, M2 m2) {
+    if constexpr (std::is_base_of<Matcher, M1>::value && std::is_base_of<Matcher, M2>::value) {
+        return OrMatcher<M1, M2>(m1, m2);
+    } else if constexpr (std::is_base_of<Matcher, M1>::value) {
+        return OrMatcher<M1, ComparisonMatcher<M2>>(m1, isEqualTo(m2));
+    } else if constexpr (std::is_base_of<Matcher, M2>::value) {
+        return OrMatcher<ComparisonMatcher<M1>, M2>(isEqualTo(m1), m2);
+    } else {
+        return OrMatcher<ComparisonMatcher<M1>,ComparisonMatcher<M2>>(
+                isEqualTo(m1), isEqualTo(m2));
+    }
 }
 
-template<class M, IS_MATCHER(M)>
-NotMatcher<M> isNot(M matcher) {
-    return NotMatcher<M>(matcher);
+template<class M>
+auto isNot(M matcher) {
+    if constexpr (std::is_base_of<Matcher, M>::value) {
+        return NotMatcher<M>(matcher);
+    } else {
+        return NotMatcher<ComparisonMatcher<M>>(isEqualTo(matcher));
+    }
 }
 
 }
