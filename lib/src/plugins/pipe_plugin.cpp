@@ -57,6 +57,11 @@ public:
                         << test->getFailureMessage();
             }));
         });
+        TestingDriver::addBeforeDestroyHook([this]() {
+            pipe->pipe(Message::build([](BytesConsumer& consumer) {
+                consumer << 2;
+            }));
+        });
     }
 
     void uninstall() override {

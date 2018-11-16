@@ -26,6 +26,8 @@ public:
     bool isDone() const;
 
 private:
+    void processMessages(bool block);
+
     void processMessage(const messaging::Message& message);
 
     bool started;

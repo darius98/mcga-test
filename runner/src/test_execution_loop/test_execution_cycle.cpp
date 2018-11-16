@@ -81,24 +81,25 @@ void TestExecutionCycle::step() {
         perror("waitpid");
         exit(errno);
     }
-    Message message = pipeWithTestProcess->getNextMessage();
-    while (message.getPayload() != nullptr) {
-        processMessage(message);
-        message = pipeWithTestProcess->getNextMessage();
-    }
+    processMessages(false);
     if (ret != 0) { // process finished
-        int removeStat = remove(pipeName.c_str());
-        if (removeStat < 0) {
-            perror("remove pipe");
-            exit(errno);
-        }
-        close(pipeFD);
-        finished = true;
+        processMessages(true);
     }
 }
 
 bool TestExecutionCycle::isDone() const {
     return finished;
+}
+
+void TestExecutionCycle::processMessages(bool block) {
+    while (!finished) {
+        Message message = pipeWithTestProcess->getNextMessage();
+        if (message.getPayload() != nullptr) {
+            processMessage(message);
+        } else if (!block) {
+            break;
+        }
+    }
 }
 
 void TestExecutionCycle::processMessage(const Message& message) {
@@ -126,6 +127,14 @@ void TestExecutionCycle::processMessage(const Message& message) {
                << testInfo.failureMessage;
         info.tests.push_back(testInfo);
         onTestCallback(info);
+    } else if (type == 2) {
+        int removeStat = remove(pipeName.c_str());
+        if (removeStat < 0) {
+            perror("remove pipe");
+            exit(errno);
+        }
+        close(pipeFD);
+        finished = true;
     }
 }
 
