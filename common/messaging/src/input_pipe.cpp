@@ -31,12 +31,12 @@ Message InputPipe::getNextMessage(int maxConsecutiveFailedReadAttempts) {
         }
         if (numBytesRead == 0) {
             failedAttempts += 1;
-            continue;
+        } else {
+            failedAttempts = 0;
+            resizeBufferToFit((size_t)numBytesRead);
+            memcpy((uint8_t*)buffer + bufferSize, block, (size_t)numBytesRead);
+            bufferSize += numBytesRead;
         }
-        failedAttempts = 0;
-        resizeBufferToFit((size_t)numBytesRead);
-        memcpy((uint8_t*)buffer + bufferSize, block, (size_t)numBytesRead);
-        bufferSize += numBytesRead;
         messageSize = Message::isSane(buffer, bufferSize);
         if (messageSize != 0) {
             break;

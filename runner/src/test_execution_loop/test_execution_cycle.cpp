@@ -5,7 +5,6 @@
 
 #include <cstdlib>
 
-#include <iostream>
 #include <stdexcept>
 
 #include "test_execution_cycle.hpp"
