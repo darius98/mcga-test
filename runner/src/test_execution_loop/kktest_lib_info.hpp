@@ -6,7 +6,7 @@
 #include <vector>
 
 
-namespace kktest_runner {
+namespace runner {
 
 struct TestInfo {
     int groupIndex;

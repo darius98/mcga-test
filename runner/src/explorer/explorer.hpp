@@ -3,7 +3,7 @@
 
 #include <fsystem>
 
-namespace kktest_runner {
+namespace runner {
 
 void explore(const std::function<void(fsystem::File)>& onTestFound);
 

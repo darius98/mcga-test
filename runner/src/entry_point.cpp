@@ -8,8 +8,8 @@
 #define VERSION "0.0.2"
 
 using namespace easyflags;
-using namespace kktest_runner;
 using namespace fsystem;
+using namespace runner;
 using namespace std;
 
 AddArgument(int, flagVersion)

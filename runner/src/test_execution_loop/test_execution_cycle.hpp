@@ -9,7 +9,7 @@
 #include "kktest_lib_info.hpp"
 
 
-namespace kktest_runner {
+namespace runner {
 
 class TestExecutionCycle {
 public:

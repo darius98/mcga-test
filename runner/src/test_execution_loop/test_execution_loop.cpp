@@ -4,7 +4,7 @@
 
 using namespace std;
 
-namespace kktest_runner {
+namespace runner {
 
 TestExecutionLoop::TestExecutionLoop(int _concurrentRunningCyclesLimit):
         concurrentRunningCyclesLimit(_concurrentRunningCyclesLimit),

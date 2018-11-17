@@ -12,7 +12,7 @@
 using namespace messaging;
 using namespace std;
 
-namespace kktest_runner {
+namespace runner {
 
 TestExecutionCycle::TestExecutionCycle(
             const string& _testPath,

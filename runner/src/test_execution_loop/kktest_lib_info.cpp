@@ -2,7 +2,7 @@
 
 using namespace std;
 
-namespace kktest_runner {
+namespace runner {
 
 string KKTestCaseInfo::getRecursiveGroupDescription(int groupId) const {
     auto groupInfoIterator = groups.find(groupId);

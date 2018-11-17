@@ -11,7 +11,7 @@ AddArgument(string, argumentRootFolder)
     .DefaultValue(".")
     .ImplicitValue(".");
 
-namespace kktest_runner {
+namespace runner {
 
 class Explorer {
 public:

@@ -7,7 +7,7 @@
 #include <logging>
 #include "test_execution_cycle.hpp"
 
-namespace kktest_runner {
+namespace runner {
 
 class TestExecutionLoop {
 public:
