@@ -44,7 +44,7 @@ CharInStringMatcher isOctDigit("01234567", "an oct digit");
 
 CharInStringMatcher isHexDigit("0123456789ABCDEFabcdef", "a hex digit");
 
-CharInStringMatcher isWhitespace(" \t\r\n", "a whitespace character");
+CharInStringMatcher isWhitespace(" \t\r\n\f\v", "a whitespace character");
 
 IsSubstringMatcher::IsSubstringMatcher(string _container): container(move(_container)) {}
 

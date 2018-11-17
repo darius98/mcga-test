@@ -14,12 +14,10 @@ public:
 
     int addWithThrow(int y) {
         throw runtime_error("Some error.");
-        return x + y;
     }
 
     int addWithThrow5(int y) {
         throw 5;
-        return x + y;
     }
 };
 
@@ -27,14 +25,12 @@ int add(int x, int y) {
     return x + y;
 }
 
-int addThrow(int x, int y) {
+int addThrow(int, int) {
     throw runtime_error("Some error.");
-    return x + y;
 }
 
-int addThrow5(int x, int y) {
+int addThrow5(int, int) {
     throw 5;
-    return x + y;
 }
 
 void simpleFunction() {}
