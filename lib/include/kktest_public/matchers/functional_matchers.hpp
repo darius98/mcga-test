@@ -58,6 +58,11 @@ ThrowsSpecificMatcher<E> throwsA() {
     return ThrowsSpecificMatcher<E>();
 }
 
+template<class F, class... Args>
+std::function<void()> wrapFunc(const F& func, const Args... args) {
+    return [&]() { std::invoke(func, args...); };
+}
+
 }
 
 #endif

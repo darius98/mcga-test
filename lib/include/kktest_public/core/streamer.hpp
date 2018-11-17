@@ -120,8 +120,26 @@ template<class...> using void_t = void;
 
 template<class S>
 struct Streamer<S, void_t<decltype(std::cout << std::declval<S>())>> {
+public:
+    static void sendType(std::stringstream& stream) {
+        formatType<S>(stream);
+    }
+
     static void send(std::stringstream& s, S obj) {
         s << obj;
+    }
+
+private:
+    template<class T>
+    static void formatType(std::stringstream& s) {
+        int stat;
+        std::string rawName = typeid(T).name();
+        char* name = abi::__cxa_demangle(rawName.c_str(), nullptr, nullptr, &stat);
+        if (stat == 0) {
+            rawName = name;
+            free(name);
+        }
+        s << rawName;
     }
 };
 
