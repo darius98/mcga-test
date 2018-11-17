@@ -26,6 +26,27 @@ void kkTestCase() {
             kkExpect(description.toString() == "'2'");
             kkExpect(mismatchDescription.toString() == "not '2'");
         });
+
+        kkTest("isNotEqualTo does not match equal values", [&]() {
+            kkExpect(!isNotEqualTo(3).matches(3));
+            kkExpect(!isNotEqualTo(vector<int>{1, 2}).matches(vector<int>{1, 2}));
+        });
+
+        kkTest("isNotEqualTo matches for different values", [&]() {
+            kkExpect(isNotEqualTo(3).matches(2));
+            kkExpect(isNotEqualTo(2).matches(3));
+            kkExpect(isNotEqualTo(vector<int>{1, 3}).matches(vector<int>{2, 3}));
+        });
+
+        kkTest("Description for isNotEqualTo on equal values", [&]() {
+            Description description, mismatchDescription;
+            auto m = isNotEqualTo(2);
+            m.matches(2);
+            m.describe(description);
+            m.describeMismatch(mismatchDescription);
+            kkExpect(description.toString() == "different than '2'");
+            kkExpect(mismatchDescription.toString() == "not different than '2'");
+        });
     });
 
     kkGroup("Identity", [&]() {

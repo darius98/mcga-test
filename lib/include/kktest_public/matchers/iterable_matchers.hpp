@@ -59,6 +59,11 @@ class IterableEachMatcher: public Matcher {
 public:
     explicit IterableEachMatcher(M _elementMatcher): elementMatcher(_elementMatcher) {}
 
+    IterableEachMatcher(const IterableEachMatcher& other):
+            elementMatcher(other.elementMatcher),
+            elementFailureDescription(other.elementFailureDescription),
+            index(other.index) {}
+
     template<class T>
     bool matches(const T& iterable) {
         index = -1;
@@ -94,6 +99,7 @@ template<class M>
 class IterableAnyMatcher: public Matcher {
 public:
     explicit IterableAnyMatcher(M _elementMatcher): elementMatcher(_elementMatcher) {}
+    IterableAnyMatcher(const IterableAnyMatcher& other): elementMatcher(other.elementMatcher) {}
 
     template<class T>
     bool matches(const T& collection) {

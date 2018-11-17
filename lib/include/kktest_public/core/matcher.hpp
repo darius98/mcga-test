@@ -7,6 +7,9 @@ namespace kktest {
 
 class Description {
 public:
+    Description() = default;
+    Description(const Description& other): stream(other.stream.str()) {}
+
     template<class T>
     Description& operator<<(T obj) {
         Streamer<T>::send(stream, obj);

@@ -15,6 +15,8 @@ public:
 
     ComparisonMatcher(const T& _target, Comparator _comparator, std::string _expectation):
             target(_target), comparator(_comparator), expectation(std::move(_expectation)) {}
+    ComparisonMatcher(const ComparisonMatcher& other):
+            target(other.target), comparator(other.comparator), expectation(other.expectation) {}
 
     bool matches(const T& object) {
         return comparator(object, target);
@@ -37,6 +39,7 @@ template<class T>
 class IdentityMatcher: public Matcher {
 public:
     explicit IdentityMatcher(const T& target): address((void*)&target) {}
+    IdentityMatcher(const IdentityMatcher& other): address(other.address) {}
 
     bool matches(const T& object) {
         objectAddress = (void*)&object;
@@ -59,6 +62,11 @@ private:
 template<class T>
 ComparisonMatcher<T> isEqualTo(const T& object) {
     return ComparisonMatcher<T>(object, std::equal_to<T>(), "");
+}
+
+template<class T>
+ComparisonMatcher<T> isNotEqualTo(const T& object) {
+    return ComparisonMatcher<T>(object, std::not_equal_to<T>(), "different than ");
 }
 
 template<class T>
