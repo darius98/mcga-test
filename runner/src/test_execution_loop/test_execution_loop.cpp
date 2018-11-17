@@ -1,8 +1,11 @@
 #include "test_execution_loop.hpp"
 
+#include <chrono>
 #include <iostream>
+#include <thread>
 
 using namespace std;
+using namespace std::chrono;
 
 namespace runner {
 
@@ -56,6 +59,7 @@ void TestExecutionLoop::step() {
 int TestExecutionLoop::join() {
     while (!isEmpty()) {
         step();
+        this_thread::sleep_for(milliseconds(10));
     }
     testLogger.logFinalInformation(true);
     return failedAnyTest;
