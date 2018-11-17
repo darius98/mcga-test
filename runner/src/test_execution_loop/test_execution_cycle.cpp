@@ -59,12 +59,16 @@ void TestExecutionCycle::start() {
         exit(errno);
     }
     if (testProcessPID == 0) { // child process
+        string quietArgStr = "--quiet";
+        string boxedArgStr = "--boxed";
         string pipeToArgStr = "--pipe_to=" + pipeName;
         string maxParallelTestsArgStr = "--max_parallel_tests=" + to_string(maxParallelTests);
-        char* cmd = (char*)testPath.c_str();
-        char* pipeToArg = (char*)pipeToArgStr.c_str();
-        char* maxParallelTestsArg = (char*)maxParallelTestsArgStr.c_str();
-        char *argv[] = {cmd, "--quiet", "--boxed", pipeToArg, maxParallelTestsArg, nullptr};
+        auto cmd = (char*)testPath.c_str();
+        auto quietArg = (char*)quietArgStr.c_str();
+        auto boxedArg = (char*)boxedArgStr.c_str();
+        auto pipeToArg = (char*)pipeToArgStr.c_str();
+        auto maxParallelTestsArg = (char*)maxParallelTestsArgStr.c_str();
+        char *const argv[] = {cmd, quietArg, boxedArg, pipeToArg, maxParallelTestsArg, nullptr};
         execve(cmd, argv, nullptr);
         perror("execve");
         exit(errno);
