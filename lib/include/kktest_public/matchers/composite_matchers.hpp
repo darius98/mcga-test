@@ -134,7 +134,7 @@ auto isNot(M matcher) {
     if constexpr (std::is_base_of<Matcher, M>::value) {
         return NotMatcher<M>(matcher);
     } else {
-        return NotMatcher<ComparisonMatcher<M>>(isEqualTo(matcher));
+        return isNotEqualTo(matcher);
     }
 }
 

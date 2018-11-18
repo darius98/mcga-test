@@ -4,6 +4,7 @@ include("../kktest.cmake")
 
 add_kktest(truth_matcher_test         matcher/truth_matcher_test.cpp)
 add_kktest(comparison_matcher_test    matcher/comparison_matcher_test.cpp)
+add_kktest(composite_matcher_test     matcher/composite_matchers_test.cpp)
 add_kktest(functional_matchers_test   matcher/functional_matchers_test.cpp)
 add_kktest(iterable_matchers_test     matcher/iterable_matchers_test.cpp)
 add_kktest(numeric_matchers_test      matcher/numeric_matchers_test.cpp)
