@@ -38,6 +38,7 @@ private:
 
     bool maintainTestIndexOrder;
     int testCasesReceived = 0;
+    int testCasesFatallyExited = 0;
     int passedTests = 0;
     int failedTests = 0;
     int failedOptionalTests = 0;

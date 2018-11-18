@@ -37,7 +37,19 @@ void TestLogger::logTest(int testIndex,
 void TestLogger::logFinalInformation(bool logNumTests) {
     stream << "\n";
     if (logNumTests) {
-        stream << "Test cases executed: " << testCasesReceived << "\n";
+        if (testCasesFatallyExited != 0) {
+            modifyOutput(31, stream);
+            stream << "Warning: some test cases closed unexpectedly!\n\n";
+            modifyOutput(0, stream);
+            stream << "Test cases found: " << testCasesReceived << "\n"
+                   << "Test cases executed successfully: "
+                   << testCasesReceived - testCasesFatallyExited << "\n"
+                   << "Test cases executed with fatal errors: ";
+            modifyOutput(31, stream);
+            stream << testCasesFatallyExited;
+            modifyOutput(0, stream);
+            stream << "\n";
+        }
         stream << "Total tests executed: " << passedTests + failedTests << "\n";
     }
     stream << "Tests passed: ";
@@ -59,6 +71,7 @@ void TestLogger::logFinalInformation(bool logNumTests) {
 }
 
 void TestLogger::logFatalError(const string& errorMessage, const string& testCaseName) {
+    testCasesFatallyExited += 1;
     stream << "\nA fatal ";
     modifyOutput(31, stream);
     stream << "error";
