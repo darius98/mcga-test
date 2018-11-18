@@ -116,7 +116,7 @@ void TestingDriver::uninstallPlugins() {
 }
 
 void TestingDriver::addGroup(const GroupConfig& config, Executable func) {
-    executor->checkIsInactive("kkGroup");
+    executor->checkIsInactive("kkGroup", config.file, config.line);
     auto group = new Group(config, groupStack.back(), ++ currentGroupIndex);
     groupStack.push_back(group);
 
@@ -139,7 +139,7 @@ void TestingDriver::addGroup(const GroupConfig& config, Executable func) {
 }
 
 void TestingDriver::addTest(const TestConfig& config, Executable func) {
-    executor->checkIsInactive("kkTest");
+    executor->checkIsInactive("kkTest", config.file, config.line);
     Group* parentGroup = groupStack.back();
     auto test = new Test(config, parentGroup, ++ currentTestIndex);
     parentGroup->markTestStartedExecution();
@@ -153,13 +153,13 @@ void TestingDriver::addTest(const TestConfig& config, Executable func) {
     });
 }
 
-void TestingDriver::addSetUp(Executable func) {
-    executor->checkIsInactive("kkSetUp");
+void TestingDriver::addSetUp(Executable func, const string& file, int line) {
+    executor->checkIsInactive("kkSetUp", file, line);
     groupStack.back()->addSetUp(func);
 }
 
-void TestingDriver::addTearDown(Executable func) {
-    executor->checkIsInactive("kkTearDown");
+void TestingDriver::addTearDown(Executable func, const string& file, int line) {
+    executor->checkIsInactive("kkTearDown", file, line);
     groupStack.back()->addTearDown(func);
 }
 

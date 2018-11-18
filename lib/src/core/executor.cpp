@@ -21,15 +21,16 @@ bool Executor::isDuringTest() const {
     return state == TEST;
 }
 
-void Executor::checkIsInactive(const string& methodName) const {
+void Executor::checkIsInactive(const string& methodName, const string& file, int line) const {
+    string errorPrefix = file + ":" + to_string(line) + ": " + methodName;
     if (state == TEST) {
-        throw ConfigurationError(methodName + " called within kkTest.");
+        throw ConfigurationError(errorPrefix + " called within kkTest.");
     }
     if (state == SET_UP) {
-        throw ConfigurationError(methodName + " called within kkSetUp.");
+        throw ConfigurationError(errorPrefix + " called within kkSetUp.");
     }
     if (state == TEAR_DOWN) {
-        throw ConfigurationError(methodName + " called within kkTearDown.");
+        throw ConfigurationError(errorPrefix + " called within kkTearDown.");
     }
 }
 

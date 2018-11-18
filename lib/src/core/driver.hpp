@@ -47,9 +47,9 @@ private:
 
     void addTest(const TestConfig& config, Executable func);
 
-    void addSetUp(Executable func);
+    void addSetUp(Executable func, const std::string& file, int line);
 
-    void addTearDown(Executable func);
+    void addTearDown(Executable func, const std::string& file, int line);
 
     void afterTest(Test* test) const;
     void beforeTest(Test* test) const;

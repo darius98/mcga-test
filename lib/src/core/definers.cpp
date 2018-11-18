@@ -33,11 +33,11 @@ void GroupDefiner::operator()(const GroupConfig& config, Executable func) {
 }
 
 void SetUpDefiner::operator()(Executable func) {
-    TestingDriver::getInstance()->addSetUp(func);
+    TestingDriver::getInstance()->addSetUp(func, file, line);
 }
 
 void TearDownDefiner::operator()(Executable func) {
-    TestingDriver::getInstance()->addTearDown(func);
+    TestingDriver::getInstance()->addTearDown(func, file, line);
 }
 
 void ExpectDefiner::operator()(const bool& exprResult, const string& expr) {
