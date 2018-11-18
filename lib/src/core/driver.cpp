@@ -58,6 +58,12 @@ void TestingDriver::init() {
     }
     instance = new TestingDriver();
     instance->installPlugins();
+    addAfterTestHook([](Test* test) {
+        if (!test->getConfig().optional) {
+            instance->failedAnyNonOptionalTest |= test->isFailed();
+        }
+        test->getGroup()->markTestFinishedExecution();
+    });
     for (const AfterInitHook& hook: instance->afterInitHooks) {
         hook();
     }
@@ -144,12 +150,8 @@ void TestingDriver::addTest(const TestConfig& config, Executable func) {
     auto test = new Test(config, parentGroup, ++ currentTestIndex);
     parentGroup->markTestStartedExecution();
     beforeTest(test);
-    executor->execute(test, func, [this, parentGroup, test]() {
-        if (!test->getConfig().optional) {
-            failedAnyNonOptionalTest |= test->isFailed();
-        }
+    executor->execute(test, func, [this, test]() {
         afterTest(test);
-        parentGroup->markTestFinishedExecution();
     });
 }
 
