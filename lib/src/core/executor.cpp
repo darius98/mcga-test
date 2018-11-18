@@ -89,11 +89,9 @@ bool Executor::runSetUpsRecursively(Group* group, string* failureMessage) {
     } catch(const ConfigurationError& e) {
         throw e;
     } catch(const exception& e) {
-        *failureMessage = "An exception was thrown during the setUp of group '"
-                          + group->getFullDescription() + "': " + e.what();
+        failureMessage->assign(group->getRenderedFailureMessageOnExceptionInSetUp(e.what()));
     } catch(...) {
-        *failureMessage = "A non-exception object was thrown during the setUp of group '"
-                          + group->getFullDescription() + "'.";
+        failureMessage->assign(group->getRenderedFailureMessageOnNonExceptionInSetUp());
     }
     return true;
 }
@@ -103,14 +101,14 @@ bool Executor::runSetUpsRecursively(Group* group, string* failureMessage) {
         func();
         return false;
     } catch(const ExpectationFailed& failure) {
-        *failureMessage = failure.what();
+        failureMessage->assign(failure.what());
         return true;
     } catch(const ConfigurationError& e) {
         throw e;
     } catch(const exception& e) {
-        *failureMessage = "An exception was thrown during test: " + string(e.what());
+        failureMessage->assign("An exception was thrown during test: " + string(e.what()));
     } catch(...) {
-        *failureMessage = "A non-exception object was thrown during test";
+        failureMessage->assign("A non-exception object was thrown during test");
     }
     return true;
 }
@@ -126,11 +124,9 @@ bool Executor::runTearDownsRecursively(Group* group, string* failureMessage) {
     } catch(const ConfigurationError& e) {
         throw e;
     } catch(const exception& e) {
-        *failureMessage = "An exception was thrown during the tearDown of group '"
-                          + group->getFullDescription() + "': " + e.what();
+        failureMessage->assign(group->getRenderedFailureMessageOnExceptionInTearDown(e.what()));
     } catch(...) {
-        *failureMessage = "A non-exception object was thrown during the tearDown of group '"
-                          + group->getFullDescription() + "'.";
+        failureMessage->assign(group->getRenderedFailureMessageOnNonExceptionInTearDown());
     }
     return true;
 }

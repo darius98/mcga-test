@@ -157,12 +157,12 @@ void TestingDriver::addTest(const TestConfig& config, Executable func) {
 
 void TestingDriver::addSetUp(Executable func, const string& file, int line) {
     executor->checkIsInactive("kkSetUp", file, line);
-    groupStack.back()->addSetUp(func);
+    groupStack.back()->addSetUp(func, file, line);
 }
 
 void TestingDriver::addTearDown(Executable func, const string& file, int line) {
     executor->checkIsInactive("kkTearDown", file, line);
-    groupStack.back()->addTearDown(func);
+    groupStack.back()->addTearDown(func, file, line);
 }
 
 void TestingDriver::beforeTest(Test* test) const {

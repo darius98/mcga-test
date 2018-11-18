@@ -17,7 +17,7 @@ bool Group::isTopLevel() const {
     return parentGroup != nullptr && parentGroup->parentGroup == nullptr;
 }
 
-void Group::addSetUp(Executable func) {
+void Group::addSetUp(Executable func, const string& file, int line) {
     if (hasSetUp) {
         throw ConfigurationError(
                 "Trying to add second kkSetUp to group '" + getFullDescription() + "'."
@@ -25,6 +25,8 @@ void Group::addSetUp(Executable func) {
     }
     hasSetUp = true;
     setUpFunc = func;
+    setUpFile = file;
+    setUpLine = line;
 }
 
 void Group::setUp() const {
@@ -33,7 +35,7 @@ void Group::setUp() const {
     }
 }
 
-void Group::addTearDown(Executable func) {
+void Group::addTearDown(Executable func, const string& file, int line) {
     if (hasTearDown) {
         throw ConfigurationError(
                 "Trying to add second kkTearDown to group '" + getFullDescription() + "'."
@@ -41,6 +43,8 @@ void Group::addTearDown(Executable func) {
     }
     hasTearDown = true;
     tearDownFunc = func;
+    tearDownFile = file;
+    tearDownLine = line;
 }
 
 void Group::tearDown() const {
@@ -63,6 +67,26 @@ int Group::getIndex() const {
 
 Group* Group::getParentGroup() const {
     return parentGroup;
+}
+
+string Group::getRenderedFailureMessageOnExceptionInSetUp(const string& what) const {
+    return "Exception thrown in kkSetUp"
+           " (" + setUpFile + ":" + to_string(setUpLine) + "): " + what;
+}
+
+string Group::getRenderedFailureMessageOnNonExceptionInSetUp() const {
+    return "Non-exception thrown in kkSetUp"
+           " (" + setUpFile + ":" + to_string(setUpLine) + ").";
+}
+
+string Group::getRenderedFailureMessageOnExceptionInTearDown(const string& what) const {
+    return "Exception thrown in kkTearDown"
+           " (" + tearDownFile + ":" + to_string(tearDownLine) + "): " + what;
+}
+
+string Group::getRenderedFailureMessageOnNonExceptionInTearDown() const {
+    return "Non-exception thrown in kkTearDown"
+           " (" + tearDownFile + ":" + to_string(tearDownLine) + ").";
 }
 
 int Group::getParentGroupIndex() const {

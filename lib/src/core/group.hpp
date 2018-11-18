@@ -25,12 +25,20 @@ public:
 
     Group* getParentGroup() const;
 
+    std::string getRenderedFailureMessageOnExceptionInSetUp(const std::string& what) const;
+
+    std::string getRenderedFailureMessageOnNonExceptionInSetUp() const;
+
+    std::string getRenderedFailureMessageOnExceptionInTearDown(const std::string& what) const;
+
+    std::string getRenderedFailureMessageOnNonExceptionInTearDown() const;
+
 private:
-    void addSetUp(Executable func);
+    void addSetUp(Executable func, const std::string& file, int line);
 
     void setUp() const;
 
-    void addTearDown(Executable func);
+    void addTearDown(Executable func, const std::string& file, int line);
 
     void tearDown() const;
 
@@ -47,9 +55,13 @@ private:
 
     bool hasSetUp = false;
     CopyableExecutable setUpFunc;
+    std::string setUpFile;
+    int setUpLine;
 
     bool hasTearDown = false;
     CopyableExecutable tearDownFunc;
+    std::string tearDownFile;
+    int tearDownLine;
 
     int testsStarted = 0;
     int testsFinished = 0;
