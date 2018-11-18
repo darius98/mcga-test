@@ -8,21 +8,23 @@
 namespace kktest {
 
 class Plugin {
+public:
+    Plugin();
+
+    virtual ~Plugin() = default;
+
+    virtual bool isEnabled() const {
+        return true;
+    }
+
+    virtual void install() {}
+
+    virtual void uninstall() {}
+
 private:
     static Plugin** plugins;
     static int numPlugins;
     static int pluginsCapacity;
-
-public:
-    Plugin();
-
-    virtual ~Plugin();
-
-    virtual bool isEnabled() const;
-
-    virtual void install();
-
-    virtual void uninstall();
 
 friend class TestingDriver;
 };

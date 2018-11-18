@@ -1,5 +1,5 @@
-#ifndef KKTEST_CORE_EXPECTATION_FAILED_H_
-#define KKTEST_CORE_EXPECTATION_FAILED_H_
+#ifndef KKTEST_CORE_ERRORS_H_
+#define KKTEST_CORE_ERRORS_H_
 
 #include <stdexcept>
 #include <string>

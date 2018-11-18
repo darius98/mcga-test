@@ -25,16 +25,4 @@ Plugin::Plugin() {
     plugins[numPlugins++] = this;
 }
 
-Plugin::~Plugin() = default;
-
-bool Plugin::isEnabled() const {
-    return true;
-}
-
-void Plugin::install() {
-}
-
-void Plugin::uninstall() {
-}
-
 }
