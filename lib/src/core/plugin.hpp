@@ -24,16 +24,7 @@ public:
 
     virtual void uninstall();
 
-friend class Pluginable;
-};
-
-class Pluginable {
-public:
-    virtual ~Pluginable();
-
-    void installPlugins();
-
-    void uninstallPlugins();
+friend class TestingDriver;
 };
 
 }

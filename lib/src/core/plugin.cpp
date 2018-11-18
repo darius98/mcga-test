@@ -1,6 +1,5 @@
 #include "plugin.hpp"
 
-#include <iostream>
 #include <cstring>
 
 using namespace std;
@@ -36,26 +35,6 @@ void Plugin::install() {
 }
 
 void Plugin::uninstall() {
-}
-
-Pluginable::~Pluginable() = default;
-
-void Pluginable::installPlugins() {
-    for (int i = 0; i < Plugin::numPlugins; ++ i) {
-        auto plugin = Plugin::plugins[i];
-        if (plugin->isEnabled()) {
-            plugin->install();
-        }
-    }
-}
-
-void Pluginable::uninstallPlugins() {
-    for (int i = 0; i < Plugin::numPlugins; ++ i) {
-        Plugin* plugin = Plugin::plugins[i];
-        if (plugin->isEnabled()) {
-            plugin->uninstall();
-        }
-    }
 }
 
 }

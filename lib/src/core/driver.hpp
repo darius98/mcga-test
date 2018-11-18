@@ -7,7 +7,7 @@
 
 namespace kktest {
 
-class TestingDriver: private Pluginable {
+class TestingDriver {
 public:
     typedef std::function<void(Test*)> TestHook;
     typedef std::function<void(Group*)> GroupHook;
@@ -31,7 +31,11 @@ private:
 
     TestingDriver();
 
-    ~TestingDriver() override;
+    ~TestingDriver();
+
+    void installPlugins();
+
+    void uninstallPlugins();
 
     void addGroup(const GroupConfig& config, Executable func);
 

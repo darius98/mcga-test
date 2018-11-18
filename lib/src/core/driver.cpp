@@ -81,6 +81,24 @@ TestingDriver::~TestingDriver() {
     }
 }
 
+void TestingDriver::installPlugins() {
+    for (int i = 0; i < Plugin::numPlugins; ++ i) {
+        auto plugin = Plugin::plugins[i];
+        if (plugin->isEnabled()) {
+            plugin->install();
+        }
+    }
+}
+
+void TestingDriver::uninstallPlugins() {
+    for (int i = 0; i < Plugin::numPlugins; ++ i) {
+        Plugin* plugin = Plugin::plugins[i];
+        if (plugin->isEnabled()) {
+            plugin->uninstall();
+        }
+    }
+}
+
 void TestingDriver::addGroup(const GroupConfig& config, Executable func) {
     executor->checkIsInactive("group");
     auto group = new Group(config, groupStack.back(), ++ currentGroupIndex);
