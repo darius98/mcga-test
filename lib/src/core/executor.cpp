@@ -23,13 +23,13 @@ bool Executor::isDuringTest() const {
 
 void Executor::checkIsInactive(const string& methodName) const {
     if (state == TEST) {
-        throw ConfigurationError(methodName + " called within test.");
+        throw ConfigurationError(methodName + " called within kkTest.");
     }
     if (state == SET_UP) {
-        throw ConfigurationError(methodName + " called within setUp.");
+        throw ConfigurationError(methodName + " called within kkSetUp.");
     }
     if (state == TEAR_DOWN) {
-        throw ConfigurationError(methodName + " called within tearDown.");
+        throw ConfigurationError(methodName + " called within kkTearDown.");
     }
 }
 

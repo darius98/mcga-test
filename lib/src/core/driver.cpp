@@ -51,9 +51,7 @@ TestingDriver* TestingDriver::getInstance() {
 
 void TestingDriver::init() {
     if (instance != nullptr) {
-        throw KKTestLibraryImplementationError(
-                "TestingDriver::init called a second time!"
-        );
+        throw KKTestLibraryImplementationError("TestingDriver::init called a twice.");
     }
     instance = new TestingDriver();
     instance->installPlugins();
@@ -105,7 +103,7 @@ void TestingDriver::uninstallPlugins() {
 }
 
 void TestingDriver::addGroup(const GroupConfig& config, Executable func) {
-    executor->checkIsInactive("group");
+    executor->checkIsInactive("kkGroup");
     auto group = new Group(config, groupStack.back(), ++ currentGroupIndex);
     groupStack.push_back(group);
 
@@ -126,7 +124,7 @@ void TestingDriver::addGroup(const GroupConfig& config, Executable func) {
 }
 
 void TestingDriver::addTest(const TestConfig& config, Executable func) {
-    executor->checkIsInactive("test");
+    executor->checkIsInactive("kkTest");
     Group* parentGroup = groupStack.back();
     auto test = new Test(config, parentGroup, ++ currentTestIndex);
     parentGroup->markTestStartedExecution();
@@ -141,12 +139,12 @@ void TestingDriver::addTest(const TestConfig& config, Executable func) {
 }
 
 void TestingDriver::addSetUp(Executable func) {
-    executor->checkIsInactive("setUp");
+    executor->checkIsInactive("kkSetUp");
     groupStack.back()->addSetUp(func);
 }
 
 void TestingDriver::addTearDown(Executable func) {
-    executor->checkIsInactive("tearDown");
+    executor->checkIsInactive("kkTearDown");
     groupStack.back()->addTearDown(func);
 }
 

@@ -11,7 +11,7 @@ Test::Test(const TestConfig& _config, Group* _parentGroup, int _index):
 
 void Test::setExecuted(double _executionTimeTicks, bool _passed, string _failureMessage) {
     if (isExecuted()) {
-        throw KKTestLibraryImplementationError("Test::setExecuted called twice on the same test!");
+        throw KKTestLibraryImplementationError("Test::setExecuted called twice on the same test.");
     }
     executed = true;
     executionTimeTicks = _executionTimeTicks;

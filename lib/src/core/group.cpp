@@ -19,7 +19,9 @@ bool Group::isTopLevel() const {
 
 void Group::addSetUp(Executable func) {
     if (hasSetUp) {
-        throw ConfigurationError("Group '" + getFullDescription() + "' already has a setUp!");
+        throw ConfigurationError(
+                "Trying to add second kkSetUp to group '" + getFullDescription() + "'."
+        );
     }
     hasSetUp = true;
     setUpFunc = func;
@@ -33,7 +35,9 @@ void Group::setUp() const {
 
 void Group::addTearDown(Executable func) {
     if (hasTearDown) {
-        throw ConfigurationError("Group '" + getFullDescription() + "' already has a tearDown!");
+        throw ConfigurationError(
+                "Trying to add second kkTearDown to group '" + getFullDescription() + "'."
+        );
     }
     hasTearDown = true;
     tearDownFunc = func;
