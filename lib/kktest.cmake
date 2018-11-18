@@ -1,18 +1,22 @@
 cmake_minimum_required(VERSION 3.7)
 
-if (BUILD_TYPE STREQUAL "DEV")
-    set(KKTEST_DEV_INCLUDE_DIR ${CMAKE_CURRENT_LIST_DIR}/include)
-endif ()
+GET_PROPERTY(__LOCAL_KKTEST_LIBRARY_INCLUDE_GUARD__ GLOBAL PROPERTY __KKTEST_LIBRARY_INCLUDE_GUARD__)
+if(__LOCAL_KKTEST_LIBRARY_INCLUDE_GUARD__)
+    return()
+endif()
+SET_PROPERTY(GLOBAL PROPERTY __KKTEST_LIBRARY_INCLUDE_GUARD__ TRUE)
+
+set(KKTEST_DEV_INCLUDE_DIR ${CMAKE_CURRENT_LIST_DIR}/include)
 
 function(add_kktest TEST_NAME)
     if (NOT TESTS_PATH)
         message(FATAL_ERROR "TESTS_PATH variable not set.")
     endif ()
 
-    if (BUILD_TYPE STREQUAL "DEV")
-        set(KKTEST_LIB kktest)
-    else ()
+    if (NOT (BUILD_TYPE STREQUAL "DEV"))
         find_library(KKTEST_LIB kktest)
+    else ()
+        set(KKTEST_LIB kktest)
     endif()
     if (NOT KKTEST_LIB)
         message(FATAL_ERROR "kktest library not installed.")

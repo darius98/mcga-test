@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8.2)
-project(kktest VERSION 1.0.0)
+project(kktest_library)
 set(CMAKE_CXX_STANDARD 17)
 
 file(GLOB KKTestLibImpl
@@ -17,44 +17,10 @@ file(GLOB KKTestLibImpl
     )
 add_library(kktest SHARED ${KKTestLibImpl})
 target_compile_options(kktest PRIVATE -Wall -Wextra -pedantic)
-target_include_directories(kktest PRIVATE src)
-target_include_directories(kktest PRIVATE include)
-target_include_directories(kktest PRIVATE include/kktest_public)
+target_include_directories(kktest PUBLIC include PRIVATE src PRIVATE include/kktest_public)
 target_link_libraries(kktest messaging strutil logging easyflags)
-set_target_properties(kktest PROPERTIES
-    VERSION ${PROJECT_VERSION}
-    SOVERSION 1)
-install(TARGETS kktest LIBRARY DESTINATION ${LIB_PATH})
 
-if (NOT (BUILD_TYPE STREQUAL "DEV"))
-    return()
+if (BUILD_TYPE STREQUAL "DEV")
+    add_subdirectory(examples)
+    add_subdirectory(tests)
 endif ()
-
-add_executable(example_std_vector_test examples/std_vector_test.cpp)
-install(TARGETS example_std_vector_test DESTINATION example_std_vector_test)
-target_link_libraries(example_std_vector_test kktest)
-target_include_directories(example_std_vector_test PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
-
-function(wiki_example FILE_NAME)
-    set(T wiki_example_${FILE_NAME})
-    add_executable(${T} examples/wiki/${FILE_NAME}.cpp)
-    target_link_libraries(${T} kktest)
-    target_include_directories(${T} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
-    install(TARGETS ${T} DESTINATION ${T})
-endfunction()
-
-wiki_example(base)
-wiki_example(set_up_tear_down_bad)
-wiki_example(set_up_tear_down_good)
-wiki_example(group)
-
-include(./kktest.cmake)
-
-add_kktest(truth_matcher_test         tests/matcher/truth_matcher_test.cpp)
-add_kktest(comparison_matcher_test    tests/matcher/comparison_matcher_test.cpp)
-add_kktest(composite_matcher_test     tests/matcher/composite_matchers_test.cpp)
-add_kktest(functional_matchers_test   tests/matcher/functional_matchers_test.cpp)
-add_kktest(iterable_matchers_test     tests/matcher/iterable_matchers_test.cpp)
-add_kktest(numeric_matchers_test      tests/matcher/numeric_matchers_test.cpp)
-add_kktest(pointer_matchers_test      tests/matcher/pointer_matchers_test.cpp)
-add_kktest(string_matchers_test       tests/matcher/string_matchers_test.cpp)
