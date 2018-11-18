@@ -43,11 +43,11 @@ protected:
                          const std::string& failureMessage);
 
 private:
-    std::pair<std::string, bool> runSetUpsRecursively(Group* group);
+    bool runSetUpsRecursively(Group* group, std::string* failureMessage);
 
-    std::pair<std::string, bool> runTearDownsRecursively(Group* group);
+    bool runTearDownsRecursively(Group* group, std::string* failureMessage);
 
-    std::pair<std::string, bool> runTest(Executable func);
+    bool runTest(Executable func, std::string* failureMessage);
 
     State state = State::INACTIVE;
     double timeTickLengthMs;
