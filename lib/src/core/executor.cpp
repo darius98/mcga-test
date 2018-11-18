@@ -85,6 +85,8 @@ pair<string, bool> Executor::runSetUpsRecursively(Group* group) {
     try {
         group->setUp();
         failed = false;
+    } catch(const ConfigurationError& e) {
+        throw e;
     } catch(const exception& e) {
         failed = true;
         failMessage = "An exception was thrown during the setUp of group '"
@@ -105,6 +107,8 @@ pair<string, bool> Executor::runTest(Executable func) {
         func();
     } catch(const ExpectationFailed& failure) {
         return {failure.what(), false};
+    } catch(const ConfigurationError& e) {
+        throw e;
     } catch(const exception& e) {
         return {"An exception was thrown during test: " + string(e.what()), false};
     } catch(...) {
@@ -123,6 +127,8 @@ pair<string, bool> Executor::runTearDownsRecursively(Group* group) {
     try {
         group->tearDown();
         failed = false;
+    } catch(const ConfigurationError& e) {
+        throw e;
     } catch(const exception& e) {
         failed = true;
         failMessage = "An exception was thrown during the tearDown of group '"

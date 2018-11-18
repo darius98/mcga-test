@@ -39,7 +39,6 @@ private:
     std::string pipeName;
     int pipeFD;
     pid_t testProcessPID;
-    bool finished;
 
     KKTestCaseInfo info;
 };

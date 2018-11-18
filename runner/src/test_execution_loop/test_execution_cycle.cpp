@@ -23,8 +23,7 @@ TestExecutionCycle::TestExecutionCycle(
         maxParallelTests(_maxParallelTests),
         onTestCallback(_onTestCallback),
         pipeWithTestProcess(nullptr),
-        testProcessPID(0),
-        finished(false) {
+        testProcessPID(0) {
     info.testExecutablePath = testPath;
 }
 
@@ -76,7 +75,7 @@ void TestExecutionCycle::start() {
 }
 
 void TestExecutionCycle::step() {
-    if (finished) {
+    if (info.finished) {
         return;
     }
     int ret = waitpid(testProcessPID, nullptr, WNOHANG);
@@ -91,11 +90,11 @@ void TestExecutionCycle::step() {
 }
 
 bool TestExecutionCycle::isDone() const {
-    return finished;
+    return info.finished;
 }
 
 void TestExecutionCycle::processMessages(bool block) {
-    while (!finished) {
+    while (!info.finished) {
         Message message = pipeWithTestProcess->getNextMessage();
         if (message.getPayload() != nullptr) {
             processMessage(message);
@@ -130,14 +129,25 @@ void TestExecutionCycle::processMessage(const Message& message) {
                << testInfo.failureMessage;
         info.tests.push_back(testInfo);
         onTestCallback(info);
-    } else if (type == 2) {
+    } else if (type == 2) { // done
         int removeStat = remove(pipeName.c_str());
         if (removeStat < 0) {
             perror("remove pipe");
             exit(errno);
         }
         close(pipeFD);
-        finished = true;
+        info.finished = true;
+    } else if (type == 3) {
+        int removeStat = remove(pipeName.c_str());
+        if (removeStat < 0) {
+            perror("remove pipe");
+            exit(errno);
+        }
+        close(pipeFD);
+        info.finished = true;
+        info.finishedWithError = true;
+        reader << info.errorMessage;
+        onTestCallback(info);
     }
 }
 

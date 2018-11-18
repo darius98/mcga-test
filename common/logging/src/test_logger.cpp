@@ -58,6 +58,18 @@ void TestLogger::logFinalInformation(bool logNumTests) {
     stream << "\n";
 }
 
+void TestLogger::logFatalError(const string& errorMessage, const string& testCaseName) {
+    stream << "\nA fatal ";
+    modifyOutput(31, stream);
+    stream << "error";
+    modifyOutput(0, stream);
+    stream << " occurred during execution";
+    if (!testCaseName.empty()) {
+        stream << " of test case " << testCaseName;
+    }
+    stream << ": " << errorMessage << "\n";
+}
+
 string TestLogger::getTestMessage(const string& groupDescription,
                                   const string& description,
                                   bool isOptional,

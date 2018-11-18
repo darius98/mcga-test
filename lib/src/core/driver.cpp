@@ -1,5 +1,4 @@
 #include "driver.hpp"
-#include "errors.hpp"
 
 using namespace std;
 
@@ -30,12 +29,16 @@ void TestingDriver::addAfterGroupHook(GroupHook hook) {
     getInstance()->afterGroupHooks.emplace_back(move(hook));
 }
 
-void TestingDriver::addAfterInitHook(CopyableExecutable hook) {
+void TestingDriver::addAfterInitHook(AfterInitHook hook) {
     getInstance()->afterInitHooks.push_back(hook);
 }
 
-void TestingDriver::addBeforeDestroyHook(CopyableExecutable hook) {
+void TestingDriver::addBeforeDestroyHook(BeforeDestroyHook hook) {
     getInstance()->beforeDestroyHooks.push_back(hook);
+}
+
+void TestingDriver::addBeforeForceDestroyHook(BeforeForceDestroyHook hook) {
+    getInstance()->beforeForceDestroyHooks.push_back(hook);
 }
 
 TestingDriver* TestingDriver::instance = nullptr;
@@ -55,7 +58,7 @@ void TestingDriver::init() {
     }
     instance = new TestingDriver();
     instance->installPlugins();
-    for (Executable hook: instance->afterInitHooks) {
+    for (const AfterInitHook& hook: instance->afterInitHooks) {
         hook();
     }
 }
@@ -63,13 +66,23 @@ void TestingDriver::init() {
 int TestingDriver::destroy() {
     TestingDriver* driver = getInstance();
     driver->executor->finalize();
-    for (Executable hook: driver->beforeDestroyHooks) {
+    for (const BeforeDestroyHook& hook: driver->beforeDestroyHooks) {
         hook();
     }
     driver->uninstallPlugins();
     int status = driver->failedAnyNonOptionalTest ? 1 : 0;
     delete driver;
     return status;
+}
+
+void TestingDriver::forceDestroy(const ConfigurationError& error) {
+    TestingDriver* driver = getInstance();
+    driver->executor->finalize();
+    for (const BeforeForceDestroyHook& hook: driver->beforeForceDestroyHooks) {
+        hook(error);
+    }
+    driver->uninstallPlugins();
+    delete driver;
 }
 
 TestingDriver::TestingDriver():
@@ -110,6 +123,8 @@ void TestingDriver::addGroup(const GroupConfig& config, Executable func) {
     beforeGroup(group);
     try {
         func();
+    } catch(const ConfigurationError& e) {
+        throw e;
     } catch(const exception& e) {
         throw ConfigurationError("An exception was thrown inside group '" +
             group->getFullDescription() + "': " + e.what());

@@ -39,6 +39,10 @@ public:
         TestingDriver::addBeforeDestroyHook([this]() {
             logger->logFinalInformation();
         });
+
+        TestingDriver::addBeforeForceDestroyHook([this](const ConfigurationError& error) {
+            logger->logFatalError(error.what());
+        });
     }
 
     void uninstall() override {

@@ -10,7 +10,12 @@ namespace kktest {
 
 int main() {
     TestingDriver::init();
-    kkTestCase();
+    try {
+        kkTestCase();
+    } catch(const ConfigurationError& error) {
+        TestingDriver::forceDestroy(error);
+        return 1;
+    }
     return TestingDriver::destroy();
 }
 

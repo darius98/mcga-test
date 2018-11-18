@@ -21,6 +21,8 @@ public:
 
     void logFinalInformation(bool logNumTests=false);
 
+    void logFatalError(const std::string& errorMessage, const std::string& testCaseName="");
+
 private:
     std::string getTestMessage(const std::string& groupDescription,
                                const std::string& description,

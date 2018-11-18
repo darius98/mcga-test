@@ -62,6 +62,12 @@ public:
                 consumer << 2;
             }));
         });
+        TestingDriver::addBeforeForceDestroyHook([this](const ConfigurationError& error) {
+            pipe->pipe(Message::build([&error](BytesConsumer& consumer) {
+                consumer << 3
+                         << string(error.what());
+            }));
+        });
     }
 
     void uninstall() override {
