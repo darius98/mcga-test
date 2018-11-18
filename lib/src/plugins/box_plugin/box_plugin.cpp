@@ -30,7 +30,7 @@ public:
 
     void install() override {
         if (argumentNumBoxes <= 0) {
-            throw runtime_error("Invalid number of boxes.");
+            argumentNumBoxes = 1;
         }
         boxExecutor = new BoxExecutor((size_t)argumentNumBoxes);
         TestingDriver::addAfterInitHook([this]() {

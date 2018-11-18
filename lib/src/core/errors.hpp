@@ -7,6 +7,16 @@
 
 namespace kktest {
 
+class ConfigurationError: public std::runtime_error {
+public:
+    explicit ConfigurationError(const std::string& str);
+};
+
+class KKTestLibraryImplementationError: public std::runtime_error {
+public:
+    explicit KKTestLibraryImplementationError(const std::string& str);
+};
+
 class ExpectationFailed: public std::runtime_error {
 public:
     explicit ExpectationFailed(const std::string& str);

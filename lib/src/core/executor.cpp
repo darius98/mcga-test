@@ -23,13 +23,13 @@ bool Executor::isDuringTest() const {
 
 void Executor::checkIsInactive(const string& methodName) const {
     if (state == TEST) {
-        throw runtime_error("Cannot call " + methodName + " within test!");
+        throw ConfigurationError(methodName + " called within test.");
     }
     if (state == SET_UP) {
-        throw runtime_error("Cannot call " + methodName + " within setUp!");
+        throw ConfigurationError(methodName + " called within setUp.");
     }
     if (state == TEAR_DOWN) {
-        throw runtime_error("Cannot call " + methodName + " within tearDown!");
+        throw ConfigurationError(methodName + " called within tearDown.");
     }
 }
 

@@ -1,3 +1,4 @@
+#include "errors.hpp"
 #include "group.hpp"
 
 using namespace std;
@@ -18,7 +19,7 @@ bool Group::isTopLevel() const {
 
 void Group::addSetUp(Executable func) {
     if (hasSetUp) {
-        throw runtime_error("Group '" + getFullDescription() + "' already has a setUp!");
+        throw ConfigurationError("Group '" + getFullDescription() + "' already has a setUp!");
     }
     hasSetUp = true;
     setUpFunc = func;
@@ -32,7 +33,7 @@ void Group::setUp() const {
 
 void Group::addTearDown(Executable func) {
     if (hasTearDown) {
-        throw runtime_error("Group '" + getFullDescription() + "' already has a tearDown!");
+        throw ConfigurationError("Group '" + getFullDescription() + "' already has a tearDown!");
     }
     hasTearDown = true;
     tearDownFunc = func;

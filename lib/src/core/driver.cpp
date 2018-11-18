@@ -1,4 +1,5 @@
 #include "driver.hpp"
+#include "errors.hpp"
 
 using namespace std;
 
@@ -41,14 +42,18 @@ TestingDriver* TestingDriver::instance = nullptr;
 
 TestingDriver* TestingDriver::getInstance() {
     if (instance == nullptr) {
-        throw runtime_error("TestingDriver::getInstance() called before TestingDriver::init.");
+        throw KKTestLibraryImplementationError(
+                "TestingDriver::getInstance() called before TestingDriver::init."
+        );
     }
     return instance;
 }
 
 void TestingDriver::init() {
     if (instance != nullptr) {
-        throw runtime_error("TestingDriver::init called a second time!");
+        throw KKTestLibraryImplementationError(
+                "TestingDriver::init called a second time!"
+        );
     }
     instance = new TestingDriver();
     instance->installPlugins();
@@ -108,11 +113,10 @@ void TestingDriver::addGroup(const GroupConfig& config, Executable func) {
     try {
         func();
     } catch(const exception& e) {
-        throw runtime_error("An exception was thrown inside group '" +
+        throw ConfigurationError("An exception was thrown inside group '" +
             group->getFullDescription() + "': " + e.what());
     } catch(...) {
-        throw runtime_error(
-            "A non-exception object was thrown inside group'" +
+        throw ConfigurationError("A non-exception object was thrown inside group'" +
             group->getFullDescription() + "'");
     }
     group->markAllTestsStartedExecution([this, group]() {
