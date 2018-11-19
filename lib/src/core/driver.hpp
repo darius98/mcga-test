@@ -14,8 +14,8 @@ namespace kktest {
 
 class TestingDriver {
 public:
-    typedef std::function<void(Test*)> TestHook;
-    typedef std::function<void(Group*)> GroupHook;
+    typedef std::function<void(const Test&)> TestHook;
+    typedef std::function<void(const Group&)> GroupHook;
     typedef std::function<void()> AfterInitHook;
     typedef std::function<void()> BeforeDestroyHook;
     typedef std::function<void(const ConfigurationError&)> BeforeForceDestroyHook;

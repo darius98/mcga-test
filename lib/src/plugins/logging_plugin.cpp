@@ -27,13 +27,13 @@ public:
 
     void install() override {
         logger = new TestLogger(cout);
-        TestingDriver::addAfterTestHook([this](Test* test) {
-            logger->logTest(test->getIndex(),
-                            test->getDescriptionPrefix(),
-                            test->getConfig().description,
-                            test->getConfig().optional,
-                            test->isPassed(),
-                            test->getFailureMessage());
+        TestingDriver::addAfterTestHook([this](const Test& test) {
+            logger->logTest(test.getIndex(),
+                            test.getDescriptionPrefix(),
+                            test.getConfig().description,
+                            test.getConfig().optional,
+                            test.isPassed(),
+                            test.getFailureMessage());
         });
 
         TestingDriver::addBeforeDestroyHook([this]() {

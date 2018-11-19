@@ -32,29 +32,29 @@ public:
             exit(errno);
         }
         pipe = new OutputPipe(pipeFD);
-        TestingDriver::addBeforeGroupHook([this](Group* group) {
+        TestingDriver::addBeforeGroupHook([this](const Group& group) {
             pipe->pipe(Message::build([group](BytesConsumer& consumer) {
                 consumer
                         << 0
-                        << group->getParentGroupIndex()
-                        << group->getIndex()
-                        << group->getConfig().line
-                        << group->getConfig().file
-                        << group->getConfig().description;
+                        << group.getParentGroupIndex()
+                        << group.getIndex()
+                        << group.getConfig().line
+                        << group.getConfig().file
+                        << group.getConfig().description;
             }));
         });
-        TestingDriver::addAfterTestHook([this](Test* test) {
+        TestingDriver::addAfterTestHook([this](const Test& test) {
             pipe->pipe(Message::build([test](BytesConsumer& consumer) {
                 consumer
                         << 1
-                        << test->getGroupIndex()
-                        << test->getIndex()
-                        << test->getConfig().line
-                        << test->getConfig().file
-                        << test->getConfig().optional
-                        << test->getConfig().description
-                        << test->isPassed()
-                        << test->getFailureMessage();
+                        << test.getGroupIndex()
+                        << test.getIndex()
+                        << test.getConfig().line
+                        << test.getConfig().file
+                        << test.getConfig().optional
+                        << test.getConfig().description
+                        << test.isPassed()
+                        << test.getFailureMessage();
             }));
         });
         TestingDriver::addBeforeDestroyHook([this]() {

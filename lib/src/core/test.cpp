@@ -28,7 +28,7 @@ const TestConfig& Test::getConfig() const {
 }
 
 bool Test::isTopLevel() const {
-    return parentGroup->getParentGroup() == nullptr;
+    return parentGroup->getParentGroupIndex() == -1;
 }
 
 int Test::getIndex() const {

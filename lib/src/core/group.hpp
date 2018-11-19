@@ -11,8 +11,6 @@ namespace kktest {
 
 class Group {
 public:
-    Group(const GroupConfig& _config, Group* _parentGroup, int _index);
-
     const GroupConfig& getConfig() const;
 
     bool isTopLevel() const;
@@ -23,8 +21,6 @@ public:
 
     int getParentGroupIndex() const;
 
-    Group* getParentGroup() const;
-
     std::string getRenderedFailureMessageOnExceptionInSetUp(const std::string& what) const;
 
     std::string getRenderedFailureMessageOnNonExceptionInSetUp() const;
@@ -34,6 +30,10 @@ public:
     std::string getRenderedFailureMessageOnNonExceptionInTearDown() const;
 
 private:
+    Group(const GroupConfig& _config, Group* _parentGroup, int _index);
+
+    Group* getParentGroup() const;
+
     void addSetUp(Executable func, const std::string& file, int line);
 
     void setUp() const;
