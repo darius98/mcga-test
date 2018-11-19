@@ -17,13 +17,8 @@ using namespace std::chrono;
 
 namespace kktest {
 
-TestContainer::TestContainer(Test *_test,
-                             double _testProcessTimeLimitMs,
-                             Executable run,
-                             function<void(double, bool, string)> _afterTestCallback):
-        test(_test),
-        testProcessTimeLimitMs(_testProcessTimeLimitMs),
-        afterTestCallback(move(_afterTestCallback)) {
+TestContainer::TestContainer(Test *_test, double _testProcessTimeLimitMs, Executable run):
+        test(_test), testProcessTimeLimitMs(_testProcessTimeLimitMs) {
     int fd[2];
     if (pipe(fd) < 0) {
         perror("pipe");
@@ -86,9 +81,27 @@ bool TestContainer::isTestFinished() {
     return finish(ticks, isPassed, unescapeCharacters(failureMessage));
 }
 
-bool TestContainer::finish(double ticks, bool passed, const string& failureMessage) {
+Test* TestContainer::getTest() const {
+    return test;
+}
+
+double TestContainer::getTicks() const {
+    return ticks;
+}
+
+bool TestContainer::isPassed() const {
+    return passed;
+}
+
+std::string TestContainer::getFailureMessage() const {
+    return failureMessage;
+}
+
+bool TestContainer::finish(double _ticks, bool _passed, const string& _failureMessage) {
     close(testProcessPipeFD);
-    afterTestCallback(ticks, passed, failureMessage);
+    ticks = _ticks;
+    passed = _passed;
+    failureMessage = _failureMessage;
     return true;
 }
 

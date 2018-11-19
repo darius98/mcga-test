@@ -14,9 +14,6 @@ void BoxExecutor::execute(Test* test, Executable func) {
         test->getConfig().timeTicksLimit * getTimeTickLengthMs() + 100.0,
         [this, func, test]() {
             run(test, func);
-        },
-        [this, test](double ticks, bool passed, string failureMessage) {
-            setTestExecuted(test, ticks, passed, failureMessage);
         }
     ));
 }
@@ -29,7 +26,12 @@ void BoxExecutor::ensureFreeContainers(size_t numContainers) {
     while (openContainers.size() > maxNumContainers - numContainers) {
         for (auto it = openContainers.begin(); it != openContainers.end(); ) {
             if ((*it)->isTestFinished()) {
-                delete (*it);
+                auto container = *it;
+                setTestExecuted(container->getTest(),
+                                container->getTicks(),
+                                container->isPassed(),
+                                container->getFailureMessage());
+                delete container;
                 it = openContainers.erase(it);
             } else {
                 ++ it;
