@@ -93,31 +93,4 @@ int Group::getParentGroupIndex() const {
     return parentGroup->getIndex();
 }
 
-void Group::markTestStartedExecution() {
-    ++ testsStarted;
-    if (parentGroup != nullptr) {
-        parentGroup->markTestStartedExecution();
-    }
-}
-
-void Group::markTestFinishedExecution() {
-    ++ testsFinished;
-    Group* parent = parentGroup;
-    if (testsFinished == testsStarted && allTestsStarted) {
-        afterAllTestsCallback();
-    }
-    if (parent != nullptr) {
-        parent->markTestFinishedExecution();
-    }
-}
-
-void Group::markAllTestsStartedExecution(Executable _afterAllTestsCallback) {
-    allTestsStarted = true;
-    if (testsFinished == testsStarted) {
-        _afterAllTestsCallback();
-    } else {
-        afterAllTestsCallback = _afterAllTestsCallback;
-    }
-}
-
 }

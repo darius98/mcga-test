@@ -62,7 +62,7 @@ void TestingDriver::init() {
         if (!test->getConfig().optional) {
             instance->failedAnyNonOptionalTest |= test->isFailed();
         }
-        test->getGroup()->markTestFinishedExecution();
+        instance->markTestFinished(test->getGroup());
     });
     for (const AfterInitHook& hook: instance->afterInitHooks) {
         hook();
@@ -141,9 +141,7 @@ void TestingDriver::addGroup(const GroupConfig& config, Executable func) {
         throw ConfigurationError("A non-exception object was thrown inside group'" +
             group->getFullDescription() + "'");
     }
-    group->markAllTestsStartedExecution([this, group]() {
-        afterGroup(group);
-    });
+    markAllTestsStarted(group);
     groupStack.pop_back();
 }
 
@@ -151,7 +149,7 @@ void TestingDriver::addTest(const TestConfig& config, Executable func) {
     executor->checkIsInactive("kkTest", config.file, config.line);
     Group* parentGroup = groupStack.back();
     auto test = new Test(config, parentGroup, ++ currentTestIndex);
-    parentGroup->markTestStartedExecution();
+    markTestStarted(parentGroup);
     beforeTest(test);
     executor->execute(test, func);
 }
@@ -190,6 +188,34 @@ void TestingDriver::afterGroup(Group* group) const {
         hook(group);
     }
     delete group;
+}
+
+void TestingDriver::markTestStarted(Group* group) {
+    if (group != nullptr) {
+        testsInExecutionPerGroup[group] += 1;
+        markTestStarted(group->getParentGroup());
+    }
+}
+
+void TestingDriver::markTestFinished(Group* group) {
+    if (group != nullptr) {
+        testsInExecutionPerGroup[group] -= 1;
+        if (groupsWithAllTestsStarted.count(group) && testsInExecutionPerGroup[group] == 0) {
+            afterGroup(group);
+            testsInExecutionPerGroup.erase(group);
+            groupsWithAllTestsStarted.erase(group);
+        }
+        markTestFinished(group->getParentGroup());
+    }
+}
+
+void TestingDriver::markAllTestsStarted(Group* group) {
+    groupsWithAllTestsStarted.insert(group);
+    if (groupsWithAllTestsStarted.count(group) && testsInExecutionPerGroup[group] == 0) {
+        afterGroup(group);
+        testsInExecutionPerGroup.erase(group);
+        groupsWithAllTestsStarted.erase(group);
+    }
 }
 
 }

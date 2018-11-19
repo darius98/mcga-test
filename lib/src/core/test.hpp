@@ -37,7 +37,7 @@ public:
     Group* getGroup() const;
 
 private:
-    void setExecuted(double _executionTimeTicks, bool _passed=true, std::string _failureMessage="");
+    void setExecuted(double _executionTimeTicks, bool _passed, std::string _failureMessage);
 
     TestConfig config;
 

@@ -1,6 +1,10 @@
 #ifndef KKTEST_CORE_DRIVER_H_
 #define KKTEST_CORE_DRIVER_H_
 
+#include <map>
+#include <set>
+#include <vector>
+
 #include "errors.hpp"
 #include "executor.hpp"
 #include "group.hpp"
@@ -56,6 +60,10 @@ private:
     void beforeGroup(Group* group) const;
     void afterGroup(Group* group) const;
 
+    void markTestFinished(Group* group);
+    void markTestStarted(Group* group);
+    void markAllTestsStarted(Group* group);
+
     // Hooks
     std::vector<AfterInitHook> afterInitHooks;
     std::vector<TestHook> beforeTestHooks;
@@ -64,6 +72,9 @@ private:
     std::vector<GroupHook> afterGroupHooks;
     std::vector<BeforeDestroyHook> beforeDestroyHooks;
     std::vector<BeforeForceDestroyHook> beforeForceDestroyHooks;
+
+    std::map<Group*, int> testsInExecutionPerGroup;
+    std::set<Group*> groupsWithAllTestsStarted;
 
     Group* globalScope;
     std::vector<Group*> groupStack;

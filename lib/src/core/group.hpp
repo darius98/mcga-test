@@ -42,12 +42,6 @@ private:
 
     void tearDown() const;
 
-    void markTestStartedExecution();
-
-    void markTestFinishedExecution();
-
-    void markAllTestsStartedExecution(Executable _afterAllTestsCallback);
-
     GroupConfig config;
 
     Group* parentGroup;
@@ -62,11 +56,6 @@ private:
     CopyableExecutable tearDownFunc;
     std::string tearDownFile;
     int tearDownLine;
-
-    int testsStarted = 0;
-    int testsFinished = 0;
-    bool allTestsStarted = false;
-    CopyableExecutable afterAllTestsCallback;
 
 friend class Executor;
 friend class TestingDriver;
