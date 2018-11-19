@@ -135,11 +135,13 @@ void TestingDriver::addGroup(const GroupConfig& config, Executable func) {
     } catch(const ConfigurationError& e) {
         throw e;
     } catch(const exception& e) {
-        throw ConfigurationError("An exception was thrown inside group '" +
-            group->getFullDescription() + "': " + e.what());
+        throw ConfigurationError(
+            "Exception thrown in group '" + group->getFullDescription() + "': " + e.what()
+        );
     } catch(...) {
-        throw ConfigurationError("A non-exception object was thrown inside group'" +
-            group->getFullDescription() + "'");
+        throw ConfigurationError(
+            "Non-exception object thrown in group'" + group->getFullDescription() + "'"
+        );
     }
     markAllTestsStarted(group);
     groupStack.pop_back();
