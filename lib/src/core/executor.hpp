@@ -37,13 +37,12 @@ public:
     void onTestFinished(const std::function<void(Test*)>& _onTestFinishedCallback);
 
 protected:
-    void run(Test* test, Executable func, bool callOnTestCallback=true);
+    void run(Test* test, Executable func);
 
     void setTestExecuted(Test* test,
                          double executionTimeTicks,
                          bool passed,
-                         const std::string& failureMessage,
-                         bool callOnTestCallback=true);
+                         const std::string& failureMessage);
 
 private:
     bool runSetUpsRecursively(Group* group, std::string* failureMessage);

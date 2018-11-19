@@ -48,7 +48,7 @@ void Executor::onTestFinished(const function<void(Test*)>& _onTestFinishedCallba
     onTestFinishedCallback = _onTestFinishedCallback;
 }
 
-void Executor::run(Test* test, Executable func, bool callOnTestCallback) {
+void Executor::run(Test* test, Executable func) {
     state = SET_UP;
     string failureMessage;
     auto begin = high_resolution_clock::now();
@@ -65,18 +65,16 @@ void Executor::run(Test* test, Executable func, bool callOnTestCallback) {
     setTestExecuted(test,
         /* executionTimeTicks=*/duration_cast<milliseconds>(end - begin).count() / timeTickLengthMs,
         /*             passed=*/!failed,
-        /*     failureMessage=*/failureMessage,
-        /* callOnTestCallback=*/callOnTestCallback
+        /*     failureMessage=*/failureMessage
     );
 }
 
 void Executor::setTestExecuted(Test* test,
                                double executionTimeTicks,
                                bool passed,
-                               const string& failureMessage,
-                               bool callOnTestCallback) {
+                               const string& failureMessage) {
     test->setExecuted(executionTimeTicks, passed, failureMessage);
-    if (callOnTestCallback && onTestFinishedCallback) {
+    if (onTestFinishedCallback) {
         onTestFinishedCallback(test);
     }
 }

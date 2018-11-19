@@ -13,7 +13,7 @@ void BoxExecutor::execute(Test* test, Executable func) {
         test,
         test->getConfig().timeTicksLimit * getTimeTickLengthMs() + 100.0,
         [this, func, test]() {
-            run(test, func, false);
+            run(test, func);
         },
         [this, test](double ticks, bool passed, string failureMessage) {
             setTestExecuted(test, ticks, passed, failureMessage);

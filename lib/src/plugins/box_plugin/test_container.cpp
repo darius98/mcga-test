@@ -6,6 +6,7 @@
 #include <messaging>
 #include <strutil>
 
+#include <core/driver.hpp>
 #include "test_container.hpp"
 
 using namespace messaging;
@@ -36,6 +37,7 @@ TestContainer::TestContainer(Test *_test,
     }
     if (testProcessPID == 0) { // child
         close(testProcessPipeFD);
+        TestingDriver::setHooksEnabled(false);
         run();
         OutputPipe(fd[1]).pipe(Message::build([this](BytesConsumer& consumer) {
             consumer << test->isPassed()

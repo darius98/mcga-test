@@ -31,6 +31,8 @@ public:
     static void addBeforeDestroyHook(BeforeDestroyHook hook);
     static void addBeforeForceDestroyHook(BeforeForceDestroyHook hook);
 
+    static void setHooksEnabled(bool enabled);
+
 private:
     static TestingDriver* getInstance();
     static TestingDriver* instance;
@@ -55,14 +57,16 @@ private:
 
     void addTearDown(Executable func, const std::string& file, int line);
 
-    void afterTest(Test* test) const;
-    void beforeTest(Test* test) const;
-    void beforeGroup(Group* group) const;
-    void afterGroup(Group* group) const;
+    void afterTest(Test* test);
+    void beforeTest(Test* test);
+    void beforeGroup(Group* group);
+    void afterGroup(Group* group);
 
     void markTestFinished(Group* group);
     void markTestStarted(Group* group);
     void markAllTestsStarted(Group* group);
+
+    bool enableHooks = true;
 
     // Hooks
     std::vector<AfterInitHook> afterInitHooks;

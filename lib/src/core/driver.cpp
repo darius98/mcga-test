@@ -41,6 +41,10 @@ void TestingDriver::addBeforeForceDestroyHook(BeforeForceDestroyHook hook) {
     getInstance()->beforeForceDestroyHooks.push_back(hook);
 }
 
+void TestingDriver::setHooksEnabled(bool enabled) {
+    getInstance()->enableHooks = enabled;
+}
+
 TestingDriver* TestingDriver::instance = nullptr;
 
 TestingDriver* TestingDriver::getInstance() {
@@ -58,12 +62,6 @@ void TestingDriver::init() {
     }
     instance = new TestingDriver();
     instance->installPlugins();
-    addAfterTestHook([](Test* test) {
-        if (!test->getConfig().optional) {
-            instance->failedAnyNonOptionalTest |= test->isFailed();
-        }
-        instance->markTestFinished(test->getGroup());
-    });
     for (const AfterInitHook& hook: instance->afterInitHooks) {
         hook();
     }
@@ -166,28 +164,40 @@ void TestingDriver::addTearDown(Executable func, const string& file, int line) {
     groupStack.back()->addTearDown(func, file, line);
 }
 
-void TestingDriver::beforeTest(Test* test) const {
-    for (const TestHook& hook: beforeTestHooks) {
-        hook(test);
+void TestingDriver::beforeTest(Test* test) {
+    if (enableHooks) {
+        for (const TestHook& hook: beforeTestHooks) {
+            hook(test);
+        }
     }
 }
 
-void TestingDriver::afterTest(Test* test) const {
-    for (const TestHook& hook: afterTestHooks) {
-        hook(test);
+void TestingDriver::afterTest(Test* test) {
+    if (!test->getConfig().optional) {
+        failedAnyNonOptionalTest |= test->isFailed();
+    }
+    markTestFinished(test->getGroup());
+    if (enableHooks) {
+        for (const TestHook& hook: afterTestHooks) {
+            hook(test);
+        }
     }
     delete test;
 }
 
-void TestingDriver::beforeGroup(Group* group) const {
-    for (const GroupHook& hook: beforeGroupHooks) {
-        hook(group);
+void TestingDriver::beforeGroup(Group* group) {
+    if (enableHooks) {
+        for (const GroupHook& hook: beforeGroupHooks) {
+            hook(group);
+        }
     }
 }
 
-void TestingDriver::afterGroup(Group* group) const {
-    for (const GroupHook& hook: afterGroupHooks) {
-        hook(group);
+void TestingDriver::afterGroup(Group* group) {
+    if (enableHooks) {
+        for (const GroupHook &hook: afterGroupHooks) {
+            hook(group);
+        }
     }
     delete group;
 }
