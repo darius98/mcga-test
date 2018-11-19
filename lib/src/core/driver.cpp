@@ -67,6 +67,9 @@ void TestingDriver::init() {
     for (const AfterInitHook& hook: instance->afterInitHooks) {
         hook();
     }
+    instance->executor->onTestFinished([](Test* test) {
+        instance->afterTest(test);
+    });
 }
 
 int TestingDriver::destroy() {
@@ -150,9 +153,7 @@ void TestingDriver::addTest(const TestConfig& config, Executable func) {
     auto test = new Test(config, parentGroup, ++ currentTestIndex);
     parentGroup->markTestStartedExecution();
     beforeTest(test);
-    executor->execute(test, func, [this, test]() {
-        afterTest(test);
-    });
+    executor->execute(test, func);
 }
 
 void TestingDriver::addSetUp(Executable func, const string& file, int line) {

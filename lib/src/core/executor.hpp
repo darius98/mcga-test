@@ -30,17 +30,20 @@ public:
 
     double getTimeTickLengthMs() const;
 
-    virtual void execute(Test* test, Executable func, Executable after);
+    virtual void execute(Test* test, Executable func);
 
     virtual void finalize();
 
+    void onTestFinished(const std::function<void(Test*)>& _onTestFinishedCallback);
+
 protected:
-    void run(Test* test, Executable func);
+    void run(Test* test, Executable func, bool callOnTestCallback=true);
 
     void setTestExecuted(Test* test,
                          double executionTimeTicks,
                          bool passed,
-                         const std::string& failureMessage);
+                         const std::string& failureMessage,
+                         bool callOnTestCallback=true);
 
 private:
     bool runSetUpsRecursively(Group* group, std::string* failureMessage);
@@ -51,6 +54,7 @@ private:
 
     State state = State::INACTIVE;
     double timeTickLengthMs;
+    std::function<void(Test*)> onTestFinishedCallback;
 };
 
 }

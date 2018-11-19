@@ -7,17 +7,16 @@ namespace kktest {
 
 BoxExecutor::BoxExecutor(size_t _maxNumContainers): maxNumContainers(_maxNumContainers) {}
 
-void BoxExecutor::execute(Test* test, Executable func, Executable after) {
+void BoxExecutor::execute(Test* test, Executable func) {
     ensureFreeContainers(1);
     openContainers.insert(new TestContainer(
         test,
         test->getConfig().timeTicksLimit * getTimeTickLengthMs() + 100.0,
         [this, func, test]() {
-            run(test, func);
+            run(test, func, false);
         },
-        [this, test, after](double ticks, bool passed, string failureMessage) {
+        [this, test](double ticks, bool passed, string failureMessage) {
             setTestExecuted(test, ticks, passed, failureMessage);
-            after();
         }
     ));
 }

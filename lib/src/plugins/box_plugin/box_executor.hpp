@@ -16,7 +16,7 @@ public:
     void finalize() override;
 
 private:
-    void execute(Test* test, Executable func, Executable after) override;
+    void execute(Test* test, Executable func) override;
 
     void ensureFreeContainers(std::size_t numContainers);
 

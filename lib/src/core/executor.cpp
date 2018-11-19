@@ -40,12 +40,15 @@ double Executor::getTimeTickLengthMs() const {
 
 void Executor::finalize() {}
 
-void Executor::execute(Test* test, Executable func, Executable after) {
+void Executor::execute(Test* test, Executable func) {
     run(test, func);
-    after();
 }
 
-void Executor::run(Test* test, Executable func) {
+void Executor::onTestFinished(const function<void(Test*)>& _onTestFinishedCallback) {
+    onTestFinishedCallback = _onTestFinishedCallback;
+}
+
+void Executor::run(Test* test, Executable func, bool callOnTestCallback) {
     state = SET_UP;
     string failureMessage;
     auto begin = high_resolution_clock::now();
@@ -62,15 +65,20 @@ void Executor::run(Test* test, Executable func) {
     setTestExecuted(test,
         /* executionTimeTicks=*/duration_cast<milliseconds>(end - begin).count() / timeTickLengthMs,
         /*             passed=*/!failed,
-        /*     failureMessage=*/failureMessage
+        /*     failureMessage=*/failureMessage,
+        /* callOnTestCallback=*/callOnTestCallback
     );
 }
 
 void Executor::setTestExecuted(Test* test,
                                double executionTimeTicks,
                                bool passed,
-                               const string& failureMessage) {
+                               const string& failureMessage,
+                               bool callOnTestCallback) {
     test->setExecuted(executionTimeTicks, passed, failureMessage);
+    if (callOnTestCallback && onTestFinishedCallback) {
+        onTestFinishedCallback(test);
+    }
 }
 
 bool Executor::runSetUpsRecursively(Group* group, string* failureMessage) {
