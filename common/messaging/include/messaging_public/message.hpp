@@ -18,6 +18,12 @@ public:
         return addBytes(&obj, sizeof(obj));
     }
 
+    template<class T1, class T2, class... Args>
+    BytesConsumer& add(const T1& a1, const T2& a2, const Args... args) {
+        add(a1);
+        return add(a2, args...);
+    }
+
     template<class T>
     BytesConsumer& operator<<(const T& obj) {
         return add(obj);
@@ -34,9 +40,16 @@ private:
     std::size_t bytesConsumed = 0;
 };
 
-class Message: public BytesConsumer {
+class Message: private BytesConsumer {
 public:
-    static Message build(const std::function<void(BytesConsumer&)>& builder);
+    template<class... Args>
+    static Message build(const Args... args) {
+            BytesCounter counter;
+            counter.add(args...);
+            Message message(counter.getNumBytesConsumed());
+            message.add(args...);
+            return message;
+    }
 
     static std::size_t isSane(const void* ptr, std::size_t size);
 
@@ -50,13 +63,13 @@ public:
     Message& operator=(const Message& other);
     Message& operator=(Message&& other) noexcept;
 
-    Message& addBytes(const void* bytes, size_t numBytes) override;
-
     void* getPayload() const;
 
     std::size_t getSize() const;
 
 private:
+    Message& addBytes(const void* bytes, size_t numBytes) override;
+
     void* payload;
     std::size_t cursor;
 };

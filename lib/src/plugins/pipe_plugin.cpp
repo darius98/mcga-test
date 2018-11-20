@@ -33,40 +33,31 @@ public:
         }
         pipe = new OutputPipe(pipeFD);
         TestingDriver::addBeforeGroupHook([this](const Group& group) {
-            pipe->pipe(Message::build([group](BytesConsumer& consumer) {
-                consumer
-                        << 0
-                        << group.getParentGroupIndex()
-                        << group.getIndex()
-                        << group.getConfig().line
-                        << group.getConfig().file
-                        << group.getConfig().description;
-            }));
+            pipe->pipe(Message::build(0,
+                                      group.getParentGroupIndex(),
+                                      group.getIndex(),
+                                      group.getConfig().line,
+                                      group.getConfig().file,
+                                      group.getConfig().description
+            ));
         });
         TestingDriver::addAfterTestHook([this](const Test& test) {
-            pipe->pipe(Message::build([test](BytesConsumer& consumer) {
-                consumer
-                        << 1
-                        << test.getGroupIndex()
-                        << test.getIndex()
-                        << test.getConfig().line
-                        << test.getConfig().file
-                        << test.getConfig().optional
-                        << test.getConfig().description
-                        << test.isPassed()
-                        << test.getFailureMessage();
-            }));
+            pipe->pipe(Message::build(1,
+                                      test.getGroupIndex(),
+                                      test.getIndex(),
+                                      test.getConfig().line,
+                                      test.getConfig().file,
+                                      test.getConfig().optional,
+                                      test.getConfig().description,
+                                      test.isPassed(),
+                                      test.getFailureMessage()
+            ));
         });
         TestingDriver::addBeforeDestroyHook([this]() {
-            pipe->pipe(Message::build([](BytesConsumer& consumer) {
-                consumer << 2;
-            }));
+            pipe->pipe(Message::build(2));
         });
         TestingDriver::addBeforeForceDestroyHook([this](const ConfigurationError& error) {
-            pipe->pipe(Message::build([&error](BytesConsumer& consumer) {
-                consumer << 3
-                         << string(error.what());
-            }));
+            pipe->pipe(Message::build(3, string(error.what())));
         });
     }
 

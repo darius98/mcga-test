@@ -21,14 +21,6 @@ size_t BytesCounter::getNumBytesConsumed() const {
     return bytesConsumed;
 }
 
-Message Message::build(const function<void(BytesConsumer&)>& builder) {
-    BytesCounter counter;
-    builder(counter);
-    Message message(counter.getNumBytesConsumed());
-    builder(message);
-    return message;
-}
-
 size_t Message::isSane(const void* ptr, size_t size) {
     if (size < sizeof(size_t)) {
         return 0;

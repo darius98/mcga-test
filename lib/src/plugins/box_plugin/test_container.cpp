@@ -34,11 +34,10 @@ TestContainer::TestContainer(Test *_test, double _testProcessTimeLimitMs, Execut
         close(testProcessPipeFD);
         TestingDriver::setHooksEnabled(false);
         run();
-        OutputPipe(fd[1]).pipe(Message::build([this](BytesConsumer& consumer) {
-            consumer << test->isPassed()
-                     << test->getExecutionTimeTicks()
-                     << test->getFailureMessage();
-        }));
+        OutputPipe(fd[1]).pipe(Message::build(test->isPassed(),
+                                              test->getExecutionTimeTicks(),
+                                              test->getFailureMessage()
+        ));
         exit(0);
     }
     close(fd[1]);
