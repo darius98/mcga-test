@@ -54,7 +54,7 @@ void ExpectDefiner::throwExpectationFailed(const string& message) {
 void ExpectDefiner::checkDuringTest() {
     if (TestingDriver::instance == nullptr || !TestingDriver::instance->executor->isDuringTest()) {
         throw ConfigurationError(
-            file + ":" + to_string(line) + ": 'expect' called outside tests."
+            file + ":" + to_string(line) + ": 'kkExpect' called outside tests."
         );
     }
 }

@@ -18,19 +18,14 @@ double Executor::computeTimeTickLengthFromHardware() {
 }
 
 bool Executor::isDuringTest() const {
-    return state == TEST;
+    return state == ACTIVE;
 }
 
 void Executor::checkIsInactive(const string& methodName, const string& file, int line) const {
-    string errorPrefix = file + ":" + to_string(line) + ": " + methodName;
-    if (state == TEST) {
-        throw ConfigurationError(errorPrefix + " called within kkTest.");
-    }
-    if (state == SET_UP) {
-        throw ConfigurationError(errorPrefix + " called within kkSetUp.");
-    }
-    if (state == TEAR_DOWN) {
-        throw ConfigurationError(errorPrefix + " called within kkTearDown.");
+    if (state == ACTIVE) {
+        throw ConfigurationError(
+            file + ":" + to_string(line) + ": " + methodName + " called in invalid context."
+        );
     }
 }
 
@@ -49,17 +44,13 @@ void Executor::onTestFinished(const function<void(Test*)>& _onTestFinishedCallba
 }
 
 void Executor::run(Test* test, Executable func) {
-    state = SET_UP;
+    state = ACTIVE;
     string failureMessage;
     auto begin = high_resolution_clock::now();
-    bool failed = runSetUpsRecursively(test->getGroup(), &failureMessage);
-    if (!failed) {
-        state = TEST;
-        failed = runTest(func, &failureMessage);
-        if (!failed) {
-            failed = runTearDownsRecursively(test->getGroup(), &failureMessage);
-        }
-    }
+    Group* group = test->getGroup();
+    bool failed = runSetUpsRecursively(group, &failureMessage);
+    failed = runTest(func, failed ? nullptr : &failureMessage) || failed;
+    failed = runTearDownsRecursively(group, failed ? nullptr : &failureMessage) || failed;
     auto end = high_resolution_clock::now();
     state = INACTIVE;
     setTestExecuted(test,
@@ -85,19 +76,25 @@ bool Executor::runSetUpsRecursively(Group* group, string* failureMessage) {
     }
 
     bool failed = runSetUpsRecursively(group->getParentGroup(), failureMessage);
-    if (failed) {
-        return true;
-    }
 
     try {
         group->setUp();
         return false;
+    } catch(const ExpectationFailed& failure) {
+        if (!failed && failureMessage != nullptr) {
+            failureMessage->assign(failure.what());
+        }
+        return true;
     } catch(const ConfigurationError& e) {
         throw e;
     } catch(const exception& e) {
-        failureMessage->assign(group->getRenderedFailureMessageOnExceptionInSetUp(e.what()));
+        if (!failed && failureMessage != nullptr) {
+            failureMessage->assign(group->getRenderedFailureMessageOnExceptionInSetUp(e.what()));
+        }
     } catch(...) {
-        failureMessage->assign(group->getRenderedFailureMessageOnNonExceptionInSetUp());
+        if (!failed && failureMessage != nullptr) {
+            failureMessage->assign(group->getRenderedFailureMessageOnNonExceptionInSetUp());
+        }
     }
     return true;
 }
@@ -107,14 +104,20 @@ bool Executor::runSetUpsRecursively(Group* group, string* failureMessage) {
         func();
         return false;
     } catch(const ExpectationFailed& failure) {
-        failureMessage->assign(failure.what());
+        if (failureMessage != nullptr) {
+            failureMessage->assign(failure.what());
+        }
         return true;
     } catch(const ConfigurationError& e) {
         throw e;
     } catch(const exception& e) {
-        failureMessage->assign("An exception was thrown during test: " + string(e.what()));
+        if (failureMessage != nullptr) {
+            failureMessage->assign("An exception was thrown during test: " + string(e.what()));
+        }
     } catch(...) {
-        failureMessage->assign("A non-exception object was thrown during test");
+        if (failureMessage != nullptr) {
+            failureMessage->assign("A non-exception object was thrown during test");
+        }
     }
     return true;
 }
@@ -124,17 +127,28 @@ bool Executor::runTearDownsRecursively(Group* group, string* failureMessage) {
         return false;
     }
 
+    bool failed = true;
     try {
         group->tearDown();
-        return false;
+        failed = false;
+    } catch(const ExpectationFailed& failure) {
+        if (failureMessage != nullptr) {
+            failureMessage->assign(failure.what());
+        }
+        return true;
     } catch(const ConfigurationError& e) {
         throw e;
     } catch(const exception& e) {
-        failureMessage->assign(group->getRenderedFailureMessageOnExceptionInTearDown(e.what()));
+        if (failureMessage != nullptr) {
+            failureMessage->assign(group->getRenderedFailureMessageOnExceptionInTearDown(e.what()));
+        }
     } catch(...) {
-        failureMessage->assign(group->getRenderedFailureMessageOnNonExceptionInTearDown());
+        if (failureMessage != nullptr) {
+            failureMessage->assign(group->getRenderedFailureMessageOnNonExceptionInTearDown());
+        }
     }
-    return true;
+
+    return runTearDownsRecursively(group->getParentGroup(), failed ? nullptr : failureMessage);
 }
 
 }

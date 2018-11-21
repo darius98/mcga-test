@@ -10,12 +10,7 @@ namespace kktest {
 
 class Executor {
 private:
-    enum State {
-        INACTIVE = 0,
-        SET_UP = 1,
-        TEST = 2,
-        TEAR_DOWN = 3
-    };
+    enum State { INACTIVE, ACTIVE };
 
     static double computeTimeTickLengthFromHardware();
 

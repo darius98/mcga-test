@@ -206,10 +206,11 @@ void TestingDriver::markTestFinished(Group* group) {
         return;
     }
     testsInExecutionPerGroup[group] -= 1;
+    Group* parentGroup = group->getParentGroup();
     if (groupsWithAllTestsStarted.count(group) && testsInExecutionPerGroup[group] == 0) {
         afterGroup(group);
     }
-    markTestFinished(group->getParentGroup());
+    markTestFinished(parentGroup);
 }
 
 void TestingDriver::markAllTestsStarted(Group* group) {
