@@ -9,6 +9,11 @@
 
 namespace kktest {
 
+class TestCaseRegistryKeeper {
+public:
+    TestCaseRegistryKeeper(void (*testCase)());
+};
+
 class Definer {
 public:
     Definer(std::string _file, int _line);

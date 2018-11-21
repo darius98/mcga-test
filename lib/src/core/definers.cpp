@@ -2,11 +2,16 @@
 
 #include "driver.hpp"
 #include "errors.hpp"
+#include "test_case_registry.hpp"
 
 using namespace std;
 
 
 namespace kktest {
+
+TestCaseRegistryKeeper::TestCaseRegistryKeeper(void (*testCase)()) {
+    TestCaseRegistry::add(testCase);
+}
 
 Definer::Definer(string _file, int _line): file(move(_file)), line(_line) {}
 

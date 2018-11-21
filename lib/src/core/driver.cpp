@@ -1,4 +1,5 @@
 #include "driver.hpp"
+#include "test_case_registry.hpp"
 
 using namespace std;
 
@@ -75,6 +76,7 @@ int TestingDriver::destroy() {
     driver->uninstallPlugins();
     int status = driver->failedAnyNonOptionalTest ? 1 : 0;
     Plugin::clean();
+    TestCaseRegistry::clean();
     delete driver;
     return status;
 }
@@ -87,6 +89,7 @@ void TestingDriver::forceDestroy(const ConfigurationError& error) {
     }
     driver->uninstallPlugins();
     Plugin::clean();
+    TestCaseRegistry::clean();
     delete driver;
 }
 
