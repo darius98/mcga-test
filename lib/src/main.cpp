@@ -12,7 +12,9 @@ int main() {
     TestingDriver::init();
     try {
         for (TestCaseRegistry::TestCase testCase: TestCaseRegistry::all()) {
+            TestingDriver::beforeTestCase();
             testCase();
+            TestingDriver::afterTestCase();
         }
     } catch(const ConfigurationError& error) {
         TestingDriver::forceDestroy(error);

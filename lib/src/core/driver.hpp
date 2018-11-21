@@ -39,6 +39,9 @@ private:
     static int destroy();
     static void forceDestroy(const ConfigurationError& error);
 
+    static void beforeTestCase();
+    static void afterTestCase();
+
     TestingDriver();
 
     ~TestingDriver();
@@ -76,10 +79,10 @@ private:
     std::map<Group*, int> testsInExecutionPerGroup;
     std::set<Group*> groupsWithAllTestsStarted;
 
-    Group* globalScope;
-    std::vector<Group*> groupStack;
     Executor* executor;
     bool useImplicitExecutor = true;
+    Group* globalScope = nullptr;
+    std::vector<Group*> groupStack = {};
     int currentTestIndex = 0;
     int currentGroupIndex = 0;
 

@@ -93,13 +93,32 @@ void TestingDriver::forceDestroy(const ConfigurationError& error) {
     delete driver;
 }
 
-TestingDriver::TestingDriver():
-        globalScope(new Group(GroupConfig(), nullptr, -1)),
-        groupStack({globalScope}),
-        executor(new Executor()) {}
+void TestingDriver::beforeTestCase() {
+    TestingDriver* driver = getInstance();
+    if (driver->globalScope != nullptr) {
+        throw KKTestLibraryImplementationError(
+            "TestingDriver::beforeTestCase called twice in a row."
+        );
+    }
+    driver->globalScope = new Group(GroupConfig(), nullptr, -1);
+    driver->groupStack = {driver->globalScope};
+}
+
+void TestingDriver::afterTestCase() {
+    TestingDriver* driver = getInstance();
+    if (driver->globalScope == nullptr) {
+        throw KKTestLibraryImplementationError(
+            "TestingDriver::afterTestCase called twice in a row."
+        );
+    }
+    delete driver->globalScope;
+    driver->globalScope = nullptr;
+    driver->groupStack = {};
+}
+
+TestingDriver::TestingDriver(): executor(new Executor()) {}
 
 TestingDriver::~TestingDriver() {
-    delete globalScope;
     if (useImplicitExecutor) {
         delete executor;
     }
