@@ -18,7 +18,7 @@ file(GLOB KKTestLibImpl
 add_library(kktest SHARED ${KKTestLibImpl})
 target_compile_options(kktest PRIVATE -Wall -Wextra -pedantic)
 target_include_directories(kktest PUBLIC include PRIVATE src PRIVATE include/kktest_public)
-target_link_libraries(kktest messaging strutil logging easyflags)
+target_link_libraries(kktest messaging strutil fsystem logging easyflags)
 
 if (BUILD_TYPE STREQUAL "DEV")
     add_subdirectory(examples)

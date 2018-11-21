@@ -4,18 +4,20 @@
 #include "./definers.hpp"
 #include "./filename.hpp"
 
-#define kkTest kktest::TestDefiner(__FILENAME__, __LINE__)
+#define KKTEST_FILE_NAME_ (kktest::trimFileName(__FILE__))
 
-#define kkGroup kktest::GroupDefiner(__FILENAME__, __LINE__)
+#define kkTest kktest::TestDefiner(KKTEST_FILE_NAME_, __LINE__)
 
-#define kkSetUp kktest::SetUpDefiner(__FILENAME__, __LINE__)
+#define kkGroup kktest::GroupDefiner(KKTEST_FILE_NAME_, __LINE__)
 
-#define kkTearDown kktest::TearDownDefiner(__FILENAME__, __LINE__)
+#define kkSetUp kktest::SetUpDefiner(KKTEST_FILE_NAME_, __LINE__)
 
-#define kkExpect(...) kktest::ExpectDefiner(__FILENAME__, __LINE__)                                \
+#define kkTearDown kktest::TearDownDefiner(KKTEST_FILE_NAME_, __LINE__)
+
+#define kkExpect(...) kktest::ExpectDefiner(KKTEST_FILE_NAME_, __LINE__)                           \
                                          (__VA_ARGS__, #__VA_ARGS__ " is false")
 
-#define kkFail(...) kktest::ExpectDefiner(__FILENAME__, __LINE__)(false, __VA_ARGS__)
+#define kkFail(...) kktest::ExpectDefiner(KKTEST_FILE_NAME_, __LINE__)(false, __VA_ARGS__)
 
 #define KKTESTCASE_DEF_AUX_1_(x, y) x##_##y
 #define KKTESTCASE_DEF_AUX_2_(x, y) KKTESTCASE_DEF_AUX_1_(x, y)
