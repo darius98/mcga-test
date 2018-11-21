@@ -31,8 +31,6 @@ public:
     static void addBeforeDestroyHook(BeforeDestroyHook hook);
     static void addBeforeForceDestroyHook(BeforeForceDestroyHook hook);
 
-    static void setHooksEnabled(bool enabled);
-
 private:
     static TestingDriver* getInstance();
     static TestingDriver* instance;
@@ -65,8 +63,6 @@ private:
     void markTestFinished(Group* group);
     void markTestStarted(Group* group);
     void markAllTestsStarted(Group* group);
-
-    bool enableHooks = true;
 
     // Hooks
     std::vector<AfterInitHook> afterInitHooks;

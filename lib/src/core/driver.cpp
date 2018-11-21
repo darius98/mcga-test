@@ -41,10 +41,6 @@ void TestingDriver::addBeforeForceDestroyHook(BeforeForceDestroyHook hook) {
     getInstance()->beforeForceDestroyHooks.push_back(hook);
 }
 
-void TestingDriver::setHooksEnabled(bool enabled) {
-    getInstance()->enableHooks = enabled;
-}
-
 TestingDriver* TestingDriver::instance = nullptr;
 
 TestingDriver* TestingDriver::getInstance() {
@@ -62,10 +58,8 @@ void TestingDriver::init() {
     }
     instance = new TestingDriver();
     instance->installPlugins();
-    if (instance->enableHooks) {
-        for (const AfterInitHook& hook: instance->afterInitHooks) {
-            hook();
-        }
+    for (const AfterInitHook& hook: instance->afterInitHooks) {
+        hook();
     }
     instance->executor->onTestFinished([](Test* test) {
         instance->afterTest(test);
@@ -75,10 +69,8 @@ void TestingDriver::init() {
 int TestingDriver::destroy() {
     TestingDriver* driver = getInstance();
     driver->executor->finalize();
-    if (driver->enableHooks) {
-        for (const BeforeDestroyHook& hook: driver->beforeDestroyHooks) {
-            hook();
-        }
+    for (const BeforeDestroyHook& hook: driver->beforeDestroyHooks) {
+        hook();
     }
     driver->uninstallPlugins();
     int status = driver->failedAnyNonOptionalTest ? 1 : 0;
@@ -89,10 +81,8 @@ int TestingDriver::destroy() {
 void TestingDriver::forceDestroy(const ConfigurationError& error) {
     TestingDriver* driver = getInstance();
     driver->executor->finalize();
-    if (driver->enableHooks) {
-        for (const BeforeForceDestroyHook& hook: driver->beforeForceDestroyHooks) {
-            hook(error);
-        }
+    for (const BeforeForceDestroyHook& hook: driver->beforeForceDestroyHooks) {
+        hook(error);
     }
     driver->uninstallPlugins();
     delete driver;
@@ -171,10 +161,8 @@ void TestingDriver::addTearDown(Executable func, const string& file, int line) {
 }
 
 void TestingDriver::beforeTest(Test* test) {
-    if (enableHooks) {
-        for (const TestHook& hook: beforeTestHooks) {
-            hook(*test);
-        }
+    for (const TestHook& hook: beforeTestHooks) {
+        hook(*test);
     }
 }
 
@@ -182,28 +170,23 @@ void TestingDriver::afterTest(Test* test) {
     if (!test->getConfig().optional) {
         failedAnyNonOptionalTest |= test->isFailed();
     }
-    markTestFinished(test->getGroup());
-    if (enableHooks) {
-        for (const TestHook& hook: afterTestHooks) {
-            hook(*test);
-        }
+    Group* group = test->getGroup();
+    for (const TestHook& hook: afterTestHooks) {
+        hook(*test);
     }
     delete test;
+    markTestFinished(group);
 }
 
 void TestingDriver::beforeGroup(Group* group) {
-    if (enableHooks) {
-        for (const GroupHook& hook: beforeGroupHooks) {
-            hook(*group);
-        }
+    for (const GroupHook& hook: beforeGroupHooks) {
+        hook(*group);
     }
 }
 
 void TestingDriver::afterGroup(Group* group) {
-    if (enableHooks) {
-        for (const GroupHook &hook: afterGroupHooks) {
-            hook(*group);
-        }
+    for (const GroupHook &hook: afterGroupHooks) {
+        hook(*group);
     }
     delete group;
     testsInExecutionPerGroup.erase(group);
