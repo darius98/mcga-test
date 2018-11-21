@@ -74,6 +74,7 @@ int TestingDriver::destroy() {
     }
     driver->uninstallPlugins();
     int status = driver->failedAnyNonOptionalTest ? 1 : 0;
+    Plugin::clean();
     delete driver;
     return status;
 }
@@ -85,6 +86,7 @@ void TestingDriver::forceDestroy(const ConfigurationError& error) {
         hook(error);
     }
     driver->uninstallPlugins();
+    Plugin::clean();
     delete driver;
 }
 

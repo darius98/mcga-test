@@ -25,4 +25,10 @@ Plugin::Plugin() {
     plugins[numPlugins++] = this;
 }
 
+void Plugin::clean() {
+    if (numPlugins > 0) {
+        free(plugins);
+    }
+}
+
 }

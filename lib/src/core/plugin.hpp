@@ -26,6 +26,8 @@ private:
     static int numPlugins;
     static int pluginsCapacity;
 
+    static void clean();
+
 friend class TestingDriver;
 };
 
