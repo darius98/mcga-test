@@ -21,14 +21,6 @@ public:
 
     int getParentGroupIndex() const;
 
-    std::string getRenderedFailureMessageOnExceptionInSetUp(const std::string& what) const;
-
-    std::string getRenderedFailureMessageOnNonExceptionInSetUp() const;
-
-    std::string getRenderedFailureMessageOnExceptionInTearDown(const std::string& what) const;
-
-    std::string getRenderedFailureMessageOnNonExceptionInTearDown() const;
-
 private:
     Group(const GroupConfig& _config, Group* _parentGroup, int _index);
 
@@ -41,6 +33,14 @@ private:
     void addTearDown(Executable func, const std::string& file, int line);
 
     void tearDown() const;
+
+    std::string getRenderedFailureMessageOnExceptionInSetUp(const std::string& what) const;
+
+    std::string getRenderedFailureMessageOnNonExceptionInSetUp() const;
+
+    std::string getRenderedFailureMessageOnExceptionInTearDown(const std::string& what) const;
+
+    std::string getRenderedFailureMessageOnNonExceptionInTearDown() const;
 
     GroupConfig config;
 

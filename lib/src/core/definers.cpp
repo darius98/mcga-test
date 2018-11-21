@@ -41,7 +41,6 @@ void TearDownDefiner::operator()(Executable func) {
 }
 
 void ExpectDefiner::operator()(const bool& exprResult, const string& expr) {
-    checkDuringTest();
     if (!exprResult) {
         throwExpectationFailed(file + ":" + to_string(line) + ": " + expr);
     }
@@ -49,14 +48,6 @@ void ExpectDefiner::operator()(const bool& exprResult, const string& expr) {
 
 void ExpectDefiner::throwExpectationFailed(const string& message) {
     throw ExpectationFailed(message);
-}
-
-void ExpectDefiner::checkDuringTest() {
-    if (TestingDriver::instance == nullptr || !TestingDriver::instance->executor->isDuringTest()) {
-        throw ConfigurationError(
-            file + ":" + to_string(line) + ": 'kkExpect' called outside tests."
-        );
-    }
 }
 
 }

@@ -130,6 +130,10 @@ void TestingDriver::addGroup(const GroupConfig& config, Executable func) {
         func();
     } catch(const ConfigurationError& e) {
         throw e;
+    } catch(const ExpectationFailed& e) {
+        throw ConfigurationError(
+            "Expectation failed in group '" + group->getFullDescription() + "': " + e.what()
+        );
     } catch(const exception& e) {
         throw ConfigurationError(
             "Exception thrown in group '" + group->getFullDescription() + "': " + e.what()

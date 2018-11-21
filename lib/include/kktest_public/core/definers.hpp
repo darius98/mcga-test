@@ -58,7 +58,6 @@ public:
 
     template<class T, class M, class E, class... Args>
     void operator()(const T& object, M matcher, const E&, const Args...) {
-        checkDuringTest();
         if (matcher.matches(object)) {
             return;
         }
@@ -73,8 +72,6 @@ public:
 
 private:
     void throwExpectationFailed(const std::string& message);
-
-    void checkDuringTest();
 };
 
 }
