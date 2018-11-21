@@ -11,6 +11,7 @@ namespace kktest {
 class Executor {
 private:
     enum State { INACTIVE, ACTIVE };
+    typedef const std::function<void(const std::string&)>& SetFailureType;
 
     static double computeTimeTickLengthFromHardware();
 
@@ -40,11 +41,11 @@ protected:
                          const std::string& failureMessage);
 
 private:
-    bool runSetUpsRecursively(Group* group, std::string* failureMessage);
+    void runSetUpsRecursively(Group* group, SetFailureType setFailure);
 
-    bool runTearDownsRecursively(Group* group, std::string* failureMessage);
+    void runTearDownsRecursively(Group* group, SetFailureType setFailure);
 
-    bool runTest(Executable func, std::string* failureMessage);
+    void runTest(Executable func, SetFailureType setFailure);
 
     State state = State::INACTIVE;
     double timeTickLengthMs;

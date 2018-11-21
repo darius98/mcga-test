@@ -46,11 +46,18 @@ void Executor::onTestFinished(const function<void(Test*)>& _onTestFinishedCallba
 void Executor::run(Test* test, Executable func) {
     state = ACTIVE;
     string failureMessage;
+    bool failed = false;
+    auto setFailure = [&failureMessage, &failed](const string& value) {
+        if (!failed) {
+            failed = true;
+            failureMessage = value;
+        }
+    };
     auto begin = high_resolution_clock::now();
     Group* group = test->getGroup();
-    bool failed = runSetUpsRecursively(group, &failureMessage);
-    failed = runTest(func, failed ? nullptr : &failureMessage) || failed;
-    failed = runTearDownsRecursively(group, failed ? nullptr : &failureMessage) || failed;
+    runSetUpsRecursively(group, setFailure);
+    runTest(func, setFailure);
+    runTearDownsRecursively(group, setFailure);
     auto end = high_resolution_clock::now();
     state = INACTIVE;
     setTestExecuted(test,
@@ -70,85 +77,56 @@ void Executor::setTestExecuted(Test* test,
     }
 }
 
-bool Executor::runSetUpsRecursively(Group* group, string* failureMessage) {
+void Executor::runSetUpsRecursively(Group* group, SetFailureType setFailure) {
     if (group == nullptr) {
-        return false;
+        return;
     }
 
-    bool failed = runSetUpsRecursively(group->getParentGroup(), failureMessage);
-
+    runSetUpsRecursively(group->getParentGroup(), setFailure);
     try {
         group->setUp();
-        return false;
-    } catch(const ExpectationFailed& failure) {
-        if (!failed && failureMessage != nullptr) {
-            failureMessage->assign(failure.what());
-        }
-        return true;
     } catch(const ConfigurationError& e) {
         throw e;
+    } catch(const ExpectationFailed& failure) {
+        setFailure(failure.what());
     } catch(const exception& e) {
-        if (!failed && failureMessage != nullptr) {
-            failureMessage->assign(group->getRenderedFailureMessageOnExceptionInSetUp(e.what()));
-        }
+        setFailure(group->getRenderedFailureMessageOnExceptionInSetUp(e.what()));
     } catch(...) {
-        if (!failed && failureMessage != nullptr) {
-            failureMessage->assign(group->getRenderedFailureMessageOnNonExceptionInSetUp());
-        }
+        setFailure(group->getRenderedFailureMessageOnNonExceptionInSetUp());
     }
-    return true;
 }
 
- bool Executor::runTest(Executable func, string* failureMessage) {
+ void Executor::runTest(Executable func, SetFailureType setFailure) {
     try {
         func();
-        return false;
-    } catch(const ExpectationFailed& failure) {
-        if (failureMessage != nullptr) {
-            failureMessage->assign(failure.what());
-        }
-        return true;
     } catch(const ConfigurationError& e) {
         throw e;
+    } catch(const ExpectationFailed& failure) {
+        setFailure(failure.what());
     } catch(const exception& e) {
-        if (failureMessage != nullptr) {
-            failureMessage->assign("An exception was thrown during test: " + string(e.what()));
-        }
+        setFailure("An exception was thrown during test: " + string(e.what()));
     } catch(...) {
-        if (failureMessage != nullptr) {
-            failureMessage->assign("A non-exception object was thrown during test");
-        }
+        setFailure("A non-exception object was thrown during test");
     }
-    return true;
 }
 
-bool Executor::runTearDownsRecursively(Group* group, string* failureMessage) {
+void Executor::runTearDownsRecursively(Group* group, SetFailureType setFailure) {
     if (group == nullptr) {
-        return false;
+        return;
     }
 
-    bool failed = true;
     try {
         group->tearDown();
-        failed = false;
-    } catch(const ExpectationFailed& failure) {
-        if (failureMessage != nullptr) {
-            failureMessage->assign(failure.what());
-        }
-        return true;
     } catch(const ConfigurationError& e) {
         throw e;
+    } catch(const ExpectationFailed& failure) {
+        setFailure(failure.what());
     } catch(const exception& e) {
-        if (failureMessage != nullptr) {
-            failureMessage->assign(group->getRenderedFailureMessageOnExceptionInTearDown(e.what()));
-        }
+        setFailure(group->getRenderedFailureMessageOnExceptionInTearDown(e.what()));
     } catch(...) {
-        if (failureMessage != nullptr) {
-            failureMessage->assign(group->getRenderedFailureMessageOnNonExceptionInTearDown());
-        }
+        setFailure(group->getRenderedFailureMessageOnNonExceptionInTearDown());
     }
-
-    return runTearDownsRecursively(group->getParentGroup(), failed ? nullptr : failureMessage);
+    runTearDownsRecursively(group->getParentGroup(), setFailure);
 }
 
 }
