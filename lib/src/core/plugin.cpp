@@ -7,28 +7,17 @@ using namespace std;
 
 namespace kktest {
 
-Plugin** Plugin::plugins = nullptr;
-int Plugin::numPlugins = 0;
-int Plugin::pluginsCapacity = 0;
+vector<Plugin*>* Plugin::plugins = nullptr;
 
 Plugin::Plugin() {
-    if (numPlugins == 0) {
-        plugins = (Plugin**)malloc(sizeof(Plugin*) * 10);
-        pluginsCapacity = 10;
+    if (plugins == nullptr) {
+        plugins = new vector<Plugin*>();
     }
-    if (pluginsCapacity == numPlugins) {
-        auto newPluginsArray = (Plugin**)malloc(sizeof(Plugin*) * (2 * pluginsCapacity));
-        memcpy(newPluginsArray, plugins, numPlugins * sizeof(Plugin*));
-        free(plugins);
-        plugins = newPluginsArray;
-    }
-    plugins[numPlugins++] = this;
+    plugins->push_back(this);
 }
 
 void Plugin::clean() {
-    if (numPlugins > 0) {
-        free(plugins);
-    }
+    delete plugins;
 }
 
 }

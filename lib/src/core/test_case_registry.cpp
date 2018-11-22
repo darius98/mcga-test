@@ -7,32 +7,24 @@ using namespace std;
 
 namespace kktest {
 
-TestCaseRegistry::TestCase* TestCaseRegistry::testCases = nullptr;
-int TestCaseRegistry::numTestCases = 0;
-int TestCaseRegistry::testCasesCapacity = 0;
+vector<TestCaseRegistry::TestCase>* TestCaseRegistry::testCases = nullptr;
 
 void TestCaseRegistry::add(TestCase testCase) {
-    if (numTestCases == 0) {
-        testCases = (TestCase*)malloc(sizeof(TestCase));
-        testCasesCapacity = 1;
+    if (testCases == nullptr) {
+        testCases = new vector<TestCase>();
     }
-    if (numTestCases == testCasesCapacity) {
-        auto newTestCases = (TestCase*)malloc(sizeof(TestCase) * (2 * testCasesCapacity));
-        memcpy(newTestCases, testCases, numTestCases * sizeof(TestCase));
-        free(testCases);
-        testCases = newTestCases;
-    }
-    testCases[numTestCases++] = testCase;
+    testCases->push_back(testCase);
 }
 
 vector<TestCaseRegistry::TestCase> TestCaseRegistry::all() {
-    return vector<TestCase>(testCases, testCases + numTestCases);
+    if (testCases == nullptr) {
+        return {};
+    }
+    return *testCases;
 }
 
 void TestCaseRegistry::clean() {
-    if (numTestCases != 0) {
-        free(testCases);
-    }
+    delete testCases;
 }
 
 }

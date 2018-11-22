@@ -16,9 +16,7 @@ public:
     static void clean();
 
 private:
-    static TestCase* testCases;
-    static int numTestCases;
-    static int testCasesCapacity;
+    static std::vector<TestCase>* testCases;
 };
 
 }

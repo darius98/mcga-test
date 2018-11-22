@@ -1,8 +1,6 @@
 #ifndef KKTEST_CORE_PLUGIN_H_
 #define KKTEST_CORE_PLUGIN_H_
 
-#include <map>
-#include <string>
 #include <vector>
 
 namespace kktest {
@@ -22,9 +20,7 @@ public:
     virtual void uninstall() {}
 
 private:
-    static Plugin** plugins;
-    static int numPlugins;
-    static int pluginsCapacity;
+    static std::vector<Plugin*>* plugins;
 
     static void clean();
 

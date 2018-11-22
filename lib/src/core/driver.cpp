@@ -125,8 +125,10 @@ TestingDriver::~TestingDriver() {
 }
 
 void TestingDriver::installPlugins() {
-    for (int i = 0; i < Plugin::numPlugins; ++ i) {
-        auto plugin = Plugin::plugins[i];
+    if (Plugin::plugins == nullptr) {
+        return;
+    }
+    for (Plugin* plugin: (*Plugin::plugins)) {
         if (plugin->isEnabled()) {
             plugin->install();
         }
@@ -134,8 +136,10 @@ void TestingDriver::installPlugins() {
 }
 
 void TestingDriver::uninstallPlugins() {
-    for (int i = 0; i < Plugin::numPlugins; ++ i) {
-        Plugin* plugin = Plugin::plugins[i];
+    if (Plugin::plugins == nullptr) {
+        return;
+    }
+    for (Plugin* plugin: (*Plugin::plugins)) {
         if (plugin->isEnabled()) {
             plugin->uninstall();
         }
