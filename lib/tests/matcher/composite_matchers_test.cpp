@@ -4,7 +4,7 @@
 using namespace kktest;
 using namespace std;
 
-void kkTestCase() {
+void kkTestCase(CompositeMatchers) {
     kkGroup("both", []() {
         kkTest("both(fitting value, fitting value)", [&]() {
             kkExpect(both(3, 3).matches(3));

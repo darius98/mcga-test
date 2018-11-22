@@ -3,7 +3,7 @@
 
 using namespace kktest;
 
-void kkTestCase() {
+void kkTestCase(NumericMatchers) {
     kkGroup("isPositive", [&]() {
         kkTest("Matches positive numbers", [&]() {
             kkExpect(isPositive.matches(3));

@@ -4,7 +4,7 @@
 using namespace kktest;
 using namespace std;
 
-void kkTestCase() {
+void kkTestCase(ComparisonMatchers) {
     kkGroup("Equality", [&]() {
         kkTest("isEqualTo matches equal values", [&]() {
             kkExpect(isEqualTo(3).matches(3));

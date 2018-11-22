@@ -6,7 +6,7 @@
 using namespace kktest;
 using namespace std;
 
-void kkTestCase() {
+void kkTestCase(StringMatchers) {
     kkGroup("Specific charset matchers", []() {
         kkTest("isLetter matches only letters", []() {
             for (unsigned char i = 1; i <= 127; ++ i) {

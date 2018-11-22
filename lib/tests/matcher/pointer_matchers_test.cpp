@@ -12,7 +12,7 @@ BasicClass globalClass;
 BasicStruct globalStruct;
 double globalDouble;
 
-void kkTestCase() {
+void kkTestCase(PointerMatchers) {
     kkGroup("Null pointers", []() {
         int* intNullPtr = nullptr;
         char* charNullPtr = nullptr;

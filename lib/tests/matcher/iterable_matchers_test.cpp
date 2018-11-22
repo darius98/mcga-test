@@ -4,7 +4,7 @@
 using namespace kktest;
 using namespace std;
 
-void kkTestCase() {
+void kkTestCase(IterableMatchers) {
     vector<int> arr = {1, 3, 5, 7, 9, 11, 13, 15};
     vector<vector<int>> matrix = {{1, 2, 3, 4}, {2, 3, 4}, {2, 3}, {2, 4}};
     vector<int> emptyArr = {};

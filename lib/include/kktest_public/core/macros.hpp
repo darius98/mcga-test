@@ -21,12 +21,12 @@
 
 #define KKTESTCASE_DEF_AUX_1_(x, y) x##_##y
 #define KKTESTCASE_DEF_AUX_2_(x, y) KKTESTCASE_DEF_AUX_1_(x, y)
-#define KKTESTCASE_DEF_AUX_3_(COUNTER)                                                             \
-            KKTESTCASE_DEF_AUX_2_(kkTestCaseInstance, COUNTER)();                                  \
-            static kktest::TestCaseRegistryKeeper KKTESTCASE_DEF_AUX_2_(kkTestCaseDefiner, COUNTER)\
-                    (KKTESTCASE_DEF_AUX_2_(kkTestCaseInstance, COUNTER));                          \
-            void KKTESTCASE_DEF_AUX_2_(kkTestCaseInstance, COUNTER)
+#define KKTESTCASE_DEF_AUX_3_(NAME)                                                                \
+            KKTESTCASE_DEF_AUX_2_(kkTestCaseInstance, NAME)();                                     \
+            static kktest::TestCaseRegistryKeeper KKTESTCASE_DEF_AUX_2_(kkTestCaseDefiner, NAME)   \
+                    (KKTESTCASE_DEF_AUX_2_(kkTestCaseInstance, NAME));                             \
+            void KKTESTCASE_DEF_AUX_2_(kkTestCaseInstance, NAME)()
 
-#define kkTestCase KKTESTCASE_DEF_AUX_3_(__COUNTER__)
+#define kkTestCase(NAME) KKTESTCASE_DEF_AUX_3_(NAME)
 
 #endif
