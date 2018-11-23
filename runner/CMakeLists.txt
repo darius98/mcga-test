@@ -3,12 +3,14 @@ project(KKTestRunner VERSION 1.0.0)
 set(CMAKE_CXX_STANDARD 11)
 
 set(SRC_FOLDER src)
-file(GLOB EXPLORER ${SRC_FOLDER}/explorer/*.hpp ${SRC_FOLDER}/explorer/*.cpp)
-file(GLOB TEST_EXECUTION_LOOP ${SRC_FOLDER}/test_execution_loop/*.hpp ${SRC_FOLDER}/test_execution_loop/*.cpp)
 add_executable(runner
-        ${SRC_FOLDER}/entry_point.cpp
-        ${EXPLORER}
-        ${TEST_EXECUTION_LOOP}
-    )
+    src/explorer/explorer.cpp
+
+    src/test_execution_loop/kktest_lib_info.cpp
+    src/test_execution_loop/test_execution_cycle.cpp
+    src/test_execution_loop/test_execution_loop.cpp
+
+    src/entry_point.cpp
+)
 target_include_directories(runner PRIVATE ${SRC_FOLDER})
 target_link_libraries(runner easyflags messaging fsystem logging)
