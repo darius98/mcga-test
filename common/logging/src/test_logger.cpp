@@ -91,7 +91,7 @@ string TestLogger::getTestMessage(const string& groupDescription,
     stringstream sBuffer;
     sBuffer << "[";
     modifyOutput(isPassed ? 32 : (isOptional ? 33 : 31), sBuffer);
-    sBuffer << "X";
+    sBuffer << (isPassed ? 'P' : 'F');
     modifyOutput(0, sBuffer);
     sBuffer << "] ";
     modifyOutput(90, sBuffer);
