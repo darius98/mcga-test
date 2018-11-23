@@ -7,10 +7,6 @@ using namespace std;
 namespace kktest {
 
 void TestingDriver::setExecutor(Executor* executor) {
-    if (getInstance()->useImplicitExecutor) {
-        delete getInstance()->executor;
-        getInstance()->useImplicitExecutor = false;
-    }
     getInstance()->executor = executor;
 }
 
@@ -62,6 +58,10 @@ void TestingDriver::init() {
     for (const AfterInitHook& hook: instance->afterInitHooks) {
         hook();
     }
+    if (instance->executor == nullptr) {
+        instance->executor = new Executor();
+        instance->useImplicitExecutor = true;
+    }
     instance->executor->onTestFinished([](Test* test) {
         instance->afterTest(test);
     });
@@ -83,7 +83,6 @@ int TestingDriver::destroy() {
 
 void TestingDriver::forceDestroy(const ConfigurationError& error) {
     TestingDriver* driver = getInstance();
-    driver->executor->finalize();
     for (const BeforeForceDestroyHook& hook: driver->beforeForceDestroyHooks) {
         hook(error);
     }
@@ -111,12 +110,13 @@ void TestingDriver::afterTestCase() {
             "TestingDriver::afterTestCase called twice in a row."
         );
     }
+    driver->executor->finalize();
     delete driver->globalScope;
     driver->globalScope = nullptr;
     driver->groupStack = {};
 }
 
-TestingDriver::TestingDriver(): executor(new Executor()) {}
+TestingDriver::TestingDriver() = default;
 
 TestingDriver::~TestingDriver() {
     if (useImplicitExecutor) {

@@ -79,8 +79,8 @@ private:
     std::map<Group*, int> testsInExecutionPerGroup;
     std::set<Group*> groupsWithAllTestsStarted;
 
-    Executor* executor;
-    bool useImplicitExecutor = true;
+    Executor* executor = nullptr;
+    bool useImplicitExecutor = false;
     Group* globalScope = nullptr;
     std::vector<Group*> groupStack = {};
     int currentTestIndex = 0;
