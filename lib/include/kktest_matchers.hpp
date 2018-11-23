@@ -8,6 +8,6 @@
 #include "./kktest_public/matchers/numeric_matchers.hpp"
 #include "./kktest_public/matchers/pointer_matchers.hpp"
 #include "./kktest_public/matchers/string_matchers.hpp"
-#include "./kktest_public/matchers/truth_matcher.hpp"
+#include "./kktest_public/matchers/truth_matchers.hpp"
 
 #endif

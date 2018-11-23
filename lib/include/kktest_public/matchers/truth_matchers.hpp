@@ -1,7 +1,7 @@
 #ifndef KKTEST_INCLUDE_KKTEST_PUBLIC_MATCHERS_TRUTH_MATCHERS_H_
 #define KKTEST_INCLUDE_KKTEST_PUBLIC_MATCHERS_TRUTH_MATCHERS_H_
 
-#include "../core/matcher.hpp"
+#include "./matcher.hpp"
 
 
 namespace kktest {
@@ -28,6 +28,6 @@ public:
 
 extern IsFalseMatcher isFalse;
 
-} // namespace kktest
+}
 
 #endif

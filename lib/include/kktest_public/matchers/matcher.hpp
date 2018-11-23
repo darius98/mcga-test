@@ -1,5 +1,5 @@
-#ifndef KKTEST_INCLUDE_KKTEST_PUBLIC_CORE_MATCHER_H_
-#define KKTEST_INCLUDE_KKTEST_PUBLIC_CORE_MATCHER_H_
+#ifndef KKTEST_INCLUDE_KKTEST_PUBLIC_MATCHERS_MATCHER_H_
+#define KKTEST_INCLUDE_KKTEST_PUBLIC_MATCHERS_MATCHER_H_
 
 #include "./streamer.hpp"
 
@@ -36,6 +36,17 @@ public:
     virtual void describe(Description& description) = 0;
 
     virtual void describeMismatch(Description& description) = 0;
+
+    template<class T>
+    std::string buildMismatchMessage(const T& object) {
+        Description description;
+        description << "Expected ";
+        describe(description);
+        description << ".\n\tGot '" << object << "'.\n\tWhich is ";
+        describeMismatch(description);
+        description << ".";
+        return description.toString();
+    }
 };
 
 }

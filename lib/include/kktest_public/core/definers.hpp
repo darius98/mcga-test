@@ -4,7 +4,6 @@
 #include <string>
 
 #include "./executable.hpp"
-#include "./matcher.hpp"
 #include "./config.hpp"
 
 namespace kktest {
@@ -66,13 +65,8 @@ public:
         if (matcher.matches(object)) {
             return;
         }
-        Description description;
-        description << file << ":" << line << ":\n\tExpected ";
-        matcher.describe(description);
-        description << ".\n\tGot '" << object << "'.\n\tWhich is ";
-        matcher.describeMismatch(description);
-        description << ".";
-        throwExpectationFailed(description.toString());
+        throwExpectationFailed(file + ":" + std::to_string(line) + ":\n"
+                               "\t" + matcher.buildMismatchMessage(object));
     }
 
 private:
