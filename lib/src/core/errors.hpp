@@ -4,7 +4,6 @@
 #include <stdexcept>
 #include <string>
 
-
 namespace kktest {
 
 class ConfigurationError: public std::runtime_error {

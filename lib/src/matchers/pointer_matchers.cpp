@@ -1,6 +1,5 @@
 #include <matchers/pointer_matchers.hpp>
 
-
 namespace kktest {
 
 bool IsNullptrMatcher::matches(void*const& obj) {

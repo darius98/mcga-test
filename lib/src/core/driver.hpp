@@ -5,10 +5,10 @@
 #include <set>
 #include <vector>
 
-#include "errors.hpp"
-#include "executor.hpp"
-#include "group.hpp"
-#include "plugin.hpp"
+#include <core/errors.hpp>
+#include <core/executor.hpp>
+#include <core/group.hpp>
+#include <core/plugin.hpp>
 
 namespace kktest {
 

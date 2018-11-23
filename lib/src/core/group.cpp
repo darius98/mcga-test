@@ -1,8 +1,7 @@
-#include "errors.hpp"
-#include "group.hpp"
+#include <core/errors.hpp>
+#include <core/group.hpp>
 
 using namespace std;
-
 
 namespace kktest {
 

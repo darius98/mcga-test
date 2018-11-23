@@ -1,8 +1,7 @@
-#include "driver.hpp"
-#include "test_case_registry.hpp"
+#include <core/driver.hpp>
+#include <core/test_case_registry.hpp>
 
 using namespace std;
-
 
 namespace kktest {
 

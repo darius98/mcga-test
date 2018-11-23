@@ -3,7 +3,6 @@
 
 #include <string>
 
-
 namespace kktest {
 
 std::string trimFileName(const std::string& fileName);

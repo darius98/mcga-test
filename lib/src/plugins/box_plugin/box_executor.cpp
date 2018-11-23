@@ -1,7 +1,6 @@
-#include "box_executor.hpp"
+#include <plugins/box_plugin/box_executor.hpp>
 
 using namespace std;
-
 
 namespace kktest {
 

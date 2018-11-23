@@ -1,6 +1,6 @@
 #ifndef KKTEST_INCLUDE_KKTEST_
 #define KKTEST_INCLUDE_KKTEST_
 
-#include "./kktest.hpp"
+#include <kktest.hpp>
 
 #endif

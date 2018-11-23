@@ -1,9 +1,8 @@
-#include "plugin.hpp"
-
 #include <cstring>
 
-using namespace std;
+#include <core/plugin.hpp>
 
+using namespace std;
 
 namespace kktest {
 

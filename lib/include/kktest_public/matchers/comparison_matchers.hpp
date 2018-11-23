@@ -3,8 +3,7 @@
 
 #include <functional>
 
-#include "./matcher.hpp"
-
+#include <kktest_public/matchers/matcher.hpp>
 
 namespace kktest {
 

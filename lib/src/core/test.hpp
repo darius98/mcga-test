@@ -5,7 +5,6 @@
 
 #include <core/config.hpp>
 
-
 namespace kktest {
 
 class Group;

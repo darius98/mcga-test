@@ -1,8 +1,8 @@
 #include <iostream>
 
 #include <EasyFlags.hpp>
-
 #include <logging>
+
 #include <core/driver.hpp>
 
 using namespace easyflags;

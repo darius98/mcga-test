@@ -1,7 +1,7 @@
 #include <chrono>
 
-#include "executor.hpp"
-#include "errors.hpp"
+#include <core/errors.hpp>
+#include <core/executor.hpp>
 
 using namespace std;
 using namespace std::chrono;

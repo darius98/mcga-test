@@ -1,7 +1,7 @@
 #ifndef KKTEST_INCLUDE_KKTEST_PUBLIC_MATCHERS_MATCHER_H_
 #define KKTEST_INCLUDE_KKTEST_PUBLIC_MATCHERS_MATCHER_H_
 
-#include "./streamer.hpp"
+#include <kktest_public/matchers/streamer.hpp>
 
 namespace kktest {
 

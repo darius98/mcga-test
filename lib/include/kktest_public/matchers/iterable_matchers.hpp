@@ -1,8 +1,7 @@
 #ifndef KKTEST_INCLUDE_KKTEST_PUBLIC_MATCHERS_ITERABLE_MATCHERS_H_
 #define KKTEST_INCLUDE_KKTEST_PUBLIC_MATCHERS_ITERABLE_MATCHERS_H_
 
-#include "./comparison_matchers.hpp"
-
+#include <kktest_public/matchers/comparison_matchers.hpp>
 
 namespace kktest {
 

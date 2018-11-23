@@ -6,13 +6,12 @@
 #include <messaging>
 #include <strutil>
 
-#include "test_container.hpp"
+#include <plugins/box_plugin/test_container.hpp>
 
 using namespace messaging;
-using namespace strutil;
 using namespace std;
 using namespace std::chrono;
-
+using namespace strutil;
 
 namespace kktest {
 

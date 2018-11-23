@@ -1,7 +1,7 @@
 #include <EasyFlags.hpp>
 
 #include <core/driver.hpp>
-#include "box_executor.hpp"
+#include <plugins/box_plugin/box_executor.hpp>
 
 using namespace std;
 
@@ -18,7 +18,6 @@ AddArgument(int, argumentNumBoxes)
     .Description("Maximum number of tests to execute in parallel "
                  "(processes to spawn) when running boxed")
     .DefaultValue("1");
-
 
 namespace kktest {
 

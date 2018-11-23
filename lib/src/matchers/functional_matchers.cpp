@@ -2,7 +2,6 @@
 
 using namespace std;
 
-
 namespace kktest {
 
 bool ThrowsAnythingMatcher::matches(const function<void()>& func) {

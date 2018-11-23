@@ -2,9 +2,9 @@
 #include <fcntl.h>
 
 #include <EasyFlags.hpp>
+#include <messaging>
 
 #include <core/driver.hpp>
-#include <messaging>
 
 using namespace easyflags;
 using namespace messaging;

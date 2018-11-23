@@ -2,7 +2,6 @@
 
 #include <matchers/string_matchers.hpp>
 
-
 using namespace std;
 
 namespace kktest {

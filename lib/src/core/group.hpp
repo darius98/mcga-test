@@ -4,8 +4,7 @@
 #include <string>
 
 #include <core/executable.hpp>
-#include "test.hpp"
-
+#include <core/test.hpp>
 
 namespace kktest {
 

@@ -3,8 +3,8 @@
 
 #include <string>
 
-#include "./executable.hpp"
-#include "./config.hpp"
+#include <kktest_public/core/config.hpp>
+#include <kktest_public/core/executable.hpp>
 
 namespace kktest {
 

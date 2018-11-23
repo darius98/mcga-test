@@ -1,8 +1,8 @@
 #ifndef KKTEST_INCLUDE_KKTEST_PUBLIC_CORE_MACROS_H_
 #define KKTEST_INCLUDE_KKTEST_PUBLIC_CORE_MACROS_H_
 
-#include "./definers.hpp"
-#include "./filename.hpp"
+#include <kktest_public/core/definers.hpp>
+#include <kktest_public/core/filename.hpp>
 
 #define KKTEST_FILE_NAME_ (kktest::trimFileName(__FILE__))
 

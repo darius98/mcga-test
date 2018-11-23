@@ -4,8 +4,7 @@
 #include <set>
 
 #include <core/executor.hpp>
-#include "test_container.hpp"
-
+#include <plugins/box_plugin/test_container.hpp>
 
 namespace kktest {
 

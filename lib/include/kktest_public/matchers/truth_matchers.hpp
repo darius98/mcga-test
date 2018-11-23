@@ -1,8 +1,7 @@
 #ifndef KKTEST_INCLUDE_KKTEST_PUBLIC_MATCHERS_TRUTH_MATCHERS_H_
 #define KKTEST_INCLUDE_KKTEST_PUBLIC_MATCHERS_TRUTH_MATCHERS_H_
 
-#include "./matcher.hpp"
-
+#include <kktest_public/matchers/matcher.hpp>
 
 namespace kktest {
 
