@@ -18,7 +18,7 @@ file(GLOB KKTestLibImpl
         src/matchers/numeric_matchers.cpp
         src/matchers/pointer_matchers.cpp
         src/matchers/string_matchers.cpp
-        src/matchers/truth_matcher.cpp
+        src/matchers/truth_matchers.cpp
 
         src/plugins/logging_plugin.cpp
         src/plugins/pipe_plugin.cpp

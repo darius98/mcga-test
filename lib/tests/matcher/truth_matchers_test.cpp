@@ -3,7 +3,7 @@
 
 using namespace kktest;
 
-void kkTestCase() {
+void kkTestCase(TruthMatchers) {
     kkTest("isTrue matcher matches true", [&]() {
         kkExpect(isTrue.matches(true));
     });
