@@ -7,35 +7,38 @@ using namespace std;
 namespace kktest {
 
 void TestingDriver::setExecutor(Executor* executor) {
+    if (!getInstance()->allowRegisterHooks) {
+        throw KKTestLibraryImplementationError("Executor set outside of Plugin::install!");
+    }
     getInstance()->executor = executor;
 }
 
 void TestingDriver::addBeforeTestHook(TestHook hook) {
-    getInstance()->beforeTestHooks.emplace_back(move(hook));
+    getInstance()->addHook(hook, getInstance()->beforeTestHooks);
 }
 
 void TestingDriver::addAfterTestHook(TestHook hook) {
-    getInstance()->afterTestHooks.emplace_back(move(hook));
+    getInstance()->addHook(hook, getInstance()->afterTestHooks);
 }
 
 void TestingDriver::addBeforeGroupHook(GroupHook hook) {
-    getInstance()->beforeGroupHooks.emplace_back(move(hook));
+    getInstance()->addHook(hook, getInstance()->beforeGroupHooks);
 }
 
 void TestingDriver::addAfterGroupHook(GroupHook hook) {
-    getInstance()->afterGroupHooks.emplace_back(move(hook));
+    getInstance()->addHook(hook, getInstance()->afterGroupHooks);
 }
 
 void TestingDriver::addAfterInitHook(AfterInitHook hook) {
-    getInstance()->afterInitHooks.push_back(hook);
+    getInstance()->addHook(hook, getInstance()->afterInitHooks);
 }
 
 void TestingDriver::addBeforeDestroyHook(BeforeDestroyHook hook) {
-    getInstance()->beforeDestroyHooks.push_back(hook);
+    getInstance()->addHook(hook, getInstance()->beforeDestroyHooks);
 }
 
 void TestingDriver::addBeforeForceDestroyHook(BeforeForceDestroyHook hook) {
-    getInstance()->beforeForceDestroyHooks.push_back(hook);
+    getInstance()->addHook(hook, getInstance()->beforeForceDestroyHooks);
 }
 
 TestingDriver* TestingDriver::instance = nullptr;
@@ -54,7 +57,9 @@ void TestingDriver::init() {
         throw KKTestLibraryImplementationError("TestingDriver::init called a twice.");
     }
     instance = new TestingDriver();
+    instance->allowRegisterHooks = true;
     instance->installPlugins();
+    instance->allowRegisterHooks = false;
     for (const AfterInitHook& hook: instance->afterInitHooks) {
         hook();
     }

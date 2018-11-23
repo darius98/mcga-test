@@ -50,6 +50,14 @@ private:
 
     void uninstallPlugins();
 
+    template<class H>
+    void addHook(H h, std::vector<H>& hs) {
+        if (!allowRegisterHooks) {
+            throw KKTestLibraryImplementationError("Hook added outside Plugin::install()!");
+        }
+        hs.emplace_back(std::move(h));
+    }
+
     void addGroup(const GroupConfig& config, Executable func);
 
     void addTest(const TestConfig& config, Executable func);
@@ -85,6 +93,7 @@ private:
     std::vector<Group*> groupStack = {};
     int currentTestIndex = 0;
     int currentGroupIndex = 0;
+    bool allowRegisterHooks = false;
 
     bool failedAnyNonOptionalTest = false;
 

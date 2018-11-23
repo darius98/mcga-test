@@ -32,10 +32,7 @@ public:
         if (argumentNumBoxes <= 0) {
             argumentNumBoxes = 1;
         }
-        boxExecutor = new BoxExecutor((size_t)argumentNumBoxes);
-        TestingDriver::addAfterInitHook([this]() {
-            TestingDriver::setExecutor(boxExecutor);
-        });
+        TestingDriver::setExecutor(new BoxExecutor((size_t)argumentNumBoxes));
     }
 
     void uninstall() override {
