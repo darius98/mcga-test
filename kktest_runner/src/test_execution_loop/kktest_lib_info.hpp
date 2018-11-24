@@ -5,7 +5,6 @@
 #include <string>
 #include <vector>
 
-
 namespace runner {
 
 struct TestInfo {

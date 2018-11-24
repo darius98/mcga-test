@@ -6,8 +6,8 @@
 #include <string>
 
 #include <messaging>
-#include "kktest_lib_info.hpp"
 
+#include <test_execution_loop/kktest_lib_info.hpp>
 
 namespace runner {
 

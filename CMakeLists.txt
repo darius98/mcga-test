@@ -17,5 +17,5 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/build/arc")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/build/bin")
 
 add_subdirectory(common)
-add_subdirectory(lib)
-add_subdirectory(runner)
+add_subdirectory(kktest)
+add_subdirectory(kktest_runner)

@@ -1,6 +1,8 @@
 #ifndef KKTEST_RUNNER_EXPLORER_EXPLORER_H_
 #define KKTEST_RUNNER_EXPLORER_EXPLORER_H_
 
+#include <functional>
+
 #include <fsystem>
 
 namespace runner {

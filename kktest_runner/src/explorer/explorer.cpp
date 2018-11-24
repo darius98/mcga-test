@@ -1,6 +1,6 @@
 #include <EasyFlags.hpp>
 
-#include "explorer.hpp"
+#include <explorer/explorer.hpp>
 
 using namespace fsystem;
 using namespace strutil;
@@ -15,11 +15,10 @@ namespace runner {
 
 class Explorer {
 public:
-    explicit Explorer(const Folder& _rootFolder): rootFolder(_rootFolder) {}
+    explicit Explorer(Folder _rootFolder): rootFolder(move(_rootFolder)) {}
 
     void findTestCases(const function<void(File)>& onTestFound) const {
-        // TODO: Optimize this! For now, ignore some
-        // common heavy but useless folders
+        // TODO: Optimize this! For now, ignore some common heavy but useless folders
         if (containsSubstring(rootFolder.toString(), ".git") ||
                 containsSubstring(rootFolder.toString(), "CMakeFiles")) {
             return;

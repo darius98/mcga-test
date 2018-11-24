@@ -31,7 +31,7 @@ AddArgument(int, argumentParallelTestsPerCase)
 int main(int argc, char** argv) {
     ParseEasyFlags(argc, argv);
     if (flagVersion) {
-        cout << "KKTest test runner version " << VERSION << "\n";
+        cout << "KKTest test kktest_runner version " << VERSION << "\n";
         return 0;
     }
     auto executionLoop = new TestExecutionLoop(argumentMaxParallelTestCases);
