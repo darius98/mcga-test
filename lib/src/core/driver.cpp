@@ -12,31 +12,31 @@ void TestingDriver::setExecutor(Executor* executor) {
     getInstance()->executor = executor;
 }
 
-void TestingDriver::addBeforeTestHook(TestHook hook) {
+void TestingDriver::addBeforeTestHook(const TestHook& hook) {
     getInstance()->addHook(hook, getInstance()->beforeTestHooks);
 }
 
-void TestingDriver::addAfterTestHook(TestHook hook) {
+void TestingDriver::addAfterTestHook(const TestHook& hook) {
     getInstance()->addHook(hook, getInstance()->afterTestHooks);
 }
 
-void TestingDriver::addBeforeGroupHook(GroupHook hook) {
+void TestingDriver::addBeforeGroupHook(const GroupHook& hook) {
     getInstance()->addHook(hook, getInstance()->beforeGroupHooks);
 }
 
-void TestingDriver::addAfterGroupHook(GroupHook hook) {
+void TestingDriver::addAfterGroupHook(const GroupHook& hook) {
     getInstance()->addHook(hook, getInstance()->afterGroupHooks);
 }
 
-void TestingDriver::addAfterInitHook(AfterInitHook hook) {
+void TestingDriver::addAfterInitHook(const AfterInitHook& hook) {
     getInstance()->addHook(hook, getInstance()->afterInitHooks);
 }
 
-void TestingDriver::addBeforeDestroyHook(BeforeDestroyHook hook) {
+void TestingDriver::addBeforeDestroyHook(const BeforeDestroyHook& hook) {
     getInstance()->addHook(hook, getInstance()->beforeDestroyHooks);
 }
 
-void TestingDriver::addBeforeForceDestroyHook(BeforeForceDestroyHook hook) {
+void TestingDriver::addBeforeForceDestroyHook(const BeforeForceDestroyHook& hook) {
     getInstance()->addHook(hook, getInstance()->beforeForceDestroyHooks);
 }
 

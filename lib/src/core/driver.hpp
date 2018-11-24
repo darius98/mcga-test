@@ -22,14 +22,14 @@ public:
 
     static void setExecutor(Executor* executor);
 
-    static void addBeforeTestHook(TestHook hook);
-    static void addAfterTestHook(TestHook hook);
-    static void addBeforeGroupHook(GroupHook hook);
-    static void addAfterGroupHook(GroupHook hook);
+    static void addBeforeTestHook(const TestHook& hook);
+    static void addAfterTestHook(const TestHook& hook);
+    static void addBeforeGroupHook(const GroupHook& hook);
+    static void addAfterGroupHook(const GroupHook& hook);
 
-    static void addAfterInitHook(AfterInitHook hook);
-    static void addBeforeDestroyHook(BeforeDestroyHook hook);
-    static void addBeforeForceDestroyHook(BeforeForceDestroyHook hook);
+    static void addAfterInitHook(const AfterInitHook& hook);
+    static void addBeforeDestroyHook(const BeforeDestroyHook& hook);
+    static void addBeforeForceDestroyHook(const BeforeForceDestroyHook& hook);
 
 private:
     static TestingDriver* getInstance();

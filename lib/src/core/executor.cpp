@@ -17,10 +17,6 @@ double Executor::computeTimeTickLengthFromHardware() {
     return 1000.0;
 }
 
-bool Executor::isDuringTest() const {
-    return state == ACTIVE;
-}
-
 void Executor::checkIsInactive(const string& methodName, const string& file, int line) const {
     if (state == ACTIVE) {
         throw ConfigurationError(

@@ -23,14 +23,17 @@ int main() {
         TestingDriver::forceDestroy(
             ConfigurationError(string("Expectation failed in global scope: ") + error.what())
         );
+        return 1;
     } catch(const exception& error) {
         TestingDriver::forceDestroy(
             ConfigurationError(string("Exception thrown in global scope: ") + error.what())
         );
+        return 1;
     } catch(...) {
         TestingDriver::forceDestroy(
             ConfigurationError("Non-exception object thrown in global scope.")
         );
+        return 1;
     }
     return TestingDriver::destroy();
 }

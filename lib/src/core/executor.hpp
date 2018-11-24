@@ -19,8 +19,6 @@ public:
 
     virtual ~Executor();
 
-    bool isDuringTest() const;
-
     void checkIsInactive(const std::string& methodName, const std::string& file, int line) const;
 
     double getTimeTickLengthMs() const;
