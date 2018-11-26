@@ -1,16 +1,26 @@
+#include <EasyFlags.hpp>
+
+#include <core/box_executor.hpp>
 #include <core/driver.hpp>
 #include <core/test_case_registry.hpp>
 
 using namespace std;
 
-namespace kktest {
+AddArgument(int, flagBoxed)
+    .ArgumentType("0|1 ")
+    .Name("boxed")
+    .Short("b")
+    .Description("Run each test in an isolated process (boxed)")
+    .DefaultValue(0)
+    .ImplicitValue(1);
+AddArgument(int, argumentNumBoxes)
+    .ArgumentType("int")
+    .Name("max_parallel_tests")
+    .Description("Maximum number of tests to execute in parallel "
+    "(processes to spawn) when running boxed")
+    .DefaultValue("1");
 
-void TestingDriver::setExecutor(Executor* executor) {
-    if (!getInstance()->allowRegisterHooks) {
-        throw KKTestLibraryImplementationError("Executor set outside of Plugin::install!");
-    }
-    getInstance()->executor = executor;
-}
+namespace kktest {
 
 TestingDriver* TestingDriver::instance = nullptr;
 
@@ -34,13 +44,6 @@ void TestingDriver::init() {
     for (const AfterInitHook& hook: instance->afterInitHooks) {
         hook();
     }
-    if (instance->executor == nullptr) {
-        instance->executor = new Executor();
-        instance->useImplicitExecutor = true;
-    }
-    instance->executor->onTestFinished([](Test* test) {
-        instance->afterTest(test);
-    });
 }
 
 int TestingDriver::destroy() {
@@ -92,12 +95,19 @@ void TestingDriver::afterTestCase() {
     driver->groupStack = {};
 }
 
-TestingDriver::TestingDriver() = default;
+TestingDriver::TestingDriver() {
+    if (flagBoxed) {
+        executor = new BoxExecutor((size_t)max(argumentNumBoxes, 1));
+    } else {
+        executor = new Executor();
+    }
+    executor->onTestFinished([this](Test* test) {
+        afterTest(test);
+    });
+}
 
 TestingDriver::~TestingDriver() {
-    if (useImplicitExecutor) {
-        delete executor;
-    }
+    delete executor;
 }
 
 void TestingDriver::installPlugins() {

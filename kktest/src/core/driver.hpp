@@ -14,9 +14,6 @@
 namespace kktest {
 
 class TestingDriver {
-public:
-    static void setExecutor(Executor* executor);
-
 private:
     static TestingDriver* getInstance();
     static TestingDriver* instance;
@@ -74,7 +71,6 @@ private:
     std::set<Group*> groupsWithAllTestsStarted;
 
     Executor* executor = nullptr;
-    bool useImplicitExecutor = false;
     Group* globalScope = nullptr;
     std::vector<Group*> groupStack = {};
     int currentTestIndex = 0;

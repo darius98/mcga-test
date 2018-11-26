@@ -16,10 +16,8 @@ add_library(kktest SHARED
     src/core/plugin_api.cpp
     src/core/test_case_registry.cpp
     src/core/test.cpp
-
-    src/plugins/box_plugin/box_executor.cpp
-    src/plugins/box_plugin/box_plugin.cpp
-    src/plugins/box_plugin/test_container.cpp
+    src/core/box_executor.cpp
+    src/core/test_container.cpp
 
     src/main.cpp
 )
