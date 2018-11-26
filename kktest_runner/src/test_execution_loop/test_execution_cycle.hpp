@@ -15,7 +15,7 @@ class TestExecutionCycle {
 public:
     explicit TestExecutionCycle(const std::string& _testPath,
                                 int _maxParallelTests,
-                                const std::function<void(const KKTestCaseInfo&)>& _onTestCallback);
+                                const std::function<void(const KKTestCaseInfo&)>& _onInfoCallback);
 
     bool isStarted() const;
 
@@ -33,7 +33,7 @@ private:
     bool started;
     std::string testPath;
     int maxParallelTests;
-    std::function<void(const KKTestCaseInfo&)> onTestCallback;
+    std::function<void(const KKTestCaseInfo&)> onInfoCallback;
 
     messaging::InputPipe* pipeWithTestProcess;
     std::string pipeName;

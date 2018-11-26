@@ -1,12 +1,11 @@
 #include <iostream>
 
 #include <EasyFlags.hpp>
-#include <logging>
 
+#include <kktest_ext/feedback_impl/test_logger.hpp>
 #include <kktest_plugin_api.hpp>
 
 using namespace easyflags;
-using namespace logging;
 using namespace std;
 
 AddArgument(int, flagQuiet)
@@ -29,16 +28,11 @@ public:
         logger = new TestLogger(cout);
 
         addBeforeGroupHook([this](const GroupInfo& groupInfo) {
-            allGroupsInfo[groupInfo.index] = groupInfo;
+            logger->addGroupInfo(groupInfo);
         });
 
         addAfterTestHook([this](const TestInfo& testInfo) {
-            logger->logTest(testInfo.index,
-                            getDescriptionPrefix(testInfo),
-                            testInfo.description,
-                            testInfo.optional,
-                            testInfo.passed,
-                            testInfo.failureMessage);
+            logger->logTest(testInfo);
         });
 
         addBeforeDestroyHook([this]() {
@@ -55,22 +49,7 @@ public:
     }
 
 private:
-    string getDescriptionPrefix(const TestInfo& testInfo) {
-        return testInfo.file + ":" + to_string(testInfo.line) + "::"
-               + getRecursiveGroupDescription(testInfo.groupIndex);
-    }
-
-    string getRecursiveGroupDescription(int groupId) {
-        auto groupInfoIterator = allGroupsInfo.find(groupId);
-        if (groupInfoIterator == allGroupsInfo.end()) {
-            return "";
-        }
-        GroupInfo groupInfo = groupInfoIterator->second;
-        return getRecursiveGroupDescription(groupInfo.parentGroupIndex) + groupInfo.description + "::";
-    }
-
     TestLogger* logger = nullptr;
-    map<int, GroupInfo> allGroupsInfo;
 };
 
 LoggingPlugin loggingPlugin;

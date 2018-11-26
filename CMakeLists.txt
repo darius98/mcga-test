@@ -20,7 +20,6 @@ include(kktest.cmake)
 
 add_subdirectory(common/strutil)
 add_subdirectory(common/fsystem)
-add_subdirectory(common/logging)
 add_subdirectory(common/messaging)
 
 add_subdirectory(kktest_core)

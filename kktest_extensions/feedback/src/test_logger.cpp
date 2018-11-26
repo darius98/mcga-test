@@ -3,29 +3,28 @@
 #include <sstream>
 #include <unistd.h>
 
-#include "test_logger.hpp"
+#include <kktest_ext/feedback_impl/test_logger.hpp>
 
 using namespace std;
 
-namespace logging {
+namespace kktest {
 
 TestLogger::TestLogger(ostream& _stream, bool _maintainTestIndexOrder):
         stream(_stream), maintainTestIndexOrder(_maintainTestIndexOrder) {}
 
-void TestLogger::logTest(int testIndex,
-                         const string& groupDescription,
-                         const string& description,
-                         bool isOptional,
-                         bool isPassed,
-                         const string& failureMessage) {
+void TestLogger::addGroupInfo(const GroupInfo& groupInfo) {
+    allGroupsInfo[groupInfo.index] = groupInfo;
+}
+
+void TestLogger::logTest(const TestInfo& testInfo) {
     testsQueue.insert({
-        testIndex,
-        getTestMessage(groupDescription, description, isOptional, isPassed, failureMessage)
+        testInfo.index,
+        getTestMessage(testInfo)
     });
-    passedTests += isPassed;
-    failedTests += !isPassed;
-    failedOptionalTests += !isPassed && isOptional;
-    testCasesReceived += (testIndex == 1);
+    passedTests += testInfo.passed;
+    failedTests += !testInfo.passed;
+    failedOptionalTests += !testInfo.passed && testInfo.optional;
+    testCasesReceived += (testInfo.index == 1);
     while (!testsQueue.empty() &&
                 (testsQueue.begin()->first == testsLogged + 1 || !maintainTestIndexOrder)) {
         stream << testsQueue.begin()->second;
@@ -83,25 +82,33 @@ void TestLogger::logFatalError(const string& errorMessage, const string& testCas
     stream << ": " << errorMessage << "\n";
 }
 
-string TestLogger::getTestMessage(const string& groupDescription,
-                                  const string& description,
-                                  bool isOptional,
-                                  bool isPassed,
-                                  string failureMessage) {
+string TestLogger::getRecursiveGroupDescription(int groupId) {
+    auto groupInfoIterator = allGroupsInfo.find(groupId);
+    if (groupInfoIterator == allGroupsInfo.end()) {
+        return "";
+    }
+    GroupInfo groupInfo = groupInfoIterator->second;
+    return getRecursiveGroupDescription(groupInfo.parentGroupIndex) + groupInfo.description + "::";
+}
+
+string TestLogger::getTestMessage(const TestInfo& testInfo) {
     stringstream sBuffer;
     sBuffer << "[";
-    modifyOutput(isPassed ? 32 : (isOptional ? 33 : 31), sBuffer);
-    sBuffer << (isPassed ? 'P' : 'F');
+    modifyOutput(testInfo.passed ? 32 : (testInfo.optional ? 33 : 31), sBuffer);
+    sBuffer << (testInfo.passed ? 'P' : 'F');
     modifyOutput(0, sBuffer);
     sBuffer << "] ";
     modifyOutput(90, sBuffer);
+    string groupDescription = testInfo.file + ":" + to_string(testInfo.line) + "::"
+                              + getRecursiveGroupDescription(testInfo.groupIndex);
     sBuffer << groupDescription;
     modifyOutput(0, sBuffer);
-    sBuffer << description;
-    if (!isPassed) {
+    sBuffer << testInfo.description;
+    if (!testInfo.passed) {
         sBuffer << "\n";
         // TODO(darius98): This should be somewhere else (in utils maybe?)
         size_t pos = 0;
+        string failureMessage = testInfo.failureMessage;
         while ((pos = failureMessage.find('\n', pos)) != string::npos) {
             failureMessage.replace(pos, 1, "\n\t");
             pos += 2;

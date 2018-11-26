@@ -18,19 +18,19 @@ void TestExecutionLoop::addToLoop(const std::string& testPath, int maxParallelTe
         testPath,
         maxParallelTests,
         [this](const KKTestCaseInfo& info) {
-            if (info.finished && info.finishedWithError) {
-                testLogger.logFatalError(info.errorMessage, info.testExecutablePath);
-            } else {
-                const TestInfo& testInfo = info.tests.back();
-                failedAnyTest |= !testInfo.passed;
-                string descriptionPrefix = testInfo.file + ":" + to_string(testInfo.line) + "::";
-                descriptionPrefix += info.getRecursiveGroupDescription(testInfo.groupIndex);
-                testLogger.logTest(testInfo.index,
-                                   descriptionPrefix,
-                                   testInfo.description,
-                                   testInfo.optional,
-                                   testInfo.passed,
-                                   testInfo.failureMessage);
+            switch(info.lastReceived) {
+                case KKTestCaseInfo::FINISH_WITH_ERROR:
+                    testLogger.logFatalError(info.errorMessage, info.testExecutablePath);
+                    break;
+                case KKTestCaseInfo::FINISH:
+                    break;
+                case KKTestCaseInfo::GROUP:
+                    testLogger.addGroupInfo(info.groupsReceived.back());
+                    break;
+                case KKTestCaseInfo::TEST:
+                    failedAnyTest |= !info.testsReceived.back().passed;
+                    testLogger.logTest(info.testsReceived.back());
+                    break;
             }
         }
     );

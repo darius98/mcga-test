@@ -5,6 +5,7 @@
 #include <messaging>
 
 #include <kktest_plugin_api.hpp>
+#include <kktest_ext/feedback_impl/pipe_message_type.hpp>
 
 using namespace easyflags;
 using namespace messaging;
@@ -33,7 +34,7 @@ public:
         }
         pipe = new OutputPipe(pipeFD);
         addBeforeGroupHook([this](const GroupInfo& groupInfo) {
-            pipe->pipe(Message::build(0,
+            pipe->pipe(Message::build(PipeMessageType::GROUP,
                                       groupInfo.parentGroupIndex,
                                       groupInfo.index,
                                       groupInfo.line,
@@ -42,7 +43,7 @@ public:
             ));
         });
         addAfterTestHook([this](const TestInfo& testInfo) {
-            pipe->pipe(Message::build(1,
+            pipe->pipe(Message::build(PipeMessageType::TEST,
                                       testInfo.groupIndex,
                                       testInfo.index,
                                       testInfo.line,
@@ -54,10 +55,10 @@ public:
             ));
         });
         addBeforeDestroyHook([this]() {
-            pipe->pipe(Message::build(2));
+            pipe->pipe(Message::build(PipeMessageType::DONE));
         });
         addBeforeForceDestroyHook([this](const std::exception& error) {
-            pipe->pipe(Message::build(3, string(error.what())));
+            pipe->pipe(Message::build(PipeMessageType::ERROR, string(error.what())));
         });
     }
 

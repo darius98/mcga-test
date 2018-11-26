@@ -5,36 +5,18 @@
 #include <string>
 #include <vector>
 
+#include <kktest_plugin_api.hpp>
+
 namespace runner {
-
-struct TestInfo {
-    int groupIndex;
-    int index;
-    int line;
-    std::string file;
-    bool optional;
-    std::string description;
-    bool passed;
-    std::string failureMessage;
-};
-
-struct GroupInfo {
-    int parentGroupIndex;
-    int index;
-    int line;
-    std::string file;
-    std::string description;
-};
 
 struct KKTestCaseInfo {
     std::string testExecutablePath;
-    std::map<int, GroupInfo> groups;
-    std::vector<TestInfo> tests;
+    std::vector<kktest::GroupInfo> groupsReceived;
+    std::vector<kktest::TestInfo> testsReceived;
     bool finished = false;
-    bool finishedWithError = false;
     std::string errorMessage;
 
-    std::string getRecursiveGroupDescription(int groupId) const;
+    enum LastReceived { TEST, GROUP, FINISH, FINISH_WITH_ERROR } lastReceived;
 };
 
 }

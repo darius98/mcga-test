@@ -6,10 +6,13 @@
 #include <cstdlib>
 
 #include <stdexcept>
+#include <iostream>
 
+#include <kktest_ext/feedback>
 #include "test_execution_cycle.hpp"
 
 using namespace messaging;
+using namespace kktest;
 using namespace std;
 
 namespace runner {
@@ -17,11 +20,11 @@ namespace runner {
 TestExecutionCycle::TestExecutionCycle(
             const string& _testPath,
             int _maxParallelTests,
-            const function<void(const KKTestCaseInfo&)>& _onTestCallback):
+            const function<void(const KKTestCaseInfo&)>& _onInfoCallback):
         started(false),
         testPath(_testPath),
         maxParallelTests(_maxParallelTests),
-        onTestCallback(_onTestCallback),
+        onInfoCallback(_onInfoCallback),
         pipeWithTestProcess(nullptr),
         testProcessPID(0) {
     info.testExecutablePath = testPath;
@@ -106,49 +109,64 @@ void TestExecutionCycle::processMessages(bool block) {
 
 void TestExecutionCycle::processMessage(const Message& message) {
     MessageReader reader(message);
-    int type;
+    PipeMessageType type;
     reader << type;
-    // TODO: Make an enum in a shared space with the kktest library.
-    if (type == 0) { // group
-        GroupInfo groupInfo;
-        reader << groupInfo.parentGroupIndex
-               << groupInfo.index
-               << groupInfo.line
-               << groupInfo.file
-               << groupInfo.description;
-        info.groups[groupInfo.index] = groupInfo;
-    } else if (type == 1) { // test
-        TestInfo testInfo;
-        reader << testInfo.groupIndex
-               << testInfo.index
-               << testInfo.line
-               << testInfo.file
-               << testInfo.optional
-               << testInfo.description
-               << testInfo.passed
-               << testInfo.failureMessage;
-        info.tests.push_back(testInfo);
-        onTestCallback(info);
-    } else if (type == 2) { // done
-        int removeStat = remove(pipeName.c_str());
-        if (removeStat < 0) {
-            perror("remove pipe");
-            exit(errno);
+    switch(type) {
+        case PipeMessageType::GROUP: { // group
+            GroupInfo groupInfo;
+            reader << groupInfo.parentGroupIndex
+                   << groupInfo.index
+                   << groupInfo.line
+                   << groupInfo.file
+                   << groupInfo.description;
+            info.groupsReceived.push_back(groupInfo);
+            info.lastReceived = KKTestCaseInfo::GROUP;
+            break;
         }
-        close(pipeFD);
-        info.finished = true;
-    } else if (type == 3) {
-        int removeStat = remove(pipeName.c_str());
-        if (removeStat < 0) {
-            perror("remove pipe");
-            exit(errno);
+        case PipeMessageType::TEST: { // test
+            TestInfo testInfo;
+            reader << testInfo.groupIndex
+                   << testInfo.index
+                   << testInfo.line
+                   << testInfo.file
+                   << testInfo.optional
+                   << testInfo.description
+                   << testInfo.passed
+                   << testInfo.failureMessage;
+            info.testsReceived.push_back(testInfo);
+            info.lastReceived = KKTestCaseInfo::TEST;
+            break;
         }
-        close(pipeFD);
-        info.finished = true;
-        info.finishedWithError = true;
-        reader << info.errorMessage;
-        onTestCallback(info);
+        case PipeMessageType::DONE: { // done
+            int removeStat = remove(pipeName.c_str());
+            if (removeStat < 0) {
+                perror("remove pipe");
+                exit(errno);
+            }
+            close(pipeFD);
+            info.finished = true;
+            info.lastReceived = KKTestCaseInfo::FINISH;
+            break;
+        }
+        case PipeMessageType::ERROR: { // error
+            int removeStat = remove(pipeName.c_str());
+            if (removeStat < 0) {
+                perror("remove pipe");
+                exit(errno);
+            }
+            close(pipeFD);
+            info.finished = true;
+            info.lastReceived = KKTestCaseInfo::FINISH_WITH_ERROR;
+            reader << info.errorMessage;
+            break;
+        }
+        default: { // idk
+            cout << "Unknown message received on pipe, type " << type << ". Exiting.\n";
+            exit(1);
+        }
+
     }
+    onInfoCallback(info);
 }
 
 }

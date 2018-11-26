@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-#include <logging>
+#include <kktest_ext/feedback>
 
 #include <test_execution_loop/test_execution_cycle.hpp>
 
@@ -24,7 +24,7 @@ public:
 
 private:
     bool failedAnyTest = false;
-    logging::TestLogger testLogger;
+    kktest::TestLogger testLogger;
     int concurrentRunningCyclesLimit;
     int runningCycles = 0;
     std::vector<TestExecutionCycle> cycles;
