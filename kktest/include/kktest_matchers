@@ -1,6 +1,0 @@
-#ifndef KKTEST_INCLUDE_KKTEST_MATCHERS_
-#define KKTEST_INCLUDE_KKTEST_MATCHERS_
-
-#include <kktest_matchers.hpp>
-
-#endif

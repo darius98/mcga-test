@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.7)
+cmake_minimum_required(VERSION 3.13)
 project(KKTest)
 set(CMAKE_CXX_STANDARD 11)
 
@@ -7,8 +7,8 @@ set(CMAKE_POSITION_INDEPENDENT_CODE TRUE)
 set(BUILD_TYPE "DEV" CACHE STRING "BUILD_TYPE")
 
 # Third party targets
-add_subdirectory("third_party/autojson")
-add_subdirectory("third_party/easyflags")
+add_subdirectory(third_party/autojson)
+add_subdirectory(third_party/easyflags)
 
 set(TESTS_PATH "${CMAKE_CURRENT_SOURCE_DIR}/build/tests")
 
@@ -16,6 +16,17 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/build/lib")
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/build/arc")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/build/bin")
 
-add_subdirectory(common)
+include(kktest.cmake)
+
+add_subdirectory(common/strutil)
+add_subdirectory(common/fsystem)
+add_subdirectory(common/logging)
+add_subdirectory(common/messaging)
+
 add_subdirectory(kktest)
+add_subdirectory(kktest_extensions/core_matchers)
+
+# Link the extensions into the kktest library
+target_link_libraries(kktest kktest_extension_core_matchers)
+
 add_subdirectory(kktest_runner)

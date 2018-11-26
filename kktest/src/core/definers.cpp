@@ -1,4 +1,4 @@
-#include <core/definers.hpp>
+#include <kktest_impl/definers.hpp>
 #include <core/driver.hpp>
 #include <core/errors.hpp>
 #include <core/test_case_registry.hpp>
@@ -7,7 +7,7 @@ using namespace std;
 
 namespace kktest {
 
-TestCaseRegistryKeeper::TestCaseRegistryKeeper(void (*testCase)()) {
+TestCaseDefiner::TestCaseDefiner(void (*testCase)()) {
     TestCaseRegistry::add(testCase);
 }
 

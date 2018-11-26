@@ -1,6 +1,7 @@
 #ifndef KKTEST_CORE_DRIVER_H_
 #define KKTEST_CORE_DRIVER_H_
 
+#include <functional>
 #include <map>
 #include <set>
 #include <vector>

@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include <core/config.hpp>
+#include <kktest_impl/config.hpp>
 
 namespace kktest {
 
