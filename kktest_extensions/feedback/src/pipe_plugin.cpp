@@ -4,7 +4,7 @@
 #include <EasyFlags.hpp>
 #include <messaging>
 
-#include <core/driver.hpp>
+#include <kktest_plugin_api.hpp>
 
 using namespace easyflags;
 using namespace messaging;
@@ -32,31 +32,31 @@ public:
             exit(errno);
         }
         pipe = new OutputPipe(pipeFD);
-        TestingDriver::addBeforeGroupHook([this](const Group& group) {
+        addBeforeGroupHook([this](const GroupInfo& groupInfo) {
             pipe->pipe(Message::build(0,
-                                      group.getParentGroupIndex(),
-                                      group.getIndex(),
-                                      group.getConfig().line,
-                                      group.getConfig().file,
-                                      group.getConfig().description
+                                      groupInfo.parentGroupIndex,
+                                      groupInfo.index,
+                                      groupInfo.line,
+                                      groupInfo.file,
+                                      groupInfo.description
             ));
         });
-        TestingDriver::addAfterTestHook([this](const Test& test) {
+        addAfterTestHook([this](const TestInfo& testInfo) {
             pipe->pipe(Message::build(1,
-                                      test.getGroupIndex(),
-                                      test.getIndex(),
-                                      test.getConfig().line,
-                                      test.getConfig().file,
-                                      test.getConfig().optional,
-                                      test.getConfig().description,
-                                      test.isPassed(),
-                                      test.getFailureMessage()
+                                      testInfo.groupIndex,
+                                      testInfo.index,
+                                      testInfo.line,
+                                      testInfo.file,
+                                      testInfo.optional,
+                                      testInfo.description,
+                                      testInfo.passed,
+                                      testInfo.failureMessage
             ));
         });
-        TestingDriver::addBeforeDestroyHook([this]() {
+        addBeforeDestroyHook([this]() {
             pipe->pipe(Message::build(2));
         });
-        TestingDriver::addBeforeForceDestroyHook([this](const ConfigurationError& error) {
+        addBeforeForceDestroyHook([this](const std::exception& error) {
             pipe->pipe(Message::build(3, string(error.what())));
         });
     }

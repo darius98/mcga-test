@@ -4,6 +4,7 @@
 #include <string>
 
 #include <kktest_impl/config.hpp>
+#include <kktest_impl/info.hpp>
 
 namespace kktest {
 
@@ -30,6 +31,8 @@ public:
     std::string getDescriptionPrefix() const;
 
     int getGroupIndex() const;
+
+    TestInfo getTestInfo() const;
 
 private:
     Test(const TestConfig& _config, Group* _parentGroup, int _index);

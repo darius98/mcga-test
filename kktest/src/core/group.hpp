@@ -4,6 +4,7 @@
 #include <string>
 
 #include <kktest_impl/executable.hpp>
+#include <kktest_impl/info.hpp>
 #include <core/test.hpp>
 
 namespace kktest {
@@ -19,6 +20,8 @@ public:
     int getIndex() const;
 
     int getParentGroupIndex() const;
+
+    GroupInfo getGroupInfo() const;
 
 private:
     Group(const GroupConfig& _config, Group* _parentGroup, int _index);

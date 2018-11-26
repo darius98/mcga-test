@@ -92,4 +92,14 @@ int Group::getParentGroupIndex() const {
     return parentGroup->getIndex();
 }
 
+GroupInfo Group::getGroupInfo() const {
+    return GroupInfo{
+        parentGroup->index,
+        index,
+        config.line,
+        config.file,
+        config.description
+    };
+}
+
 }

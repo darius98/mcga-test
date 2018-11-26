@@ -12,34 +12,6 @@ void TestingDriver::setExecutor(Executor* executor) {
     getInstance()->executor = executor;
 }
 
-void TestingDriver::addBeforeTestHook(const TestHook& hook) {
-    getInstance()->addHook(hook, getInstance()->beforeTestHooks);
-}
-
-void TestingDriver::addAfterTestHook(const TestHook& hook) {
-    getInstance()->addHook(hook, getInstance()->afterTestHooks);
-}
-
-void TestingDriver::addBeforeGroupHook(const GroupHook& hook) {
-    getInstance()->addHook(hook, getInstance()->beforeGroupHooks);
-}
-
-void TestingDriver::addAfterGroupHook(const GroupHook& hook) {
-    getInstance()->addHook(hook, getInstance()->afterGroupHooks);
-}
-
-void TestingDriver::addAfterInitHook(const AfterInitHook& hook) {
-    getInstance()->addHook(hook, getInstance()->afterInitHooks);
-}
-
-void TestingDriver::addBeforeDestroyHook(const BeforeDestroyHook& hook) {
-    getInstance()->addHook(hook, getInstance()->beforeDestroyHooks);
-}
-
-void TestingDriver::addBeforeForceDestroyHook(const BeforeForceDestroyHook& hook) {
-    getInstance()->addHook(hook, getInstance()->beforeForceDestroyHooks);
-}
-
 TestingDriver* TestingDriver::instance = nullptr;
 
 TestingDriver* TestingDriver::getInstance() {
@@ -197,8 +169,9 @@ void TestingDriver::addTearDown(Executable func, const string& file, int line) {
 }
 
 void TestingDriver::beforeTest(Test* test) {
+    TestInfo info = test->getTestInfo();
     for (const TestHook& hook: beforeTestHooks) {
-        hook(*test);
+        hook(info);
     }
 }
 
@@ -207,22 +180,25 @@ void TestingDriver::afterTest(Test* test) {
         failedAnyNonOptionalTest |= test->isFailed();
     }
     Group* group = test->getGroup();
+    TestInfo info = test->getTestInfo();
     for (const TestHook& hook: afterTestHooks) {
-        hook(*test);
+        hook(info);
     }
     delete test;
     markTestFinished(group);
 }
 
 void TestingDriver::beforeGroup(Group* group) {
+    GroupInfo info = group->getGroupInfo();
     for (const GroupHook& hook: beforeGroupHooks) {
-        hook(*group);
+        hook(info);
     }
 }
 
 void TestingDriver::afterGroup(Group* group) {
+    GroupInfo info = group->getGroupInfo();
     for (const GroupHook &hook: afterGroupHooks) {
-        hook(*group);
+        hook(info);
     }
     delete group;
     testsInExecutionPerGroup.erase(group);

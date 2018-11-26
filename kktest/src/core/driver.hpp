@@ -6,31 +6,16 @@
 #include <set>
 #include <vector>
 
+#include <kktest_impl/plugin_api.hpp>
 #include <core/errors.hpp>
 #include <core/executor.hpp>
 #include <core/group.hpp>
-#include <core/plugin.hpp>
 
 namespace kktest {
 
 class TestingDriver {
 public:
-    typedef std::function<void(const Test&)> TestHook;
-    typedef std::function<void(const Group&)> GroupHook;
-    typedef std::function<void()> AfterInitHook;
-    typedef std::function<void()> BeforeDestroyHook;
-    typedef std::function<void(const ConfigurationError&)> BeforeForceDestroyHook;
-
     static void setExecutor(Executor* executor);
-
-    static void addBeforeTestHook(const TestHook& hook);
-    static void addAfterTestHook(const TestHook& hook);
-    static void addBeforeGroupHook(const GroupHook& hook);
-    static void addAfterGroupHook(const GroupHook& hook);
-
-    static void addAfterInitHook(const AfterInitHook& hook);
-    static void addBeforeDestroyHook(const BeforeDestroyHook& hook);
-    static void addBeforeForceDestroyHook(const BeforeForceDestroyHook& hook);
 
 private:
     static TestingDriver* getInstance();
@@ -104,6 +89,13 @@ friend class GroupDefiner;
 friend class SetUpDefiner;
 friend class TearDownDefiner;
 friend class ExpectDefiner;
+friend void addBeforeTestHook(const TestHook& hook);
+friend void addAfterTestHook(const TestHook& hook);
+friend void addBeforeGroupHook(const GroupHook& hook);
+friend void addAfterGroupHook(const GroupHook& hook);
+friend void addAfterInitHook(const AfterInitHook& hook);
+friend void addBeforeDestroyHook(const BeforeDestroyHook& hook);
+friend void addBeforeForceDestroyHook(const BeforeForceDestroyHook& hook);
 };
 
 }

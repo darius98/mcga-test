@@ -24,9 +24,12 @@ add_subdirectory(common/logging)
 add_subdirectory(common/messaging)
 
 add_subdirectory(kktest)
-add_subdirectory(kktest_extensions/core_matchers)
 
-# Link the extensions into the kktest library
+# Link extensions into the kktest library
+add_subdirectory(kktest_extensions/core_matchers)
 target_link_libraries(kktest kktest_extension_core_matchers)
+
+add_subdirectory(kktest_extensions/feedback)
+target_link_libraries(kktest kktest_extension_feedback)
 
 add_subdirectory(kktest_runner)
