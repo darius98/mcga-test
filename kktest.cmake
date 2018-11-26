@@ -5,15 +5,6 @@ function(add_kktest TEST_NAME)
         message(FATAL_ERROR "TESTS_PATH variable not set.")
     endif ()
 
-    if (BUILD_TYPE STREQUAL "DEV")
-        set(KKTEST_LIB kktest)
-    else ()
-        find_library(KKTEST_LIB kktest)
-    endif()
-    if (NOT KKTEST_LIB)
-        message(FATAL_ERROR "kktest library not installed.")
-    endif()
-
     set(PREV_CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${TESTS_PATH})
 
