@@ -108,7 +108,7 @@ void TestExecutionCycle::processMessage(const Message& message) {
     MessageReader reader(message);
     int type;
     reader << type;
-    // TODO: Make an enum in a shared space with the kktest_core library.
+    // TODO: Make an enum in a shared space with the kktest library.
     if (type == 0) { // group
         GroupInfo groupInfo;
         reader << groupInfo.parentGroupIndex

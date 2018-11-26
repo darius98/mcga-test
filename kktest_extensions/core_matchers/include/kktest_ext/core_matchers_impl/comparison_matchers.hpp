@@ -93,6 +93,6 @@ IdentityMatcher<T> isIdenticalTo(const T& object) {
     return IdentityMatcher<T>(object);
 }
 
-} // namespace kktest_core
+}
 
 #endif
