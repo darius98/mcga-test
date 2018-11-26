@@ -3,8 +3,8 @@
 
 #include <set>
 
-#include <core/executor.hpp>
-#include <core/test_container.hpp>
+#include "executor.hpp"
+#include "test_container.hpp"
 
 namespace kktest {
 

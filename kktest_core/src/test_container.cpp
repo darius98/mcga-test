@@ -6,7 +6,7 @@
 #include <messaging>
 #include <strutil>
 
-#include <core/test_container.hpp>
+#include "test_container.hpp"
 
 using namespace messaging;
 using namespace std;

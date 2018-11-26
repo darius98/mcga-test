@@ -23,9 +23,9 @@ add_subdirectory(common/fsystem)
 add_subdirectory(common/logging)
 add_subdirectory(common/messaging)
 
-add_subdirectory(kktest)
+add_subdirectory(kktest_core)
 
-# Link extensions into the kktest library
+# Link extensions into the kktest_core library
 add_subdirectory(kktest_extensions/core_matchers)
 target_link_libraries(kktest kktest_extension_core_matchers)
 

@@ -1,7 +1,7 @@
 #include <kktest_impl/definers.hpp>
-#include <core/driver.hpp>
-#include <core/errors.hpp>
-#include <core/test_case_registry.hpp>
+#include "driver.hpp"
+#include "errors.hpp"
+#include "test_case_registry.hpp"
 
 using namespace std;
 

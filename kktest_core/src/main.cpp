@@ -1,7 +1,7 @@
 #include <EasyFlags.hpp>
 
-#include <core/driver.hpp>
-#include <core/test_case_registry.hpp>
+#include "driver.hpp"
+#include "test_case_registry.hpp"
 
 using namespace easyflags;
 using namespace std;

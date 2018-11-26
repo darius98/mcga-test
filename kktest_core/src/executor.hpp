@@ -2,8 +2,8 @@
 #define KKTEST_CORE_EXECUTOR_H_
 
 #include <kktest_impl/executable.hpp>
-#include <core/group.hpp>
-#include <core/test.hpp>
+#include "group.hpp"
+#include "test.hpp"
 
 namespace kktest {
 

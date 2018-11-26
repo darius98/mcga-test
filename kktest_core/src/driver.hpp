@@ -7,9 +7,9 @@
 #include <vector>
 
 #include <kktest_impl/plugin_api.hpp>
-#include <core/errors.hpp>
-#include <core/executor.hpp>
-#include <core/group.hpp>
+#include "errors.hpp"
+#include "executor.hpp"
+#include "group.hpp"
 
 namespace kktest {
 

@@ -5,7 +5,7 @@
 #include <string>
 
 #include <kktest_impl/executable.hpp>
-#include <core/test.hpp>
+#include "test.hpp"
 
 namespace kktest {
 

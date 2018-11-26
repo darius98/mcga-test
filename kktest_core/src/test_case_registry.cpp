@@ -1,7 +1,7 @@
 #include <cstdlib>
 #include <cstring>
 
-#include <core/test_case_registry.hpp>
+#include "test_case_registry.hpp"
 
 using namespace std;
 

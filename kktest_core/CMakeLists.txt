@@ -7,18 +7,17 @@ target_include_directories(kktest_core INTERFACE include)
 target_link_libraries(kktest_core INTERFACE messaging strutil fsystem easyflags)
 
 add_library(kktest SHARED
-    src/core/definers.cpp
-    src/core/driver.cpp
-    src/core/errors.cpp
-    src/core/executor.cpp
-    src/core/filename.cpp
-    src/core/group.cpp
-    src/core/plugin_api.cpp
-    src/core/test_case_registry.cpp
-    src/core/test.cpp
-    src/core/box_executor.cpp
-    src/core/test_container.cpp
-
+    src/definers.cpp
+    src/driver.cpp
+    src/errors.cpp
+    src/executor.cpp
+    src/filename.cpp
+    src/group.cpp
+    src/plugin_api.cpp
+    src/test_case_registry.cpp
+    src/test.cpp
+    src/box_executor.cpp
+    src/test_container.cpp
     src/main.cpp
 )
 target_compile_options(kktest PRIVATE -Wall -Wextra -pedantic)

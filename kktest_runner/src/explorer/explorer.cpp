@@ -53,7 +53,7 @@ private:
                 result += buffer;
             }
         }
-        return containsSubstring(result, "kktest");
+        return containsSubstring(result, "kktest_core");
     }
 
     Folder rootFolder;

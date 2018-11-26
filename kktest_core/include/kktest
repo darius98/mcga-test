@@ -1,5 +1,5 @@
-#ifndef KKTEST_INCLUDE_KKTEST_
-#define KKTEST_INCLUDE_KKTEST_
+#ifndef KKTEST_CORE_INCLUDE_KKTEST_
+#define KKTEST_CORE_INCLUDE_KKTEST_
 
 #include <kktest_impl/definers.hpp>
 #include <kktest_impl/filename.hpp>
