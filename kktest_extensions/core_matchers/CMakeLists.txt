@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.7)
 project(kktest_extension_core_matchers)
 set(CMAKE_CXX_STANDARD 17)
 
-add_library(kktest_extension_core_matchers
+add_library(kktest_extension_core_matchers OBJECT
     src/functional_matchers.cpp
     src/iterable_matchers.cpp
     src/numeric_matchers.cpp
@@ -10,7 +10,7 @@ add_library(kktest_extension_core_matchers
     src/string_matchers.cpp
     src/truth_matchers.cpp
 )
-target_include_directories(kktest_extension_core_matchers PUBLIC include PRIVATE src)
+target_include_directories(kktest_extension_core_matchers PUBLIC include)
 
 add_kktest(comparison_matcher_test    tests/comparison_matcher_test.cpp)
 add_kktest(composite_matcher_test     tests/composite_matchers_test.cpp)

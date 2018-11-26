@@ -2,11 +2,11 @@ cmake_minimum_required(VERSION 3.7)
 project(kktest_core)
 set(CMAKE_CXX_STANDARD 11)
 
-add_library(kktest_core INTERFACE)
-target_include_directories(kktest_core INTERFACE include)
-target_link_libraries(kktest_core INTERFACE messaging strutil fsystem easyflags)
+add_library(kktest_interface INTERFACE)
+target_include_directories(kktest_interface INTERFACE include)
+target_link_libraries(kktest_interface INTERFACE messaging strutil fsystem easyflags)
 
-add_library(kktest SHARED
+add_library(kktest_impl OBJECT
     src/definers.cpp
     src/driver.cpp
     src/errors.cpp
@@ -20,9 +20,8 @@ add_library(kktest SHARED
     src/test_container.cpp
     src/main.cpp
 )
-target_compile_options(kktest PRIVATE -Wall -Wextra -pedantic)
-target_include_directories(kktest PRIVATE src)
-target_link_libraries(kktest kktest_core)
+target_compile_options(kktest_impl PRIVATE -Wall -Wextra -pedantic)
+target_link_libraries(kktest_impl kktest_interface)
 
 # Examples
 function(example FILE_NAME)

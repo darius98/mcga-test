@@ -25,11 +25,6 @@ add_subdirectory(common/messaging)
 
 add_subdirectory(kktest_core)
 
-# Link extensions into the kktest_core library
-add_subdirectory(kktest_extensions/core_matchers)
-target_link_libraries(kktest kktest_extension_core_matchers)
-
-add_subdirectory(kktest_extensions/feedback)
-target_link_libraries(kktest kktest_extension_feedback)
+include(build_kktest_shared_lib.cmake)
 
 add_subdirectory(kktest_runner)
