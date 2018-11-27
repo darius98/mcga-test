@@ -1,10 +1,10 @@
 #ifndef COMMON_FSYSTEM_INCLUDE_FSYSTEM_
 #define COMMON_FSYSTEM_INCLUDE_FSYSTEM_
 
-#include "./fsystem_public/error.hpp"
-#include "./fsystem_public/extension.hpp"
-#include "./fsystem_public/file.hpp"
-#include "./fsystem_public/folder.hpp"
-#include "./fsystem_public/path.hpp"
+#include <fsystem_impl/error.hpp>
+#include <fsystem_impl/extension.hpp>
+#include <fsystem_impl/file.hpp>
+#include <fsystem_impl/folder.hpp>
+#include <fsystem_impl/path.hpp>
 
 #endif

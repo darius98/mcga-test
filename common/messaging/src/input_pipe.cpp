@@ -2,7 +2,7 @@
 
 #include <cstring>
 
-#include "input_pipe.hpp"
+#include <messaging_impl/input_pipe.hpp>
 
 using namespace std;
 

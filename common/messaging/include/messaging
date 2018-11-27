@@ -1,9 +1,9 @@
 #ifndef COMMON_MESSAGING_INCLUDE_MESSAGING_
 #define COMMON_MESSAGING_INCLUDE_MESSAGING_
 
-#include "./messaging_public/message.hpp"
-#include "./messaging_public/message_reader.hpp"
-#include "./messaging_public/input_pipe.hpp"
-#include "./messaging_public/output_pipe.hpp"
+#include <messaging_impl/message.hpp>
+#include <messaging_impl/message_reader.hpp>
+#include <messaging_impl/input_pipe.hpp>
+#include <messaging_impl/output_pipe.hpp>
 
 #endif

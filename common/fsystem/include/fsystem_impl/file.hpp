@@ -1,12 +1,12 @@
-#ifndef COMMON_FSYSTEM_INCLUDE_FSYSTEM_PUBLIC_FILE_H_
-#define COMMON_FSYSTEM_INCLUDE_FSYSTEM_PUBLIC_FILE_H_
+#ifndef COMMON_FSYSTEM_INCLUDE_FSYSTEM_IMPL_FILE_H_
+#define COMMON_FSYSTEM_INCLUDE_FSYSTEM_IMPL_FILE_H_
 
 #include <string>
 
 #include <strutil>
-#include "extension.hpp"
-#include "path.hpp"
 
+#include <fsystem_impl/extension.hpp>
+#include <fsystem_impl/path.hpp>
 
 namespace fsystem {
 

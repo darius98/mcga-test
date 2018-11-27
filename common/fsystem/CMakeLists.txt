@@ -6,5 +6,4 @@ add_library(fsystem
     src/path.cpp
 )
 target_include_directories(fsystem PUBLIC include)
-target_include_directories(fsystem PRIVATE include/fsystem_public)
 target_link_libraries(fsystem strutil)

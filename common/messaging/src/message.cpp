@@ -1,6 +1,6 @@
 #include <cstring>
 
-#include "message.hpp"
+#include <messaging_impl/message.hpp>
 
 using namespace std;
 

@@ -1,9 +1,8 @@
-#ifndef COMMON_FSYSTEM_INCLUDE_FSYSTEM_PUBLIC_FOLDER_H_
-#define COMMON_FSYSTEM_INCLUDE_FSYSTEM_PUBLIC_FOLDER_H_
+#ifndef COMMON_FSYSTEM_INCLUDE_FSYSTEM_IMPL_FOLDER_H_
+#define COMMON_FSYSTEM_INCLUDE_FSYSTEM_IMPL_FOLDER_H_
 
-#include "file.hpp"
-#include "path.hpp"
-
+#include <fsystem_impl/file.hpp>
+#include <fsystem_impl/path.hpp>
 
 namespace fsystem {
 

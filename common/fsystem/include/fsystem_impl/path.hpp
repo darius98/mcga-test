@@ -1,12 +1,12 @@
-#ifndef COMMON_FSYSTEM_INCLUDE_FSYSTEM_PUBLIC_PATH_H_
-#define COMMON_FSYSTEM_INCLUDE_FSYSTEM_PUBLIC_PATH_H_
+#ifndef COMMON_FSYSTEM_INCLUDE_FSYSTEM_IMPL_PATH_H_
+#define COMMON_FSYSTEM_INCLUDE_FSYSTEM_IMPL_PATH_H_
 
 #include <string>
 #include <vector>
 
 #include <strutil>
-#include "error.hpp"
 
+#include <fsystem_impl/error.hpp>
 
 namespace fsystem {
 
