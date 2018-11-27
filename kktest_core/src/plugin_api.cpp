@@ -7,35 +7,45 @@ using namespace std;
 namespace kktest {
 
 void addBeforeTestHook(const TestHook& hook) {
-    TestingDriver::getInstance()->addHook(hook, TestingDriver::getInstance()->beforeTestHooks);
+    TestingDriver::addHook<TestingDriverHooks::BEFORE_TEST>(hook);
 }
 
 void addAfterTestHook(const TestHook& hook) {
-    TestingDriver::getInstance()->addHook(hook, TestingDriver::getInstance()->afterTestHooks);
+    TestingDriver::addHook<TestingDriverHooks::AFTER_TEST>(hook);
 }
 
 void addBeforeGroupHook(const GroupHook& hook) {
-    TestingDriver::getInstance()->addHook(hook, TestingDriver::getInstance()->beforeGroupHooks);
+    TestingDriver::addHook<TestingDriverHooks::BEFORE_GROUP>(hook);
 }
 
 void addAfterGroupHook(const GroupHook& hook) {
-    TestingDriver::getInstance()->addHook(hook, TestingDriver::getInstance()->afterGroupHooks);
+    TestingDriver::addHook<TestingDriverHooks::AFTER_GROUP>(hook);
 }
 
 void addAfterInitHook(const AfterInitHook& hook) {
-    TestingDriver::getInstance()->addHook(hook, TestingDriver::getInstance()->afterInitHooks);
+    TestingDriver::addHook<TestingDriverHooks::AFTER_INIT>(hook);
 }
 
 void addBeforeDestroyHook(const BeforeDestroyHook& hook) {
-    TestingDriver::getInstance()->addHook(hook, TestingDriver::getInstance()->beforeDestroyHooks);
+    TestingDriver::addHook<TestingDriverHooks::BEFORE_DESTROY>(hook);
 }
 
 void addBeforeForceDestroyHook(const BeforeForceDestroyHook& hook) {
-    TestingDriver::getInstance()->addHook(hook, TestingDriver::getInstance()->beforeForceDestroyHooks);
+    TestingDriver::addHook<TestingDriverHooks::BEFORE_FORCE_DESTROY>(hook);
 }
 
 Plugin::Plugin() {
     TestingDriver::addPlugin(this);
 }
+
+Plugin::~Plugin() = default;
+
+bool Plugin::isEnabled() const {
+    return true;
+}
+
+void Plugin::install() {}
+
+void Plugin::uninstall() {}
 
 }

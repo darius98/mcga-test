@@ -50,17 +50,13 @@ void TestingDriver::init() {
     instance->allowRegisterHooks = true;
     instance->installPlugins();
     instance->allowRegisterHooks = false;
-    for (const AfterInitHook& hook: instance->afterInitHooks) {
-        hook();
-    }
+    instance->hookManager.runHooks<TestingDriverHooks::AFTER_INIT>();
 }
 
 int TestingDriver::destroy() {
     TestingDriver* driver = getInstance();
     driver->executor->finalize();
-    for (const BeforeDestroyHook& hook: driver->beforeDestroyHooks) {
-        hook();
-    }
+    instance->hookManager.runHooks<TestingDriverHooks::BEFORE_DESTROY>();
     driver->uninstallPlugins();
     int status = driver->failedAnyNonOptionalTest ? 1 : 0;
     delete plugins;
@@ -71,9 +67,7 @@ int TestingDriver::destroy() {
 
 void TestingDriver::forceDestroy(const ConfigurationError& error) {
     TestingDriver* driver = getInstance();
-    for (const BeforeForceDestroyHook& hook: driver->beforeForceDestroyHooks) {
-        hook(error);
-    }
+    instance->hookManager.runHooks<TestingDriverHooks::BEFORE_FORCE_DESTROY>(error);
     driver->uninstallPlugins();
     delete plugins;
     TestCaseRegistry::clean();
@@ -188,10 +182,7 @@ void TestingDriver::addTearDown(Executable func, const string& file, int line) {
 }
 
 void TestingDriver::beforeTest(Test* test) {
-    TestInfo info = test->getTestInfo();
-    for (const TestHook& hook: beforeTestHooks) {
-        hook(info);
-    }
+    hookManager.runHooks<TestingDriverHooks::BEFORE_TEST>(test->getTestInfo());
 }
 
 void TestingDriver::afterTest(Test* test) {
@@ -199,26 +190,17 @@ void TestingDriver::afterTest(Test* test) {
         failedAnyNonOptionalTest |= test->isFailed();
     }
     Group* group = test->getGroup();
-    TestInfo info = test->getTestInfo();
-    for (const TestHook& hook: afterTestHooks) {
-        hook(info);
-    }
+    hookManager.runHooks<TestingDriverHooks::AFTER_TEST>(test->getTestInfo());
     delete test;
     markTestFinished(group);
 }
 
 void TestingDriver::beforeGroup(Group* group) {
-    GroupInfo info = group->getGroupInfo();
-    for (const GroupHook& hook: beforeGroupHooks) {
-        hook(info);
-    }
+    hookManager.runHooks<TestingDriverHooks::BEFORE_GROUP>(group->getGroupInfo());
 }
 
 void TestingDriver::afterGroup(Group* group) {
-    GroupInfo info = group->getGroupInfo();
-    for (const GroupHook &hook: afterGroupHooks) {
-        hook(info);
-    }
+    hookManager.runHooks<TestingDriverHooks::AFTER_GROUP>(group->getGroupInfo());
     delete group;
     testsInExecutionPerGroup.erase(group);
     groupsWithAllTestsStarted.erase(group);

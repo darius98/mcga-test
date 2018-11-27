@@ -13,6 +13,42 @@
 
 namespace kktest {
 
+class TestingDriverHooks {
+public:
+    enum Type {
+        AFTER_INIT = 0,
+        BEFORE_GROUP = 1,
+        AFTER_GROUP = 2,
+        BEFORE_TEST = 3,
+        AFTER_TEST = 4,
+        BEFORE_DESTROY = 5,
+        BEFORE_FORCE_DESTROY = 6,
+    };
+
+    template<Type t, class H>
+    void addHook(const H& hook) {
+        std::get<t>(hooks).push_back(hook);
+    }
+
+    template<Type t, class... Args>
+    void runHooks(const Args... args) {
+        for (const auto& hook: std::get<t>(hooks)) {
+            hook(args...);
+        }
+    }
+
+private:
+    std::tuple<
+        std::vector<AfterInitHook>,
+        std::vector<GroupHook>,
+        std::vector<GroupHook>,
+        std::vector<TestHook>,
+        std::vector<TestHook>,
+        std::vector<BeforeDestroyHook>,
+        std::vector<BeforeForceDestroyHook>
+    > hooks;
+};
+
 class TestingDriver {
 public:
     static void addPlugin(Plugin* plugin);
@@ -26,17 +62,18 @@ public:
     static void beforeTestCase();
     static void afterTestCase();
 
+    template<TestingDriverHooks::Type t, class H>
+    static void addHook(const H& hook) {
+        TestingDriver* driver = getInstance();
+        if (!driver->allowRegisterHooks) {
+            throw KKTestLibraryImplementationError("Hook added outside Plugin::install()!");
+        }
+        driver->hookManager.addHook<t, H>(hook);
+    }
+
     TestingDriver();
 
     ~TestingDriver();
-
-    template<class H>
-    void addHook(H h, std::vector<H>& hs) {
-        if (!allowRegisterHooks) {
-            throw KKTestLibraryImplementationError("Hook added outside Plugin::install()!");
-        }
-        hs.emplace_back(std::move(h));
-    }
 
     void addGroup(const GroupConfig& config, Executable func);
 
@@ -63,14 +100,7 @@ private:
     static std::vector<Plugin*>* plugins;
     static TestingDriver* instance;
 
-    // Hooks
-    std::vector<AfterInitHook> afterInitHooks;
-    std::vector<TestHook> beforeTestHooks;
-    std::vector<TestHook> afterTestHooks;
-    std::vector<GroupHook> beforeGroupHooks;
-    std::vector<GroupHook> afterGroupHooks;
-    std::vector<BeforeDestroyHook> beforeDestroyHooks;
-    std::vector<BeforeForceDestroyHook> beforeForceDestroyHooks;
+    TestingDriverHooks hookManager;
 
     std::map<Group*, int> testsInExecutionPerGroup;
     std::set<Group*> groupsWithAllTestsStarted;
@@ -83,14 +113,6 @@ private:
     bool allowRegisterHooks = false;
 
     bool failedAnyNonOptionalTest = false;
-
-friend void addBeforeTestHook(const TestHook& hook);
-friend void addAfterTestHook(const TestHook& hook);
-friend void addBeforeGroupHook(const GroupHook& hook);
-friend void addAfterGroupHook(const GroupHook& hook);
-friend void addAfterInitHook(const AfterInitHook& hook);
-friend void addBeforeDestroyHook(const BeforeDestroyHook& hook);
-friend void addBeforeForceDestroyHook(const BeforeForceDestroyHook& hook);
 };
 
 }

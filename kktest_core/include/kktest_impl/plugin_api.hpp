@@ -26,15 +26,13 @@ class Plugin {
 public:
     Plugin();
 
-    virtual ~Plugin() = default;
+    virtual ~Plugin();
 
-    virtual bool isEnabled() const {
-        return true;
-    }
+    virtual bool isEnabled() const;
 
-    virtual void install() {}
+    virtual void install();
 
-    virtual void uninstall() {}
+    virtual void uninstall();
 };
 
 }
