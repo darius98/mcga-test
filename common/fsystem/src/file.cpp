@@ -50,17 +50,21 @@ File::File(File&& other) noexcept:
         rawName(move(other.rawName)),
         extensions(move(other.extensions)) {}
 
-File& File::operator=(File&& other) noexcept {
-    path = move(other.path);
-    rawName = move(other.rawName);
-    extensions = move(other.extensions);
+File& File::operator=(const File& other) {
+    if (this != &other) {
+        path = other.path;
+        rawName = other.rawName;
+        extensions = other.extensions;
+    }
     return *this;
 }
 
-File& File::operator=(const File& other) {
-    path = other.path;
-    rawName = other.rawName;
-    extensions = other.extensions;
+File& File::operator=(File&& other) noexcept {
+    if (this != &other) {
+        path = move(other.path);
+        rawName = move(other.rawName);
+        extensions = move(other.extensions);
+    }
     return *this;
 }
 
@@ -86,8 +90,7 @@ string File::nameWithoutAllExtensions() const {
 string File::nameWithoutExtension() const {
     string ret = rawName;
     for (size_t i = 0; i + 1 < extensions.size(); ++ i) {
-        ret += '.';
-        ret += extensions[i].toString();
+        ret += '.' + extensions[i].toString();
     }
     return ret;
 }
@@ -95,8 +98,7 @@ string File::nameWithoutExtension() const {
 string File::name() const {
     string ret = rawName;
     for (const Extension& extension: extensions) {
-        ret += '.';
-        ret += extension.toString();
+        ret += '.' + extension.toString();
     }
     return ret;
 
@@ -146,8 +148,7 @@ void File::touch() const {
 
 void File::remove() const {
     if (::remove(toString().c_str())) {
-        throw InvalidFileError(
-            ("Unable to remove file at: " + toString()).c_str());
+        throw InvalidFileError(("Unable to remove file at: " + toString()).c_str());
     }
 }
 

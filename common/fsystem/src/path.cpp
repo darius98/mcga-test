@@ -51,8 +51,7 @@ Path::Path(const string& path): relative(!startsWith(path, SEP)) {
 
 Path::Path(const Path& other): parts(other.parts), relative(other.relative) {}
 
-Path::Path(Path&& other) noexcept:
-        parts(move(other.parts)), relative(other.relative) {}
+Path::Path(Path&& other) noexcept: parts(move(other.parts)), relative(other.relative) {}
 
 Path& Path::operator=(const Path& other) {
     parts = other.parts;

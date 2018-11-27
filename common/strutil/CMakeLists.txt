@@ -5,4 +5,3 @@ add_library(strutil
     src/unescape.cpp
 )
 target_include_directories(strutil PUBLIC include)
-target_include_directories(strutil PRIVATE include/strutil_public)

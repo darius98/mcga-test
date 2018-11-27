@@ -1,6 +1,6 @@
 #include <algorithm>
 
-#include "casing.hpp"
+#include <strutil_impl/casing.hpp>
 
 using namespace std;
 
