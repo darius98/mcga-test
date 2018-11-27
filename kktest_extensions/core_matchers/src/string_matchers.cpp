@@ -55,10 +55,6 @@ void IsSubstringMatcher::describe(Description& description) {
     description << "a substring of '" << container << "'";
 }
 
-void IsSubstringMatcher::describeMismatch(Description& description) {
-    description << "not a substring of '" << container << "'";
-}
-
 IsSubstringMatcher isSubstringOf(const string& s) {
     return IsSubstringMatcher(s);
 }

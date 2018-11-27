@@ -24,10 +24,6 @@ public:
     void describe(Description& description) override {
         description << expectation << "'" << target << "'";
     }
-
-    void describeMismatch(Description& description) override {
-        description << "not " << expectation << "'" << target << "'";
-    }
 private:
     Comparator comparator;
     T target;

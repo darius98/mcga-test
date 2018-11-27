@@ -45,8 +45,6 @@ public:
 
     void describe(Description& description) override;
 
-    void describeMismatch(Description& description) override;
-
 private:
     std::string container;
 };

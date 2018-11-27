@@ -35,7 +35,10 @@ public:
 
     virtual void describe(Description& description) = 0;
 
-    virtual void describeMismatch(Description& description) = 0;
+    virtual void describeMismatch(Description& description) {
+        description << "not ";
+        describe(description);
+    }
 
     template<class T>
     std::string buildMismatchMessage(const T& object) {

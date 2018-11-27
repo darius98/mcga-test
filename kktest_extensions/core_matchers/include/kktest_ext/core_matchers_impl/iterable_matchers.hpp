@@ -32,7 +32,7 @@ public:
 template<class M>
 class IterableSizeMatcher: public Matcher {
 public:
-    explicit IterableSizeMatcher(M _sizeMatcher): sizeMatcher(_sizeMatcher) {}
+    explicit IterableSizeMatcher(const M& _sizeMatcher): sizeMatcher(_sizeMatcher) {}
 
     template<class T>
     bool matches(const T& object) {

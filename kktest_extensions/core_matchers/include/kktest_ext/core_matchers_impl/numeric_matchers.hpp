@@ -69,8 +69,6 @@ public:
     }
 
     void describe(Description& description) override;
-
-    void describeMismatch(Description& description) override;
 };
 
 extern IsZeroMatcher isZero;

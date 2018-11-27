@@ -46,10 +46,6 @@ void IsZeroMatcher::describe(Description& description) {
     description << "zero";
 }
 
-void IsZeroMatcher::describeMismatch(Description& description) {
-    description << "not zero";
-}
-
 IsZeroMatcher isZero;
 
 }
