@@ -207,23 +207,21 @@ void TestingDriver::afterGroup(Group* group) {
 }
 
 void TestingDriver::markTestStarted(Group* group) {
-    if (group == nullptr) {
-        return;
+    while (group != nullptr) {
+        testsInExecutionPerGroup[group] += 1;
+        group = group->getParentGroup();
     }
-    testsInExecutionPerGroup[group] += 1;
-    markTestStarted(group->getParentGroup());
 }
 
 void TestingDriver::markTestFinished(Group* group) {
-    if (group == nullptr) {
-        return;
+    while (group != nullptr) {
+        testsInExecutionPerGroup[group] -= 1;
+        Group* parentGroup = group->getParentGroup();
+        if (groupsWithAllTestsStarted.count(group) && testsInExecutionPerGroup[group] == 0) {
+            afterGroup(group);
+        }
+        group = parentGroup;
     }
-    testsInExecutionPerGroup[group] -= 1;
-    Group* parentGroup = group->getParentGroup();
-    if (groupsWithAllTestsStarted.count(group) && testsInExecutionPerGroup[group] == 0) {
-        afterGroup(group);
-    }
-    markTestFinished(parentGroup);
 }
 
 void TestingDriver::markAllTestsStarted(Group* group) {
