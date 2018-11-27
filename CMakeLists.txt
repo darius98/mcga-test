@@ -1,6 +1,6 @@
-cmake_minimum_required(VERSION 3.7)
+cmake_minimum_required(VERSION 3.12)
 project(KKTest)
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 
 set(CMAKE_POSITION_INDEPENDENT_CODE TRUE)
 

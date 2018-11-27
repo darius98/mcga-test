@@ -1,7 +1,3 @@
-cmake_minimum_required(VERSION 3.7)
-project(kktest_core)
-set(CMAKE_CXX_STANDARD 11)
-
 add_library(kktest_interface INTERFACE)
 target_include_directories(kktest_interface INTERFACE include)
 target_link_libraries(kktest_interface INTERFACE messaging strutil fsystem easyflags)

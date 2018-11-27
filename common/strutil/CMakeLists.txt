@@ -1,7 +1,3 @@
-cmake_minimum_required(VERSION 3.7)
-project(StrUtil VERSION 1.0.0)
-set(CMAKE_CXX_STANDARD 11)
-
 add_library(strutil
     src/casing.cpp
     src/string_key_comparable.cpp
