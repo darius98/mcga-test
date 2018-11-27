@@ -134,7 +134,7 @@ auto hasSize(const T& size) {
     if constexpr (std::is_base_of<Matcher, T>::value) {
         return IterableSizeMatcher<T>(size);
     } else {
-        return IterableSizeMatcher<ComparisonMatcher<T>>(isEqualTo(size));
+        return IterableSizeMatcher<EqualityMatcher<T>>(isEqualTo(size));
     }
 }
 
@@ -143,7 +143,7 @@ auto eachElement(const T& each) {
     if constexpr (std::is_base_of<Matcher, T>::value) {
         return IterableEachMatcher<T>(each);
     } else {
-        return IterableEachMatcher<ComparisonMatcher<T>>(isEqualTo(each));
+        return IterableEachMatcher<EqualityMatcher<T>>(isEqualTo(each));
     }
 }
 
@@ -152,7 +152,7 @@ auto anyElement(const T& any) {
     if constexpr (std::is_base_of<Matcher, T>::value) {
         return IterableAnyMatcher<T>(any);
     } else {
-        return IterableAnyMatcher<ComparisonMatcher<T>>(isEqualTo(any));
+        return IterableAnyMatcher<EqualityMatcher<T>>(isEqualTo(any));
     }
 }
 

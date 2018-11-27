@@ -8,26 +8,131 @@
 namespace kktest {
 
 template<class T>
-class ComparisonMatcher: public Matcher {
+class EqualityMatcher: public Matcher {
 public:
-    typedef std::function<bool(const T&, const T&)> Comparator;
+    explicit EqualityMatcher(const T& _target): target(_target) {}
 
-    ComparisonMatcher(const T& _target, Comparator _comparator, std::string _expectation):
-            target(_target), comparator(_comparator), expectation(std::move(_expectation)) {}
-    ComparisonMatcher(const ComparisonMatcher& other):
-            target(other.target), comparator(other.comparator), expectation(other.expectation) {}
-
-    bool matches(const T& object) {
-        return comparator(object, target);
+    template<class O>
+    bool matches(const O& object) {
+        return object == target;
     }
 
     void describe(Description& description) override {
-        description << expectation << "'" << target << "'";
+        description << "'" << target << "'";
     }
+
 private:
-    Comparator comparator;
     T target;
-    std::string expectation;
+};
+
+template<class T>
+class NonEqualityMatcher: public Matcher {
+public:
+    explicit NonEqualityMatcher(const T& _target): target(_target) {}
+
+    template<class O>
+    bool matches(const O& object) {
+        return object != target;
+    }
+
+    void describe(Description& description) override {
+        description << "not '" << target << "'";
+    }
+
+    void describeMismatch(Description& description) override {
+        description << "'" << target << "'";
+    }
+
+private:
+    T target;
+};
+
+template<class T>
+class IsLessThanMatcher: public Matcher {
+public:
+    explicit IsLessThanMatcher(const T& _target): target(_target) {}
+
+    template<class O>
+    bool matches(const O& object) {
+        return object < target;
+    }
+
+    void describe(Description& description) override {
+        description << "< '" << target << "'";
+    }
+
+    void describeMismatch(Description& description) override {
+        description << ">= '" << target << "'";
+    }
+
+private:
+    T target;
+};
+
+template<class T>
+class IsLessThanEqualMatcher: public Matcher {
+public:
+    explicit IsLessThanEqualMatcher(const T& _target): target(_target) {}
+
+    template<class O>
+    bool matches(const O& object) {
+        return object <= target;
+    }
+
+    void describe(Description& description) override {
+        description << "<= '" << target << "'";
+    }
+
+    void describeMismatch(Description& description) override {
+        description << "> '" << target << "'";
+    }
+
+private:
+    T target;
+};
+
+template<class T>
+class IsGreaterThanMatcher: public Matcher {
+public:
+    explicit IsGreaterThanMatcher(const T& _target): target(_target) {}
+
+    template<class O>
+    bool matches(const O& object) {
+        return object > target;
+    }
+
+    void describe(Description& description) override {
+        description << "> '" << target << "'";
+    }
+
+    void describeMismatch(Description& description) override {
+        description << "<= '" << target << "'";
+    }
+
+private:
+    T target;
+};
+
+template<class T>
+class IsGreaterThanEqualMatcher: public Matcher {
+public:
+    explicit IsGreaterThanEqualMatcher(const T& _target): target(_target) {}
+
+    template<class O>
+    bool matches(const O& object) {
+        return object >= target;
+    }
+
+    void describe(Description& description) override {
+        description << ">= '" << target << "'";
+    }
+
+    void describeMismatch(Description& description) override {
+        description << "< '" << target << "'";
+    }
+
+private:
+    T target;
 };
 
 template<class T>
@@ -55,33 +160,33 @@ private:
 };
 
 template<class T>
-ComparisonMatcher<T> isEqualTo(const T& object) {
-    return ComparisonMatcher<T>(object, std::equal_to<T>(), "");
+EqualityMatcher<T> isEqualTo(const T& object) {
+    return EqualityMatcher<T>(object);
 }
 
 template<class T>
-ComparisonMatcher<T> isNotEqualTo(const T& object) {
-    return ComparisonMatcher<T>(object, std::not_equal_to<T>(), "different than ");
+NonEqualityMatcher<T> isNotEqualTo(const T& object) {
+    return NonEqualityMatcher<T>(object);
 }
 
 template<class T>
-ComparisonMatcher<T> isLessThan(const T& object) {
-    return ComparisonMatcher<T>(object, std::less<T>(), "< ");
+IsLessThanMatcher<T> isLessThan(const T& object) {
+    return IsLessThanMatcher<T>(object);
 }
 
 template<class T>
-ComparisonMatcher<T> isLessThanEqual(const T& object) {
-    return ComparisonMatcher<T>(object, std::less_equal<T>(), "<= ");
+IsLessThanEqualMatcher<T> isLessThanEqual(const T& object) {
+    return IsLessThanEqualMatcher<T>(object);
 }
 
 template<class T>
-ComparisonMatcher<T> isGreaterThan(const T& object) {
-    return ComparisonMatcher<T>(object, std::greater<T>(), "> ");
+IsGreaterThanMatcher<T> isGreaterThan(const T& object) {
+    return IsGreaterThanMatcher<T>(object);
 }
 
 template<class T>
-ComparisonMatcher<T> isGreaterThanEqual(const T& object) {
-    return ComparisonMatcher<T>(object, std::greater_equal<T>(), ">= ");
+IsGreaterThanEqualMatcher<T> isGreaterThanEqual(const T& object) {
+    return IsGreaterThanEqualMatcher<T>(object);
 }
 
 template<class T>

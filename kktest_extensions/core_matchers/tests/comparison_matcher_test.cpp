@@ -44,8 +44,8 @@ void kkTestCase(ComparisonMatchers) {
             m.matches(2);
             m.describe(description);
             m.describeMismatch(mismatchDescription);
-            kkExpect(description.toString() == "different than '2'");
-            kkExpect(mismatchDescription.toString() == "not different than '2'");
+            kkExpect(description.toString() == "not '2'");
+            kkExpect(mismatchDescription.toString() == "'2'");
         });
     });
 
@@ -100,7 +100,7 @@ void kkTestCase(ComparisonMatchers) {
             m.describe(description);
             m.describeMismatch(mismatchDescription);
             kkExpect(description.toString() == "< '[2, 1, 3]'");
-            kkExpect(mismatchDescription.toString() == "not < '[2, 1, 3]'");
+            kkExpect(mismatchDescription.toString() == ">= '[2, 1, 3]'");
         });
     });
 
@@ -136,7 +136,7 @@ void kkTestCase(ComparisonMatchers) {
             m.describe(description);
             m.describeMismatch(mismatchDescription);
             kkExpect(description.toString() == "<= '[2, 1, 3]'");
-            kkExpect(mismatchDescription.toString() == "not <= '[2, 1, 3]'");
+            kkExpect(mismatchDescription.toString() == "> '[2, 1, 3]'");
         });
     });
 
@@ -172,7 +172,7 @@ void kkTestCase(ComparisonMatchers) {
             m.describe(description);
             m.describeMismatch(mismatchDescription);
             kkExpect(description.toString() == "> '[2, 1, 3]'");
-            kkExpect(mismatchDescription.toString() == "not > '[2, 1, 3]'");
+            kkExpect(mismatchDescription.toString() == "<= '[2, 1, 3]'");
         });
     });
 
@@ -208,7 +208,7 @@ void kkTestCase(ComparisonMatchers) {
             m.describe(description);
             m.describeMismatch(mismatchDescription);
             kkExpect(description.toString() == ">= '[2, 1, 3]'");
-            kkExpect(mismatchDescription.toString() == "not >= '[2, 1, 3]'");
+            kkExpect(mismatchDescription.toString() == "< '[2, 1, 3]'");
         });
     });
 }

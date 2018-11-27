@@ -104,11 +104,11 @@ auto both(const A& a, const B& b) {
     if constexpr (std::is_base_of<Matcher, A>::value && std::is_base_of<Matcher, B>::value) {
         return AndMatcher<A, B>(a, b);
     } else if constexpr (std::is_base_of<Matcher, A>::value) {
-        return AndMatcher<A, ComparisonMatcher<B>>(a, isEqualTo(b));
+        return AndMatcher<A, EqualityMatcher<B>>(a, isEqualTo(b));
     } else if constexpr (std::is_base_of<Matcher, B>::value) {
-        return AndMatcher<ComparisonMatcher<A>, B>(isEqualTo(a), b);
+        return AndMatcher<EqualityMatcher<A>, B>(isEqualTo(a), b);
     } else {
-        return AndMatcher<ComparisonMatcher<A>, ComparisonMatcher<B>>(isEqualTo(a), isEqualTo(b));
+        return AndMatcher<EqualityMatcher<A>, EqualityMatcher<B>>(isEqualTo(a), isEqualTo(b));
     }
 }
 
@@ -117,11 +117,11 @@ auto either(const A& a, const B& b) {
     if constexpr (std::is_base_of<Matcher, A>::value && std::is_base_of<Matcher, B>::value) {
         return OrMatcher<A, B>(a, b);
     } else if constexpr (std::is_base_of<Matcher, A>::value) {
-        return OrMatcher<A, ComparisonMatcher<B>>(a, isEqualTo(b));
+        return OrMatcher<A, EqualityMatcher<B>>(a, isEqualTo(b));
     } else if constexpr (std::is_base_of<Matcher, B>::value) {
-        return OrMatcher<ComparisonMatcher<A>, B>(isEqualTo(a), b);
+        return OrMatcher<EqualityMatcher<A>, B>(isEqualTo(a), b);
     } else {
-        return OrMatcher<ComparisonMatcher<A>, ComparisonMatcher<B>>(isEqualTo(a), isEqualTo(b));
+        return OrMatcher<EqualityMatcher<A>, EqualityMatcher<B>>(isEqualTo(a), isEqualTo(b));
     }
 }
 
