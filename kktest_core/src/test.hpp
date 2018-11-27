@@ -12,11 +12,9 @@ class Group;
 
 class Test {
 public:
+    Test(const TestConfig& _config, Group* _parentGroup, int _index);
+
     const TestConfig& getConfig() const;
-
-    bool isTopLevel() const;
-
-    int getIndex() const;
 
     bool isExecuted() const;
 
@@ -28,19 +26,13 @@ public:
 
     std::string getFailureMessage() const;
 
-    std::string getDescriptionPrefix() const;
-
-    int getGroupIndex() const;
-
     TestInfo getTestInfo() const;
-
-private:
-    Test(const TestConfig& _config, Group* _parentGroup, int _index);
 
     Group* getGroup() const;
 
     void setExecuted(double _executionTimeTicks, bool _passed, std::string _failureMessage);
 
+private:
     TestConfig config;
 
     Group* parentGroup;
@@ -50,9 +42,6 @@ private:
     bool passed = true;
     std::string failureMessage = "";
     double executionTimeTicks = -1.0;
-
-friend class Executor;
-friend class TestingDriver;
 };
 
 }

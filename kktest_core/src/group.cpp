@@ -8,18 +8,14 @@ namespace kktest {
 Group::Group(const GroupConfig& _config, Group* _parentGroup, int _index):
         config(_config), parentGroup(_parentGroup), index(_index) {}
 
-const GroupConfig& Group::getConfig() const {
-    return config;
-}
-
-bool Group::isTopLevel() const {
-    return parentGroup != nullptr && parentGroup->parentGroup == nullptr;
+string Group::getFileAndLine() const {
+    return config.file + "::" + to_string(config.line);
 }
 
 void Group::addSetUp(Executable func, const string& file, int line) {
     if (hasSetUp) {
         throw ConfigurationError(
-                "Trying to add second kkSetUp to group '" + getFullDescription() + "'."
+            "Trying to add second kkSetUp to group at " + getFileAndLine() + "."
         );
     }
     hasSetUp = true;
@@ -37,7 +33,7 @@ void Group::setUp() const {
 void Group::addTearDown(Executable func, const string& file, int line) {
     if (hasTearDown) {
         throw ConfigurationError(
-                "Trying to add second kkTearDown to group '" + getFullDescription() + "'."
+                "Trying to add second kkTearDown to group " + getFileAndLine() + "."
         );
     }
     hasTearDown = true;
@@ -50,14 +46,6 @@ void Group::tearDown() const {
     if (hasTearDown) {
         tearDownFunc();
     }
-}
-
-string Group::getFullDescription() const {
-    string fullDescription = config.description;
-    if (!isTopLevel()) {
-        fullDescription = parentGroup->getFullDescription() + "::" + fullDescription;
-    }
-    return fullDescription;
 }
 
 int Group::getIndex() const {
@@ -86,10 +74,6 @@ string Group::getRenderedFailureMessageOnExceptionInTearDown(const string& what)
 string Group::getRenderedFailureMessageOnNonExceptionInTearDown() const {
     return "Non-exception thrown in kkTearDown"
            " (" + tearDownFile + ":" + to_string(tearDownLine) + ").";
-}
-
-int Group::getParentGroupIndex() const {
-    return parentGroup->getIndex();
 }
 
 GroupInfo Group::getGroupInfo() const {

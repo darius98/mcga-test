@@ -26,14 +26,6 @@ const TestConfig& Test::getConfig() const {
     return config;
 }
 
-bool Test::isTopLevel() const {
-    return getGroupIndex() == -1;
-}
-
-int Test::getIndex() const {
-    return index;
-}
-
 bool Test::isExecuted() const {
     return executed;
 }
@@ -54,20 +46,8 @@ double Test::getExecutionTimeTicks() const {
     return executionTimeTicks;
 }
 
-string Test::getDescriptionPrefix() const {
-    string prefix = config.file + ":" + to_string(config.line) + "::";
-    if (!isTopLevel()) {
-        prefix += parentGroup->getFullDescription() + "::";
-    }
-    return prefix;
-}
-
 Group* Test::getGroup() const {
     return parentGroup;
-}
-
-int Test::getGroupIndex() const {
-    return parentGroup->getIndex();
 }
 
 TestInfo Test::getTestInfo() const {

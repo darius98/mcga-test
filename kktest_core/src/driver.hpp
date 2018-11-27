@@ -14,9 +14,10 @@
 namespace kktest {
 
 class TestingDriver {
-private:
+public:
+    static void addPlugin(Plugin* plugin);
+
     static TestingDriver* getInstance();
-    static TestingDriver* instance;
 
     static void init();
     static int destroy();
@@ -28,10 +29,6 @@ private:
     TestingDriver();
 
     ~TestingDriver();
-
-    void installPlugins();
-
-    void uninstallPlugins();
 
     template<class H>
     void addHook(H h, std::vector<H>& hs) {
@@ -49,6 +46,11 @@ private:
 
     void addTearDown(Executable func, const std::string& file, int line);
 
+private:
+    void installPlugins();
+
+    void uninstallPlugins();
+
     void afterTest(Test* test);
     void beforeTest(Test* test);
     void beforeGroup(Group* group);
@@ -57,6 +59,9 @@ private:
     void markTestFinished(Group* group);
     void markTestStarted(Group* group);
     void markAllTestsStarted(Group* group);
+
+    static std::vector<Plugin*>* plugins;
+    static TestingDriver* instance;
 
     // Hooks
     std::vector<AfterInitHook> afterInitHooks;
@@ -79,12 +84,6 @@ private:
 
     bool failedAnyNonOptionalTest = false;
 
-friend int main();
-friend class TestDefiner;
-friend class GroupDefiner;
-friend class SetUpDefiner;
-friend class TearDownDefiner;
-friend class ExpectDefiner;
 friend void addBeforeTestHook(const TestHook& hook);
 friend void addAfterTestHook(const TestHook& hook);
 friend void addBeforeGroupHook(const GroupHook& hook);

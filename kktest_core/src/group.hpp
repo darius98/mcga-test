@@ -11,20 +11,13 @@ namespace kktest {
 
 class Group {
 public:
-    const GroupConfig& getConfig() const;
+    Group(const GroupConfig& _config, Group* _parentGroup, int _index);
 
-    bool isTopLevel() const;
-
-    std::string getFullDescription() const;
+    std::string getFileAndLine() const;
 
     int getIndex() const;
 
-    int getParentGroupIndex() const;
-
     GroupInfo getGroupInfo() const;
-
-private:
-    Group(const GroupConfig& _config, Group* _parentGroup, int _index);
 
     Group* getParentGroup() const;
 
@@ -44,6 +37,7 @@ private:
 
     std::string getRenderedFailureMessageOnNonExceptionInTearDown() const;
 
+private:
     GroupConfig config;
 
     Group* parentGroup;
@@ -58,9 +52,6 @@ private:
     CopyableExecutable tearDownFunc;
     std::string tearDownFile;
     int tearDownLine;
-
-friend class Executor;
-friend class TestingDriver;
 };
 
 }

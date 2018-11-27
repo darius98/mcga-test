@@ -35,13 +35,6 @@ public:
     virtual void install() {}
 
     virtual void uninstall() {}
-
-private:
-    static std::vector<Plugin*>* plugins;
-
-    static void clean();
-
-    friend class TestingDriver;
 };
 
 }

@@ -22,7 +22,16 @@ AddArgument(int, argumentNumBoxes)
 
 namespace kktest {
 
+vector<Plugin*>* TestingDriver::plugins = nullptr;
+
 TestingDriver* TestingDriver::instance = nullptr;
+
+void TestingDriver::addPlugin(Plugin* plugin) {
+    if (plugins == nullptr) {
+        plugins = new vector<Plugin*>();
+    }
+    plugins->push_back(plugin);
+}
 
 TestingDriver* TestingDriver::getInstance() {
     if (instance == nullptr) {
@@ -54,7 +63,7 @@ int TestingDriver::destroy() {
     }
     driver->uninstallPlugins();
     int status = driver->failedAnyNonOptionalTest ? 1 : 0;
-    Plugin::clean();
+    delete plugins;
     TestCaseRegistry::clean();
     delete driver;
     return status;
@@ -66,7 +75,7 @@ void TestingDriver::forceDestroy(const ConfigurationError& error) {
         hook(error);
     }
     driver->uninstallPlugins();
-    Plugin::clean();
+    delete plugins;
     TestCaseRegistry::clean();
     delete driver;
 }
@@ -111,10 +120,10 @@ TestingDriver::~TestingDriver() {
 }
 
 void TestingDriver::installPlugins() {
-    if (Plugin::plugins == nullptr) {
+    if (plugins == nullptr) {
         return;
     }
-    for (Plugin* plugin: (*Plugin::plugins)) {
+    for (Plugin* plugin: (*plugins)) {
         if (plugin->isEnabled()) {
             plugin->install();
         }
@@ -122,10 +131,10 @@ void TestingDriver::installPlugins() {
 }
 
 void TestingDriver::uninstallPlugins() {
-    if (Plugin::plugins == nullptr) {
+    if (plugins == nullptr) {
         return;
     }
-    for (Plugin* plugin: (*Plugin::plugins)) {
+    for (Plugin* plugin: (*plugins)) {
         if (plugin->isEnabled()) {
             plugin->uninstall();
         }
@@ -144,15 +153,15 @@ void TestingDriver::addGroup(const GroupConfig& config, Executable func) {
         throw e;
     } catch(const ExpectationFailed& e) {
         throw ConfigurationError(
-            "Expectation failed in group '" + group->getFullDescription() + "': " + e.what()
+            "Expectation failed in group at " + group->getFileAndLine() + ": " + e.what()
         );
     } catch(const exception& e) {
         throw ConfigurationError(
-            "Exception thrown in group '" + group->getFullDescription() + "': " + e.what()
+            "Exception thrown in group at " + group->getFileAndLine() + ": " + e.what()
         );
     } catch(...) {
         throw ConfigurationError(
-            "Non-exception object thrown in group'" + group->getFullDescription() + "'"
+            "Non-exception object thrown in group at " + group->getFileAndLine() + "."
         );
     }
     markAllTestsStarted(group);
