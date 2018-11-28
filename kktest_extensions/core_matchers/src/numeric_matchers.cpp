@@ -1,6 +1,7 @@
 #include <kktest_ext/core_matchers_impl/numeric_matchers.hpp>
 
 namespace kktest {
+namespace core_matchers {
 
 void IsPositiveMatcher::describe(Description& description) {
     description << "a positive number";
@@ -48,4 +49,5 @@ void IsZeroMatcher::describe(Description& description) {
 
 IsZeroMatcher isZero;
 
+}
 }

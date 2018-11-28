@@ -6,6 +6,7 @@
 #include <kktest_ext/core_matchers_impl/matcher.hpp>
 
 namespace kktest {
+namespace core_matchers {
 
 class ThrowsAnythingMatcher: public Matcher {
 public:
@@ -62,6 +63,7 @@ std::function<void()> wrapFunc(const F& func, const Args... args) {
     return [&]() { std::invoke(func, args...); };
 }
 
+}
 }
 
 #endif

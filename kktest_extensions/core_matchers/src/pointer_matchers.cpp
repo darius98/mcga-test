@@ -1,6 +1,7 @@
 #include <kktest_ext/core_matchers_impl/pointer_matchers.hpp>
 
 namespace kktest {
+namespace core_matchers {
 
 bool IsNullptrMatcher::matches(void*const& obj) {
     return obj == nullptr;
@@ -30,4 +31,5 @@ void IsNotNullptrMatcher::describeMismatch(Description& description) {
 
 IsNotNullptrMatcher isNotNull;
 
+}
 }

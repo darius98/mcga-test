@@ -4,6 +4,7 @@
 #include <kktest_ext/core_matchers_impl/comparison_matchers.hpp>
 
 namespace kktest {
+namespace core_matchers {
 
 template<class M1, class M2>
 class AndMatcher: public Matcher {
@@ -134,6 +135,7 @@ auto isNot(const T& x) {
     }
 }
 
+}
 }
 
 #endif

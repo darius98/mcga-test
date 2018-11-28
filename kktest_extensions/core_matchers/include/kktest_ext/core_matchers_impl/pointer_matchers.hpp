@@ -4,6 +4,7 @@
 #include <kktest_ext/core_matchers_impl/matcher.hpp>
 
 namespace kktest {
+namespace core_matchers {
 
 class IsNullptrMatcher: public Matcher {
 public:
@@ -27,6 +28,7 @@ public:
 
 extern IsNotNullptrMatcher isNotNull;
 
+}
 }
 
 #endif

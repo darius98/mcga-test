@@ -6,6 +6,8 @@
 #include <kktest_plugin_api.hpp>
 
 using namespace easyflags;
+using namespace kktest;
+using namespace kktest::feedback;
 using namespace std;
 
 AddArgument(int, flagQuiet)
@@ -15,8 +17,6 @@ AddArgument(int, flagQuiet)
     .Description("Disable STDOUT logging for this test run")
     .DefaultValue(0)
     .ImplicitValue(1);
-
-namespace kktest {
 
 class LoggingPlugin: public Plugin {
 public:
@@ -52,6 +52,4 @@ private:
     TestLogger* logger = nullptr;
 };
 
-LoggingPlugin loggingPlugin;
-
-}
+static LoggingPlugin loggingPlugin;

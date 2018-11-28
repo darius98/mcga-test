@@ -9,6 +9,7 @@
 #include <kktest_plugin_api.hpp>
 
 namespace kktest {
+namespace feedback {
 
 class TestLogger {
 public:
@@ -45,6 +46,7 @@ private:
     std::map<int, GroupInfo> allGroupsInfo;
 };
 
+}
 }
 
 #endif

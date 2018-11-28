@@ -5,6 +5,7 @@
 using namespace std;
 
 namespace kktest {
+namespace core_matchers {
 
 CharInStringMatcher::CharInStringMatcher(const char* _container, const char* _expectation) noexcept:
         container(_container), expectation(_expectation) {}
@@ -59,4 +60,5 @@ IsSubstringMatcher isSubstringOf(const string& s) {
     return IsSubstringMatcher(s);
 }
 
+}
 }

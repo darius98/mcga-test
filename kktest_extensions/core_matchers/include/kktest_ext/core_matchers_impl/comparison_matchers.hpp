@@ -6,6 +6,7 @@
 #include <kktest_ext/core_matchers_impl/matcher.hpp>
 
 namespace kktest {
+namespace core_matchers {
 
 template<class T>
 class EqualityMatcher: public Matcher {
@@ -194,6 +195,7 @@ IdentityMatcher<T> isIdenticalTo(const T& object) {
     return IdentityMatcher<T>(object);
 }
 
+}
 }
 
 #endif

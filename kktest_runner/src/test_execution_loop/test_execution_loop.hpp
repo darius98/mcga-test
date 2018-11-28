@@ -24,7 +24,7 @@ public:
 
 private:
     bool failedAnyTest = false;
-    kktest::TestLogger testLogger;
+    kktest::feedback::TestLogger testLogger;
     int concurrentRunningCyclesLimit;
     int runningCycles = 0;
     std::vector<TestExecutionCycle> cycles;

@@ -1,7 +1,7 @@
 #include <kktest>
 #include <kktest_ext/core_matchers>
 
-using namespace kktest;
+using namespace kktest::core_matchers;
 
 void kkTestCase(TruthMatchers) {
     kkTest("isTrue matcher matches true", [&]() {

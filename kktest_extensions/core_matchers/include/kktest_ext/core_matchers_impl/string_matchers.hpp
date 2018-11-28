@@ -6,6 +6,7 @@
 #include <kktest_ext/core_matchers_impl/matcher.hpp>
 
 namespace kktest {
+namespace core_matchers {
 
 class CharInStringMatcher: public Matcher {
 public:
@@ -51,6 +52,7 @@ private:
 
 IsSubstringMatcher isSubstringOf(const std::string& s);
 
+}
 }
 
 #endif

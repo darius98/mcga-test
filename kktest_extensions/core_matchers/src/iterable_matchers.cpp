@@ -1,6 +1,7 @@
 #include <kktest_ext/core_matchers_impl/iterable_matchers.hpp>
 
 namespace kktest {
+namespace core_matchers {
 
 IsEmptyMatcher isEmpty;
 
@@ -22,4 +23,5 @@ void IsNotEmptyMatcher::describeMismatch(Description& description) {
     description << "empty iterable";
 }
 
+}
 }

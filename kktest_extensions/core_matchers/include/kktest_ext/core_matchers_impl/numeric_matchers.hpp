@@ -4,6 +4,7 @@
 #include <kktest_ext/core_matchers_impl/matcher.hpp>
 
 namespace kktest {
+namespace core_matchers {
 
 class IsPositiveMatcher: public Matcher {
 public:
@@ -100,6 +101,7 @@ IsAlmostEqualMatcher<T> isAlmostEqualTo(const T& target, const double& eps=0.000
     return IsAlmostEqualMatcher<T>(target, eps);
 }
 
+}
 }
 
 #endif

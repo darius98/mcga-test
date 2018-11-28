@@ -3,7 +3,7 @@
 #include <kktest>
 #include <kktest_ext/core_matchers>
 
-using namespace kktest;
+using namespace kktest::core_matchers;
 using namespace std;
 
 void kkTestCase(StringMatchers) {

@@ -3,6 +3,7 @@
 using namespace std;
 
 namespace kktest {
+namespace core_matchers {
 
 bool ThrowsAnythingMatcher::matches(const function<void()>& func) {
     try {
@@ -23,4 +24,5 @@ void ThrowsAnythingMatcher::describeMismatch(Description& description) {
 
 ThrowsAnythingMatcher throws;
 
+}
 }

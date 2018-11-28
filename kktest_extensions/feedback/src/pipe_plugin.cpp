@@ -8,6 +8,8 @@
 #include <kktest_ext/feedback_impl/pipe_message_type.hpp>
 
 using namespace easyflags;
+using namespace kktest;
+using namespace kktest::feedback;
 using namespace messaging;
 using namespace std;
 
@@ -17,8 +19,6 @@ AddArgument(string, argumentPipeFileName)
     .Short("p")
     .Description("A file with write access for piping the test results as they become available.")
     .DefaultValue("");
-
-namespace kktest {
 
 class PipePlugin: public Plugin {
 public:
@@ -71,6 +71,4 @@ private:
     OutputPipe* pipe = nullptr;
 };
 
-PipePlugin pipePlugin;
-
-}
+volatile PipePlugin pipePlugin;

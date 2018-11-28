@@ -16,6 +16,7 @@
 #include <vector>
 
 namespace kktest {
+namespace core_matchers {
 
 template<class S, class=void>
 struct Streamer {
@@ -142,6 +143,7 @@ private:
     }
 };
 
+}
 }
 
 #endif

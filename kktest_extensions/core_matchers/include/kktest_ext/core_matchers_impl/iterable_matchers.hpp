@@ -4,6 +4,7 @@
 #include <kktest_ext/core_matchers_impl/comparison_matchers.hpp>
 
 namespace kktest {
+namespace core_matchers {
 
 class IsEmptyMatcher: public Matcher {
 public:
@@ -156,6 +157,7 @@ auto anyElement(const T& any) {
     }
 }
 
+}
 }
 
 #endif

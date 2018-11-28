@@ -4,6 +4,7 @@
 #include <kktest_ext/core_matchers_impl/streamer.hpp>
 
 namespace kktest {
+namespace core_matchers {
 
 class Description {
 public:
@@ -52,6 +53,7 @@ public:
     }
 };
 
+}
 }
 
 #endif

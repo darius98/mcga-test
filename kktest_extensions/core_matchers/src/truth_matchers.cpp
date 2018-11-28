@@ -1,6 +1,7 @@
 #include <kktest_ext/core_matchers_impl/truth_matchers.hpp>
 
 namespace kktest {
+namespace core_matchers {
 
 bool IsTrueMatcher::matches(const bool& object) {
     return object;
@@ -30,4 +31,5 @@ void IsFalseMatcher::describeMismatch(Description& description) {
 
 IsFalseMatcher isFalse;
 
+}
 }

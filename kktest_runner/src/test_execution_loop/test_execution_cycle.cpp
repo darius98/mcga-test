@@ -13,6 +13,7 @@
 
 using namespace messaging;
 using namespace kktest;
+using namespace kktest::feedback;
 using namespace std;
 
 namespace runner {

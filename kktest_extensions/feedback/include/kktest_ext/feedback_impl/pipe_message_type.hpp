@@ -2,6 +2,7 @@
 #define KKTEST_EXT_FEEDBACK_IMPL_PIPE_MESSAGE_TYPE_H_
 
 namespace kktest {
+namespace feedback {
 
 enum PipeMessageType {
     TEST,
@@ -10,6 +11,7 @@ enum PipeMessageType {
     ERROR
 };
 
+}
 }
 
 #endif

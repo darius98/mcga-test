@@ -8,6 +8,7 @@
 using namespace std;
 
 namespace kktest {
+namespace feedback {
 
 TestLogger::TestLogger(ostream& _stream, bool _maintainTestIndexOrder):
         stream(_stream), maintainTestIndexOrder(_maintainTestIndexOrder) {}
@@ -130,4 +131,5 @@ void TestLogger::modifyOutput(const int& code, ostream& streamToChange) {
     streamToChange << "\x1b[" << code << "m";
 }
 
+}
 }
