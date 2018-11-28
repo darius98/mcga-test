@@ -7,13 +7,20 @@
 #include <kktest_ext/feedback_impl/ext.hpp>
 
 int main(int argc, char** argv) {
+
+    kktest::feedback::FeedbackExtensionManager feedbackExtensionManager;
+
     easyflags::ParseEasyFlags(argc, argv);
+    std::vector<kktest::Plugin*> plugins;
+    std::function<void(kktest::Plugin*)> registerPlugin = [&plugins](kktest::Plugin* plugin) {
+        plugins.push_back(plugin);
+    };
 
-    kktest::feedback::init();
+    feedbackExtensionManager.init(registerPlugin);
 
-    int ret = kktest::main();
+    int ret = kktest::main(plugins);
 
-    kktest::feedback::destroy();
+    feedbackExtensionManager.destroy();
 
     return ret;
 }

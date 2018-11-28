@@ -1,5 +1,6 @@
 #include <EasyFlags.hpp>
 
+#include <kktest_impl/main.hpp>
 #include "driver.hpp"
 #include "test_case_registry.hpp"
 
@@ -21,7 +22,7 @@ AddArgument(int, argumentGetSignature)
 
 namespace kktest {
 
-int main() {
+int main(const vector<Plugin*>& plugins) {
     if (argumentGetSignature) {
         for (int i = 0; i < kkTestSigSize; ++ i) {
             cout << "0123456789ABCDEF"[kkTestSignature[i] >> 4]
@@ -31,7 +32,7 @@ int main() {
         return 0;
     }
 
-    TestingDriver::init();
+    TestingDriver::init(plugins);
     try {
         for (TestCaseRegistry::TestCase testCase: TestCaseRegistry::all()) {
             TestingDriver::beforeTestCase();

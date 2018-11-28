@@ -2,7 +2,6 @@
 #define KKTEST_CORE_INCLUDE_KKTEST_IMPL_PLUGIN_API_H_
 
 #include <functional>
-#include <vector>
 
 #include <kktest_impl/info.hpp>
 
@@ -24,15 +23,20 @@ void addBeforeForceDestroyHook(const BeforeForceDestroyHook& hook);
 
 class Plugin {
 public:
-    Plugin();
-
     virtual ~Plugin();
-
-    virtual bool isEnabled() const;
 
     virtual void install();
 
     virtual void uninstall();
+};
+
+class ExtensionManager {
+public:
+    virtual ~ExtensionManager();
+
+    virtual void init(const std::function<void(Plugin*)>& addPlugin);
+
+    virtual void destroy();
 };
 
 }

@@ -24,22 +24,21 @@ AddArgument(string, argumentPipeFileName)
         .Description("A file with write access for piping the test results as they become available.")
         .DefaultValue("");
 
-Plugin* loggingPlugin = nullptr;
-Plugin* pipePlugin = nullptr;
-
 namespace kktest {
 namespace feedback {
 
-void init() {
+void FeedbackExtensionManager::init(const function<void(Plugin*)>& registerPlugin) {
     if (!flagQuiet) {
         loggingPlugin = new LoggingPlugin();
+        registerPlugin(loggingPlugin);
     }
     if (!argumentPipeFileName.empty()) {
         pipePlugin = new PipePlugin(argumentPipeFileName);
+        registerPlugin(pipePlugin);
     }
 }
 
-void destroy() {
+void FeedbackExtensionManager::destroy() {
     delete loggingPlugin;
     delete pipePlugin;
 }

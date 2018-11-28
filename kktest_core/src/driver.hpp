@@ -51,11 +51,9 @@ private:
 
 class TestingDriver {
 public:
-    static void addPlugin(Plugin* plugin);
-
     static TestingDriver* getInstance();
 
-    static void init();
+    static void init(const std::vector<Plugin*>& plugins);
     static int destroy();
     static void forceDestroy(const ConfigurationError& error);
 
@@ -71,7 +69,7 @@ public:
         driver->hookManager.addHook<t, H>(hook);
     }
 
-    TestingDriver();
+    explicit TestingDriver(const std::vector<Plugin*>& _plugins);
 
     ~TestingDriver();
 
@@ -97,8 +95,9 @@ private:
     void markTestStarted(Group* group);
     void markAllTestsStarted(Group* group);
 
-    static std::vector<Plugin*>* plugins;
     static TestingDriver* instance;
+
+    std::vector<Plugin*> plugins;
 
     TestingDriverHooks hookManager;
 

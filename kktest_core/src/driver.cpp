@@ -22,16 +22,7 @@ AddArgument(int, argumentNumBoxes)
 
 namespace kktest {
 
-vector<Plugin*>* TestingDriver::plugins = nullptr;
-
 TestingDriver* TestingDriver::instance = nullptr;
-
-void TestingDriver::addPlugin(Plugin* plugin) {
-    if (plugins == nullptr) {
-        plugins = new vector<Plugin*>();
-    }
-    plugins->push_back(plugin);
-}
 
 TestingDriver* TestingDriver::getInstance() {
     if (instance == nullptr) {
@@ -42,11 +33,11 @@ TestingDriver* TestingDriver::getInstance() {
     return instance;
 }
 
-void TestingDriver::init() {
+void TestingDriver::init(const vector<Plugin*>& plugins) {
     if (instance != nullptr) {
         throw KKTestLibraryImplementationError("TestingDriver::init called a twice.");
     }
-    instance = new TestingDriver();
+    instance = new TestingDriver(plugins);
     instance->allowRegisterHooks = true;
     instance->installPlugins();
     instance->allowRegisterHooks = false;
@@ -59,7 +50,6 @@ int TestingDriver::destroy() {
     instance->hookManager.runHooks<TestingDriverHooks::BEFORE_DESTROY>();
     driver->uninstallPlugins();
     int status = driver->failedAnyNonOptionalTest ? 1 : 0;
-    delete plugins;
     TestCaseRegistry::clean();
     delete driver;
     return status;
@@ -69,7 +59,6 @@ void TestingDriver::forceDestroy(const ConfigurationError& error) {
     TestingDriver* driver = getInstance();
     instance->hookManager.runHooks<TestingDriverHooks::BEFORE_FORCE_DESTROY>(error);
     driver->uninstallPlugins();
-    delete plugins;
     TestCaseRegistry::clean();
     delete driver;
 }
@@ -98,7 +87,7 @@ void TestingDriver::afterTestCase() {
     driver->groupStack = {};
 }
 
-TestingDriver::TestingDriver() {
+TestingDriver::TestingDriver(const vector<Plugin*>& _plugins): plugins(_plugins) {
     if (flagBoxed) {
         executor = new BoxExecutor((size_t)max(argumentNumBoxes, 1));
     } else {
@@ -114,24 +103,14 @@ TestingDriver::~TestingDriver() {
 }
 
 void TestingDriver::installPlugins() {
-    if (plugins == nullptr) {
-        return;
-    }
-    for (Plugin* plugin: (*plugins)) {
-        if (plugin->isEnabled()) {
-            plugin->install();
-        }
+    for (Plugin* plugin: plugins) {
+        plugin->install();
     }
 }
 
 void TestingDriver::uninstallPlugins() {
-    if (plugins == nullptr) {
-        return;
-    }
-    for (Plugin* plugin: (*plugins)) {
-        if (plugin->isEnabled()) {
-            plugin->uninstall();
-        }
+    for (Plugin* plugin: plugins) {
+        plugin->uninstall();
     }
 }
 

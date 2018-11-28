@@ -2,10 +2,7 @@
   "folderName": "feedback",
   "linkToMainLibrary": true,
   "linkObjectLibrary": "kktest_extension_feedback",
-  "implementsInit": true,
-  "initIncludePath": "kktest_ext/feedback_impl/ext.hpp",
-  "initCall": "kktest::feedback::init()",
-  "implementsDestroy": true,
-  "destroyIncludePath": "kktest_ext/feedback_impl/ext.hpp",
-  "destroyCall": "kktest::feedback::destroy()"
+  "hookExtensionManagerInMain": true,
+  "extensionManagerIncludePath": "kktest_ext/feedback_impl/ext.hpp",
+  "extensionManagerClass": "kktest::feedback::FeedbackExtensionManager"
 }

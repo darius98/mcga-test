@@ -34,18 +34,16 @@ void addBeforeForceDestroyHook(const BeforeForceDestroyHook& hook) {
     TestingDriver::addHook<TestingDriverHooks::BEFORE_FORCE_DESTROY>(hook);
 }
 
-Plugin::Plugin() {
-    TestingDriver::addPlugin(this);
-}
-
 Plugin::~Plugin() = default;
-
-bool Plugin::isEnabled() const {
-    return true;
-}
 
 void Plugin::install() {}
 
 void Plugin::uninstall() {}
+
+ExtensionManager::~ExtensionManager() = default;
+
+void ExtensionManager::init(const function<void(Plugin*)>&) {}
+
+void ExtensionManager::destroy() {}
 
 }
