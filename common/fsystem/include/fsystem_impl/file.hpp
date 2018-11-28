@@ -33,6 +33,7 @@ public:
 
     bool exists() const;
     bool isExecutable() const;
+    bool isReadable() const;
 
     std::string toString() const;
 

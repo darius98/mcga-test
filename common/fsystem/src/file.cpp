@@ -130,6 +130,15 @@ bool File::isExecutable() const {
     return (info.st_mode & S_IXUSR) != 0;
 }
 
+bool File::isReadable() const {
+    struct stat info;
+    int errCode = stat(toString().c_str(), &info);
+    if(errCode != 0) {
+        return false;
+    }
+    return (info.st_mode & S_IRUSR) != 0;
+}
+
 string File::toString() const {
     return path.toString() + name();
 }

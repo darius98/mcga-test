@@ -6,9 +6,31 @@
 using namespace easyflags;
 using namespace std;
 
+// This is here for external tools to be able to identify the executable as a kktest test suite.
+constexpr const int kkTestSigSize = 32;
+const unsigned char kkTestSignature[] =
+        "\x43\x00\xaa\x4f\x56\x6e\x0c\x64\xeb\xa1\xf5\x1d\x7c\xaa\xbc\xe8"
+        "\xbf\x03\x2d\x86\x40\x69\x98\x65\xa3\x79\x51\xb4\x8a\x33\xce\x97";
+
+AddArgument(int, argumentGetSignature)
+    .Name("get_signature")
+    .Description("Display the KKTest 32-byte signature in hexadecimal format")
+    .ArgumentType("flag")
+    .DefaultValue(0)
+    .ImplicitValue(1);
+
 namespace kktest {
 
 int main() {
+    if (argumentGetSignature) {
+        for (int i = 0; i < kkTestSigSize; ++ i) {
+            cout << "0123456789ABCDEF"[kkTestSignature[i] >> 4]
+                 << "0123456789ABCDEF"[kkTestSignature[i] & 15];
+        }
+        cout << "\n";
+        return 0;
+    }
+
     TestingDriver::init();
     try {
         for (TestCaseRegistry::TestCase testCase: TestCaseRegistry::all()) {
@@ -35,10 +57,4 @@ int main() {
     return 1;
 }
 
-}
-
-// TODO: Move this somewhere else.
-int main(int argc, char** argv) {
-    ParseEasyFlags(argc, argv);
-    return kktest::main();
 }

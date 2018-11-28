@@ -2,54 +2,39 @@
 
 #include <EasyFlags.hpp>
 
-#include <kktest_ext/feedback_impl/test_logger.hpp>
+#include <kktest_ext/feedback_impl/logging_plugin.hpp>
 #include <kktest_plugin_api.hpp>
 
 using namespace easyflags;
 using namespace kktest;
-using namespace kktest::feedback;
 using namespace std;
 
-AddArgument(int, flagQuiet)
-    .ArgumentType("0|1 ")
-    .Name("quiet")
-    .Short("q")
-    .Description("Disable STDOUT logging for this test run")
-    .DefaultValue(0)
-    .ImplicitValue(1);
+namespace kktest {
+namespace feedback {
 
-class LoggingPlugin: public Plugin {
-public:
-    bool isEnabled() const override {
-        return !flagQuiet;
-    }
+void LoggingPlugin::install() {
+    logger = new TestLogger(cout);
 
-    void install() override {
-        logger = new TestLogger(cout);
+    addBeforeGroupHook([this](const GroupInfo& groupInfo) {
+        logger->addGroupInfo(groupInfo);
+    });
 
-        addBeforeGroupHook([this](const GroupInfo& groupInfo) {
-            logger->addGroupInfo(groupInfo);
-        });
+    addAfterTestHook([this](const TestInfo& testInfo) {
+        logger->logTest(testInfo);
+    });
 
-        addAfterTestHook([this](const TestInfo& testInfo) {
-            logger->logTest(testInfo);
-        });
+    addBeforeDestroyHook([this]() {
+        logger->logFinalInformation();
+    });
 
-        addBeforeDestroyHook([this]() {
-            logger->logFinalInformation();
-        });
+    addBeforeForceDestroyHook([this](const exception& error) {
+        logger->logFatalError(error.what());
+    });
+}
 
-        addBeforeForceDestroyHook([this](const exception& error) {
-            logger->logFatalError(error.what());
-        });
-    }
+void LoggingPlugin::uninstall() {
+    delete logger;
+}
 
-    void uninstall() override {
-        delete logger;
-    }
-
-private:
-    TestLogger* logger = nullptr;
-};
-
-static LoggingPlugin loggingPlugin;
+}
+}

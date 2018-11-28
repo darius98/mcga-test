@@ -24,6 +24,6 @@ add_subdirectory(common/messaging)
 
 add_subdirectory(kktest_core)
 
-include(build_kktest_shared_lib.cmake)
+include(generated/build_kktest.cmake)
 
 add_subdirectory(kktest_runner)
