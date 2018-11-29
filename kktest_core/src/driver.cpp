@@ -33,61 +33,54 @@ TestingDriver* TestingDriver::getInstance() {
     return instance;
 }
 
-void TestingDriver::init(const vector<Plugin*>& plugins) {
+TestingDriver* TestingDriver::init(const vector<Plugin*>& plugins) {
     if (instance != nullptr) {
         throw KKTestLibraryImplementationError("TestingDriver::init called a twice.");
     }
-    instance = new TestingDriver(plugins);
-    instance->allowRegisterHooks = true;
-    instance->installPlugins();
-    instance->allowRegisterHooks = false;
-    instance->hookManager.runHooks<TestingDriverHooks::AFTER_INIT>();
+    return new TestingDriver(plugins);
 }
 
 int TestingDriver::destroy() {
-    TestingDriver* driver = getInstance();
-    driver->executor->finalize();
-    instance->hookManager.runHooks<TestingDriverHooks::BEFORE_DESTROY>();
-    driver->uninstallPlugins();
-    int status = driver->failedAnyNonOptionalTest ? 1 : 0;
+    executor->finalize();
+    hookManager.runHooks<TestingDriverHooks::BEFORE_DESTROY>();
+    uninstallPlugins();
+    int status = failedAnyNonOptionalTest ? 1 : 0;
     TestCaseRegistry::clean();
-    delete driver;
+    delete this;
     return status;
 }
 
 void TestingDriver::forceDestroy(const ConfigurationError& error) {
-    TestingDriver* driver = getInstance();
-    instance->hookManager.runHooks<TestingDriverHooks::BEFORE_FORCE_DESTROY>(error);
-    driver->uninstallPlugins();
+    hookManager.runHooks<TestingDriverHooks::BEFORE_FORCE_DESTROY>(error);
+    uninstallPlugins();
     TestCaseRegistry::clean();
-    delete driver;
+    delete this;
 }
 
 void TestingDriver::beforeTestCase() {
-    TestingDriver* driver = getInstance();
-    if (driver->globalScope != nullptr) {
+    if (globalScope != nullptr) {
         throw KKTestLibraryImplementationError(
             "TestingDriver::beforeTestCase called twice in a row."
         );
     }
-    driver->globalScope = new Group(GroupConfig(), nullptr, -1);
-    driver->groupStack = {driver->globalScope};
+    globalScope = new Group(GroupConfig(), nullptr, -1);
+    groupStack = {globalScope};
 }
 
 void TestingDriver::afterTestCase() {
-    TestingDriver* driver = getInstance();
-    if (driver->globalScope == nullptr) {
+    if (globalScope == nullptr) {
         throw KKTestLibraryImplementationError(
             "TestingDriver::afterTestCase called twice in a row."
         );
     }
-    driver->executor->finalize();
-    delete driver->globalScope;
-    driver->globalScope = nullptr;
-    driver->groupStack = {};
+    executor->finalize();
+    delete globalScope;
+    globalScope = nullptr;
+    groupStack = {};
 }
 
 TestingDriver::TestingDriver(const vector<Plugin*>& _plugins): plugins(_plugins) {
+    instance = this;
     if (flagBoxed) {
         executor = new BoxExecutor((size_t)max(argumentNumBoxes, 1));
     } else {
@@ -96,6 +89,10 @@ TestingDriver::TestingDriver(const vector<Plugin*>& _plugins): plugins(_plugins)
     executor->onTestFinished([this](Test* test) {
         afterTest(test);
     });
+    allowRegisterHooks = true;
+    installPlugins();
+    allowRegisterHooks = false;
+    hookManager.runHooks<TestingDriverHooks::AFTER_INIT>();
 }
 
 TestingDriver::~TestingDriver() {

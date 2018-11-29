@@ -32,26 +32,26 @@ int main(const vector<Plugin*>& plugins) {
         return 0;
     }
 
-    TestingDriver::init(plugins);
+    TestingDriver* driver = TestingDriver::init(plugins);
     try {
         for (TestCaseRegistry::TestCase testCase: TestCaseRegistry::all()) {
-            TestingDriver::beforeTestCase();
+            driver->beforeTestCase();
             testCase();
-            TestingDriver::afterTestCase();
+            driver->afterTestCase();
         }
-        return TestingDriver::destroy();
+        return driver->destroy();
     } catch(const ConfigurationError& error) {
-        TestingDriver::forceDestroy(error);
+        driver->forceDestroy(error);
     } catch(const ExpectationFailed& error) {
-        TestingDriver::forceDestroy(
+        driver->forceDestroy(
             ConfigurationError(string("Expectation failed in global scope: ") + error.what())
         );
     } catch(const exception& error) {
-        TestingDriver::forceDestroy(
+        driver->forceDestroy(
             ConfigurationError(string("Exception thrown in global scope: ") + error.what())
         );
     } catch(...) {
-        TestingDriver::forceDestroy(
+        driver->forceDestroy(
             ConfigurationError("Non-exception object thrown in global scope.")
         );
     }

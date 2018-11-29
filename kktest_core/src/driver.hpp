@@ -53,25 +53,19 @@ class TestingDriver {
 public:
     static TestingDriver* getInstance();
 
-    static void init(const std::vector<Plugin*>& plugins);
-    static int destroy();
-    static void forceDestroy(const ConfigurationError& error);
-
-    static void beforeTestCase();
-    static void afterTestCase();
-
-    template<TestingDriverHooks::Type t, class H>
-    static void addHook(const H& hook) {
-        TestingDriver* driver = getInstance();
-        if (!driver->allowRegisterHooks) {
-            throw KKTestLibraryImplementationError("Hook added outside Plugin::install()!");
-        }
-        driver->hookManager.addHook<t, H>(hook);
-    }
+    static TestingDriver* init(const std::vector<Plugin*>& plugins);
 
     explicit TestingDriver(const std::vector<Plugin*>& _plugins);
 
     ~TestingDriver();
+
+    int destroy();
+
+    void forceDestroy(const ConfigurationError& error);
+
+    void beforeTestCase();
+
+    void afterTestCase();
 
     void addGroup(const GroupConfig& config, Executable func);
 
@@ -80,6 +74,14 @@ public:
     void addSetUp(Executable func, const std::string& file, int line);
 
     void addTearDown(Executable func, const std::string& file, int line);
+
+    template<TestingDriverHooks::Type t, class H>
+    void addHook(const H& hook) {
+        if (!allowRegisterHooks) {
+            throw KKTestLibraryImplementationError("Hook added outside Plugin::install()!");
+        }
+        hookManager.addHook<t, H>(hook);
+    }
 
 private:
     void installPlugins();
