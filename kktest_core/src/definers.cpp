@@ -1,4 +1,9 @@
+#include <cstring>
+
+#include <iostream>
+
 #include <kktest_impl/definers.hpp>
+#include <kktest_impl/signature.hpp>
 #include "driver.hpp"
 #include "errors.hpp"
 #include "test_case_registry.hpp"
@@ -7,7 +12,12 @@ using namespace std;
 
 namespace kktest {
 
-TestCaseDefiner::TestCaseDefiner(void (*testCase)()) {
+TestCaseDefiner::TestCaseDefiner(void (*testCase)(), const unsigned char* signature) {
+    if (memcmp(signature, kkTestSignature, kkTestSigSize) != 0) {
+        cout << "Invalid signature passed to TestCaseDefiner. If you didn't do anything weird when "
+                "defining test cases, then this might be a bug, please report.\n";
+        exit(1);
+    }
     TestCaseRegistry::add(testCase);
 }
 

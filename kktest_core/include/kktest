@@ -3,6 +3,7 @@
 
 #include <kktest_impl/definers.hpp>
 #include <kktest_impl/filename.hpp>
+#include <kktest_impl/signature.hpp>
 
 #define KKTEST_FILE_NAME_ (kktest::trimFileName(__FILE__))
 
@@ -24,7 +25,7 @@
 #define kkTestCase(NAME)                                                                           \
             KKTESTCASE_DEF_AUX_2_(kkTestCaseInstance, NAME)();                                     \
             kktest::TestCaseDefiner KKTESTCASE_DEF_AUX_2_(kkTestCaseDefiner, NAME)                 \
-                                                 (KKTESTCASE_DEF_AUX_2_(kkTestCaseInstance, NAME));\
+                        (KKTESTCASE_DEF_AUX_2_(kkTestCaseInstance, NAME), kktest::kkTestSignature);\
             void KKTESTCASE_DEF_AUX_2_(kkTestCaseInstance, NAME)()
 
 #endif

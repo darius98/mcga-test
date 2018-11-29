@@ -1,6 +1,7 @@
 #include <EasyFlags.hpp>
 
 #include <kktest_impl/main.hpp>
+#include <kktest_impl/signature.hpp>
 #include "driver.hpp"
 #include "test_case_registry.hpp"
 
@@ -8,10 +9,6 @@ using namespace easyflags;
 using namespace std;
 
 // This is here for external tools to be able to identify the executable as a kktest test suite.
-constexpr const int kkTestSigSize = 32;
-const unsigned char kkTestSignature[] =
-        "\x43\x00\xaa\x4f\x56\x6e\x0c\x64\xeb\xa1\xf5\x1d\x7c\xaa\xbc\xe8"
-        "\xbf\x03\x2d\x86\x40\x69\x98\x65\xa3\x79\x51\xb4\x8a\x33\xce\x97";
 
 AddArgument(int, argumentGetSignature)
     .Name("get_signature")

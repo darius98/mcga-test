@@ -10,7 +10,7 @@ namespace kktest {
 
 class TestCaseDefiner {
 public:
-    explicit TestCaseDefiner(void (*testCase)());
+    explicit TestCaseDefiner(void (*testCase)(), const unsigned char* signature);
 };
 
 class Definer {
