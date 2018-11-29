@@ -8,46 +8,46 @@ using namespace kktest::core_matchers;
 using namespace std;
 
 void kkTestCase(StringMatchers) {
-    group("Specific charset matchers", []() {
-        test("isLetter matches only letters", []() {
+    group("Specific charset matchers", [] {
+        test("isLetter matches only letters", [] {
             for (unsigned char i = 1; i <= 127; ++ i) {
                 expect(isLetter.matches(i) == (('a' <= i && i <= 'z')
                                                  || ('A' <= i && i <= 'Z')));
             }
         });
 
-        test("isDigit matches only digits", []() {
+        test("isDigit matches only digits", [] {
             for (unsigned char i = 1; i <= 127; ++ i) {
                 expect(isDigit.matches(i) == ('0' <= i && i <= '9'));
             }
         });
 
 
-        test("isLowercaseLetter matches only lowercase letters", []() {
+        test("isLowercaseLetter matches only lowercase letters", [] {
             for (unsigned char i = 1; i <= 127; ++ i) {
                 expect(isLowercaseLetter.matches(i) == ('a' <= i && i <= 'z'));
             }
         });
 
-        test("isUppercaseLetter matches only uppercase letters", []() {
+        test("isUppercaseLetter matches only uppercase letters", [] {
             for (unsigned char i = 1; i <= 127; ++ i) {
                 expect(isUppercaseLetter.matches(i) == ('A' <= i && i <= 'Z'));
             }
         });
 
-        test("isBinaryDigit matches only binary digits", []() {
+        test("isBinaryDigit matches only binary digits", [] {
             for (unsigned char i = 1; i <= 127; ++ i) {
                 expect(isBinaryDigit.matches(i) == ('0' <= i && i <= '1'));
             }
         });
 
-        test("isOctDigit matches only octal digits", []() {
+        test("isOctDigit matches only octal digits", [] {
             for (unsigned char i = 1; i <= 127; ++ i) {
                 expect(isOctDigit.matches(i) == ('0' <= i && i <= '7'));
             }
         });
 
-        test("isHexDigit matches only hexadecimal digits", []() {
+        test("isHexDigit matches only hexadecimal digits", [] {
             for (unsigned char i = 1; i <= 127; ++ i) {
                 expect(isHexDigit.matches(i) == (('0' <= i && i <= '9')
                                                    || ('a' <= i && i <= 'f')
@@ -55,7 +55,7 @@ void kkTestCase(StringMatchers) {
             }
         });
 
-        test("isWhitespace matches only whitespace characters", []() {
+        test("isWhitespace matches only whitespace characters", [] {
             for (unsigned char i = 1; i <= 127; ++ i) {
                 expect(isWhitespace.matches(i) == (bool)isspace(i));
             }
@@ -63,8 +63,8 @@ void kkTestCase(StringMatchers) {
         });
     });
 
-    group("isSubstring", []() {
-        test("Empty string is substring of anything", []() {
+    group("isSubstring", [] {
+        test("Empty string is substring of anything", [] {
             expect(isSubstringOf("Empty").matches(""));
             expect(isSubstringOf(" string i").matches(""));
             expect(isSubstringOf("s a substring of anyth").matches(""));
@@ -72,7 +72,7 @@ void kkTestCase(StringMatchers) {
             expect(isSubstringOf("ing").matches(""));
         });
 
-        test("Nothing but the empty string is substring of the empty substring", []() {
+        test("Nothing but the empty string is substring of the empty substring", [] {
             expect(isSubstringOf("").matches(""));
             expect(!isSubstringOf("").matches("Nothing "));
             expect(!isSubstringOf("").matches("i"));
@@ -81,14 +81,14 @@ void kkTestCase(StringMatchers) {
             expect(!isSubstringOf("").matches("empty string"));
         });
 
-        test("Any string is a substring of itself", []() {
+        test("Any string is a substring of itself", [] {
             expect(isSubstringOf("Any").matches("Any"));
             expect(isSubstringOf(" string i").matches(" string i"));
             expect(isSubstringOf("s a substring of itsel").matches("s a substring of itsel"));
             expect(isSubstringOf("f").matches("f"));
         });
 
-        test("All substrings of 'Hello World!' match isSubstring('Hello World!')", []() {
+        test("All substrings of 'Hello World!' match isSubstring('Hello World!')", [] {
             string s = "Hello World!";
             for (size_t start = 0; start < s.length(); ++ start) {
                 for (size_t len = 0; start + len <= s.length(); ++ len) {
@@ -97,15 +97,15 @@ void kkTestCase(StringMatchers) {
             }
         });
 
-        test("'Hello' is not a substring of 'World!'", []() {
+        test("'Hello' is not a substring of 'World!'", [] {
             expect(!isSubstringOf("World!").matches("Hello"));
         });
 
-        test("'Hello' is not a substring of 'ello'", []() {
+        test("'Hello' is not a substring of 'ello'", [] {
             expect(!isSubstringOf("ello").matches("Hello"));
         });
 
-        test("'Hello' is not a substring of 'hello!!'", []() {
+        test("'Hello' is not a substring of 'hello!!'", [] {
             expect(!isSubstringOf("hello!!").matches("Hello"));
         });
     });
