@@ -19,7 +19,7 @@ public:
 
     virtual ~Executor();
 
-    void checkIsInactive(const std::string& methodName, const std::string& file, int line) const;
+    void checkIsInactive(const std::string& methodName) const;
 
     double getTimeTickLengthMs() const;
 

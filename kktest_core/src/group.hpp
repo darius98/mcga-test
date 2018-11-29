@@ -13,7 +13,7 @@ class Group {
 public:
     Group(const GroupConfig& _config, Group* _parentGroup, int _index);
 
-    std::string getFileAndLine() const;
+    const GroupConfig& getConfig() const;
 
     int getIndex() const;
 
@@ -21,11 +21,11 @@ public:
 
     Group* getParentGroup() const;
 
-    void addSetUp(Executable func, const std::string& file, int line);
+    void addSetUp(Executable func);
 
     void setUp() const;
 
-    void addTearDown(Executable func, const std::string& file, int line);
+    void addTearDown(Executable func);
 
     void tearDown() const;
 
@@ -43,15 +43,8 @@ private:
     Group* parentGroup;
     int index;
 
-    bool hasSetUp = false;
     CopyableExecutable setUpFunc;
-    std::string setUpFile;
-    int setUpLine;
-
-    bool hasTearDown = false;
     CopyableExecutable tearDownFunc;
-    std::string tearDownFile;
-    int tearDownLine;
 };
 
 }

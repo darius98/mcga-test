@@ -8,42 +8,36 @@ namespace kktest {
 Group::Group(const GroupConfig& _config, Group* _parentGroup, int _index):
         config(_config), parentGroup(_parentGroup), index(_index) {}
 
-string Group::getFileAndLine() const {
-    return config.file + "::" + to_string(config.line);
+const GroupConfig& Group::getConfig() const {
+    return config;
 }
 
-void Group::addSetUp(Executable func, const string& file, int line) {
-    if (hasSetUp) {
+void Group::addSetUp(Executable func) {
+    if (setUpFunc) {
         throw ConfigurationError(
-            "Trying to add second kkSetUp to group at " + getFileAndLine() + "."
+            "Trying to add second setUp to group \"" + config.description + "\"."
         );
     }
-    hasSetUp = true;
     setUpFunc = func;
-    setUpFile = file;
-    setUpLine = line;
 }
 
 void Group::setUp() const {
-    if (hasSetUp) {
+    if (setUpFunc) {
         setUpFunc();
     }
 }
 
-void Group::addTearDown(Executable func, const string& file, int line) {
-    if (hasTearDown) {
+void Group::addTearDown(Executable func) {
+    if (tearDownFunc) {
         throw ConfigurationError(
-                "Trying to add second kkTearDown to group " + getFileAndLine() + "."
+                "Trying to add second tearDown to group \"" + config.description + "\"."
         );
     }
-    hasTearDown = true;
     tearDownFunc = func;
-    tearDownFile = file;
-    tearDownLine = line;
 }
 
 void Group::tearDown() const {
-    if (hasTearDown) {
+    if (tearDownFunc) {
         tearDownFunc();
     }
 }
@@ -57,31 +51,25 @@ Group* Group::getParentGroup() const {
 }
 
 string Group::getRenderedFailureMessageOnExceptionInSetUp(const string& what) const {
-    return "Exception thrown in kkSetUp"
-           " (" + setUpFile + ":" + to_string(setUpLine) + "): " + what;
+    return "Exception thrown in setUp of group \"" + config.description + "\": " + what;
 }
 
 string Group::getRenderedFailureMessageOnNonExceptionInSetUp() const {
-    return "Non-exception thrown in kkSetUp"
-           " (" + setUpFile + ":" + to_string(setUpLine) + ").";
+    return "Non-exception thrown in setUp of group \"" + config.description + "\".";
 }
 
 string Group::getRenderedFailureMessageOnExceptionInTearDown(const string& what) const {
-    return "Exception thrown in kkTearDown"
-           " (" + tearDownFile + ":" + to_string(tearDownLine) + "): " + what;
+    return "Exception thrown in tearDown of group \"" + config.description + "\": " + what;
 }
 
 string Group::getRenderedFailureMessageOnNonExceptionInTearDown() const {
-    return "Non-exception thrown in kkTearDown"
-           " (" + tearDownFile + ":" + to_string(tearDownLine) + ").";
+    return "Non-exception thrown in tearDown of group \"" + config.description + "\".";
 }
 
 GroupInfo Group::getGroupInfo() const {
     return GroupInfo{
         parentGroup->index,
         index,
-        config.line,
-        config.file,
         config.description
     };
 }

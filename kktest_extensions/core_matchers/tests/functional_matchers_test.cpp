@@ -1,6 +1,7 @@
 #include <kktest>
 #include <kktest_ext/core_matchers>
 
+using namespace kktest;
 using namespace kktest::core_matchers;
 using namespace std;
 
@@ -45,135 +46,135 @@ void simpleFunctionThrow5() {
 
 
 void kkTestCase(FunctionalMatchers) {
-    kkGroup("Lambdas", []() {
-        kkTest("throws matcher matches lambda throwing exception", []() {
-            kkExpect(throws.matches([]() { throw runtime_error("Some error."); }));
+    group("Lambdas", []() {
+        test("throws matcher matches lambda throwing exception", []() {
+            expect(throws.matches([]() { throw runtime_error("Some error."); }));
         });
 
-        kkTest("throws matcher matches lambda throwing 5", []() {
-            kkExpect(throws.matches([]() { throw 5; }));
+        test("throws matcher matches lambda throwing 5", []() {
+            expect(throws.matches([]() { throw 5; }));
         });
 
-        kkTest("throws matcher does not match lambda that does not throw", []() {
-            kkExpect(!throws.matches([]() {}));
+        test("throws matcher does not match lambda that does not throw", []() {
+            expect(!throws.matches([]() {}));
         });
 
-        kkTest("throwsA matcher matches lambda throwing exact error type", []() {
-            kkExpect(throwsA<runtime_error>().matches([]() {
+        test("throwsA matcher matches lambda throwing exact error type", []() {
+            expect(throwsA<runtime_error>().matches([]() {
                 throw runtime_error("Some error.");
             }));
         });
 
-        kkTest("throwsA matcher matches lambda throwing subtype", []() {
-            kkExpect(throwsA<runtime_error>().matches([]() {
+        test("throwsA matcher matches lambda throwing subtype", []() {
+            expect(throwsA<runtime_error>().matches([]() {
                 throw range_error("Some range error.");
             }));
         });
 
-        kkTest("throwsA matcher does not match lambda throwing supertype", []() {
-            kkExpect(!throwsA<range_error>().matches([]() {
+        test("throwsA matcher does not match lambda throwing supertype", []() {
+            expect(!throwsA<range_error>().matches([]() {
                 throw runtime_error("Some error.");
             }));
         });
 
-        kkTest("throwsA matcher does not match lambda throwing different types", []() {
-            kkExpect(!throwsA<runtime_error>().matches([]() { throw 5; }));
+        test("throwsA matcher does not match lambda throwing different types", []() {
+            expect(!throwsA<runtime_error>().matches([]() { throw 5; }));
         });
 
-        kkTest("throwsA matcher does not match lambda that does not throw", []() {
-            kkExpect(!throwsA<runtime_error>().matches([]() {}));
-        });
-    });
-
-    kkGroup("Simple global functions", []() {
-        kkTest("throws matcher matches function throwing an exception", []() {
-            kkExpect(throws.matches(simpleFunctionThrow));
-        });
-
-        kkTest("throws matcher matches function throwing 5", []() {
-            kkExpect(throws.matches(simpleFunctionThrow5));
-        });
-
-        kkTest("throws matcher does not match function not throwing", []() {
-            kkExpect(!throws.matches(simpleFunction));
-        });
-
-        kkTest("throwsA matcher matches function throwing specific type", []() {
-            kkExpect(throwsA<runtime_error>().matches(simpleFunctionThrow));
-            kkExpect(throwsA<int>().matches(simpleFunctionThrow5));
-        });
-
-        kkTest("throwsA matcher does not match function throwing different type", []() {
-            kkExpect(!throwsA<runtime_error>().matches(simpleFunctionThrow5));
-            kkExpect(!throwsA<int>().matches(simpleFunctionThrow));
-        });
-
-        kkTest("throwsA matcher does not match function not throwing", []() {
-            kkExpect(!throwsA<runtime_error>().matches(simpleFunction));
-            kkExpect(!throwsA<int>().matches(simpleFunction));
+        test("throwsA matcher does not match lambda that does not throw", []() {
+            expect(!throwsA<runtime_error>().matches([]() {}));
         });
     });
 
-    kkGroup("Wrapped global functions", []() {
-        kkTest("throws matcher matches wrapped function throwing an exception", []() {
-            kkExpect(throws.matches(wrapFunc(addThrow, 1, 1)));
+    group("Simple global functions", []() {
+        test("throws matcher matches function throwing an exception", []() {
+            expect(throws.matches(simpleFunctionThrow));
         });
 
-        kkTest("throws matcher matches wrapped function throwing 5", []() {
-            kkExpect(throws.matches(wrapFunc(addThrow5, 1, 1)));
+        test("throws matcher matches function throwing 5", []() {
+            expect(throws.matches(simpleFunctionThrow5));
         });
 
-        kkTest("throws matcher does not match wrapped function not throwing", []() {
-            kkExpect(!throws.matches(wrapFunc(add, 1, 1)));
+        test("throws matcher does not match function not throwing", []() {
+            expect(!throws.matches(simpleFunction));
         });
 
-        kkTest("throwsA matcher matches wrapped function throwing specific type", []() {
-            kkExpect(throwsA<runtime_error>().matches(wrapFunc(addThrow, 1, 1)));
-            kkExpect(throwsA<int>().matches(wrapFunc(addThrow5, 1, 1)));
+        test("throwsA matcher matches function throwing specific type", []() {
+            expect(throwsA<runtime_error>().matches(simpleFunctionThrow));
+            expect(throwsA<int>().matches(simpleFunctionThrow5));
         });
 
-        kkTest("throwsA matcher does not match wrapped function throwing different type", []() {
-            kkExpect(!throwsA<runtime_error>().matches(wrapFunc(addThrow5, 1, 1)));
-            kkExpect(!throwsA<int>().matches(wrapFunc(addThrow, 1, 1)));
+        test("throwsA matcher does not match function throwing different type", []() {
+            expect(!throwsA<runtime_error>().matches(simpleFunctionThrow5));
+            expect(!throwsA<int>().matches(simpleFunctionThrow));
         });
 
-        kkTest("throwsA matcher does not match wrapped function not throwing", []() {
-            kkExpect(!throwsA<runtime_error>().matches(wrapFunc(add, 1, 1)));
-            kkExpect(!throwsA<int>().matches(wrapFunc(add, 1, 1)));
+        test("throwsA matcher does not match function not throwing", []() {
+            expect(!throwsA<runtime_error>().matches(simpleFunction));
+            expect(!throwsA<int>().matches(simpleFunction));
         });
     });
 
-    kkGroup("Wrapped methods", []() {
+    group("Wrapped global functions", []() {
+        test("throws matcher matches wrapped function throwing an exception", []() {
+            expect(throws.matches(wrapFunc(addThrow, 1, 1)));
+        });
+
+        test("throws matcher matches wrapped function throwing 5", []() {
+            expect(throws.matches(wrapFunc(addThrow5, 1, 1)));
+        });
+
+        test("throws matcher does not match wrapped function not throwing", []() {
+            expect(!throws.matches(wrapFunc(add, 1, 1)));
+        });
+
+        test("throwsA matcher matches wrapped function throwing specific type", []() {
+            expect(throwsA<runtime_error>().matches(wrapFunc(addThrow, 1, 1)));
+            expect(throwsA<int>().matches(wrapFunc(addThrow5, 1, 1)));
+        });
+
+        test("throwsA matcher does not match wrapped function throwing different type", []() {
+            expect(!throwsA<runtime_error>().matches(wrapFunc(addThrow5, 1, 1)));
+            expect(!throwsA<int>().matches(wrapFunc(addThrow, 1, 1)));
+        });
+
+        test("throwsA matcher does not match wrapped function not throwing", []() {
+            expect(!throwsA<runtime_error>().matches(wrapFunc(add, 1, 1)));
+            expect(!throwsA<int>().matches(wrapFunc(add, 1, 1)));
+        });
+    });
+
+    group("Wrapped methods", []() {
         BasicClass* c = nullptr;
 
-        kkSetUp([&]() { c = new BasicClass(1); });
-        kkTearDown([&]() { delete c; c = nullptr; });
+        setUp([&]() { c = new BasicClass(1); });
+        tearDown([&]() { delete c; c = nullptr; });
 
-        kkTest("throws matcher matches wrapped method throwing an exception", [&]() {
-            kkExpect(throws.matches(wrapFunc(&BasicClass::addWithThrow, c, 1)));
+        test("throws matcher matches wrapped method throwing an exception", [&]() {
+            expect(throws.matches(wrapFunc(&BasicClass::addWithThrow, c, 1)));
         });
 
-        kkTest("throws matcher matches wrapped method throwing 5", [&]() {
-            kkExpect(throws.matches(wrapFunc(&BasicClass::addWithThrow5, c, 1)));
+        test("throws matcher matches wrapped method throwing 5", [&]() {
+            expect(throws.matches(wrapFunc(&BasicClass::addWithThrow5, c, 1)));
         });
 
-        kkTest("throws matcher does not match wrapped method not throwing", [&]() {
-            kkExpect(!throws.matches(wrapFunc(&BasicClass::addWith, c, 1)));
+        test("throws matcher does not match wrapped method not throwing", [&]() {
+            expect(!throws.matches(wrapFunc(&BasicClass::addWith, c, 1)));
         });
 
-        kkTest("throwsA matcher matches wrapped method throwing specific type", [&]() {
-            kkExpect(throwsA<runtime_error>().matches(wrapFunc(&BasicClass::addWithThrow, c, 1)));
-            kkExpect(throwsA<int>().matches(wrapFunc(&BasicClass::addWithThrow5, c, 1)));
+        test("throwsA matcher matches wrapped method throwing specific type", [&]() {
+            expect(throwsA<runtime_error>().matches(wrapFunc(&BasicClass::addWithThrow, c, 1)));
+            expect(throwsA<int>().matches(wrapFunc(&BasicClass::addWithThrow5, c, 1)));
         });
 
-        kkTest("throwsA matcher does not match wrapped method throwing different type", [&]() {
-            kkExpect(!throwsA<runtime_error>().matches(wrapFunc(&BasicClass::addWithThrow5, c, 1)));
-            kkExpect(!throwsA<int>().matches(wrapFunc(&BasicClass::addWithThrow, c, 1)));
+        test("throwsA matcher does not match wrapped method throwing different type", [&]() {
+            expect(!throwsA<runtime_error>().matches(wrapFunc(&BasicClass::addWithThrow5, c, 1)));
+            expect(!throwsA<int>().matches(wrapFunc(&BasicClass::addWithThrow, c, 1)));
         });
 
-        kkTest("throwsA matcher does not match wrapped method not throwing", [&]() {
-            kkExpect(!throwsA<runtime_error>().matches(wrapFunc(&BasicClass::addWith, c, 1)));
-            kkExpect(!throwsA<int>().matches(wrapFunc(&BasicClass::addWith, c, 1)));
+        test("throwsA matcher does not match wrapped method not throwing", [&]() {
+            expect(!throwsA<runtime_error>().matches(wrapFunc(&BasicClass::addWith, c, 1)));
+            expect(!throwsA<int>().matches(wrapFunc(&BasicClass::addWith, c, 1)));
         });
     });
 }

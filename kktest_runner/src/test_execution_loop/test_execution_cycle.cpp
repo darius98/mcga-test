@@ -117,8 +117,6 @@ void TestExecutionCycle::processMessage(const Message& message) {
             GroupInfo groupInfo;
             reader << groupInfo.parentGroupIndex
                    << groupInfo.index
-                   << groupInfo.line
-                   << groupInfo.file
                    << groupInfo.description;
             info.groupsReceived.push_back(groupInfo);
             info.lastReceived = KKTestCaseInfo::GROUP;
@@ -128,8 +126,6 @@ void TestExecutionCycle::processMessage(const Message& message) {
             TestInfo testInfo;
             reader << testInfo.groupIndex
                    << testInfo.index
-                   << testInfo.line
-                   << testInfo.file
                    << testInfo.optional
                    << testInfo.description
                    << testInfo.passed

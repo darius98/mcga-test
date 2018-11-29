@@ -1,13 +1,12 @@
 add_library(kktest_interface INTERFACE)
 target_include_directories(kktest_interface INTERFACE include)
-target_link_libraries(kktest_interface INTERFACE messaging strutil fsystem easyflags)
+target_link_libraries(kktest_interface INTERFACE messaging strutil easyflags)
 
 add_library(kktest_impl OBJECT
     src/definers.cpp
     src/driver.cpp
     src/errors.cpp
     src/executor.cpp
-    src/filename.cpp
     src/group.cpp
     src/plugin_api.cpp
     src/test_case_registry.cpp

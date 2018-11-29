@@ -28,8 +28,6 @@ void PipePlugin::install() {
         pipe->pipe(Message::build(PipeMessageType::GROUP,
                                   groupInfo.parentGroupIndex,
                                   groupInfo.index,
-                                  groupInfo.line,
-                                  groupInfo.file,
                                   groupInfo.description
         ));
     });
@@ -37,8 +35,6 @@ void PipePlugin::install() {
         pipe->pipe(Message::build(PipeMessageType::TEST,
                                   testInfo.groupIndex,
                                   testInfo.index,
-                                  testInfo.line,
-                                  testInfo.file,
                                   testInfo.optional,
                                   testInfo.description,
                                   testInfo.passed,

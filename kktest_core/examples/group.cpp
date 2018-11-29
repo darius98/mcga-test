@@ -2,46 +2,48 @@
 
 #include <kktest>
 
+using namespace kktest;
+
 void kkTestCase() {
     std::vector<int> v;
 
-    kkSetUp([&]() {
+    setUp([&]() {
         v = std::vector<int>{}; // always start with a clean vector
     });
 
-    kkTest("Vector is initially empty", [&] {
-        kkExpect(v.empty());
-        kkExpect(v.size() == 0);
+    test("Vector is initially empty", [&] {
+        expect(v.empty());
+        expect(v.size() == 0);
     });
 
-    kkTest("After one push_back, vector is not empty anymore", [&]() {
+    test("After one push_back, vector is not empty anymore", [&]() {
         v.push_back(3);
-        kkExpect(!v.empty());
-        kkExpect(v.size() != 0);
+        expect(!v.empty());
+        expect(v.size() != 0);
     });
 
-    kkGroup("After inserting 5 elements", [&]() {
-        kkSetUp([&]() {
+    group("After inserting 5 elements", [&]() {
+        setUp([&]() {
             v.insert(v.end(), {1, 2, 3, 4, 5});
         });
 
-        kkTest("Size of the vector is 5", [&]() {
-            kkExpect(v.size() == 5);
+        test("Size of the vector is 5", [&]() {
+            expect(v.size() == 5);
         });
 
-        kkTest("v.at(4) does not throw", [&]() {
+        test("v.at(4) does not throw", [&]() {
             try {
                 v.at(4);
             } catch(...) {
-                kkFail("It did throw.");
+                fail("It did throw.");
             }
         });
     });
 
-    kkTest("v.at(4) throws on empty vector", [&]() {
+    test("v.at(4) throws on empty vector", [&]() {
         try {
             v.at(4);
-            kkFail("Did not throw.");
+            fail("Did not throw.");
         } catch(...) { /* All ok; */ }
     });
 }

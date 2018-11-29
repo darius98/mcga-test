@@ -17,11 +17,9 @@ double Executor::computeTimeTickLengthFromHardware() {
     return 1000.0;
 }
 
-void Executor::checkIsInactive(const string& methodName, const string& file, int line) const {
+void Executor::checkIsInactive(const string& methodName) const {
     if (state == ACTIVE) {
-        throw ConfigurationError(
-            file + ":" + to_string(line) + ": " + methodName + " called in invalid context."
-        );
+        throw ConfigurationError(methodName + " called in invalid context.");
     }
 }
 

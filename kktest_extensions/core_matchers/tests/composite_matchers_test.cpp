@@ -1,157 +1,158 @@
 #include <kktest>
 #include <kktest_ext/core_matchers>
 
+using namespace kktest;
 using namespace kktest::core_matchers;
 using namespace std;
 
 void kkTestCase(CompositeMatchers) {
-    kkGroup("both", []() {
-        kkTest("both(fitting value, fitting value)", [&]() {
-            kkExpect(both(3, 3).matches(3));
+    group("both", []() {
+        test("both(fitting value, fitting value)", [&]() {
+            expect(both(3, 3).matches(3));
         });
 
-        kkTest("both(fitting value, not-fitting value)", [&]() {
-            kkExpect(!both(3, 5).matches(3));
+        test("both(fitting value, not-fitting value)", [&]() {
+            expect(!both(3, 5).matches(3));
         });
 
-        kkTest("both(not-fitting value, fitting value)", [&]() {
-            kkExpect(!both(3, 5).matches(5));
+        test("both(not-fitting value, fitting value)", [&]() {
+            expect(!both(3, 5).matches(5));
         });
 
-        kkTest("both(not-fitting value, not-fitting value)", [&]() {
-            kkExpect(!both(3, 5).matches(4));
+        test("both(not-fitting value, not-fitting value)", [&]() {
+            expect(!both(3, 5).matches(4));
         });
 
-        kkTest("both(fitting value, fitting matcher)", []() {
-            kkExpect(both(3, isLessThan(4)).matches(3));
+        test("both(fitting value, fitting matcher)", []() {
+            expect(both(3, isLessThan(4)).matches(3));
         });
 
-        kkTest("both(fitting value, un-fitting matcher)", []() {
-            kkExpect(!both(3, isLessThan(2)).matches(3));
+        test("both(fitting value, un-fitting matcher)", []() {
+            expect(!both(3, isLessThan(2)).matches(3));
         });
 
-        kkTest("both(un-fitting value, fitting matcher)", []() {
-            kkExpect(!both(3, isLessThan(6)).matches(5));
+        test("both(un-fitting value, fitting matcher)", []() {
+            expect(!both(3, isLessThan(6)).matches(5));
         });
 
-        kkTest("both(un-fitting value, un-fitting matcher)", []() {
-            kkExpect(!both(3, isLessThan(6)).matches(10));
+        test("both(un-fitting value, un-fitting matcher)", []() {
+            expect(!both(3, isLessThan(6)).matches(10));
         });
 
-        kkTest("both(fitting matcher, fitting value)", []() {
-            kkExpect(both(isLessThan(4), 3).matches(3));
+        test("both(fitting matcher, fitting value)", []() {
+            expect(both(isLessThan(4), 3).matches(3));
         });
 
-        kkTest("both(un-fitting matcher, fitting value)", []() {
-            kkExpect(!both(isLessThan(2), 3).matches(3));
+        test("both(un-fitting matcher, fitting value)", []() {
+            expect(!both(isLessThan(2), 3).matches(3));
         });
 
-        kkTest("both(fitting matcher, un-fitting value)", []() {
-            kkExpect(!both(isLessThan(6), 3).matches(5));
+        test("both(fitting matcher, un-fitting value)", []() {
+            expect(!both(isLessThan(6), 3).matches(5));
         });
 
-        kkTest("both(un-fitting matcher, un-fitting value)", []() {
-            kkExpect(!both(isLessThan(6), 3).matches(10));
+        test("both(un-fitting matcher, un-fitting value)", []() {
+            expect(!both(isLessThan(6), 3).matches(10));
         });
 
-        kkTest("both(fitting matcher, fitting matcher)", []() {
-            kkExpect(both(isLessThan(7), isGreaterThan(2)).matches(3));
+        test("both(fitting matcher, fitting matcher)", []() {
+            expect(both(isLessThan(7), isGreaterThan(2)).matches(3));
         });
 
-        kkTest("both(fitting matcher, un-fitting matcher)", []() {
-            kkExpect(!both(isLessThan(7), isGreaterThan(2)).matches(1));
+        test("both(fitting matcher, un-fitting matcher)", []() {
+            expect(!both(isLessThan(7), isGreaterThan(2)).matches(1));
         });
 
-        kkTest("both(fitting matcher, un-fitting matcher)", []() {
-            kkExpect(!both(isLessThan(7), isGreaterThan(2)).matches(10));
+        test("both(fitting matcher, un-fitting matcher)", []() {
+            expect(!both(isLessThan(7), isGreaterThan(2)).matches(10));
         });
 
-        kkTest("both(un-fitting matcher, un-fitting matcher)", []() {
-            kkExpect(!both(isLessThan(7), isGreaterThan(20)).matches(10));
-        });
-    });
-
-    kkGroup("either", []() {
-        kkTest("either(fitting value, fitting value)", [&]() {
-            kkExpect(either(3, 3).matches(3));
-        });
-
-        kkTest("either(fitting value, not-fitting value)", [&]() {
-            kkExpect(either(3, 5).matches(3));
-        });
-
-        kkTest("either(not-fitting value, fitting value)", [&]() {
-            kkExpect(either(3, 5).matches(5));
-        });
-
-        kkTest("either(not-fitting value, not-fitting value)", [&]() {
-            kkExpect(!either(3, 5).matches(4));
-        });
-
-        kkTest("either(fitting value, fitting matcher)", []() {
-            kkExpect(either(3, isLessThan(4)).matches(3));
-        });
-
-        kkTest("either(fitting value, un-fitting matcher)", []() {
-            kkExpect(either(3, isLessThan(2)).matches(3));
-        });
-
-        kkTest("either(un-fitting value, fitting matcher)", []() {
-            kkExpect(either(3, isLessThan(6)).matches(5));
-        });
-
-        kkTest("either(un-fitting value, un-fitting matcher)", []() {
-            kkExpect(!either(3, isLessThan(6)).matches(10));
-        });
-
-        kkTest("either(fitting matcher, fitting value)", []() {
-            kkExpect(either(isLessThan(4), 3).matches(3));
-        });
-
-        kkTest("either(un-fitting matcher, fitting value)", []() {
-            kkExpect(either(isLessThan(2), 3).matches(3));
-        });
-
-        kkTest("either(fitting matcher, un-fitting value)", []() {
-            kkExpect(either(isLessThan(6), 3).matches(5));
-        });
-
-        kkTest("either(un-fitting matcher, un-fitting value)", []() {
-            kkExpect(!either(isLessThan(6), 3).matches(10));
-        });
-
-        kkTest("either(fitting matcher, fitting matcher)", []() {
-            kkExpect(either(isLessThan(7), isGreaterThan(2)).matches(3));
-        });
-
-        kkTest("either(fitting matcher, un-fitting matcher)", []() {
-            kkExpect(either(isLessThan(7), isGreaterThan(2)).matches(1));
-        });
-
-        kkTest("either(fitting matcher, un-fitting matcher)", []() {
-            kkExpect(either(isLessThan(7), isGreaterThan(2)).matches(10));
-        });
-
-        kkTest("either(un-fitting matcher, un-fitting matcher)", []() {
-            kkExpect(!either(isLessThan(7), isGreaterThan(20)).matches(10));
+        test("both(un-fitting matcher, un-fitting matcher)", []() {
+            expect(!both(isLessThan(7), isGreaterThan(20)).matches(10));
         });
     });
 
-    kkGroup("isNot", []() {
-        kkTest("isNot(fitting value)", []() {
-            kkExpect(!isNot(10).matches(10));
+    group("either", []() {
+        test("either(fitting value, fitting value)", [&]() {
+            expect(either(3, 3).matches(3));
         });
 
-        kkTest("isNot(un-fitting value)", []() {
-            kkExpect(isNot(5).matches(10));
+        test("either(fitting value, not-fitting value)", [&]() {
+            expect(either(3, 5).matches(3));
         });
 
-        kkTest("isNot(fitting matcher)", []() {
-            kkExpect(!isNot(isGreaterThan(10)).matches(15));
+        test("either(not-fitting value, fitting value)", [&]() {
+            expect(either(3, 5).matches(5));
         });
 
-        kkTest("isNot(un-fitting matcher", []() {
-            kkExpect(isNot(isGreaterThan(10)).matches(7));
+        test("either(not-fitting value, not-fitting value)", [&]() {
+            expect(!either(3, 5).matches(4));
+        });
+
+        test("either(fitting value, fitting matcher)", []() {
+            expect(either(3, isLessThan(4)).matches(3));
+        });
+
+        test("either(fitting value, un-fitting matcher)", []() {
+            expect(either(3, isLessThan(2)).matches(3));
+        });
+
+        test("either(un-fitting value, fitting matcher)", []() {
+            expect(either(3, isLessThan(6)).matches(5));
+        });
+
+        test("either(un-fitting value, un-fitting matcher)", []() {
+            expect(!either(3, isLessThan(6)).matches(10));
+        });
+
+        test("either(fitting matcher, fitting value)", []() {
+            expect(either(isLessThan(4), 3).matches(3));
+        });
+
+        test("either(un-fitting matcher, fitting value)", []() {
+            expect(either(isLessThan(2), 3).matches(3));
+        });
+
+        test("either(fitting matcher, un-fitting value)", []() {
+            expect(either(isLessThan(6), 3).matches(5));
+        });
+
+        test("either(un-fitting matcher, un-fitting value)", []() {
+            expect(!either(isLessThan(6), 3).matches(10));
+        });
+
+        test("either(fitting matcher, fitting matcher)", []() {
+            expect(either(isLessThan(7), isGreaterThan(2)).matches(3));
+        });
+
+        test("either(fitting matcher, un-fitting matcher)", []() {
+            expect(either(isLessThan(7), isGreaterThan(2)).matches(1));
+        });
+
+        test("either(fitting matcher, un-fitting matcher)", []() {
+            expect(either(isLessThan(7), isGreaterThan(2)).matches(10));
+        });
+
+        test("either(un-fitting matcher, un-fitting matcher)", []() {
+            expect(!either(isLessThan(7), isGreaterThan(20)).matches(10));
+        });
+    });
+
+    group("isNot", []() {
+        test("isNot(fitting value)", []() {
+            expect(!isNot(10).matches(10));
+        });
+
+        test("isNot(un-fitting value)", []() {
+            expect(isNot(5).matches(10));
+        });
+
+        test("isNot(fitting matcher)", []() {
+            expect(!isNot(isGreaterThan(10)).matches(15));
+        });
+
+        test("isNot(un-fitting matcher", []() {
+            expect(isNot(isGreaterThan(10)).matches(7));
         });
     });
 }

@@ -112,7 +112,7 @@ void TestingDriver::uninstallPlugins() {
 }
 
 void TestingDriver::addGroup(const GroupConfig& config, Executable func) {
-    executor->checkIsInactive("kkGroup", config.file, config.line);
+    executor->checkIsInactive("group");
     auto group = new Group(config, groupStack.back(), ++ currentGroupIndex);
     groupStack.push_back(group);
 
@@ -123,15 +123,15 @@ void TestingDriver::addGroup(const GroupConfig& config, Executable func) {
         throw e;
     } catch(const ExpectationFailed& e) {
         throw ConfigurationError(
-            "Expectation failed in group at " + group->getFileAndLine() + ": " + e.what()
+            "Expectation failed in group \"" + group->getConfig().description + "\": " + e.what()
         );
     } catch(const exception& e) {
         throw ConfigurationError(
-            "Exception thrown in group at " + group->getFileAndLine() + ": " + e.what()
+            "Exception thrown in group \"" + group->getConfig().description + "\": " + e.what()
         );
     } catch(...) {
         throw ConfigurationError(
-            "Non-exception object thrown in group at " + group->getFileAndLine() + "."
+            "Non-exception object thrown in group \"" + group->getConfig().description + "\"."
         );
     }
     markAllTestsStarted(group);
@@ -139,7 +139,7 @@ void TestingDriver::addGroup(const GroupConfig& config, Executable func) {
 }
 
 void TestingDriver::addTest(const TestConfig& config, Executable func) {
-    executor->checkIsInactive("kkTest", config.file, config.line);
+    executor->checkIsInactive("test");
     Group* parentGroup = groupStack.back();
     auto test = new Test(config, parentGroup, ++ currentTestIndex);
     markTestStarted(parentGroup);
@@ -147,14 +147,14 @@ void TestingDriver::addTest(const TestConfig& config, Executable func) {
     executor->execute(test, func);
 }
 
-void TestingDriver::addSetUp(Executable func, const string& file, int line) {
-    executor->checkIsInactive("kkSetUp", file, line);
-    groupStack.back()->addSetUp(func, file, line);
+void TestingDriver::addSetUp(Executable func) {
+    executor->checkIsInactive("setUp");
+    groupStack.back()->addSetUp(func);
 }
 
-void TestingDriver::addTearDown(Executable func, const string& file, int line) {
-    executor->checkIsInactive("kkTearDown", file, line);
-    groupStack.back()->addTearDown(func, file, line);
+void TestingDriver::addTearDown(Executable func) {
+    executor->checkIsInactive("tearDown");
+    groupStack.back()->addTearDown(func);
 }
 
 void TestingDriver::beforeTest(Test* test) {

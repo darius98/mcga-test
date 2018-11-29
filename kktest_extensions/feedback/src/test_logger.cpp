@@ -99,11 +99,12 @@ string TestLogger::getTestMessage(const TestInfo& testInfo) {
     sBuffer << (testInfo.passed ? 'P' : 'F');
     modifyOutput(0, sBuffer);
     sBuffer << "] ";
-    modifyOutput(90, sBuffer);
-    string groupDescription = testInfo.file + ":" + to_string(testInfo.line) + "::"
-                              + getRecursiveGroupDescription(testInfo.groupIndex);
-    sBuffer << groupDescription;
-    modifyOutput(0, sBuffer);
+    string groupDescription = getRecursiveGroupDescription(testInfo.groupIndex);
+    if (!groupDescription.empty()) {
+        modifyOutput(90, sBuffer);
+        sBuffer << groupDescription;
+        modifyOutput(0, sBuffer);
+    }
     sBuffer << testInfo.description;
     if (!testInfo.passed) {
         sBuffer << "\n";

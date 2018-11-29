@@ -54,8 +54,6 @@ TestInfo Test::getTestInfo() const {
     return TestInfo{
         parentGroup->getIndex(),
         index,
-        config.line,
-        config.file,
         config.optional,
         config.description,
         isPassed(),

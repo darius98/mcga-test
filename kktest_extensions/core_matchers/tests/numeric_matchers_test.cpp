@@ -1,132 +1,133 @@
 #include <kktest>
 #include <kktest_ext/core_matchers>
 
+using namespace kktest;
 using namespace kktest::core_matchers;
 
 void kkTestCase(NumericMatchers) {
-    kkGroup("isPositive", [&]() {
-        kkTest("Matches positive numbers", [&]() {
-            kkExpect(isPositive.matches(3));
-            kkExpect(isPositive.matches(10));
-            kkExpect(isPositive.matches(1LL << 60));
-            kkExpect(isPositive.matches(23u));
-            kkExpect(isPositive.matches(35.03));
-            kkExpect(isPositive.matches(3.503f));
+    group("isPositive", [&]() {
+        test("Matches positive numbers", [&]() {
+            expect(isPositive.matches(3));
+            expect(isPositive.matches(10));
+            expect(isPositive.matches(1LL << 60));
+            expect(isPositive.matches(23u));
+            expect(isPositive.matches(35.03));
+            expect(isPositive.matches(3.503f));
         });
 
-        kkTest("Does not match zero", [&]() {
-            kkExpect(!isPositive.matches(0));
-            kkExpect(!isPositive.matches(0.0));
-            kkExpect(!isPositive.matches(0LL));
+        test("Does not match zero", [&]() {
+            expect(!isPositive.matches(0));
+            expect(!isPositive.matches(0.0));
+            expect(!isPositive.matches(0LL));
         });
 
-        kkTest("Does not match negative numbers", [&]() {
-            kkExpect(!isPositive.matches(-3));
-            kkExpect(!isPositive.matches(-10));
-            kkExpect(!isPositive.matches(-(1LL << 60)));
-            kkExpect(!isPositive.matches(-35.03));
-            kkExpect(!isPositive.matches(-3.503f));
-        });
-    });
-
-    kkGroup("isNegative", [&]() {
-        kkTest("Does not match positive numbers", [&]() {
-            kkExpect(!isNegative.matches(3));
-            kkExpect(!isNegative.matches(10));
-            kkExpect(!isNegative.matches(1LL << 60));
-            kkExpect(!isNegative.matches(23u));
-            kkExpect(!isNegative.matches(35.03));
-            kkExpect(!isNegative.matches(3.503f));
-        });
-
-        kkTest("Does not match zero", [&]() {
-            kkExpect(!isNegative.matches(0));
-            kkExpect(!isNegative.matches(0.0));
-            kkExpect(!isNegative.matches(0LL));
-        });
-
-        kkTest("Matches negative numbers", [&]() {
-            kkExpect(isNegative.matches(-3));
-            kkExpect(isNegative.matches(-10));
-            kkExpect(isNegative.matches(-(1LL << 60)));
-            kkExpect(isNegative.matches(-35.03));
-            kkExpect(isNegative.matches(-3.503f));
+        test("Does not match negative numbers", [&]() {
+            expect(!isPositive.matches(-3));
+            expect(!isPositive.matches(-10));
+            expect(!isPositive.matches(-(1LL << 60)));
+            expect(!isPositive.matches(-35.03));
+            expect(!isPositive.matches(-3.503f));
         });
     });
 
-    kkGroup("isEven", [&]() {
-        kkTest("Matches even integers", [&]() {
-            kkExpect(isEven.matches(2));
-            kkExpect(isEven.matches(0));
-            kkExpect(isEven.matches(-2));
-            kkExpect(isEven.matches(1LL << 60));
-            kkExpect(isEven.matches(24u));
+    group("isNegative", [&]() {
+        test("Does not match positive numbers", [&]() {
+            expect(!isNegative.matches(3));
+            expect(!isNegative.matches(10));
+            expect(!isNegative.matches(1LL << 60));
+            expect(!isNegative.matches(23u));
+            expect(!isNegative.matches(35.03));
+            expect(!isNegative.matches(3.503f));
         });
 
-        kkTest("Does not match odd integers", [&]() {
-            kkExpect(!isEven.matches(1));
-            kkExpect(!isEven.matches(13));
-            kkExpect(!isEven.matches(-7));
-            kkExpect(!isEven.matches((1LL << 60) - 1));
-            kkExpect(!isEven.matches(23u));
-        });
-    });
-
-    kkGroup("isOdd", [&]() {
-        kkTest("Does not match even integers", [&]() {
-            kkExpect(!isOdd.matches(2));
-            kkExpect(!isOdd.matches(0));
-            kkExpect(!isOdd.matches(-2));
-            kkExpect(!isOdd.matches(1LL << 60));
-            kkExpect(!isOdd.matches(24u));
+        test("Does not match zero", [&]() {
+            expect(!isNegative.matches(0));
+            expect(!isNegative.matches(0.0));
+            expect(!isNegative.matches(0LL));
         });
 
-        kkTest("Matches odd integers", [&]() {
-            kkExpect(isOdd.matches(1));
-            kkExpect(isOdd.matches(13));
-            kkExpect(isOdd.matches(-7));
-            kkExpect(isOdd.matches((1LL << 60) - 1));
-            kkExpect(isOdd.matches(23u));
+        test("Matches negative numbers", [&]() {
+            expect(isNegative.matches(-3));
+            expect(isNegative.matches(-10));
+            expect(isNegative.matches(-(1LL << 60)));
+            expect(isNegative.matches(-35.03));
+            expect(isNegative.matches(-3.503f));
         });
     });
 
-    kkGroup("isZero", [&]() {
-        kkTest("Does not match positive numbers", [&]() {
-            kkExpect(!isZero.matches(3));
-            kkExpect(!isZero.matches(10));
-            kkExpect(!isZero.matches(1LL << 60));
-            kkExpect(!isZero.matches(23u));
-            kkExpect(!isZero.matches(35.03));
-            kkExpect(!isZero.matches(3.503f));
+    group("isEven", [&]() {
+        test("Matches even integers", [&]() {
+            expect(isEven.matches(2));
+            expect(isEven.matches(0));
+            expect(isEven.matches(-2));
+            expect(isEven.matches(1LL << 60));
+            expect(isEven.matches(24u));
         });
 
-        kkTest("Matches zero", [&]() {
-            kkExpect(isZero.matches(0));
-            kkExpect(isZero.matches(0.0));
-            kkExpect(isZero.matches(0LL));
-        });
-
-        kkTest("Does not match negative numbers", [&]() {
-            kkExpect(!isZero.matches(-3));
-            kkExpect(!isZero.matches(-10));
-            kkExpect(!isZero.matches(-(1LL << 60)));
-            kkExpect(!isZero.matches(-35.03));
-            kkExpect(!isZero.matches(-3.503f));
+        test("Does not match odd integers", [&]() {
+            expect(!isEven.matches(1));
+            expect(!isEven.matches(13));
+            expect(!isEven.matches(-7));
+            expect(!isEven.matches((1LL << 60) - 1));
+            expect(!isEven.matches(23u));
         });
     });
 
-    kkGroup("isAlmostEqualTo", [&]() {
-        kkTest("Default epsilon is high precision", [&]() {
-            kkExpect(isAlmostEqualTo(3.0).matches(3 + 1e-9));
-            kkExpect(isAlmostEqualTo(3.0).matches(3 + 1e-12));
-            kkExpect(!isAlmostEqualTo(3.00).matches(3.01));
-            kkExpect(!isAlmostEqualTo(3.0).matches(3.1));
+    group("isOdd", [&]() {
+        test("Does not match even integers", [&]() {
+            expect(!isOdd.matches(2));
+            expect(!isOdd.matches(0));
+            expect(!isOdd.matches(-2));
+            expect(!isOdd.matches(1LL << 60));
+            expect(!isOdd.matches(24u));
         });
 
-        kkTest("Changing epsilon changes precision", [&]() {
-            kkExpect(isAlmostEqualTo(3.0, 0.1).matches(3.05));
-            kkExpect(isAlmostEqualTo(3.0, 2).matches(4.99));
-            kkExpect(!isAlmostEqualTo(3.0, 1e-12).matches(3 + 1e-9));
+        test("Matches odd integers", [&]() {
+            expect(isOdd.matches(1));
+            expect(isOdd.matches(13));
+            expect(isOdd.matches(-7));
+            expect(isOdd.matches((1LL << 60) - 1));
+            expect(isOdd.matches(23u));
+        });
+    });
+
+    group("isZero", [&]() {
+        test("Does not match positive numbers", [&]() {
+            expect(!isZero.matches(3));
+            expect(!isZero.matches(10));
+            expect(!isZero.matches(1LL << 60));
+            expect(!isZero.matches(23u));
+            expect(!isZero.matches(35.03));
+            expect(!isZero.matches(3.503f));
+        });
+
+        test("Matches zero", [&]() {
+            expect(isZero.matches(0));
+            expect(isZero.matches(0.0));
+            expect(isZero.matches(0LL));
+        });
+
+        test("Does not match negative numbers", [&]() {
+            expect(!isZero.matches(-3));
+            expect(!isZero.matches(-10));
+            expect(!isZero.matches(-(1LL << 60)));
+            expect(!isZero.matches(-35.03));
+            expect(!isZero.matches(-3.503f));
+        });
+    });
+
+    group("isAlmostEqualTo", [&]() {
+        test("Default epsilon is high precision", [&]() {
+            expect(isAlmostEqualTo(3.0).matches(3 + 1e-9));
+            expect(isAlmostEqualTo(3.0).matches(3 + 1e-12));
+            expect(!isAlmostEqualTo(3.00).matches(3.01));
+            expect(!isAlmostEqualTo(3.0).matches(3.1));
+        });
+
+        test("Changing epsilon changes precision", [&]() {
+            expect(isAlmostEqualTo(3.0, 0.1).matches(3.05));
+            expect(isAlmostEqualTo(3.0, 2).matches(4.99));
+            expect(!isAlmostEqualTo(3.0, 1e-12).matches(3 + 1e-9));
         });
     });
 }

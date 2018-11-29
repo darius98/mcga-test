@@ -21,46 +21,48 @@ TestCaseDefiner::TestCaseDefiner(void (*testCase)(), const unsigned char* signat
     TestCaseRegistry::add(testCase);
 }
 
-Definer::Definer(string _file, int _line): file(move(_file)), line(_line) {}
-
-void TestDefiner::operator()(string description, Executable func) {
-    (*this)(kkTestConfig(_.description = description), func);
+void test(string description, Executable func) {
+    test(testConfig(_.description = description), func);
 }
 
-void TestDefiner::operator()(const TestConfig& config, Executable func) {
-    TestConfig fullConfig(config);
-    fullConfig.file = file;
-    fullConfig.line = line;
-    TestingDriver::getInstance()->addTest(fullConfig, func);
+void test(const TestConfig& config, Executable func) {
+    TestingDriver::getInstance()->addTest(config, func);
 }
 
-void GroupDefiner::operator()(string description, Executable func) {
-    (*this)(kkGroupConfig(_.description = description), func);
+void group(string description, Executable func) {
+    group(groupConfig(_.description = description), func);
 }
 
-void GroupDefiner::operator()(const GroupConfig& config, Executable func) {
-    GroupConfig fullConfig(config);
-    fullConfig.file = file;
-    fullConfig.line = line;
-    TestingDriver::getInstance()->addGroup(fullConfig, func);
+void group(const GroupConfig& config, Executable func) {
+    TestingDriver::getInstance()->addGroup(config, func);
 }
 
-void SetUpDefiner::operator()(Executable func) {
-    TestingDriver::getInstance()->addSetUp(func, file, line);
+void setUp(Executable func) {
+    TestingDriver::getInstance()->addSetUp(func);
 }
 
-void TearDownDefiner::operator()(Executable func) {
-    TestingDriver::getInstance()->addTearDown(func, file, line);
+void tearDown(Executable func) {
+    TestingDriver::getInstance()->addTearDown(func);
 }
 
-void ExpectDefiner::operator()(const bool& exprResult, const string& expr) {
-    if (!exprResult) {
-        throwExpectationFailed(file + ":" + to_string(line) + ": " + expr);
+namespace detail {
+
+void throwExpectationFailed(const string& message) {
+    if (message.empty()) {
+        throw ExpectationFailed("Expectation failed.");
+    } else {
+        throw ExpectationFailed(message);
     }
 }
 
-void ExpectDefiner::throwExpectationFailed(const string& message) {
-    throw ExpectationFailed(message);
+}
+
+void fail(const string& message) {
+    if (message.empty()) {
+        throw ExpectationFailed("kktest::fail: Test failed.");
+    } else {
+        throw ExpectationFailed("kktest::fail: " + message);
+    }
 }
 
 }

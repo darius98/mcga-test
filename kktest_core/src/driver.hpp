@@ -71,9 +71,9 @@ public:
 
     void addTest(const TestConfig& config, Executable func);
 
-    void addSetUp(Executable func, const std::string& file, int line);
+    void addSetUp(Executable func);
 
-    void addTearDown(Executable func, const std::string& file, int line);
+    void addTearDown(Executable func);
 
     template<TestingDriverHooks::Type t, class H>
     void addHook(const H& hook) {
