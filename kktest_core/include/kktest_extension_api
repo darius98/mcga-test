@@ -1,0 +1,6 @@
+#ifndef KKTEST_CORE_INCLUDE_KKTEST_EXTENSION_API_
+#define KKTEST_CORE_INCLUDE_KKTEST_EXTENSION_API_
+
+#include <kktest_impl/extension_api.hpp>
+
+#endif

@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 
-#include <kktest_plugin_api.hpp>
+#include <kktest_extension_api>
 
 namespace runner {
 

@@ -9,7 +9,7 @@
 #include "errors.hpp"
 #include "executor.hpp"
 #include "group.hpp"
-#include "plugin_api_impl.hpp"
+#include "extension_api_impl.hpp"
 
 namespace kktest {
 
@@ -17,9 +17,9 @@ class TestingDriver {
 public:
     static TestingDriver* getInstance();
 
-    static TestingDriver* init(const std::vector<Plugin*>& plugins);
+    static TestingDriver* init(const TestingDriverHooks& hooks);
 
-    explicit TestingDriver(const std::vector<Plugin*>& _plugins);
+    explicit TestingDriver(const TestingDriverHooks& hooks);
 
     ~TestingDriver();
 
@@ -39,19 +39,7 @@ public:
 
     void addTearDown(Executable func);
 
-    template<TestingDriverHooks::Type t, class H>
-    void addHook(const H& hook) {
-        if (!allowRegisterHooks) {
-            throw KKTestLibraryImplementationError("Hook added outside Plugin::install()!");
-        }
-        hookManager.addHook<t, H>(hook);
-    }
-
 private:
-    void installPlugins();
-
-    void uninstallPlugins();
-
     void afterTest(Test* test);
     void beforeTest(Test* test);
     void beforeGroup(Group* group);
@@ -63,8 +51,6 @@ private:
 
     static TestingDriver* instance;
 
-    std::vector<Plugin*> plugins;
-
     TestingDriverHooks hookManager;
 
     std::map<Group*, int> testsInExecutionPerGroup;
@@ -75,7 +61,6 @@ private:
     std::vector<Group*> groupStack = {};
     int currentTestIndex = 0;
     int currentGroupIndex = 0;
-    bool allowRegisterHooks = false;
 
     bool failedAnyNonOptionalTest = false;
 };

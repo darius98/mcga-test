@@ -33,17 +33,16 @@ TestingDriver* TestingDriver::getInstance() {
     return instance;
 }
 
-TestingDriver* TestingDriver::init(const vector<Plugin*>& plugins) {
+TestingDriver* TestingDriver::init(const TestingDriverHooks& hooks) {
     if (instance != nullptr) {
         throw KKTestLibraryImplementationError("TestingDriver::init called a twice.");
     }
-    return new TestingDriver(plugins);
+    return new TestingDriver(hooks);
 }
 
 int TestingDriver::destroy() {
     executor->finalize();
     hookManager.runHooks<TestingDriverHooks::BEFORE_DESTROY>();
-    uninstallPlugins();
     int status = failedAnyNonOptionalTest ? 1 : 0;
     TestCaseRegistry::clean();
     delete this;
@@ -52,7 +51,6 @@ int TestingDriver::destroy() {
 
 void TestingDriver::forceDestroy(const ConfigurationError& error) {
     hookManager.runHooks<TestingDriverHooks::BEFORE_FORCE_DESTROY>(error);
-    uninstallPlugins();
     TestCaseRegistry::clean();
     delete this;
 }
@@ -79,7 +77,7 @@ void TestingDriver::afterTestCase() {
     groupStack = {};
 }
 
-TestingDriver::TestingDriver(const vector<Plugin*>& _plugins): plugins(_plugins) {
+TestingDriver::TestingDriver(const TestingDriverHooks& hooks): hookManager(hooks) {
     instance = this;
     if (flagBoxed) {
         executor = new BoxExecutor((size_t)max(argumentNumBoxes, 1));
@@ -89,28 +87,11 @@ TestingDriver::TestingDriver(const vector<Plugin*>& _plugins): plugins(_plugins)
     executor->onTestFinished([this](Test* test) {
         afterTest(test);
     });
-    allowRegisterHooks = true;
-    installPlugins();
-    allowRegisterHooks = false;
     hookManager.runHooks<TestingDriverHooks::AFTER_INIT>();
 }
 
 TestingDriver::~TestingDriver() {
     delete executor;
-}
-
-void TestingDriver::installPlugins() {
-    PluginApiImpl apiImpl;
-    for (Plugin* plugin: plugins) {
-        plugin->install(&apiImpl);
-    }
-    hookManager = apiImpl.getHooks();
-}
-
-void TestingDriver::uninstallPlugins() {
-    for (Plugin* plugin: plugins) {
-        plugin->uninstall();
-    }
 }
 
 void TestingDriver::addGroup(const GroupConfig& config, Executable func) {

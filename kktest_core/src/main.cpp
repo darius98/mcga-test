@@ -19,7 +19,7 @@ AddArgument(int, argumentGetSignature)
 
 namespace kktest {
 
-int main(const vector<Plugin*>& plugins) {
+int main(const vector<Extension*>& extensions) {
     if (argumentGetSignature) {
         for (int i = 0; i < kkTestSigSize; ++ i) {
             cout << "0123456789ABCDEF"[kkTestSignature[i] >> 4]
@@ -29,14 +29,20 @@ int main(const vector<Plugin*>& plugins) {
         return 0;
     }
 
-    TestingDriver* driver = TestingDriver::init(plugins);
+    ExtensionApiImpl apiImpl;
+    for (Extension* extension: extensions) {
+        extension->init(&apiImpl);
+    }
+
+    TestingDriver* driver = TestingDriver::init(apiImpl.getHooks());
+    int ret = 1;
     try {
         for (TestCaseRegistry::TestCase testCase: TestCaseRegistry::all()) {
             driver->beforeTestCase();
             testCase();
             driver->afterTestCase();
         }
-        return driver->destroy();
+        ret = driver->destroy();
     } catch(const ConfigurationError& error) {
         driver->forceDestroy(error);
     } catch(const ExpectationFailed& error) {
@@ -52,7 +58,11 @@ int main(const vector<Plugin*>& plugins) {
             ConfigurationError("Non-exception object thrown in global scope.")
         );
     }
-    return 1;
+
+    for (Extension* extension: extensions) {
+        extension->destroy();
+    }
+    return ret;
 }
 
 }

@@ -8,19 +8,13 @@
 
 int main(int argc, char** argv) {
 
-    kktest::feedback::FeedbackExtensionManager feedbackExtensionManager;
+    kktest::feedback::FeedbackExtension feedbackExtension;
 
     easyflags::ParseEasyFlags(argc, argv);
-    std::vector<kktest::Plugin*> plugins;
-    std::function<void(kktest::Plugin*)> registerPlugin = [&plugins](kktest::Plugin* plugin) {
-        plugins.push_back(plugin);
-    };
 
-    feedbackExtensionManager.init(registerPlugin);
+    return kktest::main({
 
-    int ret = kktest::main(plugins);
+        &feedbackExtension
 
-    feedbackExtensionManager.destroy();
-
-    return ret;
+    });
 }

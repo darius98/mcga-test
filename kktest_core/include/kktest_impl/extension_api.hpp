@@ -1,5 +1,5 @@
-#ifndef KKTEST_CORE_INCLUDE_KKTEST_IMPL_PLUGIN_API_H_
-#define KKTEST_CORE_INCLUDE_KKTEST_IMPL_PLUGIN_API_H_
+#ifndef KKTEST_CORE_INCLUDE_KKTEST_IMPL_EXTENSION_API_H_
+#define KKTEST_CORE_INCLUDE_KKTEST_IMPL_EXTENSION_API_H_
 
 #include <functional>
 
@@ -13,7 +13,7 @@ typedef std::function<void()> AfterInitHook;
 typedef std::function<void()> BeforeDestroyHook;
 typedef std::function<void(const std::exception&)> BeforeForceDestroyHook;
 
-class PluginApi {
+class ExtensionApi {
 public:
     virtual void addBeforeTestHook(const TestHook& hook) = 0;
     virtual void addAfterTestHook(const TestHook& hook) = 0;
@@ -22,23 +22,13 @@ public:
     virtual void addAfterInitHook(const AfterInitHook& hook) = 0;
     virtual void addBeforeDestroyHook(const BeforeDestroyHook& hook) = 0;
     virtual void addBeforeForceDestroyHook(const BeforeForceDestroyHook& hook) = 0;
-
 };
 
-class Plugin {
+class Extension {
 public:
-    virtual ~Plugin();
+    virtual ~Extension();
 
-    virtual void install(PluginApi* api);
-
-    virtual void uninstall();
-};
-
-class ExtensionManager {
-public:
-    virtual ~ExtensionManager();
-
-    virtual void init(const std::function<void(Plugin*)>& addPlugin);
+    virtual void init(ExtensionApi* api);
 
     virtual void destroy();
 };

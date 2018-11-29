@@ -3,11 +3,11 @@
 
 #include <vector>
 
-#include <kktest_impl/plugin_api.hpp>
+#include <kktest_impl/extension_api.hpp>
 
 namespace kktest {
 
-int main(const std::vector<Plugin*>& plugins);
+int main(const std::vector<Extension*>& extensions);
 
 }
 

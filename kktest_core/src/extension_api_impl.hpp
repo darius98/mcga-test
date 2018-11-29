@@ -1,7 +1,7 @@
-#ifndef KKTEST_CORE_PLUGIN_API_IMPL_H_
-#define KKTEST_CORE_PLUGIN_API_IMPL_H_
+#ifndef KKTEST_CORE_EXTENSION_API_IMPL_H_
+#define KKTEST_CORE_EXTENSION_API_IMPL_H_
 
-#include <kktest_impl/plugin_api.hpp>
+#include <kktest_impl/extension_api.hpp>
 
 namespace kktest {
 
@@ -41,7 +41,7 @@ private:
     > hooks;
 };
 
-class PluginApiImpl: public PluginApi {
+class ExtensionApiImpl: public ExtensionApi {
 public:
     void addBeforeTestHook(const TestHook& hook) override;
     void addAfterTestHook(const TestHook& hook) override;
