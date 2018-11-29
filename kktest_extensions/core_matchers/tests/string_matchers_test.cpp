@@ -11,8 +11,7 @@ void kkTestCase(StringMatchers) {
     group("Specific charset matchers", [] {
         test("isLetter matches only letters", [] {
             for (unsigned char i = 1; i <= 127; ++ i) {
-                expect(isLetter.matches(i) == (('a' <= i && i <= 'z')
-                                                 || ('A' <= i && i <= 'Z')));
+                expect(isLetter.matches(i) == (('a' <= i && i <= 'z') || ('A' <= i && i <= 'Z')));
             }
         });
 

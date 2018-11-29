@@ -12,7 +12,7 @@ class PipePlugin: public Plugin {
 public:
     explicit PipePlugin(const std::string& _pipeName);
 
-    void install() override;
+    void install(PluginApi* api) override;
 
     void uninstall() override;
 

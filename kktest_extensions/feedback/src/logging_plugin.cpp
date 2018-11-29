@@ -12,22 +12,22 @@ using namespace std;
 namespace kktest {
 namespace feedback {
 
-void LoggingPlugin::install() {
+void LoggingPlugin::install(PluginApi* api) {
     logger = new TestLogger(cout);
 
-    addBeforeGroupHook([this](const GroupInfo& groupInfo) {
+    api->addBeforeGroupHook([this](const GroupInfo& groupInfo) {
         logger->addGroupInfo(groupInfo);
     });
 
-    addAfterTestHook([this](const TestInfo& testInfo) {
+    api->addAfterTestHook([this](const TestInfo& testInfo) {
         logger->logTest(testInfo);
     });
 
-    addBeforeDestroyHook([this]() {
+    api->addBeforeDestroyHook([this]() {
         logger->logFinalInformation();
     });
 
-    addBeforeForceDestroyHook([this](const exception& error) {
+    api->addBeforeForceDestroyHook([this](const exception& error) {
         logger->logFatalError(error.what());
     });
 }

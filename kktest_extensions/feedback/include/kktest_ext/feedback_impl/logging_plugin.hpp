@@ -9,7 +9,7 @@ namespace feedback {
 
 class LoggingPlugin: public Plugin {
 public:
-    void install() override;
+    void install(PluginApi* api) override;
 
     void uninstall() override;
 

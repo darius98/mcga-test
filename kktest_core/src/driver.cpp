@@ -100,9 +100,11 @@ TestingDriver::~TestingDriver() {
 }
 
 void TestingDriver::installPlugins() {
+    PluginApiImpl apiImpl;
     for (Plugin* plugin: plugins) {
-        plugin->install();
+        plugin->install(&apiImpl);
     }
+    hookManager = apiImpl.getHooks();
 }
 
 void TestingDriver::uninstallPlugins() {

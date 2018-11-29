@@ -8,12 +8,12 @@ add_library(kktest_impl OBJECT
     src/errors.cpp
     src/executor.cpp
     src/group.cpp
-    src/plugin_api.cpp
-    src/test_case_registry.cpp
+        src/test_case_registry.cpp
     src/test.cpp
     src/box_executor.cpp
     src/test_container.cpp
     src/main.cpp
+    src/plugin_api_impl.cpp
 )
 target_compile_options(kktest_impl PRIVATE -Wall -Wextra -pedantic)
 target_link_libraries(kktest_impl kktest_interface)

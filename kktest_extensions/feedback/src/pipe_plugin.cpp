@@ -17,21 +17,21 @@ namespace feedback {
 
 PipePlugin::PipePlugin(const string& _pipeName): pipeName(_pipeName) {}
 
-void PipePlugin::install() {
+void PipePlugin::install(PluginApi* api) {
     int pipeFD = open(pipeName.c_str(), O_WRONLY | O_NONBLOCK);
     if (pipeFD < 0) {
         perror("open");
         exit(errno);
     }
     pipe = new OutputPipe(pipeFD);
-    addBeforeGroupHook([this](const GroupInfo& groupInfo) {
+    api->addBeforeGroupHook([this](const GroupInfo& groupInfo) {
         pipe->pipe(Message::build(PipeMessageType::GROUP,
                                   groupInfo.parentGroupIndex,
                                   groupInfo.index,
                                   groupInfo.description
         ));
     });
-    addAfterTestHook([this](const TestInfo& testInfo) {
+    api->addAfterTestHook([this](const TestInfo& testInfo) {
         pipe->pipe(Message::build(PipeMessageType::TEST,
                                   testInfo.groupIndex,
                                   testInfo.index,
@@ -41,10 +41,10 @@ void PipePlugin::install() {
                                   testInfo.failureMessage
         ));
     });
-    addBeforeDestroyHook([this]() {
+    api->addBeforeDestroyHook([this]() {
         pipe->pipe(Message::build(PipeMessageType::DONE));
     });
-    addBeforeForceDestroyHook([this](const std::exception& error) {
+    api->addBeforeForceDestroyHook([this](const std::exception& error) {
         pipe->pipe(Message::build(PipeMessageType::ERROR, string(error.what())));
     });
 }

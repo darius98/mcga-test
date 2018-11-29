@@ -13,19 +13,23 @@ typedef std::function<void()> AfterInitHook;
 typedef std::function<void()> BeforeDestroyHook;
 typedef std::function<void(const std::exception&)> BeforeForceDestroyHook;
 
-void addBeforeTestHook(const TestHook& hook);
-void addAfterTestHook(const TestHook& hook);
-void addBeforeGroupHook(const GroupHook& hook);
-void addAfterGroupHook(const GroupHook& hook);
-void addAfterInitHook(const AfterInitHook& hook);
-void addBeforeDestroyHook(const BeforeDestroyHook& hook);
-void addBeforeForceDestroyHook(const BeforeForceDestroyHook& hook);
+class PluginApi {
+public:
+    virtual void addBeforeTestHook(const TestHook& hook) = 0;
+    virtual void addAfterTestHook(const TestHook& hook) = 0;
+    virtual void addBeforeGroupHook(const GroupHook& hook) = 0;
+    virtual void addAfterGroupHook(const GroupHook& hook) = 0;
+    virtual void addAfterInitHook(const AfterInitHook& hook) = 0;
+    virtual void addBeforeDestroyHook(const BeforeDestroyHook& hook) = 0;
+    virtual void addBeforeForceDestroyHook(const BeforeForceDestroyHook& hook) = 0;
+
+};
 
 class Plugin {
 public:
     virtual ~Plugin();
 
-    virtual void install();
+    virtual void install(PluginApi* api);
 
     virtual void uninstall();
 };

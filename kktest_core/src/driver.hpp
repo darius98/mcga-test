@@ -6,48 +6,12 @@
 #include <set>
 #include <vector>
 
-#include <kktest_impl/plugin_api.hpp>
 #include "errors.hpp"
 #include "executor.hpp"
 #include "group.hpp"
+#include "plugin_api_impl.hpp"
 
 namespace kktest {
-
-class TestingDriverHooks {
-public:
-    enum Type {
-        AFTER_INIT = 0,
-        BEFORE_GROUP = 1,
-        AFTER_GROUP = 2,
-        BEFORE_TEST = 3,
-        AFTER_TEST = 4,
-        BEFORE_DESTROY = 5,
-        BEFORE_FORCE_DESTROY = 6,
-    };
-
-    template<Type t, class H>
-    void addHook(const H& hook) {
-        std::get<t>(hooks).push_back(hook);
-    }
-
-    template<Type t, class... Args>
-    void runHooks(const Args... args) {
-        for (const auto& hook: std::get<t>(hooks)) {
-            hook(args...);
-        }
-    }
-
-private:
-    std::tuple<
-        std::vector<AfterInitHook>,
-        std::vector<GroupHook>,
-        std::vector<GroupHook>,
-        std::vector<TestHook>,
-        std::vector<TestHook>,
-        std::vector<BeforeDestroyHook>,
-        std::vector<BeforeForceDestroyHook>
-    > hooks;
-};
 
 class TestingDriver {
 public:
