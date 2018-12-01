@@ -12,14 +12,14 @@ namespace kktest {
 InternalArgs registerInternalFlags(ArgumentsApi* argumentsApi) {
     InternalArgs args;
     args.versionFlag = argumentsApi->addFlag("version", "Display program version", "v");
+    args.getSignatureFlag = argumentsApi->addFlag(
+            "get-signature",
+            "Display the KKTest 32-byte signature in hexadecimal format"
+    );
     args.boxedFlag = argumentsApi->addFlag(
         "boxed",
         "Run each test in an isolated process (boxed)",
         "b"
-    );
-    args.getSignatureFlag = argumentsApi->addFlag(
-        "get-signature",
-        "Display the KKTest 32-byte signature in hexadecimal format"
     );
     args.maxParallelTestsArgument = argumentsApi->addArgument(
         "max-parallel-tests",

@@ -17,8 +17,7 @@ void FeedbackExtension::registerCommandLineArguments(ArgumentsApi* argumentsApi)
     quietFlag = argumentsApi->addFlag("quiet", "Disable STDOUT logging for this test run", "q");
     pipeNameArgument = argumentsApi->addArgument(
             "pipe_to",
-            "A file with write access for piping the test results as they become available.",
-            "p"
+            "A file with write access for piping the test results as they become available."
     );
 }
 
