@@ -95,7 +95,7 @@ bool TestContainer::isPassed() const {
     return passed;
 }
 
-std::string TestContainer::getFailureMessage() const {
+string TestContainer::getFailureMessage() const {
     return failureMessage;
 }
 

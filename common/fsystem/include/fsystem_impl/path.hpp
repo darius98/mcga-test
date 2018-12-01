@@ -45,7 +45,7 @@ public:
         return join(join(a, b), args...);
     }
 
-    explicit Path(const std::string& path);
+    Path(const std::string& path);
 
     Path(const Path& other);
 

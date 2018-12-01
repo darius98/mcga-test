@@ -96,7 +96,8 @@ string TestLogger::getRecursiveGroupDescription(int groupId) {
 }
 
 string TestLogger::getTestMessage(const TestInfo& testInfo) {
-    stringstream sBuffer("[");
+    stringstream sBuffer;
+    sBuffer << "[";
     modifyOutput(testInfo.passed ? 32 : (testInfo.optional ? 33 : 31), sBuffer);
     sBuffer << (testInfo.passed ? 'P' : 'F');
     modifyOutput(0, sBuffer);

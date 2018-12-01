@@ -7,7 +7,7 @@
 
 namespace runner {
 
-void explore(const std::function<void(fsystem::File)>& onTestFound);
+void explore(fsystem::Path startPath, const std::function<void(fsystem::File)>& onTestFound);
 
 }
 

@@ -16,8 +16,8 @@ namespace fsystem {
 
 File::File(const string& _path): File(Path(_path)) {}
 
-File::File(const Path& _path): path(_path.parent()) {
-    string s = _path.last();
+File::File(const Path& _path): path(_path.absolute().parent()) {
+    string s = _path.absolute().last();
     vector<string> v;
     size_t prev = 0, pos = 0;
     while ((pos = s.find('.', pos)) != string::npos) {

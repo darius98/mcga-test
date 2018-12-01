@@ -5,6 +5,7 @@
 #include <test_execution_loop/test_execution_loop.hpp>
 
 using std::cout;
+using std::string;
 using std::chrono::milliseconds;
 using std::this_thread::sleep_for;
 
@@ -14,7 +15,7 @@ TestExecutionLoop::TestExecutionLoop(int _concurrentRunningCyclesLimit):
         concurrentRunningCyclesLimit(_concurrentRunningCyclesLimit),
         testLogger(cout, false) {}
 
-void TestExecutionLoop::addToLoop(const std::string& testPath, int maxParallelTests) {
+void TestExecutionLoop::addToLoop(const string& testPath, int maxParallelTests) {
     cycles.emplace_back(
         testPath,
         maxParallelTests,

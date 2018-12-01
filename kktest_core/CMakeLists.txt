@@ -2,8 +2,12 @@ add_library(kktest_interface INTERFACE)
 target_include_directories(kktest_interface INTERFACE include)
 target_link_libraries(kktest_interface INTERFACE messaging strutil)
 
-add_library(kktest_impl OBJECT
+add_library(kktest_command_line_arguments
     src/arguments_api.cpp
+)
+target_link_libraries(kktest_command_line_arguments strutil kktest_interface)
+
+add_library(kktest_impl OBJECT
     src/box_executor.cpp
     src/definers.cpp
     src/driver.cpp
@@ -17,7 +21,7 @@ add_library(kktest_impl OBJECT
     src/test_container.cpp
 )
 target_compile_options(kktest_impl PRIVATE -Wall -Wextra -pedantic)
-target_link_libraries(kktest_impl kktest_interface)
+target_link_libraries(kktest_impl kktest_interface kktest_command_line_arguments)
 
 # Examples
 function(example FILE_NAME)

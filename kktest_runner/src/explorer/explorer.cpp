@@ -1,9 +1,10 @@
-#include <EasyFlags.hpp>
+#include <cstring>
 
 #include <explorer/explorer.hpp>
 
 using fsystem::File;
 using fsystem::Folder;
+using fsystem::Path;
 using std::pair;
 using std::function;
 using std::string;
@@ -17,11 +18,6 @@ const unsigned char kkTestSignatureFirstHalf[] =
         "\x43\x00\xaa\x4f\x56\x6e\x0c\x64\xeb\xa1\xf5\x1d\x7c\xaa\xbc\xe8";
 const unsigned char kkTestSignatureSecondHalf[] =
         "\xbf\x03\x2d\x86\x40\x69\x98\x65\xa3\x79\x51\xb4\x8a\x33\xce\x97";
-
-AddArgument(string, argumentRootFolder)
-    .Name("root_dir")
-    .DefaultValue(".")
-    .ImplicitValue(".");
 
 bool containsKKTestSignature(unsigned char* buffer, size_t bufferSize) {
     for (size_t i = 0; i + kkTestSigSize < bufferSize; ++ i) {
@@ -86,8 +82,14 @@ void findTestCases(const Folder& folder, const function<void(File)>& onTestFound
 
 namespace runner {
 
-void explore(const function<void(File)>& onTestFound) {
-    findTestCases(Folder(argumentRootFolder), onTestFound);
+void explore(Path rootPath, const function<void(File)>& onTestFound) {
+    if (File(rootPath).exists()) {
+        if (isTestCase(File(rootPath))) {
+            onTestFound(File(rootPath));
+        }
+    } else if (Folder(rootPath).exists()) {
+        findTestCases(Folder(rootPath), onTestFound);
+    }
 }
 
 }

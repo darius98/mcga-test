@@ -92,7 +92,7 @@ void FeedbackExtension::initPipe(ExtensionApi* api, const string& pipeName) {
         pipe->pipe(Message::build(PipeMessageType::DONE));
     });
 
-    api->addBeforeForceDestroyHook([this](const std::exception& error) {
+    api->addBeforeForceDestroyHook([this](const exception& error) {
         pipe->pipe(Message::build(PipeMessageType::ERROR, string(error.what())));
     });
 }
