@@ -8,30 +8,16 @@ namespace kktest {
 
 class Flag {
 public:
-    Flag();
+    virtual ~Flag() = default;
 
-    bool get() const;
-
-private:
-    void setValue(bool _value);
-
-    bool value;
-
-friend class FlagSpec;
+    virtual bool get() const = 0;
 };
 
 class Argument {
 public:
-    explicit Argument(std::string _value);
+    virtual ~Argument() = default;
 
-    std::string get() const;
-
-private:
-    void setValue(const std::string& _value);
-
-    std::string value;
-
-friend class ArgumentSpec;
+    virtual std::string get() const = 0;
 };
 
 class ArgumentsApi {

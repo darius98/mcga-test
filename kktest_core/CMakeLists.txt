@@ -3,7 +3,7 @@ target_include_directories(kktest_interface INTERFACE include)
 target_link_libraries(kktest_interface INTERFACE messaging strutil)
 
 add_library(kktest_impl OBJECT
-    src/arguments_api_impl.cpp
+    src/arguments_api.cpp
     src/box_executor.cpp
     src/definers.cpp
     src/driver.cpp

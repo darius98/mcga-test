@@ -2,5 +2,5 @@
   "folderName": "core_matchers",
   "linkToMainLibrary": true,
   "linkObjectLibrary": "kktest_extension_core_matchers",
-  "hookExtensionManagerInMain": false
+  "hookExtensionInMain": false
 }
