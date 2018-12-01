@@ -6,6 +6,8 @@ namespace kktest {
 
 Extension::~Extension() = default;
 
+void Extension::registerCommandLineArguments(ArgumentsApi*) {}
+
 void Extension::init(ExtensionApi*) {}
 
 void Extension::destroy() {}

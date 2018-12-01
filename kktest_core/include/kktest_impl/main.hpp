@@ -7,7 +7,16 @@
 
 namespace kktest {
 
-int main(const std::vector<Extension*>& extensions);
+struct InternalArgs {
+    Flag* versionFlag = nullptr;
+    Flag* getSignatureFlag = nullptr;
+    Flag* boxedFlag = nullptr;
+    Argument* maxParallelTestsArgument = nullptr;
+};
+
+InternalArgs registerInternalFlags(ArgumentsApi* argumentsApi);
+
+int main(const std::vector<Extension*>& extensions, InternalArgs internalFlags);
 
 }
 

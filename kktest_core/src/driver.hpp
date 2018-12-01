@@ -17,9 +17,11 @@ class TestingDriver {
 public:
     static TestingDriver* getInstance();
 
-    static TestingDriver* init(const TestingDriverHooks& hooks);
+    static TestingDriver* init(const TestingDriverHooks& hooks,
+                               bool flagBoxed,
+                               int argumentNumBoxes);
 
-    explicit TestingDriver(const TestingDriverHooks& hooks);
+    explicit TestingDriver(TestingDriverHooks hooks, bool flagBoxed, int argumentNumBoxes);
 
     ~TestingDriver();
 

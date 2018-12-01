@@ -1,24 +1,10 @@
-#include <EasyFlags.hpp>
+#include <utility>
 
 #include "box_executor.hpp"
 #include "driver.hpp"
 #include "test_case_registry.hpp"
 
 using namespace std;
-
-AddArgument(int, flagBoxed)
-    .ArgumentType("0|1 ")
-    .Name("boxed")
-    .Short("b")
-    .Description("Run each test in an isolated process (boxed)")
-    .DefaultValue(0)
-    .ImplicitValue(1);
-AddArgument(int, argumentNumBoxes)
-    .ArgumentType("int")
-    .Name("max_parallel_tests")
-    .Description("Maximum number of tests to execute in parallel "
-    "(processes to spawn) when running boxed")
-    .DefaultValue("1");
 
 namespace kktest {
 
@@ -33,11 +19,13 @@ TestingDriver* TestingDriver::getInstance() {
     return instance;
 }
 
-TestingDriver* TestingDriver::init(const TestingDriverHooks& hooks) {
+TestingDriver* TestingDriver::init(const TestingDriverHooks& hooks,
+                                   bool flagBoxed,
+                                   int argumentNumBoxes) {
     if (instance != nullptr) {
         throw KKTestLibraryImplementationError("TestingDriver::init called a twice.");
     }
-    return new TestingDriver(hooks);
+    return new TestingDriver(hooks, flagBoxed, argumentNumBoxes);
 }
 
 int TestingDriver::destroy() {
@@ -77,10 +65,11 @@ void TestingDriver::afterTestCase() {
     groupStack = {};
 }
 
-TestingDriver::TestingDriver(const TestingDriverHooks& hooks): hookManager(hooks) {
+TestingDriver::TestingDriver(TestingDriverHooks hooks, bool flagBoxed, int argumentNumBoxes):
+        hookManager(move(hooks)) {
     instance = this;
     if (flagBoxed) {
-        executor = new BoxExecutor((size_t)max(argumentNumBoxes, 1));
+        executor = new BoxExecutor((size_t)argumentNumBoxes);
     } else {
         executor = new Executor();
     }

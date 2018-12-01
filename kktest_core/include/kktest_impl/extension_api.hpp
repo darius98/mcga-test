@@ -2,7 +2,9 @@
 #define KKTEST_CORE_INCLUDE_KKTEST_IMPL_EXTENSION_API_H_
 
 #include <functional>
+#include <vector>
 
+#include <kktest_impl/arguments_api.hpp>
 #include <kktest_impl/info.hpp>
 
 namespace kktest {
@@ -27,6 +29,8 @@ public:
 class Extension {
 public:
     virtual ~Extension();
+
+    virtual void registerCommandLineArguments(ArgumentsApi* argumentsApi);
 
     virtual void init(ExtensionApi* api);
 

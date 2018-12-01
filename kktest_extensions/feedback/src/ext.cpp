@@ -1,40 +1,33 @@
 #include <unistd.h>
 #include <fcntl.h>
 
-#include <EasyFlags.hpp>
+#include <iostream>
 
 #include <kktest_extension_api>
 #include <kktest_ext/feedback_impl/ext.hpp>
 #include <kktest_ext/feedback_impl/pipe_message_type.hpp>
 
-using namespace easyflags;
 using namespace messaging;
 using namespace std;
-
-AddArgument(int, flagQuiet)
-    .ArgumentType("0|1 ")
-    .Name("quiet")
-    .Short("q")
-    .Description("Disable STDOUT logging for this test run")
-    .DefaultValue(0)
-    .ImplicitValue(1);
-
-AddArgument(string, argumentPipeFileName)
-        .ArgumentType("FILE ")
-        .Name("pipe_to")
-        .Short("p")
-        .Description("A file with write access for piping the test results as they become available.")
-        .DefaultValue("");
 
 namespace kktest {
 namespace feedback {
 
+void FeedbackExtension::registerCommandLineArguments(ArgumentsApi* argumentsApi) {
+    quietFlag = argumentsApi->addFlag("quiet", "Disable STDOUT logging for this test run", "q");
+    pipeNameArgument = argumentsApi->addArgument(
+            "pipe_to",
+            "A file with write access for piping the test results as they become available.",
+            "p"
+    );
+}
+
 void FeedbackExtension::init(ExtensionApi* api) {
-    if (!flagQuiet) {
+    if (!quietFlag->get()) {
         initLogging(api);
     }
-    if (!argumentPipeFileName.empty()) {
-        initPipe(api, argumentPipeFileName);
+    if (!pipeNameArgument->get().empty()) {
+        initPipe(api, pipeNameArgument->get());
     }
 }
 

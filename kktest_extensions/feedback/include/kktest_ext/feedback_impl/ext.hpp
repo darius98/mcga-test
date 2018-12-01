@@ -11,6 +11,8 @@ namespace feedback {
 
 class FeedbackExtension: public Extension {
 public:
+    void registerCommandLineArguments(ArgumentsApi* argumentsApi) override;
+
     void init(ExtensionApi* api) override;
 
     void destroy() override;
@@ -22,6 +24,9 @@ private:
 
     TestLogger* logger = nullptr;
     messaging::OutputPipe* pipe = nullptr;
+
+    Flag* quietFlag;
+    Argument* pipeNameArgument;
 };
 
 }
