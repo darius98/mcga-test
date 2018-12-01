@@ -10,14 +10,14 @@
 using kktest::ArgumentsApi;
 using kktest::Argument;
 using kktest::Flag;
+using kktest::String;
 using fsystem::File;
-using std::cout;
-using std::invalid_argument;
-using std::string;
-using std::stoi;
-using std::vector;
 using runner::explore;
 using runner::TestExecutionLoop;
+using std::cout;
+using std::invalid_argument;
+using std::stoi;
+using std::vector;
 
 int main(int argc, char** argv) {
     ArgumentsApi* argumentsApi = ArgumentsApi::create("KKTest Runner.");
@@ -41,12 +41,12 @@ int main(int argc, char** argv) {
             "1",
             "5"
     );
-    vector<string> positional = argumentsApi->interpret(argc, argv);
+    vector<String> positional = argumentsApi->interpret(argc, argv);
     if (versionFlag->get()) {
         cout << "KKTest test kktest_runner version " << VERSION << "\n";
         return 0;
     }
-    string rootPath = ".";
+    String rootPath = ".";
     if (!positional.empty() && !positional[0].empty()) {
         rootPath = positional[0];
     }

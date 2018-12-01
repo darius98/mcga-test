@@ -9,7 +9,6 @@
 #include "test_case_registry.hpp"
 
 using std::cout;
-using std::string;
 
 namespace kktest {
 
@@ -22,7 +21,7 @@ TestCaseDefiner::TestCaseDefiner(void (*testCase)(), const unsigned char* signat
     TestCaseRegistry::add(testCase);
 }
 
-void test(string description, Executable func) {
+void test(String description, Executable func) {
     test(testConfig(_.description = description), func);
 }
 
@@ -30,7 +29,7 @@ void test(const TestConfig& config, Executable func) {
     TestingDriver::getInstance()->addTest(config, func);
 }
 
-void group(string description, Executable func) {
+void group(String description, Executable func) {
     group(groupConfig(_.description = description), func);
 }
 
@@ -48,7 +47,7 @@ void tearDown(Executable func) {
 
 namespace detail {
 
-void throwExpectationFailed(const string& message) {
+void throwExpectationFailed(const String& message) {
     if (message.empty()) {
         throw ExpectationFailed("Expectation failed.");
     } else {
@@ -58,7 +57,7 @@ void throwExpectationFailed(const string& message) {
 
 }
 
-void fail(const string& message) {
+void fail(const String& message) {
     if (message.empty()) {
         throw ExpectationFailed("kktest::fail: Test failed.");
     } else {

@@ -1,10 +1,8 @@
 #ifndef KKTEST_CORE_INCLUDE_KKTEST_IMPL_DEFINERS_H_
 #define KKTEST_CORE_INCLUDE_KKTEST_IMPL_DEFINERS_H_
 
-#include <string>
-
 #include <kktest_impl/config.hpp>
-#include <kktest_impl/executable.hpp>
+#include <kktest_impl/types.hpp>
 
 namespace kktest {
 
@@ -15,11 +13,11 @@ public:
 
 void test(const TestConfig& config, Executable func);
 
-void test(std::string description, Executable func);
+void test(String description, Executable func);
 
 void group(const GroupConfig& config, Executable func);
 
-void group(std::string description, Executable func);
+void group(String description, Executable func);
 
 void setUp(Executable func);
 
@@ -27,7 +25,7 @@ void tearDown(Executable func);
 
 namespace detail {
 
-void throwExpectationFailed(const std::string& message);
+void throwExpectationFailed(const String& message);
 
 }
 
@@ -41,7 +39,7 @@ void expect(const T& object, M matcher, const Args...) {
 }
 
 template<class... Args>
-void expect(const bool& exprResult, const std::string& expr="", const Args...) {
+void expect(const bool& exprResult, const String& expr="", const Args...) {
     if (!exprResult) {
         detail::throwExpectationFailed(expr);
     }
@@ -54,7 +52,7 @@ void expect(const bool& exprResult, const char* expr, const Args...) {
     }
 }
 
-void fail(const std::string& message="");
+void fail(const String& message="");
 
 }
 

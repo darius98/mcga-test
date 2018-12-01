@@ -1,8 +1,6 @@
 #ifndef KKTEST_CORE_TEST_H_
 #define KKTEST_CORE_TEST_H_
 
-#include <string>
-
 #include <kktest_impl/config.hpp>
 #include <kktest_impl/info.hpp>
 
@@ -24,13 +22,13 @@ public:
 
     double getExecutionTimeTicks() const;
 
-    std::string getFailureMessage() const;
+    String getFailureMessage() const;
 
     TestInfo getTestInfo() const;
 
     Group* getGroup() const;
 
-    void setExecuted(double _executionTimeTicks, bool _passed, std::string _failureMessage);
+    void setExecuted(double _executionTimeTicks, bool _passed, String _failureMessage);
 
 private:
     TestConfig config;
@@ -40,7 +38,7 @@ private:
 
     bool executed = false;
     bool passed = true;
-    std::string failureMessage = "";
+    String failureMessage = "";
     double executionTimeTicks = -1.0;
 };
 

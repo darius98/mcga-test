@@ -4,7 +4,7 @@
 #include <chrono>
 #include <string>
 
-#include <kktest_impl/executable.hpp>
+#include <kktest_impl/types.hpp>
 #include "test.hpp"
 
 namespace kktest {
@@ -18,10 +18,10 @@ public:
     Test* getTest() const;
     double getTicks() const;
     bool isPassed() const;
-    std::string getFailureMessage() const;
+    String getFailureMessage() const;
 
 private:
-    bool finish(double ticks, bool passed=true, const std::string& failureMessage="");
+    bool finish(double ticks, bool passed=true, const String& failureMessage="");
 
     bool killTestProcess();
 
@@ -34,7 +34,7 @@ private:
     // Results
     double ticks;
     bool passed;
-    std::string failureMessage;
+    String failureMessage;
 };
 
 }

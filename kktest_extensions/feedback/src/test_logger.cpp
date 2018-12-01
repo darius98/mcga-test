@@ -7,7 +7,6 @@
 
 using std::cout;
 using std::ostream;
-using std::string;
 using std::stringstream;
 
 namespace kktest {
@@ -73,7 +72,7 @@ void TestLogger::logFinalInformation(bool logNumTests) {
     stream << "\n";
 }
 
-void TestLogger::logFatalError(const string& errorMessage, const string& testCaseName) {
+void TestLogger::logFatalError(const String& errorMessage, const String& testCaseName) {
     testCasesFatallyExited += 1;
     stream << "\nA fatal ";
     modifyOutput(31, stream);
@@ -86,7 +85,7 @@ void TestLogger::logFatalError(const string& errorMessage, const string& testCas
     stream << ": " << errorMessage << "\n";
 }
 
-string TestLogger::getRecursiveGroupDescription(int groupId) {
+String TestLogger::getRecursiveGroupDescription(int groupId) {
     auto groupInfoIterator = allGroupsInfo.find(groupId);
     if (groupInfoIterator == allGroupsInfo.end()) {
         return "";
@@ -95,14 +94,14 @@ string TestLogger::getRecursiveGroupDescription(int groupId) {
     return getRecursiveGroupDescription(groupInfo.parentGroupIndex) + groupInfo.description + "::";
 }
 
-string TestLogger::getTestMessage(const TestInfo& testInfo) {
+String TestLogger::getTestMessage(const TestInfo& testInfo) {
     stringstream sBuffer;
     sBuffer << "[";
     modifyOutput(testInfo.passed ? 32 : (testInfo.optional ? 33 : 31), sBuffer);
     sBuffer << (testInfo.passed ? 'P' : 'F');
     modifyOutput(0, sBuffer);
     sBuffer << "] ";
-    string groupDescription = getRecursiveGroupDescription(testInfo.groupIndex);
+    String groupDescription = getRecursiveGroupDescription(testInfo.groupIndex);
     if (!groupDescription.empty()) {
         modifyOutput(90, sBuffer);
         sBuffer << groupDescription;
@@ -113,8 +112,8 @@ string TestLogger::getTestMessage(const TestInfo& testInfo) {
         sBuffer << "\n";
         // TODO(darius98): This should be somewhere else (in utils maybe?)
         size_t pos = 0;
-        string failureMessage = testInfo.failureMessage;
-        while ((pos = failureMessage.find('\n', pos)) != string::npos) {
+        String failureMessage = testInfo.failureMessage;
+        while ((pos = failureMessage.find('\n', pos)) != String::npos) {
             failureMessage.replace(pos, 1, "\n\t");
             pos += 2;
         }

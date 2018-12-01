@@ -1,8 +1,6 @@
 #include "errors.hpp"
 #include "group.hpp"
 
-using std::string;
-
 namespace kktest {
 
 Group::Group(const GroupConfig& _config, Group* _parentGroup, int _index):
@@ -50,19 +48,19 @@ Group* Group::getParentGroup() const {
     return parentGroup;
 }
 
-string Group::getRenderedFailureMessageOnExceptionInSetUp(const string& what) const {
+String Group::getRenderedFailureMessageOnExceptionInSetUp(const String& what) const {
     return "Exception thrown in setUp of group \"" + config.description + "\": " + what;
 }
 
-string Group::getRenderedFailureMessageOnNonExceptionInSetUp() const {
+String Group::getRenderedFailureMessageOnNonExceptionInSetUp() const {
     return "Non-exception thrown in setUp of group \"" + config.description + "\".";
 }
 
-string Group::getRenderedFailureMessageOnExceptionInTearDown(const string& what) const {
+String Group::getRenderedFailureMessageOnExceptionInTearDown(const String& what) const {
     return "Exception thrown in tearDown of group \"" + config.description + "\": " + what;
 }
 
-string Group::getRenderedFailureMessageOnNonExceptionInTearDown() const {
+String Group::getRenderedFailureMessageOnNonExceptionInTearDown() const {
     return "Non-exception thrown in tearDown of group \"" + config.description + "\".";
 }
 

@@ -1,13 +1,15 @@
 #include <cstring>
 
+#include <kktest_extension_api>
+
 #include <explorer/explorer.hpp>
 
 using fsystem::File;
 using fsystem::Folder;
 using fsystem::Path;
+using kktest::String;
 using std::pair;
 using std::function;
-using std::string;
 using std::vector;
 
 namespace {
@@ -35,7 +37,7 @@ bool isTestCase(const File& file) {
     if (!file.isExecutable() || !file.isReadable()) {
         return false;
     }
-    string filePath = file.toString();
+    String filePath = file.toString();
     const char* filePathCStr = filePath.c_str();
     // read the executable file, looking for the kktest signature.
     // TODO: Move this somewhere else and make it more generic.

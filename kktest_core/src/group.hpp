@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include <kktest_impl/executable.hpp>
+#include <kktest_impl/types.hpp>
 #include <kktest_impl/info.hpp>
 #include "test.hpp"
 
@@ -29,13 +29,13 @@ public:
 
     void tearDown() const;
 
-    std::string getRenderedFailureMessageOnExceptionInSetUp(const std::string& what) const;
+    String getRenderedFailureMessageOnExceptionInSetUp(const String& what) const;
 
-    std::string getRenderedFailureMessageOnNonExceptionInSetUp() const;
+    String getRenderedFailureMessageOnNonExceptionInSetUp() const;
 
-    std::string getRenderedFailureMessageOnExceptionInTearDown(const std::string& what) const;
+    String getRenderedFailureMessageOnExceptionInTearDown(const String& what) const;
 
-    std::string getRenderedFailureMessageOnNonExceptionInTearDown() const;
+    String getRenderedFailureMessageOnNonExceptionInTearDown() const;
 
 private:
     GroupConfig config;

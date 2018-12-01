@@ -1,7 +1,7 @@
 #ifndef KKTEST_CORE_EXECUTOR_H_
 #define KKTEST_CORE_EXECUTOR_H_
 
-#include <kktest_impl/executable.hpp>
+#include <kktest_impl/types.hpp>
 #include "group.hpp"
 #include "test.hpp"
 
@@ -10,7 +10,7 @@ namespace kktest {
 class Executor {
 private:
     enum State { INACTIVE, ACTIVE };
-    typedef const std::function<void(const std::string&)>& SetFailureType;
+    typedef const std::function<void(const String&)>& SetFailureType;
 
     static double computeTimeTickLengthFromHardware();
 
@@ -19,7 +19,7 @@ public:
 
     virtual ~Executor();
 
-    void checkIsInactive(const std::string& methodName) const;
+    void checkIsInactive(const String& methodName) const;
 
     double getTimeTickLengthMs() const;
 
@@ -35,7 +35,7 @@ protected:
     void setTestExecuted(Test* test,
                          double executionTimeTicks,
                          bool passed,
-                         const std::string& failureMessage);
+                         const String& failureMessage);
 
 private:
     void runSetUpsRecursively(Group* group, SetFailureType setFailure);

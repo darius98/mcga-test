@@ -1,19 +1,18 @@
 #ifndef KKTEST_CORE_INCLUDE_KKTEST_IMPL_CONFIG_H_
 #define KKTEST_CORE_INCLUDE_KKTEST_IMPL_CONFIG_H_
 
-#include <string>
-
+#include <kktest_impl/types.hpp>
 
 namespace kktest {
 
 struct TestConfig {
-    std::string description = "-";
+    String description = "-";
     bool optional = false;
     double timeTicksLimit = 1.0;
 };
 
 struct GroupConfig {
-    std::string description = "-";
+    String description = "-";
 };
 
 }

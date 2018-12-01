@@ -8,7 +8,6 @@ using std::chrono::high_resolution_clock;
 using std::chrono::milliseconds;
 using std::exception;
 using std::function;
-using std::string;
 
 namespace kktest {
 
@@ -21,7 +20,7 @@ double Executor::computeTimeTickLengthFromHardware() {
     return 1000.0;
 }
 
-void Executor::checkIsInactive(const string& methodName) const {
+void Executor::checkIsInactive(const String& methodName) const {
     if (state == ACTIVE) {
         throw ConfigurationError(methodName + " called in invalid context.");
     }
@@ -43,9 +42,9 @@ void Executor::onTestFinished(const function<void(Test*)>& _onTestFinishedCallba
 
 void Executor::run(Test* test, Executable func) {
     state = ACTIVE;
-    string failureMessage;
+    String failureMessage;
     bool failed = false;
-    auto setFailure = [&failureMessage, &failed](const string& value) {
+    auto setFailure = [&failureMessage, &failed](const String& value) {
         if (!failed) {
             failed = true;
             failureMessage = value;
@@ -68,7 +67,7 @@ void Executor::run(Test* test, Executable func) {
 void Executor::setTestExecuted(Test* test,
                                double executionTimeTicks,
                                bool passed,
-                               const string& failureMessage) {
+                               const String& failureMessage) {
     test->setExecuted(executionTimeTicks, passed, failureMessage);
     if (onTestFinishedCallback) {
         onTestFinishedCallback(test);
@@ -102,7 +101,7 @@ void Executor::runSetUpsRecursively(Group* group, SetFailureType setFailure) {
     } catch(const ExpectationFailed& failure) {
         setFailure(failure.what());
     } catch(const exception& e) {
-        setFailure("An exception was thrown during test: " + string(e.what()));
+        setFailure("An exception was thrown during test: " + String(e.what()));
     } catch(...) {
         setFailure("A non-exception object was thrown during test");
     }

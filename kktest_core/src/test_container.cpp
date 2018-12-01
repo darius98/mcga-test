@@ -15,7 +15,6 @@ using messaging::OutputPipe;
 using std::chrono::duration_cast;
 using std::chrono::high_resolution_clock;
 using std::chrono::milliseconds;
-using std::string;
 using std::to_string;
 using strutil::unescapeCharacters;
 
@@ -78,7 +77,7 @@ bool TestContainer::isTestFinished() {
     MessageReader reader(message);
     bool isPassed;
     double ticks;
-    string failureMessage;
+    std::string failureMessage;
     reader << isPassed << ticks << failureMessage;
     return finish(ticks, isPassed, unescapeCharacters(failureMessage));
 }
@@ -95,11 +94,11 @@ bool TestContainer::isPassed() const {
     return passed;
 }
 
-string TestContainer::getFailureMessage() const {
+String TestContainer::getFailureMessage() const {
     return failureMessage;
 }
 
-bool TestContainer::finish(double _ticks, bool _passed, const string& _failureMessage) {
+bool TestContainer::finish(double _ticks, bool _passed, const String& _failureMessage) {
     close(testProcessPipeFD);
     ticks = _ticks;
     passed = _passed;

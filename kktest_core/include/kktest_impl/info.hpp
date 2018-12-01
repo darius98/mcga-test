@@ -1,7 +1,7 @@
 #ifndef KKTEST_CORE_INCLUDE_KKTEST_IMPL_INFO_H_
 #define KKTEST_CORE_INCLUDE_KKTEST_IMPL_INFO_H_
 
-#include <string>
+#include <kktest_impl/types.hpp>
 
 namespace kktest {
 
@@ -9,15 +9,15 @@ struct TestInfo {
     int groupIndex;
     int index;
     bool optional;
-    std::string description;
+    String description;
     bool passed;
-    std::string failureMessage;
+    String failureMessage;
 };
 
 struct GroupInfo {
     int parentGroupIndex;
     int index;
-    std::string description;
+    String description;
 };
 
 }

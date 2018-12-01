@@ -2,23 +2,24 @@
 #define KKTEST_CORE_ERRORS_H_
 
 #include <stdexcept>
-#include <string>
+
+#include <kktest_impl/types.hpp>
 
 namespace kktest {
 
 class ConfigurationError: public std::runtime_error {
 public:
-    explicit ConfigurationError(const std::string& str);
+    explicit ConfigurationError(const String& str);
 };
 
 class KKTestLibraryImplementationError: public std::runtime_error {
 public:
-    explicit KKTestLibraryImplementationError(const std::string& str);
+    explicit KKTestLibraryImplementationError(const String& str);
 };
 
 class ExpectationFailed: public std::runtime_error {
 public:
-    explicit ExpectationFailed(const std::string& str);
+    explicit ExpectationFailed(const String& str);
 };
 
 }

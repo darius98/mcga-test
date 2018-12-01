@@ -14,7 +14,7 @@ class TestExecutionLoop {
 public:
     explicit TestExecutionLoop(int _concurrentRunningCyclesLimit);
 
-    void addToLoop(const std::string& testPath, int maxParallelTests);
+    void addToLoop(const kktest::String& testPath, int maxParallelTests);
 
     bool isEmpty() const;
 

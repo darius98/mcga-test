@@ -10,7 +10,6 @@ using std::cout;
 using std::map;
 using std::runtime_error;
 using std::set;
-using std::string;
 using std::vector;
 using strutil::startsWith;
 using strutil::toLower;
@@ -25,7 +24,7 @@ public:
 
     virtual void setImplicit() = 0;
 
-    virtual void setValue(const string& _value) = 0;
+    virtual void setValue(const String& _value) = 0;
 };
 
 class FlagImpl: public Flag, public CommandLineSpecImpl {
@@ -44,7 +43,7 @@ public:
         value = true;
     }
 
-    void setValue(const string& _value) override {
+    void setValue(const String& _value) override {
         value = toLower(_value) == "true" || _value == "1" || toLower(_value) == "enabled";
     }
 
@@ -54,14 +53,14 @@ private:
 
 class ArgumentImpl: public Argument, public CommandLineSpecImpl {
 public:
-    ArgumentImpl(const string& _defaultValue, string _implicitValue):
+    ArgumentImpl(const String& _defaultValue, String _implicitValue):
             value(_defaultValue),
             defaultValue(_defaultValue),
             implicitValue(move(_implicitValue)) {}
 
     ~ArgumentImpl() override = default;
 
-    string get() const override {
+    String get() const override {
         return value;
     }
 
@@ -73,19 +72,19 @@ public:
         value = implicitValue;
     }
 
-    void setValue(const string& _value) override {
+    void setValue(const String& _value) override {
         value = _value;
     }
 
 private:
-    string value;
-    string defaultValue;
-    string implicitValue;
+    String value;
+    String defaultValue;
+    String implicitValue;
 };
 
 class ArgumentsApiImpl: public ArgumentsApi {
 public:
-    explicit ArgumentsApiImpl(string helpPrefix): help(move(helpPrefix)) {}
+    explicit ArgumentsApiImpl(String helpPrefix): help(move(helpPrefix)) {}
 
     ~ArgumentsApiImpl() override {
         for (CommandLineSpecImpl* spec: commandLineSpecs) {
@@ -93,11 +92,11 @@ public:
         }
     }
 
-    Argument* addArgument(const string& name,
-                          const string& helpText,
-                          const string& shortName,
-                          const string& defaultValue,
-                          const string& implicitValue) override {
+    Argument* addArgument(const String& name,
+                          const String& helpText,
+                          const String& shortName,
+                          const String& defaultValue,
+                          const String& implicitValue) override {
         if (reservedNames.count(name) != 0) {
             throw runtime_error(
                 "Argument tried to register " + name + " as a command-line name, "
@@ -125,7 +124,7 @@ public:
         return spec;
     }
 
-    Flag* addFlag(const string& name, const string& helpText, const string& shortName) override {
+    Flag* addFlag(const String& name, const String& helpText, const String& shortName) override {
         if (reservedNames.count(name) != 0) {
             throw runtime_error("Flag tried to register " + name + " as a command-line name, but "
                                 "a different argument already has it as a name.");
@@ -149,15 +148,15 @@ public:
         return spec;
     }
 
-    vector<string> interpret(int argc, char** argv) override {
+    vector<String> interpret(int argc, char** argv) override {
         for (CommandLineSpecImpl* spec: commandLineSpecs) {
             spec->setDefault();
         }
-        vector<string> positionalArguments;
-        string lastShortName;
+        vector<String> positionalArguments;
+        String lastShortName;
         bool onlyPositional = false;
         for (int i = 1; i < argc; ++ i) {
-            string arg(argv[i]);
+            String arg(argv[i]);
             if (arg == "--") {
                 onlyPositional = true;
                 continue;
@@ -184,7 +183,7 @@ public:
             // is of the form "-XYZ" or "--X" or "-XYZ=v" or "--X=v"
             if (startsWith(arg, "--")) {
                 auto equalPos = arg.find('=');
-                if (equalPos == string::npos) {
+                if (equalPos == String::npos) {
                     // is of the form --X
                     applyImplicit(arg.substr(2));
                 } else {
@@ -193,7 +192,7 @@ public:
                 }
             } else {
                 auto equalPos = arg.find('=');
-                if (equalPos == string::npos) {
+                if (equalPos == String::npos) {
                     // is of the form -XYZ
                     for (size_t j = 1; j + 1 < arg.length(); ++ j) {
                         applyImplicit(arg.substr(j, 1));
@@ -223,12 +222,12 @@ public:
     }
 
 private:
-    string getHelpSection(const string& name,
-                          const string& helpText,
-                          const string& shortName,
-                          const string& defaultValue,
-                          const string& implicitValue) {
-        string helpLine = "\n\t--" + name;
+    String getHelpSection(const String& name,
+                          const String& helpText,
+                          const String& shortName,
+                          const String& defaultValue,
+                          const String& implicitValue) {
+        String helpLine = "\n\t--" + name;
         if (!shortName.empty()) {
             helpLine += ",-" + shortName;
         }
@@ -249,14 +248,14 @@ private:
         return helpLine;
     }
 
-    void applyValue(const string& commandLineString, const string& value) {
+    void applyValue(const String& commandLineString, const String& value) {
         auto specIterator = specsByCommandLineString.find(commandLineString);
         if (specIterator != specsByCommandLineString.end()) {
             specIterator->second->setValue(value);
         }
     }
 
-    void applyImplicit(const string& commandLineString) {
+    void applyImplicit(const String& commandLineString) {
         auto specIterator = specsByCommandLineString.find(commandLineString);
         if (specIterator != specsByCommandLineString.end()) {
             specIterator->second->setImplicit();
@@ -266,13 +265,13 @@ private:
     Flag* helpFlag = nullptr;
 
     vector<CommandLineSpecImpl*> commandLineSpecs;
-    map<string, CommandLineSpecImpl*> specsByCommandLineString;
+    map<String, CommandLineSpecImpl*> specsByCommandLineString;
 
-    string help;
-    set<string> reservedNames;
+    String help;
+    set<String> reservedNames;
 };
 
-ArgumentsApi* ArgumentsApi::create(const string& helpPrefix) {
+ArgumentsApi* ArgumentsApi::create(const String& helpPrefix) {
     auto api = new ArgumentsApiImpl(helpPrefix);
     api->addHelpFlag();
     return api;

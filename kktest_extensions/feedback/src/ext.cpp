@@ -11,7 +11,6 @@ using messaging::Message;
 using messaging::OutputPipe;
 using std::cout;
 using std::exception;
-using std::string;
 
 namespace kktest {
 namespace feedback {
@@ -61,7 +60,7 @@ void FeedbackExtension::initLogging(ExtensionApi* api) {
     });
 }
 
-void FeedbackExtension::initPipe(ExtensionApi* api, const string& pipeName) {
+void FeedbackExtension::initPipe(ExtensionApi* api, const String& pipeName) {
     int pipeFD = open(pipeName.c_str(), O_WRONLY | O_NONBLOCK);
     if (pipeFD < 0) {
         perror("open");
@@ -93,7 +92,7 @@ void FeedbackExtension::initPipe(ExtensionApi* api, const string& pipeName) {
     });
 
     api->addBeforeForceDestroyHook([this](const exception& error) {
-        pipe->pipe(Message::build(PipeMessageType::ERROR, string(error.what())));
+        pipe->pipe(Message::build(PipeMessageType::ERROR, String(error.what())));
     });
 }
 

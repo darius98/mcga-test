@@ -8,7 +8,6 @@
 using std::cout;
 using std::exception;
 using std::invalid_argument;
-using std::string;
 using std::vector;
 
 namespace kktest {
@@ -83,11 +82,11 @@ int main(const vector<Extension*>& extensions, InternalArgs args) {
         driver->forceDestroy(error);
     } catch(const ExpectationFailed& error) {
         driver->forceDestroy(
-            ConfigurationError(string("Expectation failed in global scope: ") + error.what())
+            ConfigurationError(String("Expectation failed in global scope: ") + error.what())
         );
     } catch(const exception& error) {
         driver->forceDestroy(
-            ConfigurationError(string("Exception thrown in global scope: ") + error.what())
+            ConfigurationError(String("Exception thrown in global scope: ") + error.what())
         );
     } catch(...) {
         driver->forceDestroy(

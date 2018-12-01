@@ -13,6 +13,7 @@
 
 using kktest::GroupInfo;
 using kktest::TestInfo;
+using kktest::String;
 using kktest::feedback::PipeMessageType;
 using messaging::InputPipe;
 using messaging::Message;
@@ -20,13 +21,12 @@ using messaging::MessageReader;
 using std::cout;
 using std::function;
 using std::runtime_error;
-using std::string;
 using std::to_string;
 
 namespace runner {
 
 TestExecutionCycle::TestExecutionCycle(
-            const string& _testPath,
+            const String& _testPath,
             int _maxParallelTests,
             const function<void(const KKTestCaseInfo&)>& _onInfoCallback):
         started(false),
@@ -69,10 +69,10 @@ void TestExecutionCycle::start() {
         exit(errno);
     }
     if (testProcessPID == 0) { // child process
-        string quietArgStr = "--quiet";
-        string boxedArgStr = "--boxed";
-        string pipeToArgStr = "--pipe_to=" + pipeName;
-        string maxParallelTestsArgStr = "--max_parallel_tests=" + to_string(maxParallelTests);
+        String quietArgStr = "--quiet";
+        String boxedArgStr = "--boxed";
+        String pipeToArgStr = "--pipe_to=" + pipeName;
+        String maxParallelTestsArgStr = "--max_parallel_tests=" + to_string(maxParallelTests);
         auto cmd = (char*)testPath.c_str();
         auto quietArg = (char*)quietArgStr.c_str();
         auto boxedArg = (char*)boxedArgStr.c_str();

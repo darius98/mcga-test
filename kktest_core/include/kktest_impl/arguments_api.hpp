@@ -1,8 +1,9 @@
 #ifndef KKTEST_CORE_INCLUDE_KKTEST_IMPL_ARGUMENTS_API_H_
 #define KKTEST_CORE_INCLUDE_KKTEST_IMPL_ARGUMENTS_API_H_
 
-#include <string>
 #include <vector>
+
+#include <kktest_impl/types.hpp>
 
 namespace kktest {
 
@@ -17,45 +18,45 @@ class Argument {
 public:
     virtual ~Argument() = default;
 
-    virtual std::string get() const = 0;
+    virtual String get() const = 0;
 };
 
 class ArgumentsApi {
 public:
-    static ArgumentsApi* create(const std::string& helpPrefix);
+    static ArgumentsApi* create(const String& helpPrefix);
 
     virtual ~ArgumentsApi() = default;
 
-    virtual Argument* addArgument(const std::string& name,
-                                  const std::string& helpText,
-                                  const std::string& shortName,
-                                  const std::string& defaultValue,
-                                  const std::string& implicitValue) = 0;
+    virtual Argument* addArgument(const String& name,
+                                  const String& helpText,
+                                  const String& shortName,
+                                  const String& defaultValue,
+                                  const String& implicitValue) = 0;
 
-    virtual Flag* addFlag(const std::string& name,
-                          const std::string& helpText,
-                          const std::string& shortName) = 0;
+    virtual Flag* addFlag(const String& name,
+                          const String& helpText,
+                          const String& shortName) = 0;
 
-    virtual std::vector<std::string> interpret(int argc, char** argv) = 0;
+    virtual std::vector<String> interpret(int argc, char** argv) = 0;
 
-    inline Argument* addArgument(const std::string& name,
-                                 const std::string& helpText,
-                                 const std::string& shortName,
-                                 const std::string& defaultValue) {
+    inline Argument* addArgument(const String& name,
+                                 const String& helpText,
+                                 const String& shortName,
+                                 const String& defaultValue) {
         return addArgument(name, helpText, shortName, defaultValue, "");
     }
 
-    inline Argument* addArgument(const std::string& name,
-                                 const std::string& helpText,
-                                 const std::string& shortName) {
+    inline Argument* addArgument(const String& name,
+                                 const String& helpText,
+                                 const String& shortName) {
         return addArgument(name, helpText, shortName, "");
     }
 
-    inline Argument* addArgument(const std::string& name, const std::string& helpText) {
+    inline Argument* addArgument(const String& name, const String& helpText) {
         return addArgument(name, helpText, "");
     }
 
-    inline Flag* addFlag(const std::string& name, const std::string& helpText) {
+    inline Flag* addFlag(const String& name, const String& helpText) {
         return addFlag(name, helpText, "");
     }
 };

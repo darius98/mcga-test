@@ -52,6 +52,7 @@ public:
     void addBeforeForceDestroyHook(const BeforeForceDestroyHook& hook) override;
 
     const TestingDriverHooks& getHooks() const;
+
 private:
     TestingDriverHooks hooks;
 };

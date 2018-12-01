@@ -1,14 +1,12 @@
 #include "errors.hpp"
 #include "group.hpp"
 
-using std::string;
-
 namespace kktest {
 
 Test::Test(const TestConfig& _config, Group* _parentGroup, int _index):
         config(_config), parentGroup(_parentGroup), index(_index) {}
 
-void Test::setExecuted(double _executionTimeTicks, bool _passed, string _failureMessage) {
+void Test::setExecuted(double _executionTimeTicks, bool _passed, String _failureMessage) {
     if (isExecuted()) {
         throw KKTestLibraryImplementationError("Test::setExecuted called twice on the same test.");
     }
@@ -38,7 +36,7 @@ bool Test::isPassed() const {
     return isExecuted() && passed;
 }
 
-string Test::getFailureMessage() const {
+String Test::getFailureMessage() const {
     return isFailed() ? failureMessage : "";
 }
 
