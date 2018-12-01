@@ -2,7 +2,12 @@
 
 #include <strutil_impl/casing.hpp>
 
-using namespace std;
+using std::isspace;
+using std::reverse;
+using std::string;
+using std::tolower;
+using std::toupper;
+using std::transform;
 
 namespace strutil {
 

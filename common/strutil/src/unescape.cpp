@@ -1,6 +1,6 @@
 #include <strutil_impl/unescape.hpp>
 
-using namespace std;
+using std::string;
 
 namespace strutil {
 

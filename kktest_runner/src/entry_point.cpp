@@ -7,10 +7,11 @@
 
 #define VERSION "0.0.2"
 
-using namespace easyflags;
-using namespace fsystem;
-using namespace runner;
-using namespace std;
+using easyflags::ParseEasyFlags;
+using fsystem::File;
+using std::cout;
+using runner::explore;
+using runner::TestExecutionLoop;
 
 AddArgument(int, flagVersion)
     .Name("version")

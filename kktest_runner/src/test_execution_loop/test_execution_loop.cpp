@@ -4,8 +4,9 @@
 
 #include <test_execution_loop/test_execution_loop.hpp>
 
-using namespace std;
-using namespace std::chrono;
+using std::cout;
+using std::chrono::milliseconds;
+using std::this_thread::sleep_for;
 
 namespace runner {
 
@@ -63,7 +64,7 @@ void TestExecutionLoop::step() {
 int TestExecutionLoop::join() {
     while (!isEmpty()) {
         step();
-        this_thread::sleep_for(milliseconds(10));
+        sleep_for(milliseconds(10));
     }
     testLogger.logFinalInformation(true);
     return failedAnyTest;

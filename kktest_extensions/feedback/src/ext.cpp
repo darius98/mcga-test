@@ -7,8 +7,11 @@
 #include <kktest_ext/feedback_impl/ext.hpp>
 #include <kktest_ext/feedback_impl/pipe_message_type.hpp>
 
-using namespace messaging;
-using namespace std;
+using messaging::Message;
+using messaging::OutputPipe;
+using std::cout;
+using std::exception;
+using std::string;
 
 namespace kktest {
 namespace feedback {

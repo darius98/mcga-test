@@ -2,9 +2,12 @@
 
 #include <explorer/explorer.hpp>
 
-using namespace fsystem;
-using namespace strutil;
-using namespace std;
+using fsystem::File;
+using fsystem::Folder;
+using std::pair;
+using std::function;
+using std::string;
+using std::vector;
 
 namespace {
 

@@ -8,10 +8,16 @@
 
 #include "test_container.hpp"
 
-using namespace messaging;
-using namespace std;
-using namespace std::chrono;
-using namespace strutil;
+using messaging::Message;
+using messaging::MessageReader;
+using messaging::InputPipe;
+using messaging::OutputPipe;
+using std::chrono::duration_cast;
+using std::chrono::high_resolution_clock;
+using std::chrono::milliseconds;
+using std::string;
+using std::to_string;
+using strutil::unescapeCharacters;
 
 namespace kktest {
 

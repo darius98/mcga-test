@@ -4,7 +4,8 @@
 #include "driver.hpp"
 #include "test_case_registry.hpp"
 
-using namespace std;
+using std::exception;
+using std::move;
 
 namespace kktest {
 

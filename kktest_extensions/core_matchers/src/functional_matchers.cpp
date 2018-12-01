@@ -1,6 +1,6 @@
 #include <kktest_ext/core_matchers_impl/functional_matchers.hpp>
 
-using namespace std;
+using std::function;
 
 namespace kktest {
 namespace core_matchers {

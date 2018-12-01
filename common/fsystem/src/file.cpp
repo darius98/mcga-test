@@ -6,7 +6,11 @@
 #include <fsystem_impl/error.hpp>
 #include <fsystem_impl/file.hpp>
 
-using namespace std;
+using std::fstream;
+using std::ios;
+using std::move;
+using std::string;
+using std::vector;
 
 namespace fsystem {
 

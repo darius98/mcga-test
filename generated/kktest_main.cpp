@@ -4,10 +4,16 @@
 // @<AUTO-GENERATE>[IMPORTS]
 #include <kktest_ext/feedback_impl/ext.hpp>
 
+using kktest::ArgumentsApi;
+using kktest::Extension;
+using kktest::InternalArgs;
+using kktest::registerInternalFlags;
+using std::vector;
+
 int main(int argc, char** argv) {
-    std::vector<kktest::Extension*> extensions;
-    kktest::ArgumentsApi* argumentsApi = kktest::ArgumentsApi::create("KKTest test binary.");
-    kktest::InternalArgs internalArgs = kktest::registerInternalFlags(argumentsApi);
+    vector<Extension*> extensions;
+    ArgumentsApi* argumentsApi = ArgumentsApi::create("KKTest test binary.");
+    InternalArgs internalArgs = registerInternalFlags(argumentsApi);
 
 // @<AUTO-GENERATE>[EXTENSIONS_DEF]
 kktest::feedback::FeedbackExtension feedbackExtension;

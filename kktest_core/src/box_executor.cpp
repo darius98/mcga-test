@@ -1,6 +1,6 @@
 #include "box_executor.hpp"
 
-using namespace std;
+using std::size_t;
 
 namespace kktest {
 

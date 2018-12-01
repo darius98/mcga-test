@@ -3,8 +3,12 @@
 #include "errors.hpp"
 #include "executor.hpp"
 
-using namespace std;
-using namespace std::chrono;
+using std::chrono::duration_cast;
+using std::chrono::high_resolution_clock;
+using std::chrono::milliseconds;
+using std::exception;
+using std::function;
+using std::string;
 
 namespace kktest {
 

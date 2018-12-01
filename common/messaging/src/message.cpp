@@ -2,7 +2,7 @@
 
 #include <messaging_impl/message.hpp>
 
-using namespace std;
+using std::string;
 
 namespace messaging {
 

@@ -1,6 +1,6 @@
 #include <strutil_impl/substr_utils.hpp>
 
-using namespace std;
+using std::string;
 
 namespace strutil {
 

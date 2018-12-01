@@ -2,8 +2,9 @@
 
 #include <fsystem_impl/folder.hpp>
 
-using namespace strutil;
-using namespace std;
+using std::string;
+using std::vector;
+using strutil::startsWith;
 
 namespace fsystem {
 

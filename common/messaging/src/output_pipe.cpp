@@ -4,7 +4,7 @@
 
 #include <messaging_impl/output_pipe.hpp>
 
-using namespace std;
+using std::size_t;
 
 namespace messaging {
 

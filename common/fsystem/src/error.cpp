@@ -1,6 +1,6 @@
 #include <fsystem_impl/error.hpp>
 
-using namespace std;
+using std::runtime_error;
 
 namespace fsystem {
 

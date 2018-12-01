@@ -3,7 +3,7 @@
 
 #include "test_case_registry.hpp"
 
-using namespace std;
+using std::vector;
 
 namespace kktest {
 

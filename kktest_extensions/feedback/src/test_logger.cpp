@@ -5,7 +5,10 @@
 
 #include <kktest_ext/feedback_impl/test_logger.hpp>
 
-using namespace std;
+using std::cout;
+using std::ostream;
+using std::string;
+using std::stringstream;
 
 namespace kktest {
 namespace feedback {
@@ -93,8 +96,7 @@ string TestLogger::getRecursiveGroupDescription(int groupId) {
 }
 
 string TestLogger::getTestMessage(const TestInfo& testInfo) {
-    stringstream sBuffer;
-    sBuffer << "[";
+    stringstream sBuffer("[");
     modifyOutput(testInfo.passed ? 32 : (testInfo.optional ? 33 : 31), sBuffer);
     sBuffer << (testInfo.passed ? 'P' : 'F');
     modifyOutput(0, sBuffer);

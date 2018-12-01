@@ -1,7 +1,7 @@
 #include "errors.hpp"
 #include "group.hpp"
 
-using namespace std;
+using std::string;
 
 namespace kktest {
 

@@ -8,7 +8,8 @@
 #include "errors.hpp"
 #include "test_case_registry.hpp"
 
-using namespace std;
+using std::cout;
+using std::string;
 
 namespace kktest {
 

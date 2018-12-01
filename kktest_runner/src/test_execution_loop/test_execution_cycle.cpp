@@ -11,10 +11,17 @@
 #include <kktest_ext/feedback>
 #include "test_execution_cycle.hpp"
 
-using namespace messaging;
-using namespace kktest;
-using namespace kktest::feedback;
-using namespace std;
+using kktest::GroupInfo;
+using kktest::TestInfo;
+using kktest::feedback::PipeMessageType;
+using messaging::InputPipe;
+using messaging::Message;
+using messaging::MessageReader;
+using std::cout;
+using std::function;
+using std::runtime_error;
+using std::string;
+using std::to_string;
 
 namespace runner {
 

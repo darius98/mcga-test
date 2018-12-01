@@ -5,7 +5,11 @@
 #include "driver.hpp"
 #include "test_case_registry.hpp"
 
-using namespace std;
+using std::cout;
+using std::exception;
+using std::invalid_argument;
+using std::string;
+using std::vector;
 
 namespace kktest {
 

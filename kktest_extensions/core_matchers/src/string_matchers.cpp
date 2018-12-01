@@ -2,7 +2,7 @@
 
 #include <kktest_ext/core_matchers_impl/string_matchers.hpp>
 
-using namespace std;
+using std::string;
 
 namespace kktest {
 namespace core_matchers {

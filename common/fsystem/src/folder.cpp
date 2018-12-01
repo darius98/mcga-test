@@ -8,7 +8,10 @@
 #include <fsystem_impl/error.hpp>
 #include <fsystem_impl/folder.hpp>
 
-using namespace std;
+using std::move;
+using std::pair;
+using std::string;
+using std::vector;
 
 namespace fsystem {
 

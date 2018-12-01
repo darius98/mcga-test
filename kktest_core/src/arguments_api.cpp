@@ -6,8 +6,14 @@
 
 #include <kktest_impl/arguments_api.hpp>
 
-using namespace std;
-using namespace strutil;
+using std::cout;
+using std::map;
+using std::runtime_error;
+using std::set;
+using std::string;
+using std::vector;
+using strutil::startsWith;
+using strutil::toLower;
 
 namespace kktest {
 
