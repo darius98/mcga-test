@@ -6,10 +6,6 @@ set(CMAKE_POSITION_INDEPENDENT_CODE TRUE)
 
 set(BUILD_TYPE "DEV" CACHE STRING "BUILD_TYPE")
 
-# Third party targets
-add_subdirectory(third_party/autojson)
-add_subdirectory(third_party/easyflags)
-
 set(TESTS_PATH "${CMAKE_CURRENT_SOURCE_DIR}/build/tests")
 
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/build/lib")
