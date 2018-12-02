@@ -7,12 +7,15 @@
 
 #include <explorer/explorer.hpp>
 
-using fsystem::File;
-using fsystem::Folder;
-using fsystem::Path;
 using std::pair;
 using std::function;
 using std::vector;
+using std::filesystem::directory_iterator;
+using std::filesystem::is_directory;
+using std::filesystem::is_regular_file;
+using std::filesystem::path;
+using std::filesystem::perms;
+using std::filesystem::status;
 
 namespace kktest {
 namespace test_runner {
@@ -36,12 +39,14 @@ bool containsKKTestSignature(unsigned char* buffer, size_t bufferSize) {
     return false;
 }
 
-bool isTestCase(const File& file) {
-    if (!file.isExecutable() || !file.isReadable()) {
+bool isTestCase(const path& file) {
+    auto fileStatus = status(file);
+    auto expectedRXPerms = perms::owner_read | perms::owner_exec;
+    auto actualRXPerms = fileStatus.permissions() & expectedRXPerms;
+    if (actualRXPerms != expectedRXPerms) {
         return false;
     }
-    String filePath = file.toString();
-    const char* filePathCStr = filePath.c_str();
+    const char* filePathCStr = file.c_str();
     // read the executable file, looking for the kktest signature.
     // TODO(darius98): Move this somewhere else and make it more generic.
     constexpr const size_t capacity = 1024;
@@ -71,25 +76,24 @@ bool isTestCase(const File& file) {
     return false;
 }
 
-void findTestCases(const Folder& folder, const function<void(File)>& onTestFound) {
-    pair<vector<File>, vector<Folder>> children = folder.children();
-    for (const File& file : children.first) {
-        if (isTestCase(file)) {
-            onTestFound(file);
+void findTestCases(const path& folder, const function<void(path)>& onTestFound) {
+    for (const path& child : directory_iterator(folder)) {
+        if (is_regular_file(child) && isTestCase(child)) {
+            onTestFound(child);
         }
-    }
-    for (const Folder& childFolder : children.second) {
-        findTestCases(childFolder, onTestFound);
+        if (is_directory(child)) {
+            findTestCases(child, onTestFound);
+        }
     }
 }
 
-void explore(const Path& rootPath, const function<void(File)>& onTestFound) {
-    if (File(rootPath).exists()) {
-        if (isTestCase(File(rootPath))) {
-            onTestFound(File(rootPath));
+void explore(const path& rootPath, const function<void(path)>& onTestFound) {
+    if (is_regular_file(rootPath)) {
+        if (isTestCase(rootPath)) {
+            onTestFound(rootPath);
         }
-    } else if (Folder(rootPath).exists()) {
-        findTestCases(Folder(rootPath), onTestFound);
+    } else if (is_directory(rootPath)) {
+        findTestCases(rootPath, onTestFound);
     }
 }
 

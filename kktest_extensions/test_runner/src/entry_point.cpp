@@ -1,5 +1,6 @@
 #define VERSION "0.0.2"
 
+#include <filesystem>
 #include <iostream>
 
 #include <kktest_extension_api.hpp>
@@ -13,12 +14,11 @@ using kktest::Flag;
 using kktest::String;
 using kktest::test_runner::explore;
 using kktest::test_runner::TestExecutionLoop;
-using fsystem::File;
-using fsystem::Path;
 using std::cout;
 using std::invalid_argument;
 using std::stoi;
 using std::vector;
+using std::filesystem::path;
 
 int main(int argc, char** argv) {
     ArgumentsApi* argumentsApi = ArgumentsApi::create("KKTest Runner.");
@@ -69,9 +69,9 @@ int main(int argc, char** argv) {
 
     auto executionLoop = new TestExecutionLoop(maxParallelTestCases);
     cout << "Searching for test cases...\n";
-    explore(Path(rootPath), [executionLoop, maxParallelTestsPerCase](File testCase) {
-        cout << "\tFound test case at " << testCase.toString() << "\n";
-        executionLoop->addToLoop(testCase.toString(), maxParallelTestsPerCase);
+    explore(path(rootPath), [executionLoop, maxParallelTestsPerCase](path testCase) {
+        cout << "\tFound test case at " << testCase.c_str() << "\n";
+        executionLoop->addToLoop(testCase.c_str(), maxParallelTestsPerCase);
     });
     if (executionLoop->isEmpty()) {
         cout << "No test cases found. Exiting.\n";
