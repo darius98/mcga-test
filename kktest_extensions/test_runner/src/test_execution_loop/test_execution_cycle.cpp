@@ -8,6 +8,8 @@
 #include <stdexcept>
 #include <iostream>
 
+#include <strutil.hpp>
+
 #include <kktest_ext/feedback.hpp>
 #include "test_execution_cycle.hpp"
 
@@ -18,6 +20,7 @@ using std::cout;
 using std::function;
 using std::runtime_error;
 using std::to_string;
+using strutil::copyAsCString;
 
 namespace kktest {
 
@@ -69,16 +72,13 @@ void TestExecutionCycle::start() {
         exit(errno);
     }
     if (testProcessPID == 0) {  // child process
-        String quietArgStr = "--quiet";
-        String boxedArgStr = "--boxed";
-        String pipeToArgStr = "--pipe_to=" + pipeName;
-        String maxParallelTestsArgStr = "--max_parallel_tests=" + to_string(maxParallelTests);
-        auto cmd = (char*)testPath.c_str();
-        auto quietArg = (char*)quietArgStr.c_str();
-        auto boxedArg = (char*)boxedArgStr.c_str();
-        auto pipeToArg = (char*)pipeToArgStr.c_str();
-        auto maxParallelTestsArg = (char*)maxParallelTestsArgStr.c_str();
-        char *const argv[] = {cmd, quietArg, boxedArg, pipeToArg, maxParallelTestsArg, nullptr};
+        char* cmd = copyAsCString(testPath.c_str());
+        char* quietArg = copyAsCString("--quiet");
+        char* boxedArg = copyAsCString("--boxed");
+        char* pipeToArg = copyAsCString(("--pipe_to=" + pipeName).c_str());
+        char* maxParallelTestsArg = copyAsCString(
+            ("--max_parallel_tests=" + to_string(maxParallelTests)).c_str());
+        char* argv[] = {cmd, quietArg, boxedArg, pipeToArg, maxParallelTestsArg, nullptr};
         execve(cmd, argv, nullptr);
         perror("execve");
         exit(errno);
