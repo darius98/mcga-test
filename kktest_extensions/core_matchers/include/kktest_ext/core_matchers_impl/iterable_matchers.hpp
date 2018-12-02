@@ -13,9 +13,9 @@ class IsEmptyMatcher: public Matcher {
         return object.empty();
     }
 
-    void describe(Description& description) override;
+    void describe(Description* description) override;
 
-    void describeMismatch(Description& description) override;
+    void describeMismatch(Description* description) override;
 };
 
 class IsNotEmptyMatcher: public Matcher {
@@ -25,9 +25,9 @@ class IsNotEmptyMatcher: public Matcher {
         return !object.empty();
     }
 
-    void describe(Description& description) override;
+    void describe(Description* description) override;
 
-    void describeMismatch(Description& description) override;
+    void describeMismatch(Description* description) override;
 };
 
 template<class M>
@@ -40,13 +40,13 @@ class IterableSizeMatcher: public Matcher {
         return sizeMatcher.matches(object.size());
     }
 
-    void describe(Description& description) override {
-        description << "iterable where size is ";
+    void describe(Description* description) override {
+        (*description) << "iterable where size is ";
         sizeMatcher.describe(description);
     }
 
-    void describeMismatch(Description& description) override {
-        description << "iterable where size is ";
+    void describeMismatch(Description* description) override {
+        (*description) << "iterable where size is ";
         sizeMatcher.describeMismatch(description);
     }
 
@@ -70,23 +70,23 @@ class IterableEachMatcher: public Matcher {
         for (const auto& obj : iterable) {
             index += 1;
             if (!elementMatcher.matches(obj)) {
-                elementMatcher.describeMismatch(elementFailureDescription);
+                elementMatcher.describeMismatch(&elementFailureDescription);
                 return false;
             }
         }
         return true;
     }
 
-    void describe(Description& description) override {
-        description << "an iterable where each element is ";
+    void describe(Description* description) override {
+        (*description) << "an iterable where each element is ";
         elementMatcher.describe(description);
     }
 
-    void describeMismatch(Description& description) override {
-        description << "an iterable where at index "
-                    << index
-                    << " the element is "
-                    << elementFailureDescription.toString();
+    void describeMismatch(Description* description) override {
+        (*description) << "an iterable where at index "
+                       << index
+                       << " the element is "
+                       << elementFailureDescription.toString();
     }
 
  private:
@@ -113,13 +113,13 @@ class IterableAnyMatcher: public Matcher {
         return false;
     }
 
-    void describe(Description& description) override {
-        description << "an iterable where at least one element is ";
+    void describe(Description* description) override {
+        (*description) << "an iterable where at least one element is ";
         elementMatcher.describe(description);
     }
 
-    void describeMismatch(Description& description) override {
-        description << "an iterable where no element is ";
+    void describeMismatch(Description* description) override {
+        (*description) << "an iterable where no element is ";
         elementMatcher.describe(description);
     }
 

@@ -28,16 +28,6 @@ void kkTestCase(ComparisonMatchers) {
             expect(!isEqualTo(vector<int>{1, 3}).matches(vector<int>{2, 3}));
         });
 
-        test("Description for isEqualTo on failing values", [&] {
-            Description description, mismatchDescription;
-            auto m = isEqualTo(2);
-            m.matches(3);
-            m.describe(description);
-            m.describeMismatch(mismatchDescription);
-            expect(description.toString() == "'2'");
-            expect(mismatchDescription.toString() == "not '2'");
-        });
-
         test("isNotEqualTo does not match equal values", [&] {
             expect(!isNotEqualTo(3).matches(3));
             expect(!isNotEqualTo(vector<int>{1, 2}).matches(vector<int>{1, 2}));
@@ -47,16 +37,6 @@ void kkTestCase(ComparisonMatchers) {
             expect(isNotEqualTo(3).matches(2));
             expect(isNotEqualTo(2).matches(3));
             expect(isNotEqualTo(vector<int>{1, 3}).matches(vector<int>{2, 3}));
-        });
-
-        test("Description for isNotEqualTo on equal values", [&] {
-            Description description, mismatchDescription;
-            auto m = isNotEqualTo(2);
-            m.matches(2);
-            m.describe(description);
-            m.describeMismatch(mismatchDescription);
-            expect(description.toString() == "not '2'");
-            expect(mismatchDescription.toString() == "'2'");
         });
     });
 
@@ -103,16 +83,6 @@ void kkTestCase(ComparisonMatchers) {
             expect(!isLessThan(string("abra")).matches("cadabra"));
             expect(!isLessThan(vector<int>{1, 2, 3}).matches(vector<int>{2, 1, 3}));
         });
-
-        test("Failure description for isLessThan", [&] {
-            Description description, mismatchDescription;
-            auto m = isLessThan(vector<int>{2, 1, 3});
-            m.matches(vector<int>{3, 1, 2});
-            m.describe(description);
-            m.describeMismatch(mismatchDescription);
-            expect(description.toString() == "< '[2, 1, 3]'");
-            expect(mismatchDescription.toString() == ">= '[2, 1, 3]'");
-        });
     });
 
     group("Less than or equal to", [&] {
@@ -138,16 +108,6 @@ void kkTestCase(ComparisonMatchers) {
             expect(!isLessThanEqual('a').matches('c'));
             expect(!isLessThanEqual(string("abra")).matches("cada"));
             expect(!isLessThanEqual(vector<int>{1, 2, 3}).matches(vector<int>{2, 1, 3}));
-        });
-
-        test("Failure description for isLessThanEqual", [&] {
-            Description description, mismatchDescription;
-            auto m = isLessThanEqual(vector<int>{2, 1, 3});
-            m.matches(vector<int>{3, 1, 2});
-            m.describe(description);
-            m.describeMismatch(mismatchDescription);
-            expect(description.toString() == "<= '[2, 1, 3]'");
-            expect(mismatchDescription.toString() == "> '[2, 1, 3]'");
         });
     });
 
@@ -175,16 +135,6 @@ void kkTestCase(ComparisonMatchers) {
             expect(isGreaterThan(string("abra")).matches("cadabra"));
             expect(isGreaterThan(vector<int>{1, 2, 3}).matches(vector<int>{2, 1, 3}));
         });
-
-        test("Failure description for isGreaterThan", [&] {
-            Description description, mismatchDescription;
-            auto m = isGreaterThan(vector<int>{2, 1, 3});
-            m.matches(vector<int>{1, 2, 3});
-            m.describe(description);
-            m.describeMismatch(mismatchDescription);
-            expect(description.toString() == "> '[2, 1, 3]'");
-            expect(mismatchDescription.toString() == "<= '[2, 1, 3]'");
-        });
     });
 
     group("Greater than or equal to", [&] {
@@ -210,16 +160,6 @@ void kkTestCase(ComparisonMatchers) {
             expect(isGreaterThanEqual('a').matches('c'));
             expect(isGreaterThanEqual(string("abra")).matches("cada"));
             expect(isGreaterThanEqual(vector<int>{1, 2, 3}).matches(vector<int>{2, 1, 3}));
-        });
-
-        test("Failure description for isGreaterThanEqual", [&] {
-            Description description, mismatchDescription;
-            auto m = isGreaterThanEqual(vector<int>{2, 1, 3});
-            m.matches(vector<int>{1, 2, 3});
-            m.describe(description);
-            m.describeMismatch(mismatchDescription);
-            expect(description.toString() == ">= '[2, 1, 3]'");
-            expect(mismatchDescription.toString() == "< '[2, 1, 3]'");
         });
     });
 }

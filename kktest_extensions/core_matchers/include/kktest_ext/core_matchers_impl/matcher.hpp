@@ -35,10 +35,10 @@ class Matcher {
  public:
     // virtual bool matches(const T& object) = 0;
 
-    virtual void describe(Description& description) = 0;
+    virtual void describe(Description* description) = 0;
 
-    virtual void describeMismatch(Description& description) {
-        description << "not ";
+    virtual void describeMismatch(Description* description) {
+        (*description) << "not ";
         describe(description);
     }
 
@@ -46,9 +46,9 @@ class Matcher {
     String buildMismatchMessage(const T& object) {
         Description description;
         description << "Expected ";
-        describe(description);
+        describe(&description);
         description << ".\n\tGot '" << object << "'.\n\tWhich is ";
-        describeMismatch(description);
+        describeMismatch(&description);
         description << ".";
         return description.toString();
     }

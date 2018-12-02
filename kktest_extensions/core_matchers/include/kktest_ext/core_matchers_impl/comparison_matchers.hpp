@@ -18,8 +18,8 @@ class EqualityMatcher: public Matcher {
         return object == target;
     }
 
-    void describe(Description& description) override {
-        description << "'" << target << "'";
+    void describe(Description* description) override {
+        (*description) << "'" << target << "'";
     }
 
  private:
@@ -36,12 +36,12 @@ class NonEqualityMatcher: public Matcher {
         return object != target;
     }
 
-    void describe(Description& description) override {
-        description << "not '" << target << "'";
+    void describe(Description* description) override {
+        (*description) << "not '" << target << "'";
     }
 
-    void describeMismatch(Description& description) override {
-        description << "'" << target << "'";
+    void describeMismatch(Description* description) override {
+        (*description) << "'" << target << "'";
     }
 
  private:
@@ -58,12 +58,12 @@ class IsLessThanMatcher: public Matcher {
         return object < target;
     }
 
-    void describe(Description& description) override {
-        description << "< '" << target << "'";
+    void describe(Description* description) override {
+        (*description) << "< '" << target << "'";
     }
 
-    void describeMismatch(Description& description) override {
-        description << ">= '" << target << "'";
+    void describeMismatch(Description* description) override {
+        (*description) << ">= '" << target << "'";
     }
 
  private:
@@ -80,12 +80,12 @@ class IsLessThanEqualMatcher: public Matcher {
         return object <= target;
     }
 
-    void describe(Description& description) override {
-        description << "<= '" << target << "'";
+    void describe(Description* description) override {
+        (*description) << "<= '" << target << "'";
     }
 
-    void describeMismatch(Description& description) override {
-        description << "> '" << target << "'";
+    void describeMismatch(Description* description) override {
+        (*description) << "> '" << target << "'";
     }
 
  private:
@@ -102,12 +102,12 @@ class IsGreaterThanMatcher: public Matcher {
         return object > target;
     }
 
-    void describe(Description& description) override {
-        description << "> '" << target << "'";
+    void describe(Description* description) override {
+        (*description) << "> '" << target << "'";
     }
 
-    void describeMismatch(Description& description) override {
-        description << "<= '" << target << "'";
+    void describeMismatch(Description* description) override {
+        (*description) << "<= '" << target << "'";
     }
 
  private:
@@ -124,12 +124,12 @@ class IsGreaterThanEqualMatcher: public Matcher {
         return object >= target;
     }
 
-    void describe(Description& description) override {
-        description << ">= '" << target << "'";
+    void describe(Description* description) override {
+        (*description) << ">= '" << target << "'";
     }
 
-    void describeMismatch(Description& description) override {
-        description << "< '" << target << "'";
+    void describeMismatch(Description* description) override {
+        (*description) << "< '" << target << "'";
     }
 
  private:
@@ -149,12 +149,12 @@ class IdentityMatcher: public Matcher {
         return objectAddress == address;
     }
 
-    void describe(Description& description) override {
-        description << "variable at address '" << address << "'";
+    void describe(Description* description) override {
+        (*description) << "variable at address '" << address << "'";
     }
 
-    void describeMismatch(Description& description) override {
-        description << "variable at address '" << objectAddress << "'";
+    void describeMismatch(Description* description) override {
+        (*description) << "variable at address '" << objectAddress << "'";
     }
 
  private:

@@ -15,9 +15,9 @@ class CharInStringMatcher: public Matcher {
 
     bool matches(const char& ch);
 
-    void describe(Description& description) override;
+    void describe(Description* description) override;
 
-    void describeMismatch(Description& description) override;
+    void describeMismatch(Description* description) override;
 
  private:
     const char* container;
@@ -46,7 +46,7 @@ class IsSubstringMatcher: public Matcher {
 
     bool matches(const std::string& object);
 
-    void describe(Description& description) override;
+    void describe(Description* description) override;
 
  private:
     std::string container;

@@ -21,13 +21,13 @@ class AndMatcher: public Matcher {
         return m1Matches && m2Matches;
     }
 
-    void describe(Description& description) override {
+    void describe(Description* description) override {
         m1.describe(description);
-        description << " and ";
+        (*description) << " and ";
         m2.describe(description);
     }
 
-    void describeMismatch(Description& description) override {
+    void describeMismatch(Description* description) override {
         if (m1Matches) {
             m2.describeMismatch(description);
         } else {
@@ -58,15 +58,15 @@ class OrMatcher: public Matcher {
         return m1Matches || m2Matches;
     }
 
-    void describe(Description& description) override {
+    void describe(Description* description) override {
         m1.describe(description);
-        description << " or ";
+        (*description) << " or ";
         m2.describe(description);
     }
 
-    void describeMismatch(Description& description) override {
+    void describeMismatch(Description* description) override {
         m1.describeMismatch(description);
-        description << " and ";
+        (*description) << " and ";
         m2.describeMismatch(description);
     }
 
@@ -90,12 +90,12 @@ class NotMatcher: public Matcher {
         return !matcher.matches(obj);
     }
 
-    void describe(Description& description) override {
-        description << "not ";
+    void describe(Description* description) override {
+        (*description) << "not ";
         matcher.describe(description);
     }
 
-    void describeMismatch(Description& description) override {
+    void describeMismatch(Description* description) override {
         matcher.describe(description);
     }
  private:

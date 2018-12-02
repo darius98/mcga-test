@@ -14,19 +14,19 @@ bool CharInStringMatcher::matches(const char& ch) {
     return strchr(container, ch) != nullptr;
 }
 
-void CharInStringMatcher::describe(Description& description) {
+void CharInStringMatcher::describe(Description* description) {
     if (expectation != nullptr) {
-        description << expectation;
+        (*description) << expectation;
     } else {
-        description << "character in '" << container << "'";
+        (*description) << "character in '" << container << "'";
     }
 }
 
-void CharInStringMatcher::describeMismatch(Description& description) {
+void CharInStringMatcher::describeMismatch(Description* description) {
     if (expectation != nullptr) {
-        description << "not " << expectation;
+        (*description) << "not " << expectation;
     } else {
-        description << "character that is not in '" << container << "'";
+        (*description) << "character that is not in '" << container << "'";
     }
 }
 
@@ -52,8 +52,8 @@ bool IsSubstringMatcher::matches(const string& object) {
     return container.find(object) != string::npos;
 }
 
-void IsSubstringMatcher::describe(Description& description) {
-    description << "a substring of '" << container << "'";
+void IsSubstringMatcher::describe(Description* description) {
+    (*description) << "a substring of '" << container << "'";
 }
 
 IsSubstringMatcher isSubstringOf(const string& s) {

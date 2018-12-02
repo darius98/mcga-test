@@ -10,9 +10,9 @@ class IsNullptrMatcher: public Matcher {
  public:
     bool matches(void*const& obj);
 
-    void describe(Description& description) override;
+    void describe(Description* description) override;
 
-    void describeMismatch(Description& description) override;
+    void describeMismatch(Description* description) override;
 };
 
 extern IsNullptrMatcher isNull;
@@ -21,9 +21,9 @@ class IsNotNullptrMatcher: public Matcher {
  public:
     bool matches(void*const& obj);
 
-    void describe(Description& description) override;
+    void describe(Description* description) override;
 
-    void describeMismatch(Description& description) override;
+    void describeMismatch(Description* description) override;
 };
 
 extern IsNotNullptrMatcher isNotNull;
