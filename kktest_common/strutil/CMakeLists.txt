@@ -6,3 +6,5 @@ add_library(strutil
     src/unescape.cpp
 )
 target_include_directories(strutil PUBLIC include)
+
+add_kktest(c_string_test tests/c_string_test.cpp)
