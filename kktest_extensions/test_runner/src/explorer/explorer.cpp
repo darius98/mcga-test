@@ -7,12 +7,12 @@
 using fsystem::File;
 using fsystem::Folder;
 using fsystem::Path;
-using kktest::String;
 using std::pair;
 using std::function;
 using std::vector;
 
-namespace {
+namespace kktest {
+namespace test_runner {
 
 constexpr const size_t kkTestSigSize = 32;
 constexpr const size_t kkTestSigHalfSize = kkTestSigSize >> 1;
@@ -80,11 +80,7 @@ void findTestCases(const Folder& folder, const function<void(File)>& onTestFound
     }
 }
 
-}
-
-namespace runner {
-
-void explore(Path rootPath, const function<void(File)>& onTestFound) {
+void explore(const Path& rootPath, const function<void(File)>& onTestFound) {
     if (File(rootPath).exists()) {
         if (isTestCase(File(rootPath))) {
             onTestFound(File(rootPath));
@@ -94,4 +90,5 @@ void explore(Path rootPath, const function<void(File)>& onTestFound) {
     }
 }
 
+}
 }

@@ -9,7 +9,8 @@
 
 #include <test_execution_loop/kktest_lib_info.hpp>
 
-namespace runner {
+namespace kktest {
+namespace test_runner {
 
 class TestExecutionCycle {
 public:
@@ -43,6 +44,7 @@ private:
     KKTestCaseInfo info;
 };
 
+}
 }
 
 #endif

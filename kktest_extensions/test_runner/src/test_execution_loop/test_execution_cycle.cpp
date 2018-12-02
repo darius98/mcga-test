@@ -11,10 +11,6 @@
 #include <kktest_ext/feedback>
 #include "test_execution_cycle.hpp"
 
-using kktest::GroupInfo;
-using kktest::TestInfo;
-using kktest::String;
-using kktest::feedback::PipeMessageType;
 using messaging::InputPipe;
 using messaging::Message;
 using messaging::MessageReader;
@@ -23,7 +19,11 @@ using std::function;
 using std::runtime_error;
 using std::to_string;
 
-namespace runner {
+namespace kktest {
+
+using feedback::PipeMessageType;
+
+namespace test_runner {
 
 TestExecutionCycle::TestExecutionCycle(
             const String& _testPath,
@@ -173,4 +173,5 @@ void TestExecutionCycle::processMessage(const Message& message) {
     onInfoCallback(info);
 }
 
+}
 }

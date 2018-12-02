@@ -8,7 +8,8 @@
 
 #include <test_execution_loop/test_execution_cycle.hpp>
 
-namespace runner {
+namespace kktest {
+namespace test_runner {
 
 class TestExecutionLoop {
 public:
@@ -30,6 +31,7 @@ private:
     std::vector<TestExecutionCycle> cycles;
 };
 
+}
 }
 
 #endif

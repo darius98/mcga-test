@@ -4,12 +4,12 @@
 
 #include <test_execution_loop/test_execution_loop.hpp>
 
-using kktest::String;
 using std::cout;
 using std::chrono::milliseconds;
 using std::this_thread::sleep_for;
 
-namespace runner {
+namespace kktest {
+namespace test_runner {
 
 TestExecutionLoop::TestExecutionLoop(int _concurrentRunningCyclesLimit):
         concurrentRunningCyclesLimit(_concurrentRunningCyclesLimit),
@@ -71,4 +71,5 @@ int TestExecutionLoop::join() {
     return failedAnyTest;
 }
 
+}
 }

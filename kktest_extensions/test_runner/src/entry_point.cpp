@@ -11,9 +11,9 @@ using kktest::ArgumentsApi;
 using kktest::Argument;
 using kktest::Flag;
 using kktest::String;
+using kktest::test_runner::explore;
+using kktest::test_runner::TestExecutionLoop;
 using fsystem::File;
-using runner::explore;
-using runner::TestExecutionLoop;
 using std::cout;
 using std::invalid_argument;
 using std::stoi;
@@ -43,7 +43,7 @@ int main(int argc, char** argv) {
     );
     vector<String> positional = argumentsApi->interpret(argc, argv);
     if (versionFlag->get()) {
-        cout << "KKTest test kktest_runner version " << VERSION << "\n";
+        cout << "KKTest test test_runner version " << VERSION << "\n";
         return 0;
     }
     String rootPath = ".";
