@@ -18,19 +18,16 @@ InternalArgs registerInternalFlags(ArgumentsApi* argumentsApi) {
     args.versionFlag = argumentsApi->addFlag("version", "Display program version", "v");
     args.getSignatureFlag = argumentsApi->addFlag(
             "get-signature",
-            "Display the KKTest 32-byte signature in hexadecimal format"
-    );
+            "Display the KKTest 32-byte signature in hexadecimal format");
     args.boxedFlag = argumentsApi->addFlag(
         "boxed",
         "Run each test in an isolated process (boxed)",
-        "b"
-    );
+        "b");
     args.maxParallelTestsArgument = argumentsApi->addArgument(
         "max-parallel-tests",
         "Maximum number of tests to execute in parallel (processes to spawn) when running boxed",
         "",
-        "1"
-    );
+        "1");
     return args;
 }
 
@@ -41,16 +38,16 @@ int main(const vector<Extension*>& extensions, InternalArgs args) {
         return 0;
     }
     if (args.getSignatureFlag->get()) {
-        for (int i = 0; i < kkTestSigSize; ++ i) {
-            cout << "0123456789ABCDEF"[kkTestSignature[i] >> 4]
-                 << "0123456789ABCDEF"[kkTestSignature[i] & 15];
+        for (int i = 0; i < kkTestSigSize; ++i) {
+            cout << "0123456789ABCDEF"[kkTestSignature[i] >> 4u]
+                 << "0123456789ABCDEF"[kkTestSignature[i] & 15u];
         }
         cout << "\n";
         return 0;
     }
 
     ExtensionApiImpl apiImpl;
-    for (Extension* extension: extensions) {
+    for (Extension* extension : extensions) {
         extension->init(&apiImpl);
     }
 
@@ -73,7 +70,7 @@ int main(const vector<Extension*>& extensions, InternalArgs args) {
                                                 maxParallelTests);
     int ret = 1;
     try {
-        for (pair<TestCaseRegistry::TestCase, String> testCase: TestCaseRegistry::all()) {
+        for (pair<TestCaseRegistry::TestCase, String> testCase : TestCaseRegistry::all()) {
             driver->beforeTestCase(testCase.second);
             testCase.first();
             driver->afterTestCase();
@@ -83,22 +80,18 @@ int main(const vector<Extension*>& extensions, InternalArgs args) {
         driver->forceDestroy(error);
     } catch(const ExpectationFailed& error) {
         driver->forceDestroy(
-            ConfigurationError(String("Expectation failed in global scope: ") + error.what())
-        );
+            ConfigurationError(String("Expectation failed in global scope: ") + error.what()));
     } catch(const exception& error) {
         driver->forceDestroy(
-            ConfigurationError(String("Exception thrown in global scope: ") + error.what())
-        );
+            ConfigurationError(String("Exception thrown in global scope: ") + error.what()));
     } catch(...) {
-        driver->forceDestroy(
-            ConfigurationError("Non-exception object thrown in global scope.")
-        );
+        driver->forceDestroy(ConfigurationError("Non-exception object thrown in global scope."));
     }
 
-    for (Extension* extension: extensions) {
+    for (Extension* extension : extensions) {
         extension->destroy();
     }
     return ret;
 }
 
-}
+}  // namespace kktest

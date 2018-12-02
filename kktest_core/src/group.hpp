@@ -1,5 +1,5 @@
-#ifndef KKTEST_CORE_GROUP_H_
-#define KKTEST_CORE_GROUP_H_
+#ifndef KKTEST_CORE_SRC_GROUP_HPP_
+#define KKTEST_CORE_SRC_GROUP_HPP_
 
 #include <string>
 
@@ -10,7 +10,7 @@
 namespace kktest {
 
 class Group {
-public:
+ public:
     Group(const GroupConfig& _config, Group* _parentGroup, int _index);
 
     const GroupConfig& getConfig() const;
@@ -37,7 +37,7 @@ public:
 
     String getRenderedFailureMessageOnNonExceptionInTearDown() const;
 
-private:
+ private:
     GroupConfig config;
 
     Group* parentGroup;
@@ -47,6 +47,6 @@ private:
     CopyableExecutable tearDownFunc;
 };
 
-}
+}  // namespace kktest
 
-#endif
+#endif  // KKTEST_CORE_SRC_GROUP_HPP_

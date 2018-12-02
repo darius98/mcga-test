@@ -1,5 +1,5 @@
-#ifndef COMMON_STRUTIL_INCLUDE_STRUTIL_IMPL_SUBSTR_UTILS_H_
-#define COMMON_STRUTIL_INCLUDE_STRUTIL_IMPL_SUBSTR_UTILS_H_
+#ifndef COMMON_STRUTIL_INCLUDE_STRUTIL_IMPL_SUBSTR_UTILS_HPP_
+#define COMMON_STRUTIL_INCLUDE_STRUTIL_IMPL_SUBSTR_UTILS_HPP_
 
 #include <string>
 
@@ -17,6 +17,6 @@ bool containsSubstring(const std::string& str, const std::string& substr);
 
 bool containsCharacter(const std::string& str, char ch);
 
-}
+}  // namespace strutil
 
-#endif
+#endif  // COMMON_STRUTIL_INCLUDE_STRUTIL_IMPL_SUBSTR_UTILS_HPP_

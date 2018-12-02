@@ -64,9 +64,9 @@ Path Folder::getPath() const {
 }
 
 bool Folder::exists() const {
-    struct stat info;
+    struct stat info{};
     int errCode = stat(toString().c_str(), &info);
-    if(errCode != 0) {
+    if (errCode != 0) {
         return false;
     }
     return (info.st_mode & S_IFDIR) != 0;
@@ -89,7 +89,7 @@ pair<vector<File>, vector<Folder>> Folder::children() const {
         }
         Path childPath = Path::join(path, cChildPath->d_name);
 
-        struct stat info;
+        struct stat info{};
         int errCode = stat(childPath.toString().c_str(), &info);
         if (errCode != 0) {
             files.emplace_back(childPath);
@@ -111,4 +111,4 @@ string Folder::key() const {
     return toString();
 }
 
-}
+}  // namespace fsystem

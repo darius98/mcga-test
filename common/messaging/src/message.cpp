@@ -25,7 +25,7 @@ size_t Message::isSane(const void* ptr, size_t size) {
     if (size < sizeof(size_t)) {
         return 0;
     }
-    size_t expectedSize = (*((size_t*)ptr)) + sizeof(size_t);
+    auto expectedSize = (*static_cast<const size_t*>(ptr)) + sizeof(size_t);
     return expectedSize <= size ? expectedSize : 0;
 }
 
@@ -35,7 +35,7 @@ Message::Message(size_t size): payload(malloc(size + sizeof(size_t))) {
 }
 
 Message::Message(const Message& other) {
-    size_t size = *((size_t*)other.payload);
+    auto size = other.getSize();
     payload = malloc(size + sizeof(size_t));
     memcpy(payload, other.payload, cursor);
     cursor = other.cursor;
@@ -57,7 +57,7 @@ Message& Message::operator=(const Message& other) {
     if (payload != nullptr) {
         free(payload);
     }
-    size_t size = *((size_t*)other.payload);
+    auto size = other.getSize();
     payload = malloc(size + sizeof(size_t));
     memcpy(payload, other.payload, cursor);
     cursor = other.cursor;
@@ -75,7 +75,7 @@ Message& Message::operator=(Message&& other) noexcept {
 }
 
 Message& Message::addBytes(const void* bytes, size_t numBytes) {
-    memcpy((uint8_t*)payload + cursor, bytes, numBytes);
+    memcpy(static_cast<uint8_t*>(payload) + cursor, bytes, numBytes);
     cursor += numBytes;
     return *this;
 }
@@ -85,7 +85,7 @@ void* Message::getPayload() const {
 }
 
 size_t Message::getSize() const {
-    return *((size_t*)payload) + sizeof(size_t);
+    return sizeof(size_t) + *static_cast<size_t*>(payload);
 }
 
-}
+}  // namespace messaging

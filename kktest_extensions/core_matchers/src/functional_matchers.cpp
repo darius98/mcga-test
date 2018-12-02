@@ -24,5 +24,5 @@ void ThrowsAnythingMatcher::describeMismatch(Description& description) {
 
 ThrowsAnythingMatcher throws;
 
-}
-}
+}  // namespace core_matchers
+}  // namespace kktest

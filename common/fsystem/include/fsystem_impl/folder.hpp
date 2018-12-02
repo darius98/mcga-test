@@ -1,5 +1,9 @@
-#ifndef COMMON_FSYSTEM_INCLUDE_FSYSTEM_IMPL_FOLDER_H_
-#define COMMON_FSYSTEM_INCLUDE_FSYSTEM_IMPL_FOLDER_H_
+#ifndef COMMON_FSYSTEM_INCLUDE_FSYSTEM_IMPL_FOLDER_HPP_
+#define COMMON_FSYSTEM_INCLUDE_FSYSTEM_IMPL_FOLDER_HPP_
+
+#include <string>
+#include <utility>
+#include <vector>
 
 #include <fsystem_impl/file.hpp>
 #include <fsystem_impl/path.hpp>
@@ -7,7 +11,7 @@
 namespace fsystem {
 
 class Folder: public strutil::StringKeyComparable {
-public:
+ public:
     static Folder currentWorkingFolder();
 
     static Folder parent(const Folder& folder);
@@ -34,12 +38,12 @@ public:
 
     std::pair<std::vector<File>, std::vector<Folder>> children() const;
 
-private:
+ private:
     Path path;
 
     std::string key() const override;
 };
 
-}
+}  // namespace fsystem
 
-#endif
+#endif  // COMMON_FSYSTEM_INCLUDE_FSYSTEM_IMPL_FOLDER_HPP_

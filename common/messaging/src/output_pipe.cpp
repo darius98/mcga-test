@@ -23,7 +23,7 @@ void OutputPipe::pipe(const Message& message) const {
     size_t numBytes = message.getSize();
     size_t written = 0;
     while (written < numBytes) {
-        uint8_t* target = ((uint8_t*)bytes) + written;
+        auto target = static_cast<const uint8_t*>(bytes) + written;
         size_t remaining = numBytes - written;
         ssize_t currentWriteBlockSize = write(outputFD, target, remaining);
         if (currentWriteBlockSize < 0) {
@@ -34,4 +34,4 @@ void OutputPipe::pipe(const Message& message) const {
     }
 }
 
-}
+}  // namespace messaging

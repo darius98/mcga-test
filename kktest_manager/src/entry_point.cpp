@@ -11,7 +11,7 @@ using std::cout;
 using std::vector;
 
 int main(int argc, char** argv) {
-    ArgumentsApi* argumentsApi = ArgumentsApi::create("KKTest Manager.");
+    auto argumentsApi = ArgumentsApi::create("KKTest Manager.");
 
     auto versionFlag = argumentsApi->addFlag("version", "Display program version.", "v");
 

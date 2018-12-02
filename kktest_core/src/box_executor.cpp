@@ -14,8 +14,7 @@ void BoxExecutor::execute(Test* test, Executable func) {
         [this, func, test]() {
             onTestFinished([](Test*) {});
             run(test, func);
-        }
-    ));
+        }));
 }
 
 void BoxExecutor::finalize() {
@@ -34,10 +33,10 @@ void BoxExecutor::ensureFreeContainers(size_t numContainers) {
                 delete container;
                 it = openContainers.erase(it);
             } else {
-                ++ it;
+                ++it;
             }
         }
     }
 }
 
-}
+}  // namespace kktest

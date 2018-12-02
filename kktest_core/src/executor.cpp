@@ -16,7 +16,8 @@ Executor::Executor(): timeTickLengthMs(computeTimeTickLengthFromHardware()) {}
 Executor::~Executor() = default;
 
 double Executor::computeTimeTickLengthFromHardware() {
-     // TODO: Don't hardcode this, estimate it based on how much a series of computations takes.
+    // TODO(darius98): Don't hard-code this, estimate it based on how much a
+    // series of computations takes.
     return 1000.0;
 }
 
@@ -60,8 +61,7 @@ void Executor::run(Test* test, Executable func) {
     setTestExecuted(test,
         /* executionTimeTicks=*/duration_cast<milliseconds>(end - begin).count() / timeTickLengthMs,
         /*             passed=*/!failed,
-        /*     failureMessage=*/failureMessage
-    );
+        /*     failureMessage=*/failureMessage);
 }
 
 void Executor::setTestExecuted(Test* test,
@@ -93,7 +93,7 @@ void Executor::runSetUpsRecursively(Group* group, SetFailureType setFailure) {
     }
 }
 
- void Executor::runTest(Executable func, SetFailureType setFailure) {
+void Executor::runTest(Executable func, SetFailureType setFailure) {
     try {
         func();
     } catch(const ConfigurationError& e) {
@@ -126,4 +126,4 @@ void Executor::runTearDownsRecursively(Group* group, SetFailureType setFailure) 
     runTearDownsRecursively(group->getParentGroup(), setFailure);
 }
 
-}
+}  // namespace kktest

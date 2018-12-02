@@ -13,8 +13,7 @@ const GroupConfig& Group::getConfig() const {
 void Group::addSetUp(Executable func) {
     if (setUpFunc) {
         throw ConfigurationError(
-            "Trying to add second setUp to group \"" + config.description + "\"."
-        );
+            "Trying to add second setUp to group \"" + config.description + "\".");
     }
     setUpFunc = func;
 }
@@ -28,8 +27,7 @@ void Group::setUp() const {
 void Group::addTearDown(Executable func) {
     if (tearDownFunc) {
         throw ConfigurationError(
-                "Trying to add second tearDown to group \"" + config.description + "\"."
-        );
+                "Trying to add second tearDown to group \"" + config.description + "\".");
     }
     tearDownFunc = func;
 }
@@ -76,4 +74,4 @@ GroupInfo Group::getGroupInfo() const {
     };
 }
 
-}
+}  // namespace kktest

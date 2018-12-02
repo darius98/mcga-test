@@ -1,9 +1,12 @@
 #include <algorithm>
 #include <vector>
 
-#include <kktest>
+#include <kktest.hpp>
 
-using namespace kktest;
+using kktest::expect;
+using kktest::setUp;
+using kktest::test;
+using kktest::tearDown;
 
 void kkTestCase() {
     std::vector<int> v;

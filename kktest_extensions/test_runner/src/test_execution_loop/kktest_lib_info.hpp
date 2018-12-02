@@ -1,10 +1,10 @@
-#ifndef KKTEST_EXT_TEST_RUNNER_TEST_EXECUTION_LOOP_KKTEST_LIB_INFO_H_
-#define KKTEST_EXT_TEST_RUNNER_TEST_EXECUTION_LOOP_KKTEST_LIB_INFO_H_
+#ifndef KKTEST_EXTENSIONS_TEST_RUNNER_SRC_TEST_EXECUTION_LOOP_KKTEST_LIB_INFO_HPP_
+#define KKTEST_EXTENSIONS_TEST_RUNNER_SRC_TEST_EXECUTION_LOOP_KKTEST_LIB_INFO_HPP_
 
 #include <map>
 #include <vector>
 
-#include <kktest_extension_api>
+#include <kktest_extension_api.hpp>
 
 namespace kktest {
 namespace test_runner {
@@ -19,7 +19,7 @@ struct KKTestCaseInfo {
     enum LastReceived { TEST, GROUP, FINISH, FINISH_WITH_ERROR } lastReceived;
 };
 
-}
-}
+}  // namespace test_runner
+}  // namespace kktest
 
-#endif
+#endif  // KKTEST_EXTENSIONS_TEST_RUNNER_SRC_TEST_EXECUTION_LOOP_KKTEST_LIB_INFO_HPP_

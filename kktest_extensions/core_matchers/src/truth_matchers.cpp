@@ -31,5 +31,5 @@ void IsFalseMatcher::describeMismatch(Description& description) {
 
 IsFalseMatcher isFalse;
 
-}
-}
+}  // namespace core_matchers
+}  // namespace kktest

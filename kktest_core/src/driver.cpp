@@ -15,8 +15,7 @@ TestingDriver* TestingDriver::instance = nullptr;
 TestingDriver* TestingDriver::getInstance() {
     if (instance == nullptr) {
         throw KKTestLibraryImplementationError(
-                "TestingDriver::getInstance() called before TestingDriver::init."
-        );
+                "TestingDriver::getInstance() called before TestingDriver::init.");
     }
     return instance;
 }
@@ -48,10 +47,9 @@ void TestingDriver::forceDestroy(const ConfigurationError& error) {
 void TestingDriver::beforeTestCase(const String& name) {
     if (globalScope != nullptr) {
         throw KKTestLibraryImplementationError(
-            "TestingDriver::beforeTestCase called twice in a row."
-        );
+            "TestingDriver::beforeTestCase called twice in a row.");
     }
-    globalScope = new Group(groupConfig(_.description=name), nullptr, 0);
+    globalScope = new Group(groupConfig(_.description = name), nullptr, 0);
     groupStack = {globalScope};
     beforeGroup(globalScope);
 }
@@ -59,8 +57,7 @@ void TestingDriver::beforeTestCase(const String& name) {
 void TestingDriver::afterTestCase() {
     if (globalScope == nullptr) {
         throw KKTestLibraryImplementationError(
-            "TestingDriver::afterTestCase called twice in a row."
-        );
+            "TestingDriver::afterTestCase called twice in a row.");
     }
     executor->finalize();
     afterGroup(globalScope);
@@ -88,7 +85,7 @@ TestingDriver::~TestingDriver() {
 
 void TestingDriver::addGroup(const GroupConfig& config, Executable func) {
     executor->checkIsInactive("group");
-    auto group = new Group(config, groupStack.back(), ++ currentGroupIndex);
+    auto group = new Group(config, groupStack.back(), ++currentGroupIndex);
     groupStack.push_back(group);
 
     beforeGroup(group);
@@ -98,16 +95,13 @@ void TestingDriver::addGroup(const GroupConfig& config, Executable func) {
         throw e;
     } catch(const ExpectationFailed& e) {
         throw ConfigurationError(
-            "Expectation failed in group \"" + group->getConfig().description + "\": " + e.what()
-        );
+            "Expectation failed in group \"" + group->getConfig().description + "\": " + e.what());
     } catch(const exception& e) {
         throw ConfigurationError(
-            "Exception thrown in group \"" + group->getConfig().description + "\": " + e.what()
-        );
+            "Exception thrown in group \"" + group->getConfig().description + "\": " + e.what());
     } catch(...) {
         throw ConfigurationError(
-            "Non-exception object thrown in group \"" + group->getConfig().description + "\"."
-        );
+            "Non-exception object thrown in group \"" + group->getConfig().description + "\".");
     }
     markAllTestsStarted(group);
     groupStack.pop_back();
@@ -116,7 +110,7 @@ void TestingDriver::addGroup(const GroupConfig& config, Executable func) {
 void TestingDriver::addTest(const TestConfig& config, Executable func) {
     executor->checkIsInactive("test");
     Group* parentGroup = groupStack.back();
-    auto test = new Test(config, parentGroup, ++ currentTestIndex);
+    auto test = new Test(config, parentGroup, ++currentTestIndex);
     markTestStarted(parentGroup);
     beforeTest(test);
     executor->execute(test, func);
@@ -182,4 +176,4 @@ void TestingDriver::markAllTestsStarted(Group* group) {
     }
 }
 
-}
+}  // namespace kktest

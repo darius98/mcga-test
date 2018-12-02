@@ -1,7 +1,8 @@
-#ifndef KKTEST_EXT_CORE_MATCHERS_IMPL_STREAMER_H_
-#define KKTEST_EXT_CORE_MATCHERS_IMPL_STREAMER_H_
+#ifndef KKTEST_EXTENSIONS_CORE_MATCHERS_INCLUDE_KKTEST_EXT_CORE_MATCHERS_IMPL_STREAMER_HPP_
+#define KKTEST_EXTENSIONS_CORE_MATCHERS_INCLUDE_KKTEST_EXT_CORE_MATCHERS_IMPL_STREAMER_HPP_
 
 #include <cxxabi.h>
+
 #include <deque>
 #include <functional>
 #include <iostream>
@@ -13,12 +14,13 @@
 #include <tuple>
 #include <unordered_map>
 #include <unordered_set>
+#include <utility>
 #include <vector>
 
 namespace kktest {
 namespace core_matchers {
 
-template<class S, class=void>
+template<class S, class = void>
 struct Streamer {
     static void send(std::stringstream& stream, S obj) {
         format(stream, obj);
@@ -28,7 +30,7 @@ struct Streamer {
         formatType<S>(stream);
     }
 
-private:
+ private:
     template<class T>
     static void format(std::stringstream& s, const std::vector<T>& obj) {
         formatList<T, std::vector<T>>(s, obj);
@@ -65,9 +67,9 @@ private:
     }
 
     template<class I, class T>
-    static void formatList(std::stringstream& s, T obj, char start='[', char finish=']') {
+    static void formatList(std::stringstream& s, T obj, char start = '[', char finish = ']') {
         s << start;
-        for (auto it = obj.begin(); it != obj.end(); ++ it) {
+        for (auto it = obj.begin(); it != obj.end(); ++it) {
             if (it != obj.begin()) {
                 s << ", ";
             }
@@ -80,7 +82,7 @@ private:
     static void formatMap(std::stringstream& s, const T& obj) {
         bool first = true;
         s << "{";
-        for (const std::pair<K, V>& entry: obj) {
+        for (const std::pair<K, V>& entry : obj) {
             if (first) {
                 first = false;
             } else {
@@ -143,7 +145,7 @@ private:
     }
 };
 
-}
-}
+}  // namespace core_matchers
+}  // namespace kktest
 
-#endif
+#endif  // KKTEST_EXTENSIONS_CORE_MATCHERS_INCLUDE_KKTEST_EXT_CORE_MATCHERS_IMPL_STREAMER_HPP_

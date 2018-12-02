@@ -1,5 +1,5 @@
-#ifndef KKTEST_CORE_INCLUDE_KKTEST_IMPL_ARGUMENTS_API_H_
-#define KKTEST_CORE_INCLUDE_KKTEST_IMPL_ARGUMENTS_API_H_
+#ifndef KKTEST_CORE_INCLUDE_KKTEST_IMPL_ARGUMENTS_API_HPP_
+#define KKTEST_CORE_INCLUDE_KKTEST_IMPL_ARGUMENTS_API_HPP_
 
 #include <vector>
 
@@ -8,21 +8,21 @@
 namespace kktest {
 
 class Flag {
-public:
+ public:
     virtual ~Flag() = default;
 
     virtual bool get() const = 0;
 };
 
 class Argument {
-public:
+ public:
     virtual ~Argument() = default;
 
     virtual String get() const = 0;
 };
 
 class ArgumentsApi {
-public:
+ public:
     static ArgumentsApi* create(const String& helpPrefix);
 
     virtual ~ArgumentsApi() = default;
@@ -61,6 +61,6 @@ public:
     }
 };
 
-}
+}  // namespace kktest
 
-#endif
+#endif  // KKTEST_CORE_INCLUDE_KKTEST_IMPL_ARGUMENTS_API_HPP_

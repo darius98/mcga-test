@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-#include <kktest_extension_api>
+#include <kktest_extension_api.hpp>
 #include <kktest_ext/feedback_impl/ext.hpp>
 #include <kktest_ext/feedback_impl/pipe_message_type.hpp>
 
@@ -19,8 +19,7 @@ void FeedbackExtension::registerCommandLineArguments(ArgumentsApi* argumentsApi)
     quietFlag = argumentsApi->addFlag("quiet", "Disable STDOUT logging for this test run", "q");
     pipeNameArgument = argumentsApi->addArgument(
             "pipe_to",
-            "A file with write access for piping the test results as they become available."
-    );
+            "A file with write access for piping the test results as they become available.");
 }
 
 void FeedbackExtension::init(ExtensionApi* api) {
@@ -72,8 +71,7 @@ void FeedbackExtension::initPipe(ExtensionApi* api, const String& pipeName) {
         pipe->pipe(Message::build(PipeMessageType::GROUP,
                                   groupInfo.parentGroupIndex,
                                   groupInfo.index,
-                                  groupInfo.description
-        ));
+                                  groupInfo.description));
     });
 
     api->addAfterTestHook([this](const TestInfo& testInfo) {
@@ -83,8 +81,7 @@ void FeedbackExtension::initPipe(ExtensionApi* api, const String& pipeName) {
                                   testInfo.optional,
                                   testInfo.description,
                                   testInfo.passed,
-                                  testInfo.failureMessage
-        ));
+                                  testInfo.failureMessage));
     });
 
     api->addBeforeDestroyHook([this]() {
@@ -96,5 +93,5 @@ void FeedbackExtension::initPipe(ExtensionApi* api, const String& pipeName) {
     });
 }
 
-}
-}
+}  // namespace feedback
+}  // namespace kktest

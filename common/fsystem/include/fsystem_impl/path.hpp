@@ -1,17 +1,17 @@
-#ifndef COMMON_FSYSTEM_INCLUDE_FSYSTEM_IMPL_PATH_H_
-#define COMMON_FSYSTEM_INCLUDE_FSYSTEM_IMPL_PATH_H_
+#ifndef COMMON_FSYSTEM_INCLUDE_FSYSTEM_IMPL_PATH_HPP_
+#define COMMON_FSYSTEM_INCLUDE_FSYSTEM_IMPL_PATH_HPP_
 
 #include <string>
 #include <vector>
 
-#include <strutil>
+#include <strutil.hpp>
 
 #include <fsystem_impl/error.hpp>
 
 namespace fsystem {
 
 class Path: public strutil::StringKeyComparable {
-public:
+ public:
     static const char  SEP;
     static const char* SELF_FOLDER;
     static const char* PARENT_FOLDER;
@@ -45,27 +45,24 @@ public:
         return join(join(a, b), args...);
     }
 
-    Path(const std::string& path);
+    explicit Path(const std::string& path);
 
     Path(const Path& other);
 
     Path(Path&& other) noexcept;
 
     template<typename... Args>
-    Path(const Path& a, const Path& b, const Args... args):
-            Path(join(a, b, args...)) {}
+    Path(const Path& a, const Path& b, const Args... args): Path(join(a, b, args...)) {}
 
     template<typename... Args>
-    Path(const Path& a, const std::string& b, const Args... args):
-            Path(join(a, b, args...)) {}
+    Path(const Path& a, const std::string& b, const Args... args): Path(join(a, b, args...)) {}
 
     template<typename... Args>
-    Path(const std::string& a, const Path& b, const Args... args):
-            Path(join(a, b, args...)) {}
+    Path(const std::string& a, const Path& b, const Args... args): Path(join(a, b, args...)) {}
 
     template<typename... Args>
-    Path(const std::string& a, const std::string& b, const Args... args):
-            Path(join(a, b, args...)) {}
+    Path(const std::string& a, const std::string& b, const Args... args): Path(join(a, b, args...))
+        {}
 
     Path& operator=(const Path& other);
     Path& operator=(Path&& other) noexcept;
@@ -84,7 +81,7 @@ public:
 
     Path parent() const;
 
-private:
+ private:
     bool applySpecialPart(const std::string& part);
     void addPart(const std::string& part);
     void addPart(std::string&& part);
@@ -92,10 +89,9 @@ private:
     std::string key() const override;
 
     std::vector<std::string> parts;
-    bool relative;
-
+    bool relative = false;
 };
 
-}
+}  // namespace fsystem
 
-#endif
+#endif  // COMMON_FSYSTEM_INCLUDE_FSYSTEM_IMPL_PATH_HPP_

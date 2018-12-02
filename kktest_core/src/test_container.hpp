@@ -1,5 +1,5 @@
-#ifndef KKTEST_CORE_TEST_CONTAINER_H_
-#define KKTEST_CORE_TEST_CONTAINER_H_
+#ifndef KKTEST_CORE_SRC_TEST_CONTAINER_HPP_
+#define KKTEST_CORE_SRC_TEST_CONTAINER_HPP_
 
 #include <chrono>
 #include <string>
@@ -10,7 +10,7 @@
 namespace kktest {
 
 class TestContainer {
-public:
+ public:
     TestContainer(Test* _test, double _testProcessTimeLimitMs, Executable testFunc);
 
     bool isTestFinished();
@@ -20,8 +20,8 @@ public:
     bool isPassed() const;
     String getFailureMessage() const;
 
-private:
-    bool finish(double ticks, bool passed=true, const String& failureMessage="");
+ private:
+    bool finish(double ticks, bool passed = true, const String& failureMessage = "");
 
     bool killTestProcess();
 
@@ -37,6 +37,6 @@ private:
     String failureMessage;
 };
 
-}
+}  // namespace kktest
 
-#endif
+#endif  // KKTEST_CORE_SRC_TEST_CONTAINER_HPP_

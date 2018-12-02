@@ -1,9 +1,14 @@
-#include <kktest>
-#include <kktest_ext/core_matchers>
+#include <kktest.hpp>
+#include <kktest_ext/core_matchers.hpp>
 
-using namespace kktest;
-using namespace kktest::core_matchers;
-using namespace std;
+using kktest::expect;
+using kktest::group;
+using kktest::test;
+using kktest::core_matchers::both;
+using kktest::core_matchers::either;
+using kktest::core_matchers::isNot;
+using kktest::core_matchers::isLessThan;
+using kktest::core_matchers::isGreaterThan;
 
 void kkTestCase(CompositeMatchers) {
     group("both", [] {

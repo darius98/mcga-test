@@ -1,13 +1,14 @@
-#ifndef KKTEST_EXT_CORE_MATCHERS_IMPL_MATCHER_H_
-#define KKTEST_EXT_CORE_MATCHERS_IMPL_MATCHER_H_
+#ifndef KKTEST_EXTENSIONS_CORE_MATCHERS_INCLUDE_KKTEST_EXT_CORE_MATCHERS_IMPL_MATCHER_HPP_
+#define KKTEST_EXTENSIONS_CORE_MATCHERS_INCLUDE_KKTEST_EXT_CORE_MATCHERS_IMPL_MATCHER_HPP_
 
+#include <kktest_impl/types.hpp>
 #include <kktest_ext/core_matchers_impl/streamer.hpp>
 
 namespace kktest {
 namespace core_matchers {
 
 class Description {
-public:
+ public:
     Description() = default;
     Description(const Description& other): stream(other.stream.str()) {}
 
@@ -23,15 +24,15 @@ public:
         return *this;
     }
 
-    std::string toString() const {
-        return stream.str();
+    String toString() const {
+        return String(stream.str());
     }
-private:
+ private:
     std::stringstream stream;
 };
 
 class Matcher {
-public:
+ public:
     // virtual bool matches(const T& object) = 0;
 
     virtual void describe(Description& description) = 0;
@@ -42,7 +43,7 @@ public:
     }
 
     template<class T>
-    std::string buildMismatchMessage(const T& object) {
+    String buildMismatchMessage(const T& object) {
         Description description;
         description << "Expected ";
         describe(description);
@@ -53,7 +54,7 @@ public:
     }
 };
 
-}
-}
+}  // namespace core_matchers
+}  // namespace kktest
 
-#endif
+#endif  // KKTEST_EXTENSIONS_CORE_MATCHERS_INCLUDE_KKTEST_EXT_CORE_MATCHERS_IMPL_MATCHER_HPP_

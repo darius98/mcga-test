@@ -1,9 +1,19 @@
-#include <kktest>
-#include <kktest_ext/core_matchers>
+#include <kktest.hpp>
+#include <kktest_ext/core_matchers.hpp>
 
-using namespace kktest;
-using namespace kktest::core_matchers;
-using namespace std;
+using kktest::expect;
+using kktest::test;
+using kktest::core_matchers::anyElement;
+using kktest::core_matchers::eachElement;
+using kktest::core_matchers::hasSize;
+using kktest::core_matchers::isEven;
+using kktest::core_matchers::isEmpty;
+using kktest::core_matchers::isGreaterThan;
+using kktest::core_matchers::isLessThan;
+using kktest::core_matchers::isNotEmpty;
+using kktest::core_matchers::isPositive;
+using kktest::core_matchers::isOdd;
+using std::vector;
 
 void kkTestCase(IterableMatchers) {
     vector<int> arr = {1, 3, 5, 7, 9, 11, 13, 15};
@@ -109,5 +119,4 @@ void kkTestCase(IterableMatchers) {
         expect(eachElement(hasSize(isLessThan(100))).matches(matrix));
         expect(!eachElement(hasSize(isGreaterThan(2))).matches(matrix));
     });
-
 }

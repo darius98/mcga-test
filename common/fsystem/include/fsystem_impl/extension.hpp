@@ -1,14 +1,14 @@
-#ifndef COMMON_FSYSTEM_INCLUDE_FSYSTEM_IMPL_EXTENSION_H_
-#define COMMON_FSYSTEM_INCLUDE_FSYSTEM_IMPL_EXTENSION_H_
+#ifndef COMMON_FSYSTEM_INCLUDE_FSYSTEM_IMPL_EXTENSION_HPP_
+#define COMMON_FSYSTEM_INCLUDE_FSYSTEM_IMPL_EXTENSION_HPP_
 
 #include <string>
 
-#include <strutil>
+#include <strutil.hpp>
 
 namespace fsystem {
 
 class Extension: public strutil::StringKeyComparable {
-public:
+ public:
     explicit Extension(const std::string& _extension);
     Extension(const Extension& other);
     Extension(Extension&& other) noexcept;
@@ -18,12 +18,12 @@ public:
 
     std::string toString() const;
 
-private:
+ private:
     std::string extension;
 
     std::string key() const override;
 };
 
-}
+}  // namespace fsystem
 
-#endif
+#endif  // COMMON_FSYSTEM_INCLUDE_FSYSTEM_IMPL_EXTENSION_HPP_

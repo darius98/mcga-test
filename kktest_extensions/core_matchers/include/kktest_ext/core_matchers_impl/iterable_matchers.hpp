@@ -1,5 +1,5 @@
-#ifndef KKTEST_EXT_CORE_MATCHERS_IMPL_ITERABLE_MATCHERS_H_
-#define KKTEST_EXT_CORE_MATCHERS_IMPL_ITERABLE_MATCHERS_H_
+#ifndef KKTEST_EXTENSIONS_CORE_MATCHERS_INCLUDE_KKTEST_EXT_CORE_MATCHERS_IMPL_ITERABLE_MATCHERS_HPP_
+#define KKTEST_EXTENSIONS_CORE_MATCHERS_INCLUDE_KKTEST_EXT_CORE_MATCHERS_IMPL_ITERABLE_MATCHERS_HPP_
 
 #include <kktest_ext/core_matchers_impl/comparison_matchers.hpp>
 
@@ -7,7 +7,7 @@ namespace kktest {
 namespace core_matchers {
 
 class IsEmptyMatcher: public Matcher {
-public:
+ public:
     template<class T>
     bool matches(const T& object) {
         return object.empty();
@@ -19,7 +19,7 @@ public:
 };
 
 class IsNotEmptyMatcher: public Matcher {
-public:
+ public:
     template<class T>
     bool matches(const T& object) {
         return !object.empty();
@@ -32,7 +32,7 @@ public:
 
 template<class M>
 class IterableSizeMatcher: public Matcher {
-public:
+ public:
     explicit IterableSizeMatcher(const M& _sizeMatcher): sizeMatcher(_sizeMatcher) {}
 
     template<class T>
@@ -49,13 +49,14 @@ public:
         description << "iterable where size is ";
         sizeMatcher.describeMismatch(description);
     }
-private:
+
+ private:
     M sizeMatcher;
 };
 
 template<class M>
 class IterableEachMatcher: public Matcher {
-public:
+ public:
     explicit IterableEachMatcher(M _elementMatcher): elementMatcher(_elementMatcher) {}
 
     IterableEachMatcher(const IterableEachMatcher& other):
@@ -66,7 +67,7 @@ public:
     template<class T>
     bool matches(const T& iterable) {
         index = -1;
-        for (const auto& obj: iterable) {
+        for (const auto& obj : iterable) {
             index += 1;
             if (!elementMatcher.matches(obj)) {
                 elementMatcher.describeMismatch(elementFailureDescription);
@@ -88,7 +89,7 @@ public:
                     << elementFailureDescription.toString();
     }
 
-private:
+ private:
     M elementMatcher;
     Description elementFailureDescription;
     int index = -1;
@@ -96,14 +97,14 @@ private:
 
 template<class M>
 class IterableAnyMatcher: public Matcher {
-public:
+ public:
     explicit IterableAnyMatcher(M _elementMatcher): elementMatcher(_elementMatcher) {}
     IterableAnyMatcher(const IterableAnyMatcher& other): elementMatcher(other.elementMatcher) {}
 
     template<class T>
     bool matches(const T& collection) {
         index = -1;
-        for (const auto& obj: collection) {
+        for (const auto& obj : collection) {
             index += 1;
             if (elementMatcher.matches(obj)) {
                 return true;
@@ -121,7 +122,8 @@ public:
         description << "an iterable where no element is ";
         elementMatcher.describe(description);
     }
-private:
+
+ private:
     M elementMatcher;
     int index = -1;
 };
@@ -157,7 +159,7 @@ auto anyElement(const T& any) {
     }
 }
 
-}
-}
+}  // namespace core_matchers
+}  // namespace kktest
 
-#endif
+#endif  // KKTEST_EXTENSIONS_CORE_MATCHERS_INCLUDE_KKTEST_EXT_CORE_MATCHERS_IMPL_ITERABLE_MATCHERS_HPP_

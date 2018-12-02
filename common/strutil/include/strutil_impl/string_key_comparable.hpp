@@ -1,12 +1,12 @@
-#ifndef COMMON_STRUTIL_INCLUDE_STRUTIL_IMPL_STRING_KEY_COMPARABLE_H_
-#define COMMON_STRUTIL_INCLUDE_STRUTIL_IMPL_STRING_KEY_COMPARABLE_H_
+#ifndef COMMON_STRUTIL_INCLUDE_STRUTIL_IMPL_STRING_KEY_COMPARABLE_HPP_
+#define COMMON_STRUTIL_INCLUDE_STRUTIL_IMPL_STRING_KEY_COMPARABLE_HPP_
 
 #include <string>
 
 namespace strutil {
 
 class StringKeyComparable {
-public:
+ public:
     virtual ~StringKeyComparable();
 
     bool operator<=(const StringKeyComparable& other) const;
@@ -30,10 +30,10 @@ public:
     friend bool operator==(const std::string& lhs, const StringKeyComparable& other);
     friend bool operator!=(const std::string& lhs, const StringKeyComparable& other);
 
-private:
+ private:
     virtual std::string key() const = 0;
 };
 
-}
+}  // namespace strutil
 
-#endif
+#endif  // COMMON_STRUTIL_INCLUDE_STRUTIL_IMPL_STRING_KEY_COMPARABLE_HPP_

@@ -39,7 +39,7 @@ File::File(const Path& _path): path(_path.absolute().parent()) {
         throw EmptyPathError();
     }
     rawName = (s[0] == '.' ? "." : "") + v[0];
-    for (size_t i = 1; i < v.size(); ++ i) {
+    for (size_t i = 1; i < v.size(); ++i) {
         extensions.emplace_back(v[i]);
     }
 }
@@ -93,7 +93,7 @@ string File::nameWithoutAllExtensions() const {
 
 string File::nameWithoutExtension() const {
     string ret = rawName;
-    for (size_t i = 0; i + 1 < extensions.size(); ++ i) {
+    for (size_t i = 0; i + 1 < extensions.size(); ++i) {
         ret += '.' + extensions[i].toString();
     }
     return ret;
@@ -101,11 +101,10 @@ string File::nameWithoutExtension() const {
 
 string File::name() const {
     string ret = rawName;
-    for (const Extension& extension: extensions) {
+    for (const Extension& extension : extensions) {
         ret += '.' + extension.toString();
     }
     return ret;
-
 }
 
 Path File::getPath() const {
@@ -117,27 +116,27 @@ Path File::getFolderPath() const {
 }
 
 bool File::exists() const {
-    struct stat info;
+    struct stat info{};
     int errCode = stat(toString().c_str(), &info);
-    if(errCode != 0) {
+    if (errCode != 0) {
         return false;
     }
     return (info.st_mode & S_IFREG) != 0;
 }
 
 bool File::isExecutable() const {
-    struct stat info;
+    struct stat info{};
     int errCode = stat(toString().c_str(), &info);
-    if(errCode != 0) {
+    if (errCode != 0) {
         return false;
     }
     return (info.st_mode & S_IXUSR) != 0;
 }
 
 bool File::isReadable() const {
-    struct stat info;
+    struct stat info{};
     int errCode = stat(toString().c_str(), &info);
-    if(errCode != 0) {
+    if (errCode != 0) {
         return false;
     }
     return (info.st_mode & S_IRUSR) != 0;
@@ -153,9 +152,7 @@ void File::touch() const {
         fs.open(toString(), ios::app);
         fs.close();
     } catch(...) {
-        throw InvalidFileError(
-            ("Unable to touch file at: " + toString()).c_str()
-        );
+        throw InvalidFileError(("Unable to touch file at: " + toString()).c_str());
     }
 }
 
@@ -169,4 +166,4 @@ string File::key() const {
     return toString();
 }
 
-}
+}  // namespace fsystem

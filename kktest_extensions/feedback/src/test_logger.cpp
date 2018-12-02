@@ -1,7 +1,9 @@
+#include <unistd.h>
+
 #include <cstdio>
+
 #include <iostream>
 #include <sstream>
-#include <unistd.h>
 
 #include <kktest_ext/feedback_impl/test_logger.hpp>
 
@@ -138,5 +140,5 @@ void TestLogger::modifyOutput(const int& code, ostream& streamToChange) {
     streamToChange << "\x1b[" << code << "m";
 }
 
-}
-}
+}  // namespace feedback
+}  // namespace kktest

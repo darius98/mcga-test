@@ -1,40 +1,40 @@
-#ifndef COMMON_FSYSTEM_INCLUDE_FSYSTEM_IMPL_ERROR_H_
-#define COMMON_FSYSTEM_INCLUDE_FSYSTEM_IMPL_ERROR_H_
+#ifndef COMMON_FSYSTEM_INCLUDE_FSYSTEM_IMPL_ERROR_HPP_
+#define COMMON_FSYSTEM_INCLUDE_FSYSTEM_IMPL_ERROR_HPP_
 
 #include <stdexcept>
 
 namespace fsystem {
 
 class FSystemError: public std::runtime_error {
-public:
+ public:
     explicit FSystemError(const char* _what);
 };
 
 class InvalidExtensionError: public FSystemError {
-public:
+ public:
     explicit InvalidExtensionError(const char* _what);
 };
 
 class InvalidFileError: public FSystemError {
-public:
+ public:
     explicit InvalidFileError(const char* _what);
 };
 
 class InvalidFolderError: public FSystemError {
-public:
+ public:
     InvalidFolderError();
 };
 
 class EmptyPathError: public FSystemError {
-public:
+ public:
     EmptyPathError();
 };
 
 class NoExtensionError: public FSystemError {
-public:
+ public:
     NoExtensionError();
 };
 
-}
+}  // namespace fsystem
 
-#endif
+#endif  // COMMON_FSYSTEM_INCLUDE_FSYSTEM_IMPL_ERROR_HPP_

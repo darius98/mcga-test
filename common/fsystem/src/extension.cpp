@@ -43,4 +43,4 @@ string Extension::key() const {
     return extension;
 }
 
-}
+}  // namespace fsystem

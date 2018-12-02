@@ -1,53 +1,63 @@
 #include <cctype>
 
-#include <kktest>
-#include <kktest_ext/core_matchers>
+#include <kktest.hpp>
+#include <kktest_ext/core_matchers.hpp>
 
-using namespace kktest;
-using namespace kktest::core_matchers;
-using namespace std;
+using kktest::expect;
+using kktest::group;
+using kktest::test;
+using kktest::core_matchers::isLetter;
+using kktest::core_matchers::isBinaryDigit;
+using kktest::core_matchers::isDigit;
+using kktest::core_matchers::isHexDigit;
+using kktest::core_matchers::isLowercaseLetter;
+using kktest::core_matchers::isOctDigit;
+using kktest::core_matchers::isSubstringOf;
+using kktest::core_matchers::isUppercaseLetter;
+using kktest::core_matchers::isWhitespace;
+using std::string;
 
 void kkTestCase(StringMatchers) {
     group("Specific charset matchers", [] {
         test("isLetter matches only letters", [] {
-            for (unsigned char i = 1; i <= 127; ++ i) {
+            for (unsigned char i = 1; i <= 127; ++i) {
                 expect(isLetter.matches(i) == (('a' <= i && i <= 'z') || ('A' <= i && i <= 'Z')));
             }
         });
 
         test("isDigit matches only digits", [] {
-            for (unsigned char i = 1; i <= 127; ++ i) {
+            for (unsigned char i = 1; i <= 127; ++i) {
                 expect(isDigit.matches(i) == ('0' <= i && i <= '9'));
             }
         });
 
 
         test("isLowercaseLetter matches only lowercase letters", [] {
-            for (unsigned char i = 1; i <= 127; ++ i) {
+            for (unsigned char i = 1; i <= 127; ++i) {
                 expect(isLowercaseLetter.matches(i) == ('a' <= i && i <= 'z'));
             }
         });
 
         test("isUppercaseLetter matches only uppercase letters", [] {
-            for (unsigned char i = 1; i <= 127; ++ i) {
+            for (unsigned char i = 1; i <= 127; ++i) {
                 expect(isUppercaseLetter.matches(i) == ('A' <= i && i <= 'Z'));
             }
         });
 
         test("isBinaryDigit matches only binary digits", [] {
-            for (unsigned char i = 1; i <= 127; ++ i) {
+            for (unsigned char i = 1; i <= 127; ++i) {
                 expect(isBinaryDigit.matches(i) == ('0' <= i && i <= '1'));
             }
         });
 
         test("isOctDigit matches only octal digits", [] {
-            for (unsigned char i = 1; i <= 127; ++ i) {
+            for (unsigned char i = 1; i <= 127; ++i) {
                 expect(isOctDigit.matches(i) == ('0' <= i && i <= '7'));
             }
         });
 
         test("isHexDigit matches only hexadecimal digits", [] {
-            for (unsigned char i = 1; i <= 127; ++ i) {
+            for (unsigned char i = 1; i <= 127; ++i) {
                 expect(isHexDigit.matches(i) == (('0' <= i && i <= '9')
                                                    || ('a' <= i && i <= 'f')
                                                    || ('A' <= i && i <= 'F')));
@@ -55,10 +65,9 @@ void kkTestCase(StringMatchers) {
         });
 
         test("isWhitespace matches only whitespace characters", [] {
-            for (unsigned char i = 1; i <= 127; ++ i) {
-                expect(isWhitespace.matches(i) == (bool)isspace(i));
+            for (unsigned char i = 1; i <= 127; ++i) {
+                expect(isWhitespace.matches(i) == static_cast<bool>(isspace(i)));
             }
-
         });
     });
 
@@ -89,8 +98,8 @@ void kkTestCase(StringMatchers) {
 
         test("All substrings of 'Hello World!' match isSubstring('Hello World!')", [] {
             string s = "Hello World!";
-            for (size_t start = 0; start < s.length(); ++ start) {
-                for (size_t len = 0; start + len <= s.length(); ++ len) {
+            for (size_t start = 0; start < s.length(); ++start) {
+                for (size_t len = 0; start + len <= s.length(); ++len) {
                     expect(isSubstringOf(s).matches(s.substr(start, len)));
                 }
             }

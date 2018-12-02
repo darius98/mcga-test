@@ -1,5 +1,5 @@
-#ifndef KKTEST_CORE_INCLUDE_KKTEST_IMPL_TYPES_H_
-#define KKTEST_CORE_INCLUDE_KKTEST_IMPL_TYPES_H_
+#ifndef KKTEST_CORE_INCLUDE_KKTEST_IMPL_TYPES_HPP_
+#define KKTEST_CORE_INCLUDE_KKTEST_IMPL_TYPES_HPP_
 
 #include <functional>
 #include <string>
@@ -14,4 +14,4 @@ typedef const CopyableExecutable& Executable;
 
 }
 
-#endif
+#endif  // KKTEST_CORE_INCLUDE_KKTEST_IMPL_TYPES_HPP_

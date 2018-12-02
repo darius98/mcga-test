@@ -1,5 +1,5 @@
-#ifndef KKTEST_CORE_INCLUDE_KKTEST_IMPL_MAIN_H_
-#define KKTEST_CORE_INCLUDE_KKTEST_IMPL_MAIN_H_
+#ifndef KKTEST_CORE_INCLUDE_KKTEST_IMPL_MAIN_HPP_
+#define KKTEST_CORE_INCLUDE_KKTEST_IMPL_MAIN_HPP_
 
 #include <vector>
 
@@ -18,6 +18,6 @@ InternalArgs registerInternalFlags(ArgumentsApi* argumentsApi);
 
 int main(const std::vector<Extension*>& extensions, InternalArgs internalFlags);
 
-}
+}  // namespace kktest
 
-#endif
+#endif  // KKTEST_CORE_INCLUDE_KKTEST_IMPL_MAIN_HPP_

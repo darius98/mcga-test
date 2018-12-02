@@ -18,7 +18,7 @@ Path Path::parent(const Path& path) {
 
 Path Path::join(const Path& a, const Path& b) {
     Path joined(a);
-    for (const string& part: b.parts) {
+    for (const string& part : b.parts) {
         joined.addPart(part);
     }
     return joined;
@@ -93,7 +93,7 @@ string Path::toString() const {
     if (isAbsolute()) {
         ret += SEP;
     }
-    for (const string& part: parts) {
+    for (const string& part : parts) {
         ret += part;
         ret += SEP;
     }
@@ -151,4 +151,4 @@ string Path::key() const {
     return toString();
 }
 
-}
+}  // namespace fsystem

@@ -1,5 +1,5 @@
-#ifndef KKTEST_CORE_INCLUDE_KKTEST_IMPL_EXTENSION_API_H_
-#define KKTEST_CORE_INCLUDE_KKTEST_IMPL_EXTENSION_API_H_
+#ifndef KKTEST_CORE_INCLUDE_KKTEST_IMPL_EXTENSION_API_HPP_
+#define KKTEST_CORE_INCLUDE_KKTEST_IMPL_EXTENSION_API_HPP_
 
 #include <functional>
 #include <vector>
@@ -16,7 +16,7 @@ typedef std::function<void()> BeforeDestroyHook;
 typedef std::function<void(const std::exception&)> BeforeForceDestroyHook;
 
 class ExtensionApi {
-public:
+ public:
     virtual void addBeforeTestHook(const TestHook& hook) = 0;
     virtual void addAfterTestHook(const TestHook& hook) = 0;
     virtual void addBeforeGroupHook(const GroupHook& hook) = 0;
@@ -27,7 +27,7 @@ public:
 };
 
 class Extension {
-public:
+ public:
     virtual ~Extension();
 
     virtual void registerCommandLineArguments(ArgumentsApi* argumentsApi);
@@ -37,6 +37,6 @@ public:
     virtual void destroy();
 };
 
-}
+}  // namespace kktest
 
-#endif
+#endif  // KKTEST_CORE_INCLUDE_KKTEST_IMPL_EXTENSION_API_HPP_

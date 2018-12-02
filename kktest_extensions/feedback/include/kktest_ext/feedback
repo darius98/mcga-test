@@ -1,7 +1,0 @@
-#ifndef KKTEST_EXT_FEEDBACK_
-#define KKTEST_EXT_FEEDBACK_
-
-#include <kktest_ext/feedback_impl/test_logger.hpp>
-#include <kktest_ext/feedback_impl/pipe_message_type.hpp>
-
-#endif

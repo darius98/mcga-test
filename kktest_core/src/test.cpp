@@ -1,5 +1,6 @@
 #include "errors.hpp"
 #include "group.hpp"
+#include "test.hpp"
 
 namespace kktest {
 
@@ -59,4 +60,4 @@ TestInfo Test::getTestInfo() const {
     };
 }
 
-}
+}  // namespace kktest

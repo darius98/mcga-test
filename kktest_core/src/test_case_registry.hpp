@@ -1,6 +1,7 @@
-#ifndef KKTEST_CORE_TEST_CASE_REGISTRY_H_
-#define KKTEST_CORE_TEST_CASE_REGISTRY_H_
+#ifndef KKTEST_CORE_SRC_TEST_CASE_REGISTRY_HPP_
+#define KKTEST_CORE_SRC_TEST_CASE_REGISTRY_HPP_
 
+#include <utility>
 #include <vector>
 
 #include <kktest_impl/types.hpp>
@@ -8,7 +9,7 @@
 namespace kktest {
 
 class TestCaseRegistry {
-public:
+ public:
     typedef void (*TestCase)();
 
     static void add(TestCase testCase, const char* name);
@@ -17,10 +18,10 @@ public:
 
     static void clean();
 
-private:
+ private:
     static std::vector<std::pair<TestCase, String>>* testCases;
 };
 
-}
+}  // namespace kktest
 
-#endif
+#endif  // KKTEST_CORE_SRC_TEST_CASE_REGISTRY_HPP_

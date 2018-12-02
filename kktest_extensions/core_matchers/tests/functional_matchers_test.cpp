@@ -1,12 +1,19 @@
-#include <kktest>
-#include <kktest_ext/core_matchers>
+#include <kktest.hpp>
+#include <kktest_ext/core_matchers.hpp>
 
-using namespace kktest;
-using namespace kktest::core_matchers;
-using namespace std;
+using kktest::expect;
+using kktest::group;
+using kktest::setUp;
+using kktest::tearDown;
+using kktest::test;
+using kktest::core_matchers::throws;
+using kktest::core_matchers::throwsA;
+using kktest::core_matchers::wrapFunc;
+using std::range_error;
+using std::runtime_error;
 
 class BasicClass {
-public:
+ public:
     int x;
 
     explicit BasicClass(int _x): x(_x) {}

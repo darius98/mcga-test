@@ -1,25 +1,27 @@
 #include <vector>
 
-#include <kktest>
+#include <kktest.hpp>
 
-using namespace kktest;
+using kktest::expect;
+using kktest::fail;
+using kktest::group;
+using kktest::setUp;
+using kktest::test;
 
 void kkTestCase() {
     std::vector<int> v;
 
     setUp([&] {
-        v = std::vector<int>{}; // always start with a clean vector
+        v = std::vector<int>{};  // always start with a clean vector
     });
 
     test("Vector is initially empty", [&] {
         expect(v.empty());
-        expect(v.size() == 0);
     });
 
     test("After one push_back, vector is not empty anymore", [&] {
         v.push_back(3);
         expect(!v.empty());
-        expect(v.size() != 0);
     });
 
     group("After inserting 5 elements", [&] {

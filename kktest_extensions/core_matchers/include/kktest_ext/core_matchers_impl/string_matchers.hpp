@@ -1,5 +1,5 @@
-#ifndef KKTEST_EXT_CORE_MATCHERS_IMPL_STRING_MATCHERS_H_
-#define KKTEST_EXT_CORE_MATCHERS_IMPL_STRING_MATCHERS_H_
+#ifndef KKTEST_EXTENSIONS_CORE_MATCHERS_INCLUDE_KKTEST_EXT_CORE_MATCHERS_IMPL_STRING_MATCHERS_HPP_
+#define KKTEST_EXTENSIONS_CORE_MATCHERS_INCLUDE_KKTEST_EXT_CORE_MATCHERS_IMPL_STRING_MATCHERS_HPP_
 
 #include <string>
 
@@ -9,15 +9,17 @@ namespace kktest {
 namespace core_matchers {
 
 class CharInStringMatcher: public Matcher {
-public:
-    explicit CharInStringMatcher(const char* _container, const char* _expectation=nullptr) noexcept;
+ public:
+    explicit CharInStringMatcher(const char* _container,
+                                 const char* _expectation = nullptr) noexcept;
 
     bool matches(const char& ch);
 
     void describe(Description& description) override;
 
     void describeMismatch(Description& description) override;
-private:
+
+ private:
     const char* container;
     const char* expectation;
 };
@@ -39,20 +41,20 @@ extern CharInStringMatcher isHexDigit;
 extern CharInStringMatcher isWhitespace;
 
 class IsSubstringMatcher: public Matcher {
-public:
+ public:
     explicit IsSubstringMatcher(std::string _container);
 
     bool matches(const std::string& object);
 
     void describe(Description& description) override;
 
-private:
+ private:
     std::string container;
 };
 
 IsSubstringMatcher isSubstringOf(const std::string& s);
 
-}
-}
+}  // namespace core_matchers
+}  // namespace kktest
 
-#endif
+#endif  // KKTEST_EXTENSIONS_CORE_MATCHERS_INCLUDE_KKTEST_EXT_CORE_MATCHERS_IMPL_STRING_MATCHERS_HPP_

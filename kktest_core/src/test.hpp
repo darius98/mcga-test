@@ -1,5 +1,5 @@
-#ifndef KKTEST_CORE_TEST_H_
-#define KKTEST_CORE_TEST_H_
+#ifndef KKTEST_CORE_SRC_TEST_HPP_
+#define KKTEST_CORE_SRC_TEST_HPP_
 
 #include <kktest_impl/config.hpp>
 #include <kktest_impl/info.hpp>
@@ -9,7 +9,7 @@ namespace kktest {
 class Group;
 
 class Test {
-public:
+ public:
     Test(const TestConfig& _config, Group* _parentGroup, int _index);
 
     const TestConfig& getConfig() const;
@@ -30,7 +30,7 @@ public:
 
     void setExecuted(double _executionTimeTicks, bool _passed, String _failureMessage);
 
-private:
+ private:
     TestConfig config;
 
     Group* parentGroup;
@@ -42,6 +42,6 @@ private:
     double executionTimeTicks = -1.0;
 };
 
-}
+}  // namespace kktest
 
-#endif
+#endif  // KKTEST_CORE_SRC_TEST_HPP_

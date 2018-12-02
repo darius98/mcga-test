@@ -23,5 +23,5 @@ void IsNotEmptyMatcher::describeMismatch(Description& description) {
     description << "empty iterable";
 }
 
-}
-}
+}  // namespace core_matchers
+}  // namespace kktest

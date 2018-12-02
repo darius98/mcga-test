@@ -1,6 +1,8 @@
 #include <cstdlib>
 #include <cstring>
 
+#include <utility>
+
 #include "test_case_registry.hpp"
 
 using std::pair;
@@ -28,4 +30,4 @@ void TestCaseRegistry::clean() {
     delete testCases;
 }
 
-}
+}  // namespace kktest

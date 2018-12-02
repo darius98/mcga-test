@@ -2,7 +2,7 @@
 #include <map>
 #include <set>
 
-#include <strutil>
+#include <strutil.hpp>
 
 #include <kktest_impl/arguments_api.hpp>
 
@@ -17,7 +17,7 @@ using strutil::toLower;
 namespace kktest {
 
 class CommandLineSpecImpl {
-public:
+ public:
     virtual ~CommandLineSpecImpl() = default;
 
     virtual void setDefault() = 0;
@@ -28,7 +28,7 @@ public:
 };
 
 class FlagImpl: public Flag, public CommandLineSpecImpl {
-public:
+ public:
     ~FlagImpl() override = default;
 
     bool get() const override {
@@ -47,12 +47,12 @@ public:
         value = toLower(_value) == "true" || _value == "1" || toLower(_value) == "enabled";
     }
 
-private:
+ private:
     bool value = false;
 };
 
 class ArgumentImpl: public Argument, public CommandLineSpecImpl {
-public:
+ public:
     ArgumentImpl(const String& _defaultValue, String _implicitValue):
             value(_defaultValue),
             defaultValue(_defaultValue),
@@ -76,18 +76,18 @@ public:
         value = _value;
     }
 
-private:
+ private:
     String value;
     String defaultValue;
     String implicitValue;
 };
 
 class ArgumentsApiImpl: public ArgumentsApi {
-public:
+ public:
     explicit ArgumentsApiImpl(String helpPrefix): help(move(helpPrefix)) {}
 
     ~ArgumentsApiImpl() override {
-        for (CommandLineSpecImpl* spec: commandLineSpecs) {
+        for (CommandLineSpecImpl* spec : commandLineSpecs) {
             delete spec;
         }
     }
@@ -100,14 +100,12 @@ public:
         if (reservedNames.count(name) != 0) {
             throw runtime_error(
                 "Argument tried to register " + name + " as a command-line name, "
-                "but a different argument already has it as a name."
-            );
+                "but a different argument already has it as a name.");
         }
         if (!shortName.empty() && reservedNames.count(shortName) != 0) {
             throw runtime_error(
                 "Argument tried to register " + shortName + " as a command-line "
-                "short name, but a different argument already has it as a short name."
-            );
+                "short name, but a different argument already has it as a short name.");
         }
         if (shortName.size() > 1) {
             throw runtime_error("Argument short name should always have length 1.");
@@ -149,13 +147,13 @@ public:
     }
 
     vector<String> interpret(int argc, char** argv) override {
-        for (CommandLineSpecImpl* spec: commandLineSpecs) {
+        for (CommandLineSpecImpl* spec : commandLineSpecs) {
             spec->setDefault();
         }
         vector<String> positionalArguments;
         String lastShortName;
         bool onlyPositional = false;
-        for (int i = 1; i < argc; ++ i) {
+        for (int i = 1; i < argc; ++i) {
             String arg(argv[i]);
             if (arg == "--") {
                 onlyPositional = true;
@@ -194,13 +192,13 @@ public:
                 auto equalPos = arg.find('=');
                 if (equalPos == String::npos) {
                     // is of the form -XYZ
-                    for (size_t j = 1; j + 1 < arg.length(); ++ j) {
+                    for (size_t j = 1; j + 1 < arg.length(); ++j) {
                         applyImplicit(arg.substr(j, 1));
                     }
                     lastShortName = arg.substr(arg.length() - 1, 1);
                 } else {
                     // is of the form -XYZ=v
-                    for (size_t j = 1; j + 1 < equalPos; ++ j) {
+                    for (size_t j = 1; j + 1 < equalPos; ++j) {
                         applyImplicit(arg.substr(j, 1));
                     }
                     applyValue(arg.substr(equalPos - 1, 1), arg.substr(equalPos + 1));
@@ -221,7 +219,7 @@ public:
         helpFlag = addFlag("help", "Display this help menu.", "h");
     }
 
-private:
+ private:
     String getHelpSection(const String& name,
                           const String& helpText,
                           const String& shortName,
@@ -277,4 +275,4 @@ ArgumentsApi* ArgumentsApi::create(const String& helpPrefix) {
     return api;
 }
 
-}
+}  // namespace kktest

@@ -1,5 +1,5 @@
-#ifndef KKTEST_EXT_CORE_MATCHERS_IMPL_COMPARISON_MATCHERS_H_
-#define KKTEST_EXT_CORE_MATCHERS_IMPL_COMPARISON_MATCHERS_H_
+#ifndef KKTEST_EXTENSIONS_CORE_MATCHERS_INCLUDE_KKTEST_EXT_CORE_MATCHERS_IMPL_COMPARISON_MATCHERS_HPP_
+#define KKTEST_EXTENSIONS_CORE_MATCHERS_INCLUDE_KKTEST_EXT_CORE_MATCHERS_IMPL_COMPARISON_MATCHERS_HPP_
 
 #include <functional>
 
@@ -10,7 +10,7 @@ namespace core_matchers {
 
 template<class T>
 class EqualityMatcher: public Matcher {
-public:
+ public:
     explicit EqualityMatcher(const T& _target): target(_target) {}
 
     template<class O>
@@ -22,13 +22,13 @@ public:
         description << "'" << target << "'";
     }
 
-private:
+ private:
     T target;
 };
 
 template<class T>
 class NonEqualityMatcher: public Matcher {
-public:
+ public:
     explicit NonEqualityMatcher(const T& _target): target(_target) {}
 
     template<class O>
@@ -44,13 +44,13 @@ public:
         description << "'" << target << "'";
     }
 
-private:
+ private:
     T target;
 };
 
 template<class T>
 class IsLessThanMatcher: public Matcher {
-public:
+ public:
     explicit IsLessThanMatcher(const T& _target): target(_target) {}
 
     template<class O>
@@ -66,13 +66,13 @@ public:
         description << ">= '" << target << "'";
     }
 
-private:
+ private:
     T target;
 };
 
 template<class T>
 class IsLessThanEqualMatcher: public Matcher {
-public:
+ public:
     explicit IsLessThanEqualMatcher(const T& _target): target(_target) {}
 
     template<class O>
@@ -88,13 +88,13 @@ public:
         description << "> '" << target << "'";
     }
 
-private:
+ private:
     T target;
 };
 
 template<class T>
 class IsGreaterThanMatcher: public Matcher {
-public:
+ public:
     explicit IsGreaterThanMatcher(const T& _target): target(_target) {}
 
     template<class O>
@@ -110,13 +110,13 @@ public:
         description << "<= '" << target << "'";
     }
 
-private:
+ private:
     T target;
 };
 
 template<class T>
 class IsGreaterThanEqualMatcher: public Matcher {
-public:
+ public:
     explicit IsGreaterThanEqualMatcher(const T& _target): target(_target) {}
 
     template<class O>
@@ -132,18 +132,20 @@ public:
         description << "< '" << target << "'";
     }
 
-private:
+ private:
     T target;
 };
 
-template<class T>
 class IdentityMatcher: public Matcher {
-public:
-    explicit IdentityMatcher(const T& target): address((void*)&target) {}
+ public:
+    template<class T>
+    explicit IdentityMatcher(const T& target): address(static_cast<const void*>(&target)) {}
+
     IdentityMatcher(const IdentityMatcher& other): address(other.address) {}
 
+    template<class T>
     bool matches(const T& object) {
-        objectAddress = (void*)&object;
+        objectAddress = static_cast<const void*>(&object);
         return objectAddress == address;
     }
 
@@ -155,9 +157,9 @@ public:
         description << "variable at address '" << objectAddress << "'";
     }
 
-private:
-    void* address;
-    void* objectAddress = nullptr;
+ private:
+    const void* address;
+    const void* objectAddress = nullptr;
 };
 
 template<class T>
@@ -191,11 +193,11 @@ IsGreaterThanEqualMatcher<T> isGreaterThanEqual(const T& object) {
 }
 
 template<class T>
-IdentityMatcher<T> isIdenticalTo(const T& object) {
-    return IdentityMatcher<T>(object);
+IdentityMatcher isIdenticalTo(const T& object) {
+    return IdentityMatcher(object);
 }
 
-}
-}
+}  // namespace core_matchers
+}  // namespace kktest
 
-#endif
+#endif  // KKTEST_EXTENSIONS_CORE_MATCHERS_INCLUDE_KKTEST_EXT_CORE_MATCHERS_IMPL_COMPARISON_MATCHERS_HPP_

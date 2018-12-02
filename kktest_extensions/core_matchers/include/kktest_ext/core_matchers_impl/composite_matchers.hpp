@@ -1,5 +1,5 @@
-#ifndef KKTEST_EXT_CORE_MATCHERS_IMPL_COMPOSITE_MATCHERS_H_
-#define KKTEST_EXT_CORE_MATCHERS_IMPL_COMPOSITE_MATCHERS_H_
+#ifndef KKTEST_EXTENSIONS_CORE_MATCHERS_INCLUDE_KKTEST_EXT_CORE_MATCHERS_IMPL_COMPOSITE_MATCHERS_HPP_
+#define KKTEST_EXTENSIONS_CORE_MATCHERS_INCLUDE_KKTEST_EXT_CORE_MATCHERS_IMPL_COMPOSITE_MATCHERS_HPP_
 
 #include <kktest_ext/core_matchers_impl/comparison_matchers.hpp>
 
@@ -11,7 +11,7 @@ class AndMatcher: public Matcher {
     static_assert(std::is_base_of<Matcher, M1>::value, "AndMatcher only supports other matchers.");
     static_assert(std::is_base_of<Matcher, M2>::value, "AndMatcher only supports other matchers.");
 
-public:
+ public:
     AndMatcher(const M1& _m1, const M2& _m2): m1(_m1), m2(_m2) {}
 
     template<class T>
@@ -34,7 +34,8 @@ public:
             m1.describeMismatch(description);
         }
     }
-private:
+
+ private:
     M1 m1;
     M2 m2;
 
@@ -47,7 +48,7 @@ class OrMatcher: public Matcher {
     static_assert(std::is_base_of<Matcher, M1>::value, "OrMatcher only supports other matchers.");
     static_assert(std::is_base_of<Matcher, M2>::value, "OrMatcher only supports other matchers.");
 
-public:
+ public:
     OrMatcher(const M1& _m1, const M2& _m2): m1(_m1), m2(_m2) {}
 
     template<class T>
@@ -68,7 +69,8 @@ public:
         description << " and ";
         m2.describeMismatch(description);
     }
-private:
+
+ private:
     M1 m1;
     M2 m2;
 
@@ -80,7 +82,7 @@ template<class M>
 class NotMatcher: public Matcher {
     static_assert(std::is_base_of<Matcher, M>::value, "NotMatcher only supports other matchers.");
 
-public:
+ public:
     explicit NotMatcher(const M& _matcher): matcher(_matcher) {}
 
     template<class T>
@@ -96,7 +98,7 @@ public:
     void describeMismatch(Description& description) override {
         matcher.describe(description);
     }
-private:
+ private:
     M matcher;
 };
 
@@ -135,7 +137,7 @@ auto isNot(const T& x) {
     }
 }
 
-}
-}
+}  // namespace core_matchers
+}  // namespace kktest
 
-#endif
+#endif  // KKTEST_EXTENSIONS_CORE_MATCHERS_INCLUDE_KKTEST_EXT_CORE_MATCHERS_IMPL_COMPOSITE_MATCHERS_HPP_

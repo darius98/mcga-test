@@ -42,4 +42,4 @@ const TestingDriverHooks& ExtensionApiImpl::getHooks() const {
     return hooks;
 }
 
-}
+}  // namespace kktest

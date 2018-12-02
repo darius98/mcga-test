@@ -1,21 +1,21 @@
-#ifndef COMMON_MESSAGING_INCLUDE_MESSAGING_IMPL_INPUT_PIPE_H_
-#define COMMON_MESSAGING_INCLUDE_MESSAGING_IMPL_INPUT_PIPE_H_
+#ifndef COMMON_MESSAGING_INCLUDE_MESSAGING_IMPL_INPUT_PIPE_HPP_
+#define COMMON_MESSAGING_INCLUDE_MESSAGING_IMPL_INPUT_PIPE_HPP_
 
 #include <messaging_impl/message.hpp>
 
 namespace messaging {
 
 class InputPipe {
-public:
+ public:
     explicit InputPipe(const int& _inputFD);
 
     ~InputPipe();
 
     void close();
 
-    Message getNextMessage(int maxConsecutiveFailedReadAttempts=32);
+    Message getNextMessage(int maxConsecutiveFailedReadAttempts = 32);
 
-private:
+ private:
     void resizeBufferToFit(std::size_t extraBytes);
 
     Message extractMessageFromBuffer(std::size_t messageSize);
@@ -26,6 +26,6 @@ private:
     std::size_t bufferCapacity;
 };
 
-}
+}  // namespace messaging
 
-#endif
+#endif  // COMMON_MESSAGING_INCLUDE_MESSAGING_IMPL_INPUT_PIPE_HPP_

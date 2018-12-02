@@ -20,7 +20,7 @@ void TestExecutionLoop::addToLoop(const String& testPath, int maxParallelTests) 
         testPath,
         maxParallelTests,
         [this](const KKTestCaseInfo& info) {
-            switch(info.lastReceived) {
+            switch (info.lastReceived) {
                 case KKTestCaseInfo::FINISH_WITH_ERROR:
                     testLogger.logFatalError(info.errorMessage, info.testExecutablePath);
                     break;
@@ -34,8 +34,7 @@ void TestExecutionLoop::addToLoop(const String& testPath, int maxParallelTests) 
                     testLogger.logTest(info.testsReceived.back());
                     break;
             }
-        }
-    );
+        });
 }
 
 bool TestExecutionLoop::isEmpty() const {
@@ -47,16 +46,16 @@ void TestExecutionLoop::step() {
         if (!it->isStarted()) {
             if (runningCycles < concurrentRunningCyclesLimit) {
                 it->start();
-                ++ runningCycles;
+                ++runningCycles;
             }
-            ++ it;
+            ++it;
         } else {
             it->step();
             if (it->isDone()) {
                 it = cycles.erase(it);
-                -- runningCycles;
+                --runningCycles;
             } else {
-                ++ it;
+                ++it;
             }
         }
     }
@@ -71,5 +70,5 @@ int TestExecutionLoop::join() {
     return failedAnyTest;
 }
 
-}
-}
+}  // namespace test_runner
+}  // namespace kktest

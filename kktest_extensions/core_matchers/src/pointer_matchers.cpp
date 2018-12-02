@@ -31,5 +31,5 @@ void IsNotNullptrMatcher::describeMismatch(Description& description) {
 
 IsNotNullptrMatcher isNotNull;
 
-}
-}
+}  // namespace core_matchers
+}  // namespace kktest

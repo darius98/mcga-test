@@ -1,11 +1,11 @@
+#define VERSION "0.0.2"
+
 #include <iostream>
 
-#include <kktest_extension_api>
-
+#include <kktest_extension_api.hpp>
 #include <explorer/explorer.hpp>
-#include <test_execution_loop/test_execution_loop.hpp>
 
-#define VERSION "0.0.2"
+#include <test_execution_loop/test_execution_loop.hpp>
 
 using kktest::ArgumentsApi;
 using kktest::Argument;
@@ -14,6 +14,7 @@ using kktest::String;
 using kktest::test_runner::explore;
 using kktest::test_runner::TestExecutionLoop;
 using fsystem::File;
+using fsystem::Path;
 using std::cout;
 using std::invalid_argument;
 using std::stoi;
@@ -25,22 +26,19 @@ int main(int argc, char** argv) {
     Flag* versionFlag = argumentsApi->addFlag(
             "version",
             "Display program version.",
-            "v"
-    );
+            "v");
     Argument* maxParallelCasesArgument = argumentsApi->addArgument(
             "parallel-cases",
             "Maximum number of concurrent test cases.",
             "",
             "1",
-            "3"
-    );
+            "3");
     Argument* maxParallelTestsPerCaseArgument = argumentsApi->addArgument(
             "parallel-tests-per-case",
             "Maximum number of concurrent tests per test case",
             "",
             "1",
-            "5"
-    );
+            "5");
     vector<String> positional = argumentsApi->interpret(argc, argv);
     if (versionFlag->get()) {
         cout << "KKTest test test_runner version " << VERSION << "\n";
@@ -71,7 +69,7 @@ int main(int argc, char** argv) {
 
     auto executionLoop = new TestExecutionLoop(maxParallelTestCases);
     cout << "Searching for test cases...\n";
-    explore(rootPath, [executionLoop, maxParallelTestsPerCase](File testCase) {
+    explore(Path(rootPath), [executionLoop, maxParallelTestsPerCase](File testCase) {
         cout << "\tFound test case at " << testCase.toString() << "\n";
         executionLoop->addToLoop(testCase.toString(), maxParallelTestsPerCase);
     });

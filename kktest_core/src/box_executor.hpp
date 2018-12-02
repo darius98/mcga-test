@@ -1,5 +1,5 @@
-#ifndef KKTEST_CORE_BOX_EXECUTOR_H_
-#define KKTEST_CORE_BOX_EXECUTOR_H_
+#ifndef KKTEST_CORE_SRC_BOX_EXECUTOR_HPP_
+#define KKTEST_CORE_SRC_BOX_EXECUTOR_HPP_
 
 #include <set>
 
@@ -9,12 +9,12 @@
 namespace kktest {
 
 class BoxExecutor: public Executor {
-public:
+ public:
     explicit BoxExecutor(std::size_t _maxNumContainers);
 
     void finalize() override;
 
-private:
+ private:
     void execute(Test* test, Executable func) override;
 
     void ensureFreeContainers(std::size_t numContainers);
@@ -23,6 +23,6 @@ private:
     std::set<TestContainer*> openContainers;
 };
 
-}
+}  // namespace kktest
 
-#endif
+#endif  // KKTEST_CORE_SRC_BOX_EXECUTOR_HPP_

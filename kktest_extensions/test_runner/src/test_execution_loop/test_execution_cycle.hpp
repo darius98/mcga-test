@@ -1,11 +1,11 @@
-#ifndef KKTEST_RUNNER_TEST_EXECUTION_LOOP_TEST_EXECUTION_CYCLE_H_
-#define KKTEST_RUNNER_TEST_EXECUTION_LOOP_TEST_EXECUTION_CYCLE_H_
+#ifndef KKTEST_EXTENSIONS_TEST_RUNNER_SRC_TEST_EXECUTION_LOOP_TEST_EXECUTION_CYCLE_HPP_
+#define KKTEST_EXTENSIONS_TEST_RUNNER_SRC_TEST_EXECUTION_LOOP_TEST_EXECUTION_CYCLE_HPP_
 
 #include <map>
 #include <queue>
 #include <string>
 
-#include <messaging>
+#include <messaging.hpp>
 
 #include <test_execution_loop/kktest_lib_info.hpp>
 
@@ -13,7 +13,7 @@ namespace kktest {
 namespace test_runner {
 
 class TestExecutionCycle {
-public:
+ public:
     explicit TestExecutionCycle(const std::string& _testPath,
                                 int _maxParallelTests,
                                 const std::function<void(const KKTestCaseInfo&)>& _onInfoCallback);
@@ -26,7 +26,7 @@ public:
 
     bool isDone() const;
 
-private:
+ private:
     void processMessages(bool block);
 
     void processMessage(const messaging::Message& message);
@@ -44,7 +44,7 @@ private:
     KKTestCaseInfo info;
 };
 
-}
-}
+}  // namespace test_runner
+}  // namespace kktest
 
-#endif
+#endif  // KKTEST_EXTENSIONS_TEST_RUNNER_SRC_TEST_EXECUTION_LOOP_TEST_EXECUTION_CYCLE_HPP_

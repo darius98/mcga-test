@@ -7,12 +7,12 @@ namespace strutil {
 string unescapeCharacters(const string& s) {
     string unescaped;
     string::const_iterator it = s.begin();
-    while (it != s.end()){
+    while (it != s.end()) {
         char ch = *it;
-        ++ it;
+        ++it;
         if (ch == '\\' && it != s.end()) {
             char ch2 = *it;
-            ++ it;
+            ++it;
             switch (ch2) {
                 case '\\': ch = '\\'; break;
                 case 'n': ch = '\n'; break;
@@ -28,4 +28,4 @@ string unescapeCharacters(const string& s) {
     return unescaped;
 }
 
-}
+}  // namespace strutil

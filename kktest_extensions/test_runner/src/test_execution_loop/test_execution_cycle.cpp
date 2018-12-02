@@ -8,7 +8,7 @@
 #include <stdexcept>
 #include <iostream>
 
-#include <kktest_ext/feedback>
+#include <kktest_ext/feedback.hpp>
 #include "test_execution_cycle.hpp"
 
 using messaging::InputPipe;
@@ -47,7 +47,7 @@ void TestExecutionCycle::start() {
         throw runtime_error("Trying to start the same test cycle twice!");
     }
     started = true;
-    for (int i = 0; i < 10; ++ i) {
+    for (int i = 0; i < 10; ++i) {
         pipeName += static_cast<char>(rand() % 26 + 97);
     }
     int pipeCreateStatus = mkfifo(pipeName.c_str(), 0666);
@@ -68,7 +68,7 @@ void TestExecutionCycle::start() {
         perror("fork");
         exit(errno);
     }
-    if (testProcessPID == 0) { // child process
+    if (testProcessPID == 0) {  // child process
         String quietArgStr = "--quiet";
         String boxedArgStr = "--boxed";
         String pipeToArgStr = "--pipe_to=" + pipeName;
@@ -95,7 +95,7 @@ void TestExecutionCycle::step() {
         exit(errno);
     }
     processMessages(false);
-    if (ret != 0) { // process finished
+    if (ret != 0) {  // process finished
         processMessages(true);
     }
 }
@@ -119,8 +119,8 @@ void TestExecutionCycle::processMessage(const Message& message) {
     MessageReader reader(message);
     PipeMessageType type;
     reader << type;
-    switch(type) {
-        case PipeMessageType::GROUP: { // group
+    switch (type) {
+        case PipeMessageType::GROUP: {
             GroupInfo groupInfo;
             reader << groupInfo.parentGroupIndex
                    << groupInfo.index
@@ -129,7 +129,7 @@ void TestExecutionCycle::processMessage(const Message& message) {
             info.lastReceived = KKTestCaseInfo::GROUP;
             break;
         }
-        case PipeMessageType::TEST: { // test
+        case PipeMessageType::TEST: {
             TestInfo testInfo;
             reader << testInfo.groupIndex
                    << testInfo.index
@@ -141,7 +141,7 @@ void TestExecutionCycle::processMessage(const Message& message) {
             info.lastReceived = KKTestCaseInfo::TEST;
             break;
         }
-        case PipeMessageType::DONE: { // done
+        case PipeMessageType::DONE: {
             int removeStat = remove(pipeName.c_str());
             if (removeStat < 0) {
                 perror("remove pipe");
@@ -152,7 +152,7 @@ void TestExecutionCycle::processMessage(const Message& message) {
             info.lastReceived = KKTestCaseInfo::FINISH;
             break;
         }
-        case PipeMessageType::ERROR: { // error
+        case PipeMessageType::ERROR: {
             int removeStat = remove(pipeName.c_str());
             if (removeStat < 0) {
                 perror("remove pipe");
@@ -164,14 +164,13 @@ void TestExecutionCycle::processMessage(const Message& message) {
             reader << info.errorMessage;
             break;
         }
-        default: { // idk
+        default: {
             cout << "Unknown message received on pipe, type " << type << ". Exiting.\n";
             exit(1);
         }
-
     }
     onInfoCallback(info);
 }
 
-}
-}
+}  // namespace test_runner
+}  // namespace kktest

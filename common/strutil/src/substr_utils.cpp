@@ -34,4 +34,4 @@ bool containsCharacter(const string& str, char ch) {
     return str.find(ch) != string::npos;
 }
 
-}
+}  // namespace strutil

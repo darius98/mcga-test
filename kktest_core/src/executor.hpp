@@ -1,5 +1,5 @@
-#ifndef KKTEST_CORE_EXECUTOR_H_
-#define KKTEST_CORE_EXECUTOR_H_
+#ifndef KKTEST_CORE_SRC_EXECUTOR_HPP_
+#define KKTEST_CORE_SRC_EXECUTOR_HPP_
 
 #include <kktest_impl/types.hpp>
 #include "group.hpp"
@@ -8,13 +8,13 @@
 namespace kktest {
 
 class Executor {
-private:
+ private:
     enum State { INACTIVE, ACTIVE };
     typedef const std::function<void(const String&)>& SetFailureType;
 
     static double computeTimeTickLengthFromHardware();
 
-public:
+ public:
     Executor();
 
     virtual ~Executor();
@@ -29,7 +29,7 @@ public:
 
     void onTestFinished(const std::function<void(Test*)>& _onTestFinishedCallback);
 
-protected:
+ protected:
     void run(Test* test, Executable func);
 
     void setTestExecuted(Test* test,
@@ -37,7 +37,7 @@ protected:
                          bool passed,
                          const String& failureMessage);
 
-private:
+ private:
     void runSetUpsRecursively(Group* group, SetFailureType setFailure);
 
     void runTearDownsRecursively(Group* group, SetFailureType setFailure);
@@ -49,6 +49,6 @@ private:
     std::function<void(Test*)> onTestFinishedCallback;
 };
 
-}
+}  // namespace kktest
 
-#endif
+#endif  // KKTEST_CORE_SRC_EXECUTOR_HPP_

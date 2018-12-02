@@ -1,5 +1,5 @@
-#ifndef KKTEST_CORE_ERRORS_H_
-#define KKTEST_CORE_ERRORS_H_
+#ifndef KKTEST_CORE_SRC_ERRORS_HPP_
+#define KKTEST_CORE_SRC_ERRORS_HPP_
 
 #include <stdexcept>
 
@@ -8,20 +8,20 @@
 namespace kktest {
 
 class ConfigurationError: public std::runtime_error {
-public:
+ public:
     explicit ConfigurationError(const String& str);
 };
 
 class KKTestLibraryImplementationError: public std::runtime_error {
-public:
+ public:
     explicit KKTestLibraryImplementationError(const String& str);
 };
 
 class ExpectationFailed: public std::runtime_error {
-public:
+ public:
     explicit ExpectationFailed(const String& str);
 };
 
-}
+}  // namespace kktest
 
-#endif
+#endif  // KKTEST_CORE_SRC_ERRORS_HPP_

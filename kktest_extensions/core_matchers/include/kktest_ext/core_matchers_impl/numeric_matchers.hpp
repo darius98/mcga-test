@@ -1,5 +1,5 @@
-#ifndef KKTEST_EXT_CORE_MATCHERS_IMPL_NUMERIC_MATCHERS_H_
-#define KKTEST_EXT_CORE_MATCHERS_IMPL_NUMERIC_MATCHERS_H_
+#ifndef KKTEST_EXTENSIONS_CORE_MATCHERS_INCLUDE_KKTEST_EXT_CORE_MATCHERS_IMPL_NUMERIC_MATCHERS_HPP_
+#define KKTEST_EXTENSIONS_CORE_MATCHERS_INCLUDE_KKTEST_EXT_CORE_MATCHERS_IMPL_NUMERIC_MATCHERS_HPP_
 
 #include <kktest_ext/core_matchers_impl/matcher.hpp>
 
@@ -7,7 +7,7 @@ namespace kktest {
 namespace core_matchers {
 
 class IsPositiveMatcher: public Matcher {
-public:
+ public:
     template<class T>
     bool matches(const T& object) {
         return object > 0;
@@ -21,7 +21,7 @@ public:
 extern IsPositiveMatcher isPositive;
 
 class IsNegativeMatcher: public Matcher {
-public:
+ public:
     template<class T>
     bool matches(const T& object) {
         return object < 0;
@@ -35,7 +35,7 @@ public:
 extern IsNegativeMatcher isNegative;
 
 class IsEvenMatcher: public Matcher {
-public:
+ public:
     template<class T>
     bool matches(const T& object) {
         return object % 2 == 0;
@@ -49,7 +49,7 @@ public:
 extern IsEvenMatcher isEven;
 
 class IsOddMatcher: public Matcher {
-public:
+ public:
     template<class T>
     bool matches(const T& object) {
         return object % 2 == 1 || object % 2 == -1;
@@ -63,7 +63,7 @@ public:
 extern IsOddMatcher isOdd;
 
 class IsZeroMatcher: public Matcher {
-public:
+ public:
     template<class T>
     bool matches(const T& object) {
         return object == 0;
@@ -76,7 +76,7 @@ extern IsZeroMatcher isZero;
 
 template<class T>
 class IsAlmostEqualMatcher: public Matcher {
-public:
+ public:
     explicit IsAlmostEqualMatcher(const T& target, const double& eps): target(target), eps(eps) {}
 
     bool matches(const T& object) {
@@ -91,17 +91,18 @@ public:
     void describeMismatch(Description& description) override {
         description << "a number not within " << eps << " of " << target;
     }
-private:
+
+ private:
     T target;
     double eps;
 };
 
 template<class T>
-IsAlmostEqualMatcher<T> isAlmostEqualTo(const T& target, const double& eps=0.000001) {
+IsAlmostEqualMatcher<T> isAlmostEqualTo(const T& target, const double& eps = 0.000001) {
     return IsAlmostEqualMatcher<T>(target, eps);
 }
 
-}
-}
+}  // namespace core_matchers
+}  // namespace kktest
 
-#endif
+#endif  // KKTEST_EXTENSIONS_CORE_MATCHERS_INCLUDE_KKTEST_EXT_CORE_MATCHERS_IMPL_NUMERIC_MATCHERS_HPP_

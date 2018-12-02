@@ -1,5 +1,5 @@
-#ifndef KKTEST_EXT_CORE_MATCHERS_IMPL_FUNCTIONAL_MATCHERS_H_
-#define KKTEST_EXT_CORE_MATCHERS_IMPL_FUNCTIONAL_MATCHERS_H_
+#ifndef KKTEST_EXTENSIONS_CORE_MATCHERS_INCLUDE_KKTEST_EXT_CORE_MATCHERS_IMPL_FUNCTIONAL_MATCHERS_HPP_
+#define KKTEST_EXTENSIONS_CORE_MATCHERS_INCLUDE_KKTEST_EXT_CORE_MATCHERS_IMPL_FUNCTIONAL_MATCHERS_HPP_
 
 #include <functional>
 
@@ -9,7 +9,7 @@ namespace kktest {
 namespace core_matchers {
 
 class ThrowsAnythingMatcher: public Matcher {
-public:
+ public:
     bool matches(const std::function<void()>& func);
 
     void describe(Description& description) override;
@@ -21,7 +21,7 @@ extern ThrowsAnythingMatcher throws;
 
 template<class E>
 class ThrowsSpecificMatcher: public Matcher {
-public:
+ public:
     bool matches(const std::function<void()>& func) {
         try {
             func();
@@ -49,7 +49,8 @@ public:
             description << "a function that throws something else";
         }
     }
-private:
+
+ private:
     int failureType = -1;
 };
 
@@ -63,7 +64,7 @@ std::function<void()> wrapFunc(const F& func, const Args... args) {
     return [&]() { std::invoke(func, args...); };
 }
 
-}
-}
+}  // namespace core_matchers
+}  // namespace kktest
 
-#endif
+#endif  // KKTEST_EXTENSIONS_CORE_MATCHERS_INCLUDE_KKTEST_EXT_CORE_MATCHERS_IMPL_FUNCTIONAL_MATCHERS_HPP_

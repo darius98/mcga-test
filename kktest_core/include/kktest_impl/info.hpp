@@ -1,5 +1,5 @@
-#ifndef KKTEST_CORE_INCLUDE_KKTEST_IMPL_INFO_H_
-#define KKTEST_CORE_INCLUDE_KKTEST_IMPL_INFO_H_
+#ifndef KKTEST_CORE_INCLUDE_KKTEST_IMPL_INFO_HPP_
+#define KKTEST_CORE_INCLUDE_KKTEST_IMPL_INFO_HPP_
 
 #include <kktest_impl/types.hpp>
 
@@ -20,6 +20,6 @@ struct GroupInfo {
     String description;
 };
 
-}
+}  // namespace kktest
 
-#endif
+#endif  // KKTEST_CORE_INCLUDE_KKTEST_IMPL_INFO_HPP_

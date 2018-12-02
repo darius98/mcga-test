@@ -1,5 +1,5 @@
-#ifndef COMMON_MESSAGING_INCLUDE_MESSAGING_IMPL_MESSAGE_H_
-#define COMMON_MESSAGING_INCLUDE_MESSAGING_IMPL_MESSAGE_H_
+#ifndef COMMON_MESSAGING_INCLUDE_MESSAGING_IMPL_MESSAGE_HPP_
+#define COMMON_MESSAGING_INCLUDE_MESSAGING_IMPL_MESSAGE_HPP_
 
 #include <functional>
 #include <string>
@@ -7,7 +7,7 @@
 namespace messaging {
 
 class BytesConsumer {
-public:
+ public:
     virtual BytesConsumer& addBytes(const void* bytes, std::size_t numBytes) = 0;
 
     BytesConsumer& add(const std::string& obj);
@@ -30,17 +30,17 @@ public:
 };
 
 class BytesCounter: public BytesConsumer {
-public:
+ public:
     BytesCounter& addBytes(const void* bytes, std::size_t numBytes) override;
 
     std::size_t getNumBytesConsumed() const;
 
-private:
+ private:
     std::size_t bytesConsumed = 0;
 };
 
 class Message: private BytesConsumer {
-public:
+ public:
     template<class... Args>
     static Message build(const Args... args) {
             BytesCounter counter;
@@ -66,13 +66,13 @@ public:
 
     std::size_t getSize() const;
 
-private:
+ private:
     Message& addBytes(const void* bytes, size_t numBytes) override;
 
     void* payload;
     std::size_t cursor;
 };
 
-}
+}  // namespace messaging
 
-#endif
+#endif  // COMMON_MESSAGING_INCLUDE_MESSAGING_IMPL_MESSAGE_HPP_

@@ -16,4 +16,4 @@ InvalidFolderError::InvalidFolderError(): FSystemError("Folder does not exist.")
 
 NoExtensionError::NoExtensionError(): FSystemError("File has no extension.") {}
 
-}
+}  // namespace fsystem

@@ -3,8 +3,8 @@
 
 #include <cstring>
 
-#include <messaging>
-#include <strutil>
+#include <messaging.hpp>
+#include <strutil.hpp>
 
 #include "test_container.hpp"
 
@@ -33,13 +33,12 @@ TestContainer::TestContainer(Test *_test, double _testProcessTimeLimitMs, Execut
         perror("fork");
         exit(errno);
     }
-    if (testProcessPID == 0) { // child
+    if (testProcessPID == 0) {  // child
         close(testProcessPipeFD);
         run();
         OutputPipe(fd[1]).pipe(Message::build(test->isPassed(),
                                               test->getExecutionTimeTicks(),
-                                              test->getFailureMessage()
-        ));
+                                              test->getFailureMessage()));
         exit(0);
     }
     close(fd[1]);
@@ -120,4 +119,4 @@ bool TestContainer::killTestProcess() {
     return finish(-1.0, false, "Execution timed out.");
 }
 
-}
+}  // namespace kktest

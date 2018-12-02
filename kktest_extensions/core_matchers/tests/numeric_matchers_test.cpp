@@ -1,8 +1,15 @@
-#include <kktest>
-#include <kktest_ext/core_matchers>
+#include <kktest.hpp>
+#include <kktest_ext/core_matchers.hpp>
 
-using namespace kktest;
-using namespace kktest::core_matchers;
+using kktest::expect;
+using kktest::group;
+using kktest::test;
+using kktest::core_matchers::isAlmostEqualTo;
+using kktest::core_matchers::isEven;
+using kktest::core_matchers::isPositive;
+using kktest::core_matchers::isNegative;
+using kktest::core_matchers::isOdd;
+using kktest::core_matchers::isZero;
 
 void kkTestCase(NumericMatchers) {
     group("isPositive", [&] {

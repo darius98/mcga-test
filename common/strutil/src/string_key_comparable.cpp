@@ -63,4 +63,4 @@ bool operator!=(const string& lhs, const StringKeyComparable& other) {
     return lhs != other.key();
 }
 
-}
+}  // namespace strutil

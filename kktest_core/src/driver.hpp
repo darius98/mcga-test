@@ -1,5 +1,5 @@
-#ifndef KKTEST_CORE_DRIVER_H_
-#define KKTEST_CORE_DRIVER_H_
+#ifndef KKTEST_CORE_SRC_DRIVER_HPP_
+#define KKTEST_CORE_SRC_DRIVER_HPP_
 
 #include <functional>
 #include <map>
@@ -14,7 +14,7 @@
 namespace kktest {
 
 class TestingDriver {
-public:
+ public:
     static TestingDriver* getInstance();
 
     static TestingDriver* init(const TestingDriverHooks& hooks,
@@ -41,7 +41,7 @@ public:
 
     void addTearDown(Executable func);
 
-private:
+ private:
     void afterTest(Test* test);
     void beforeTest(Test* test);
     void beforeGroup(Group* group);
@@ -67,6 +67,6 @@ private:
     bool failedAnyNonOptionalTest = false;
 };
 
-}
+}  // namespace kktest
 
-#endif
+#endif  // KKTEST_CORE_SRC_DRIVER_HPP_

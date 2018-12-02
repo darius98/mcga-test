@@ -1,5 +1,5 @@
-#ifndef COMMON_STRUTIL_INCLUDE_STRUTIL_IMPL_CASING_H_
-#define COMMON_STRUTIL_INCLUDE_STRUTIL_IMPL_CASING_H_
+#ifndef COMMON_STRUTIL_INCLUDE_STRUTIL_IMPL_CASING_HPP_
+#define COMMON_STRUTIL_INCLUDE_STRUTIL_IMPL_CASING_HPP_
 
 #include <string>
 
@@ -13,6 +13,6 @@ std::string stripTrailingWhitespace(std::string str);
 
 std::string strip(std::string str);
 
-}
+}  // namespace strutil
 
-#endif
+#endif  // COMMON_STRUTIL_INCLUDE_STRUTIL_IMPL_CASING_HPP_

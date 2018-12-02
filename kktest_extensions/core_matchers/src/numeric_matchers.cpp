@@ -49,5 +49,5 @@ void IsZeroMatcher::describe(Description& description) {
 
 IsZeroMatcher isZero;
 
-}
-}
+}  // namespace core_matchers
+}  // namespace kktest

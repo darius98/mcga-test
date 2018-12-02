@@ -7,6 +7,7 @@ add_library(kktest_extension_core_matchers OBJECT
     src/truth_matchers.cpp
 )
 target_include_directories(kktest_extension_core_matchers PUBLIC include)
+target_link_libraries(kktest_extension_core_matchers kktest_interface)
 
 add_kktest(comparison_matcher_test    tests/comparison_matcher_test.cpp)
 add_kktest(composite_matcher_test     tests/composite_matchers_test.cpp)

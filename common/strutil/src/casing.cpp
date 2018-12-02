@@ -42,4 +42,4 @@ string strip(string str) {
     return str;
 }
 
-}
+}  // namespace strutil

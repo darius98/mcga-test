@@ -1,8 +1,13 @@
-#include <kktest>
-#include <kktest_ext/core_matchers>
+#include <kktest.hpp>
+#include <kktest_ext/core_matchers.hpp>
 
-using namespace kktest;
-using namespace kktest::core_matchers;
+using kktest::expect;
+using kktest::group;
+using kktest::setUp;
+using kktest::tearDown;
+using kktest::test;
+using kktest::core_matchers::isNull;
+using kktest::core_matchers::isNotNull;
 
 class BasicClass {};
 struct BasicStruct {};

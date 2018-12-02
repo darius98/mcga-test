@@ -1,12 +1,15 @@
-#ifndef KKTEST_CORE_EXTENSION_API_IMPL_H_
-#define KKTEST_CORE_EXTENSION_API_IMPL_H_
+#ifndef KKTEST_CORE_SRC_EXTENSION_API_IMPL_HPP_
+#define KKTEST_CORE_SRC_EXTENSION_API_IMPL_HPP_
+
+#include <tuple>
+#include <vector>
 
 #include <kktest_impl/extension_api.hpp>
 
 namespace kktest {
 
 class TestingDriverHooks {
-public:
+ public:
     enum Type {
         AFTER_INIT = 0,
         BEFORE_GROUP = 1,
@@ -24,12 +27,12 @@ public:
 
     template<Type t, class... Args>
     void runHooks(const Args... args) {
-        for (const auto& hook: std::get<t>(hooks)) {
+        for (const auto& hook : std::get<t>(hooks)) {
             hook(args...);
         }
     }
 
-private:
+ private:
     std::tuple<
         std::vector<AfterInitHook>,
         std::vector<GroupHook>,
@@ -42,7 +45,7 @@ private:
 };
 
 class ExtensionApiImpl: public ExtensionApi {
-public:
+ public:
     void addBeforeTestHook(const TestHook& hook) override;
     void addAfterTestHook(const TestHook& hook) override;
     void addBeforeGroupHook(const GroupHook& hook) override;
@@ -53,10 +56,10 @@ public:
 
     const TestingDriverHooks& getHooks() const;
 
-private:
+ private:
     TestingDriverHooks hooks;
 };
 
-}
+}  // namespace kktest
 
-#endif
+#endif  // KKTEST_CORE_SRC_EXTENSION_API_IMPL_HPP_

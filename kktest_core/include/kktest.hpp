@@ -1,5 +1,5 @@
-#ifndef KKTEST_CORE_INCLUDE_KKTEST_
-#define KKTEST_CORE_INCLUDE_KKTEST_
+#ifndef KKTEST_CORE_INCLUDE_KKTEST_HPP_
+#define KKTEST_CORE_INCLUDE_KKTEST_HPP_
 
 #include <kktest_impl/definers.hpp>
 #include <kktest_impl/signature.hpp>
@@ -12,4 +12,4 @@
                 (KKTESTCASE_DEF_AUX_2_(kkTestCaseInstance, NAME), #NAME, kktest::kkTestSignature); \
             void KKTESTCASE_DEF_AUX_2_(kkTestCaseInstance, NAME)()
 
-#endif
+#endif  // KKTEST_CORE_INCLUDE_KKTEST_HPP_

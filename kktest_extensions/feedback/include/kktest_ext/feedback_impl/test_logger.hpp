@@ -1,32 +1,32 @@
-#ifndef KKTEST_EXT_FEEDBACK_IMPL_TEST_LOGGER_H_
-#define KKTEST_EXT_FEEDBACK_IMPL_TEST_LOGGER_H_
+#ifndef KKTEST_EXTENSIONS_FEEDBACK_INCLUDE_KKTEST_EXT_FEEDBACK_IMPL_TEST_LOGGER_HPP_
+#define KKTEST_EXTENSIONS_FEEDBACK_INCLUDE_KKTEST_EXT_FEEDBACK_IMPL_TEST_LOGGER_HPP_
 
 #include <map>
 #include <ostream>
 #include <set>
-#include <string>
+#include <utility>
 
-#include <kktest_extension_api>
+#include <kktest_extension_api.hpp>
 
 namespace kktest {
 namespace feedback {
 
 class TestLogger {
-public:
-    explicit TestLogger(std::ostream& _stream, bool _maintainTestIndexOrder=true);
+ public:
+    explicit TestLogger(std::ostream& _stream, bool _maintainTestIndexOrder = true);
 
     void addGroupInfo(const GroupInfo& groupInfo);
 
     void logTest(const TestInfo& testInfo);
 
-    void logFinalInformation(bool logNumTests=false);
+    void logFinalInformation(bool logNumTests = false);
 
-    void logFatalError(const std::string& errorMessage, const std::string& testCaseName="");
+    void logFatalError(const String& errorMessage, const String& testCaseName = "");
 
-private:
-    std::string getRecursiveGroupDescription(int groupId);
+ private:
+    String getRecursiveGroupDescription(int groupId);
 
-    std::string getTestMessage(const TestInfo& testInfo);
+    String getTestMessage(const TestInfo& testInfo);
 
     bool isInTerminal() const;
 
@@ -41,12 +41,12 @@ private:
     int failedTests = 0;
     int failedOptionalTests = 0;
     int testsLogged = 0;
-    std::set<std::pair<int, std::string>> testsQueue;
+    std::set<std::pair<int, String>> testsQueue;
 
     std::map<int, GroupInfo> allGroupsInfo;
 };
 
-}
-}
+}  // namespace feedback
+}  // namespace kktest
 
-#endif
+#endif  // KKTEST_EXTENSIONS_FEEDBACK_INCLUDE_KKTEST_EXT_FEEDBACK_IMPL_TEST_LOGGER_HPP_

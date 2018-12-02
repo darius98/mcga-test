@@ -60,5 +60,5 @@ IsSubstringMatcher isSubstringOf(const string& s) {
     return IsSubstringMatcher(s);
 }
 
-}
-}
+}  // namespace core_matchers
+}  // namespace kktest

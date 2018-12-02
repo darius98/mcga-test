@@ -1,3 +1,5 @@
+#include <string>
+
 #include "errors.hpp"
 
 using std::runtime_error;

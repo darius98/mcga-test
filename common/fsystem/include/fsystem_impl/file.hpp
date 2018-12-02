@@ -1,9 +1,10 @@
-#ifndef COMMON_FSYSTEM_INCLUDE_FSYSTEM_IMPL_FILE_H_
-#define COMMON_FSYSTEM_INCLUDE_FSYSTEM_IMPL_FILE_H_
+#ifndef COMMON_FSYSTEM_INCLUDE_FSYSTEM_IMPL_FILE_HPP_
+#define COMMON_FSYSTEM_INCLUDE_FSYSTEM_IMPL_FILE_HPP_
 
 #include <string>
+#include <vector>
 
-#include <strutil>
+#include <strutil.hpp>
 
 #include <fsystem_impl/extension.hpp>
 #include <fsystem_impl/path.hpp>
@@ -11,7 +12,7 @@
 namespace fsystem {
 
 class File: public strutil::StringKeyComparable {
-public:
+ public:
     explicit File(const std::string& path);
     explicit File(const Path& path);
     File(const File& other);
@@ -40,7 +41,7 @@ public:
     void touch() const;
     void remove() const;
 
-private:
+ private:
     Path path;
     std::string rawName;
     std::vector<Extension> extensions;
@@ -48,6 +49,6 @@ private:
     std::string key() const override;
 };
 
-}
+}  // namespace fsystem
 
-#endif
+#endif  // COMMON_FSYSTEM_INCLUDE_FSYSTEM_IMPL_FILE_HPP_

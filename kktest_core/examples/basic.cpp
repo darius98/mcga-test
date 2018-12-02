@@ -1,13 +1,11 @@
-#include <kktest>
-
-using namespace kktest;
+#include <kktest.hpp>
 
 void kkTestCase() {
-    test("This is a passing test!", [] {
-        expect(1 + 2 == 3);
+    kktest::test("This is a passing test!", [] {
+        kktest::expect(1 + 2 == 3);
     });
 
-    test("This is a failing test!", [] {
-        expect(3 * 3 == 6);
+    kktest::test("This is a failing test!", [] {
+        kktest::expect(3 * 3 == 6);
     });
 }

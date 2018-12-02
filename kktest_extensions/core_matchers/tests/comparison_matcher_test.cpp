@@ -1,21 +1,31 @@
-#include <kktest>
-#include <kktest_ext/core_matchers>
+#include <kktest.hpp>
+#include <kktest_ext/core_matchers.hpp>
 
-using namespace kktest;
-using namespace kktest::core_matchers;
-using namespace std;
+using kktest::expect;
+using kktest::group;
+using kktest::test;
+using kktest::core_matchers::Description;
+using kktest::core_matchers::isEqualTo;
+using kktest::core_matchers::isGreaterThan;
+using kktest::core_matchers::isGreaterThanEqual;
+using kktest::core_matchers::isIdenticalTo;
+using kktest::core_matchers::isLessThan;
+using kktest::core_matchers::isLessThanEqual;
+using kktest::core_matchers::isNotEqualTo;
+using std::string;
+using std::vector;
 
 void kkTestCase(ComparisonMatchers) {
     group("Equality", [&] {
         test("isEqualTo matches equal values", [&] {
             expect(isEqualTo(3).matches(3));
-            expect(isEqualTo(vector<int>{1,2}).matches(vector<int>{1,2}));
+            expect(isEqualTo(vector<int>{1, 2}).matches(vector<int>{1, 2}));
         });
 
         test("isEqualTo fails for different values", [&] {
             expect(!isEqualTo(3).matches(2));
             expect(!isEqualTo(2).matches(3));
-            expect(!isEqualTo(vector<int>{1,3}).matches(vector<int>{2,3}));
+            expect(!isEqualTo(vector<int>{1, 3}).matches(vector<int>{2, 3}));
         });
 
         test("Description for isEqualTo on failing values", [&] {
@@ -96,8 +106,8 @@ void kkTestCase(ComparisonMatchers) {
 
         test("Failure description for isLessThan", [&] {
             Description description, mismatchDescription;
-            auto m = isLessThan(vector<int>{2,1,3});
-            m.matches(vector<int>{3,1,2});
+            auto m = isLessThan(vector<int>{2, 1, 3});
+            m.matches(vector<int>{3, 1, 2});
             m.describe(description);
             m.describeMismatch(mismatchDescription);
             expect(description.toString() == "< '[2, 1, 3]'");
@@ -132,8 +142,8 @@ void kkTestCase(ComparisonMatchers) {
 
         test("Failure description for isLessThanEqual", [&] {
             Description description, mismatchDescription;
-            auto m = isLessThanEqual(vector<int>{2,1,3});
-            m.matches(vector<int>{3,1,2});
+            auto m = isLessThanEqual(vector<int>{2, 1, 3});
+            m.matches(vector<int>{3, 1, 2});
             m.describe(description);
             m.describeMismatch(mismatchDescription);
             expect(description.toString() == "<= '[2, 1, 3]'");
@@ -168,8 +178,8 @@ void kkTestCase(ComparisonMatchers) {
 
         test("Failure description for isGreaterThan", [&] {
             Description description, mismatchDescription;
-            auto m = isGreaterThan(vector<int>{2,1,3});
-            m.matches(vector<int>{1,2,3});
+            auto m = isGreaterThan(vector<int>{2, 1, 3});
+            m.matches(vector<int>{1, 2, 3});
             m.describe(description);
             m.describeMismatch(mismatchDescription);
             expect(description.toString() == "> '[2, 1, 3]'");
@@ -204,8 +214,8 @@ void kkTestCase(ComparisonMatchers) {
 
         test("Failure description for isGreaterThanEqual", [&] {
             Description description, mismatchDescription;
-            auto m = isGreaterThanEqual(vector<int>{2,1,3});
-            m.matches(vector<int>{1,2,3});
+            auto m = isGreaterThanEqual(vector<int>{2, 1, 3});
+            m.matches(vector<int>{1, 2, 3});
             m.describe(description);
             m.describeMismatch(mismatchDescription);
             expect(description.toString() == ">= '[2, 1, 3]'");

@@ -9,7 +9,10 @@ using std::size_t;
 namespace messaging {
 
 InputPipe::InputPipe(const int& _inputFD):
-        inputFD(_inputFD), buffer(malloc(128)), bufferSize(0), bufferCapacity(128) {}
+        inputFD(_inputFD),
+        buffer(malloc(128)),
+        bufferSize(0),
+        bufferCapacity(128) {}
 
 InputPipe::~InputPipe() {
     free(buffer);
@@ -34,7 +37,9 @@ Message InputPipe::getNextMessage(int maxConsecutiveFailedReadAttempts) {
         } else {
             failedAttempts = 0;
             resizeBufferToFit((size_t)numBytesRead);
-            memcpy((uint8_t*)buffer + bufferSize, block, (size_t)numBytesRead);
+            memcpy(static_cast<uint8_t*>(buffer) + bufferSize,
+                   block,
+                   static_cast<size_t>(numBytesRead));
             bufferSize += numBytesRead;
         }
         messageSize = Message::isSane(buffer, bufferSize);
@@ -69,9 +74,9 @@ void InputPipe::resizeBufferToFit(size_t extraBytes) {
 Message InputPipe::extractMessageFromBuffer(size_t messageSize) {
     void* messagePayload = malloc(messageSize);
     memcpy(messagePayload, buffer, messageSize);
-    memcpy(buffer, (uint8_t*)buffer + messageSize, bufferSize - messageSize);
+    memcpy(buffer, static_cast<uint8_t*>(buffer) + messageSize, bufferSize - messageSize);
     bufferSize -= messageSize;
     return Message(messagePayload);
 }
 
-}
+}  // namespace messaging

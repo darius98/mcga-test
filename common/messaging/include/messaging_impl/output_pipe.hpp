@@ -1,22 +1,22 @@
-#ifndef COMMON_MESSAGING_INCLUDE_MESSAGING_IMPL_OUTPUT_PIPE_H_
-#define COMMON_MESSAGING_INCLUDE_MESSAGING_IMPL_OUTPUT_PIPE_H_
+#ifndef COMMON_MESSAGING_INCLUDE_MESSAGING_IMPL_OUTPUT_PIPE_HPP_
+#define COMMON_MESSAGING_INCLUDE_MESSAGING_IMPL_OUTPUT_PIPE_HPP_
 
 #include <messaging_impl/message.hpp>
 
 namespace messaging {
 
 class OutputPipe {
-public:
+ public:
     explicit OutputPipe(const int& _outputFD);
 
     void close();
 
     void pipe(const Message& message) const;
 
-private:
+ private:
     int outputFD;
 };
 
-}
+}  // namespace messaging
 
-#endif
+#endif  // COMMON_MESSAGING_INCLUDE_MESSAGING_IMPL_OUTPUT_PIPE_HPP_
