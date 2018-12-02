@@ -3,20 +3,22 @@
 
 #include <vector>
 
+#include <kktest_impl/types.hpp>
+
 namespace kktest {
 
 class TestCaseRegistry {
 public:
     typedef void (*TestCase)();
 
-    static void add(TestCase testCase);
+    static void add(TestCase testCase, const char* name);
 
-    static std::vector<TestCase> all();
+    static std::vector<std::pair<TestCase, String>> all();
 
     static void clean();
 
 private:
-    static std::vector<TestCase>* testCases;
+    static std::vector<std::pair<TestCase, String>>* testCases;
 };
 
 }

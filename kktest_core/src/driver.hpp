@@ -29,7 +29,7 @@ public:
 
     void forceDestroy(const ConfigurationError& error);
 
-    void beforeTestCase();
+    void beforeTestCase(const String& testCaseName);
 
     void afterTestCase();
 

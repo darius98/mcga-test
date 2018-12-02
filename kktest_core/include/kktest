@@ -9,7 +9,7 @@
 #define kkTestCase(NAME)                                                                           \
             KKTESTCASE_DEF_AUX_2_(kkTestCaseInstance, NAME)();                                     \
             kktest::TestCaseDefiner KKTESTCASE_DEF_AUX_2_(kkTestCaseDefiner, NAME)                 \
-                        (KKTESTCASE_DEF_AUX_2_(kkTestCaseInstance, NAME), kktest::kkTestSignature);\
+                (KKTESTCASE_DEF_AUX_2_(kkTestCaseInstance, NAME), #NAME, kktest::kkTestSignature); \
             void KKTESTCASE_DEF_AUX_2_(kkTestCaseInstance, NAME)()
 
 #endif

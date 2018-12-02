@@ -8,6 +8,7 @@
 using std::cout;
 using std::exception;
 using std::invalid_argument;
+using std::pair;
 using std::vector;
 
 namespace kktest {
@@ -72,9 +73,9 @@ int main(const vector<Extension*>& extensions, InternalArgs args) {
                                                 maxParallelTests);
     int ret = 1;
     try {
-        for (TestCaseRegistry::TestCase testCase: TestCaseRegistry::all()) {
-            driver->beforeTestCase();
-            testCase();
+        for (pair<TestCaseRegistry::TestCase, String> testCase: TestCaseRegistry::all()) {
+            driver->beforeTestCase(testCase.second);
+            testCase.first();
             driver->afterTestCase();
         }
         ret = driver->destroy();

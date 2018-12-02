@@ -12,13 +12,16 @@ using std::cout;
 
 namespace kktest {
 
-TestCaseDefiner::TestCaseDefiner(void (*testCase)(), const unsigned char* signature) {
+TestCaseDefiner::TestCaseDefiner(void (*testCase)(),
+                                 const char* name,
+                                 const unsigned char* signature) {
     if (memcmp(signature, kkTestSignature, kkTestSigSize) != 0) {
-        cout << "Invalid signature passed to TestCaseDefiner. If you didn't do anything weird when "
-                "defining test cases, then this might be a bug, please report.\n";
+        cout << "Invalid signature passed to TestCaseDefiner. "
+                "If you didn't do anything weird when defining test cases, "
+                "then this might be a bug, please report.\n";
         exit(1);
     }
-    TestCaseRegistry::add(testCase);
+    TestCaseRegistry::add(testCase, name);
 }
 
 void test(String description, Executable func) {

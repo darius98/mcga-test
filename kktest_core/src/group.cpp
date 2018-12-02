@@ -65,8 +65,12 @@ String Group::getRenderedFailureMessageOnNonExceptionInTearDown() const {
 }
 
 GroupInfo Group::getGroupInfo() const {
+    int parentGroupIndex = -1;
+    if (parentGroup != nullptr) {
+        parentGroupIndex = parentGroup->index;
+    }
     return GroupInfo{
-        parentGroup->index,
+        parentGroupIndex,
         index,
         config.description
     };

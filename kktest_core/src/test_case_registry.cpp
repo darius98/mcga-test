@@ -3,20 +3,21 @@
 
 #include "test_case_registry.hpp"
 
+using std::pair;
 using std::vector;
 
 namespace kktest {
 
-vector<TestCaseRegistry::TestCase>* TestCaseRegistry::testCases = nullptr;
+vector<pair<TestCaseRegistry::TestCase, String>>* TestCaseRegistry::testCases = nullptr;
 
-void TestCaseRegistry::add(TestCase testCase) {
+void TestCaseRegistry::add(TestCase testCase, const char* name) {
     if (testCases == nullptr) {
-        testCases = new vector<TestCase>();
+        testCases = new vector<pair<TestCase, String>>();
     }
-    testCases->push_back(testCase);
+    testCases->emplace_back(testCase, name);
 }
 
-vector<TestCaseRegistry::TestCase> TestCaseRegistry::all() {
+auto TestCaseRegistry::all() -> vector<pair<TestCase, String>> {
     if (testCases == nullptr) {
         return {};
     }

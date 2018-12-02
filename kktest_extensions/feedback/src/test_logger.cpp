@@ -91,7 +91,11 @@ String TestLogger::getRecursiveGroupDescription(int groupId) {
         return "";
     }
     GroupInfo groupInfo = groupInfoIterator->second;
-    return getRecursiveGroupDescription(groupInfo.parentGroupIndex) + groupInfo.description + "::";
+    String recursive = getRecursiveGroupDescription(groupInfo.parentGroupIndex);
+    if (groupInfo.index == 0 && groupInfo.description.empty()) {
+        return recursive;
+    }
+    return recursive + groupInfo.description + "::";
 }
 
 String TestLogger::getTestMessage(const TestInfo& testInfo) {

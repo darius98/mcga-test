@@ -1,5 +1,6 @@
 #include <utility>
 
+#include <kktest_impl/config.hpp>
 #include "box_executor.hpp"
 #include "driver.hpp"
 #include "test_case_registry.hpp"
@@ -44,14 +45,15 @@ void TestingDriver::forceDestroy(const ConfigurationError& error) {
     delete this;
 }
 
-void TestingDriver::beforeTestCase() {
+void TestingDriver::beforeTestCase(const String& name) {
     if (globalScope != nullptr) {
         throw KKTestLibraryImplementationError(
             "TestingDriver::beforeTestCase called twice in a row."
         );
     }
-    globalScope = new Group(GroupConfig(), nullptr, -1);
+    globalScope = new Group(groupConfig(_.description=name), nullptr, 0);
     groupStack = {globalScope};
+    beforeGroup(globalScope);
 }
 
 void TestingDriver::afterTestCase() {
@@ -61,7 +63,7 @@ void TestingDriver::afterTestCase() {
         );
     }
     executor->finalize();
-    delete globalScope;
+    afterGroup(globalScope);
     globalScope = nullptr;
     groupStack = {};
 }
