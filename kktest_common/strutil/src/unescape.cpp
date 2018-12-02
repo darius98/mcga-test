@@ -2,6 +2,7 @@
 
 using std::string;
 
+namespace kktest {
 namespace strutil {
 
 string unescapeCharacters(const string& s) {
@@ -29,3 +30,4 @@ string unescapeCharacters(const string& s) {
 }
 
 }  // namespace strutil
+}  // namespace kktest

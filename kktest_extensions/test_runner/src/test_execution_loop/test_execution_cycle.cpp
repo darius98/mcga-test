@@ -12,14 +12,14 @@
 #include <kktest_ext/feedback.hpp>
 #include "test_execution_cycle.hpp"
 
-using messaging::InputPipe;
-using messaging::Message;
-using messaging::MessageReader;
+using kktest::messaging::InputPipe;
+using kktest::messaging::Message;
+using kktest::messaging::MessageReader;
+using kktest::strutil::copyAsCString;
 using std::cout;
 using std::function;
 using std::runtime_error;
 using std::to_string;
-using strutil::copyAsCString;
 
 namespace kktest {
 

@@ -5,6 +5,7 @@
 
 #include <kktest_common/messaging_impl/message.hpp>
 
+namespace kktest {
 namespace messaging {
 
 class MessageReader {
@@ -27,5 +28,6 @@ class MessageReader {
 };
 
 }  // namespace messaging
+}  // namespace kktest
 
 #endif  // KKTEST_COMMON_MESSAGING_INCLUDE_KKTEST_COMMON_MESSAGING_IMPL_MESSAGE_READER_HPP_

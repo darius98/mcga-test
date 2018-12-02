@@ -7,15 +7,15 @@
 #include <kktest_common/strutil.hpp>
 #include "test_container.hpp"
 
-using messaging::Message;
-using messaging::MessageReader;
-using messaging::InputPipe;
-using messaging::OutputPipe;
+using kktest::messaging::Message;
+using kktest::messaging::MessageReader;
+using kktest::messaging::InputPipe;
+using kktest::messaging::OutputPipe;
+using kktest::strutil::unescapeCharacters;
 using std::chrono::duration_cast;
 using std::chrono::high_resolution_clock;
 using std::chrono::milliseconds;
 using std::to_string;
-using strutil::unescapeCharacters;
 
 namespace kktest {
 

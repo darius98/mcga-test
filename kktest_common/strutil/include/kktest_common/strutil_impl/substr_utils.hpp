@@ -3,6 +3,7 @@
 
 #include <string>
 
+namespace kktest {
 namespace strutil {
 
 bool startsWith(const std::string& str, const std::string& prefix);
@@ -18,5 +19,6 @@ bool containsSubstring(const std::string& str, const std::string& substr);
 bool containsCharacter(const std::string& str, char ch);
 
 }  // namespace strutil
+}  // namespace kktest
 
 #endif  // KKTEST_COMMON_STRUTIL_INCLUDE_KKTEST_COMMON_STRUTIL_IMPL_SUBSTR_UTILS_HPP_

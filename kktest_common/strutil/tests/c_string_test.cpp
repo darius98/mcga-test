@@ -10,7 +10,7 @@ using kktest::group;
 using kktest::tearDown;
 using kktest::test;
 using kktest::core_matchers::isEqualTo;
-using strutil::copyAsCString;
+using kktest::strutil::copyAsCString;
 using std::string;
 
 void kkTestCase(StrUtilCString) {

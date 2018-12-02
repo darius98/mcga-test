@@ -4,6 +4,7 @@
 
 using std::string;
 
+namespace kktest {
 namespace messaging {
 
 BytesConsumer& BytesConsumer::add(const string& obj) {
@@ -89,3 +90,4 @@ size_t Message::getSize() const {
 }
 
 }  // namespace messaging
+}  // namespace kktest

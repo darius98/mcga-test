@@ -9,6 +9,7 @@ using std::tolower;
 using std::toupper;
 using std::transform;
 
+namespace kktest {
 namespace strutil {
 
 string toUpper(const string& str) {
@@ -43,3 +44,4 @@ string strip(string str) {
 }
 
 }  // namespace strutil
+}  // namespace kktest

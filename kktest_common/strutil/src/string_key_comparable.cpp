@@ -2,6 +2,7 @@
 
 using std::string;
 
+namespace kktest {
 namespace strutil {
 
 StringKeyComparable::~StringKeyComparable() = default;
@@ -64,3 +65,4 @@ bool operator!=(const string& lhs, const StringKeyComparable& other) {
 }
 
 }  // namespace strutil
+}  // namespace kktest

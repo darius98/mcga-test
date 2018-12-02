@@ -3,6 +3,7 @@
 
 #include <string>
 
+namespace kktest {
 namespace strutil {
 
 class StringKeyComparable {
@@ -35,5 +36,6 @@ class StringKeyComparable {
 };
 
 }  // namespace strutil
+}  // namespace kktest
 
 #endif  // KKTEST_COMMON_STRUTIL_INCLUDE_KKTEST_COMMON_STRUTIL_IMPL_STRING_KEY_COMPARABLE_HPP_

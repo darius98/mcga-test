@@ -4,6 +4,7 @@
 #include <functional>
 #include <string>
 
+namespace kktest {
 namespace messaging {
 
 class BytesConsumer {
@@ -74,5 +75,6 @@ class Message: private BytesConsumer {
 };
 
 }  // namespace messaging
+}  // namespace kktest
 
 #endif  // KKTEST_COMMON_MESSAGING_INCLUDE_KKTEST_COMMON_MESSAGING_IMPL_MESSAGE_HPP_

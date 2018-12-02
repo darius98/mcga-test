@@ -3,6 +3,7 @@
 
 #include <kktest_common/messaging_impl/message.hpp>
 
+namespace kktest {
 namespace messaging {
 
 class InputPipe {
@@ -27,5 +28,6 @@ class InputPipe {
 };
 
 }  // namespace messaging
+}  // namespace kktest
 
 #endif  // KKTEST_COMMON_MESSAGING_INCLUDE_KKTEST_COMMON_MESSAGING_IMPL_INPUT_PIPE_HPP_

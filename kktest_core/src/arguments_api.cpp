@@ -5,13 +5,13 @@
 #include <kktest_common/strutil.hpp>
 #include <kktest_impl/arguments_api.hpp>
 
+using kktest::strutil::startsWith;
+using kktest::strutil::toLower;
 using std::cout;
 using std::map;
 using std::runtime_error;
 using std::set;
 using std::vector;
-using strutil::startsWith;
-using strutil::toLower;
 
 namespace kktest {
 

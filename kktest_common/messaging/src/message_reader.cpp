@@ -2,6 +2,7 @@
 
 using std::string;
 
+namespace kktest {
 namespace messaging {
 
 MessageReader::MessageReader(const Message& _message): message(_message) {}
@@ -16,3 +17,4 @@ MessageReader& MessageReader::operator<<(string& obj) {
 }
 
 }  // namespace messaging
+}  // namespace kktest

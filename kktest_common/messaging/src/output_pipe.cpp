@@ -6,6 +6,7 @@
 
 using std::size_t;
 
+namespace kktest {
 namespace messaging {
 
 OutputPipe::OutputPipe(const int& _outputFD): outputFD(_outputFD) {}
@@ -35,3 +36,4 @@ void OutputPipe::pipe(const Message& message) const {
 }
 
 }  // namespace messaging
+}  // namespace kktest

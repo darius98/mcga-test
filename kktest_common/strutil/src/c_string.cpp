@@ -8,6 +8,7 @@ using std::memcpy;
 using std::size_t;
 using std::string;
 
+namespace kktest {
 namespace strutil {
 
 char* copyAsCString(const char* source) {
@@ -22,3 +23,4 @@ char* copyAsCString(const string& source) {
 }
 
 }  // namespace strutil
+}  // namespace kktest

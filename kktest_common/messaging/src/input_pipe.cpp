@@ -6,6 +6,7 @@
 
 using std::size_t;
 
+namespace kktest {
 namespace messaging {
 
 InputPipe::InputPipe(const int& _inputFD):
@@ -80,3 +81,4 @@ Message InputPipe::extractMessageFromBuffer(size_t messageSize) {
 }
 
 }  // namespace messaging
+}  // namespace kktest

@@ -7,8 +7,8 @@
 #include <kktest_ext/feedback_impl/ext.hpp>
 #include <kktest_ext/feedback_impl/pipe_message_type.hpp>
 
-using messaging::Message;
-using messaging::OutputPipe;
+using kktest::messaging::Message;
+using kktest::messaging::OutputPipe;
 using std::cout;
 using std::exception;
 

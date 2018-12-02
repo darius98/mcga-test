@@ -2,6 +2,7 @@
 
 using std::string;
 
+namespace kktest {
 namespace strutil {
 
 bool startsWith(const string& str, const string& prefix) {
@@ -35,3 +36,4 @@ bool containsCharacter(const string& str, char ch) {
 }
 
 }  // namespace strutil
+}  // namespace kktest
