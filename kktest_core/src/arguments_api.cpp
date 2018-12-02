@@ -2,8 +2,7 @@
 #include <map>
 #include <set>
 
-#include <strutil.hpp>
-
+#include <kktest_common/strutil.hpp>
 #include <kktest_impl/arguments_api.hpp>
 
 using std::cout;

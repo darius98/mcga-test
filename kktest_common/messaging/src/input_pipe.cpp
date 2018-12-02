@@ -2,7 +2,7 @@
 
 #include <cstring>
 
-#include <messaging_impl/input_pipe.hpp>
+#include <kktest_common/messaging_impl/input_pipe.hpp>
 
 using std::size_t;
 

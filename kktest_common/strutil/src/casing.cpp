@@ -1,6 +1,6 @@
 #include <algorithm>
 
-#include <strutil_impl/casing.hpp>
+#include <kktest_common/strutil_impl/casing.hpp>
 
 using std::isspace;
 using std::reverse;

@@ -3,9 +3,8 @@
 
 #include <cstring>
 
-#include <messaging.hpp>
-#include <strutil.hpp>
-
+#include <kktest_common/messaging.hpp>
+#include <kktest_common/strutil.hpp>
 #include "test_container.hpp"
 
 using messaging::Message;

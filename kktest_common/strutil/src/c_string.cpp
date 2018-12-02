@@ -1,7 +1,7 @@
 #include <cstring>
 #include <cstdlib>
 
-#include <strutil_impl/c_string.hpp>
+#include <kktest_common/strutil_impl/c_string.hpp>
 
 using std::malloc;
 using std::memcpy;

@@ -22,8 +22,8 @@ function(add_kktest TEST_NAME)
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PREV_CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 endfunction()
 
-add_subdirectory(common/strutil)
-add_subdirectory(common/messaging)
+add_subdirectory(kktest_common/strutil)
+add_subdirectory(kktest_common/messaging)
 
 add_subdirectory(kktest_core)
 add_subdirectory(kktest_manager)

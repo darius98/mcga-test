@@ -1,6 +1,6 @@
 #include <cstring>
 
-#include <messaging_impl/message.hpp>
+#include <kktest_common/messaging_impl/message.hpp>
 
 using std::string;
 

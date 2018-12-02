@@ -8,8 +8,7 @@
 #include <stdexcept>
 #include <iostream>
 
-#include <strutil.hpp>
-
+#include <kktest_common/strutil.hpp>
 #include <kktest_ext/feedback.hpp>
 #include "test_execution_cycle.hpp"
 

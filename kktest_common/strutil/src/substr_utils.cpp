@@ -1,4 +1,4 @@
-#include <strutil_impl/substr_utils.hpp>
+#include <kktest_common/strutil_impl/substr_utils.hpp>
 
 using std::string;
 

@@ -5,8 +5,7 @@
 #include <queue>
 #include <string>
 
-#include <messaging.hpp>
-
+#include <kktest_common/messaging.hpp>
 #include <test_execution_loop/kktest_lib_info.hpp>
 
 namespace kktest {
