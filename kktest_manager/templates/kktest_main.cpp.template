@@ -1,0 +1,22 @@
+#include <kktest_impl/main.hpp>
+
+// @<AUTO-GENERATE>[IMPORTS]
+
+using kktest::ArgumentsApi;
+using kktest::Extension;
+using kktest::InternalArgs;
+using kktest::registerInternalFlags;
+using std::vector;
+
+int main(int argc, char** argv) {
+    vector<Extension*> extensions;
+    ArgumentsApi* argumentsApi = ArgumentsApi::create("KKTest test binary.");
+    InternalArgs internalArgs = registerInternalFlags(argumentsApi);
+
+// @<AUTO-GENERATE>[EXTENSIONS_DEF]
+
+    argumentsApi->interpret(argc, argv);
+    int ret = kktest::main(extensions, internalArgs);
+    delete argumentsApi;
+    return ret;
+}

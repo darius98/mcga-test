@@ -1,0 +1,15 @@
+
+# @<AUTO-GENERATE>[SUBDIRECTORIES]
+
+add_library(kktest SHARED $<TARGET_OBJECTS:kktest_impl>
+    generated/kktest_main.cpp
+
+# @<AUTO-GENERATE>[OBJECT_LIBS]
+
+)
+
+target_link_libraries(kktest kktest_interface
+
+# @<AUTO-GENERATE>[TARGET_LIBS_LINK]
+
+)
