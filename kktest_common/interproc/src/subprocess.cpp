@@ -47,7 +47,7 @@ class LinuxSubprocessHandler: public SubprocessHandler {
     }
 
     bool isExited() override {
-        return WIFEXITED(lastWaitStatus);
+        return finished && WIFEXITED(lastWaitStatus);
     }
 
     int getReturnCode() override {
@@ -58,7 +58,7 @@ class LinuxSubprocessHandler: public SubprocessHandler {
     }
 
     bool isSignaled() override {
-        return WIFSIGNALED(lastWaitStatus);
+        return finished && WIFSIGNALED(lastWaitStatus);
     }
 
     int getSignal() override {
