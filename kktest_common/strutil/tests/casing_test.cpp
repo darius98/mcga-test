@@ -45,19 +45,13 @@ void kkTestCase(StrUtilCasing) {
 
     group("stripTrailingWhitespace", [] {
         test("does not strip non-whitespace characters", [] {
-            expect(stripTrailingWhitespace("Hello World"),
-                   isEqualTo(string("Hello World")));
+            expect(stripTrailingWhitespace("Hello World"), isEqualTo(string("Hello World")));
         });
 
         test("strips only whitespace suffix", [] {
-            expect(stripTrailingWhitespace("Hello World   "),
-                   isEqualTo(string("Hello World")));
-
-            expect(stripTrailingWhitespace("Hello World   \n\n"),
-                   isEqualTo(string("Hello World")));
-
-            expect(stripTrailingWhitespace("   Hello World   \n\n"),
-                   isEqualTo(string("   Hello World")));
+            expect(stripTrailingWhitespace("Hello World   "), isEqualTo(string("Hello World")));
+            expect(stripTrailingWhitespace("Hello World   \n\n"), isEqualTo(string("Hello World")));
+            expect(stripTrailingWhitespace("  Hello World \n"), isEqualTo(string("  Hello World")));
         });
     });
 
@@ -68,13 +62,11 @@ void kkTestCase(StrUtilCasing) {
 
         test("strips whitespace suffix", [] {
             expect(strip("Hello World   "), isEqualTo(string("Hello World")));
-
             expect(strip("Hello World \n\n"), isEqualTo(string("Hello World")));
         });
 
         test("strips whitespace prefix", [] {
             expect(strip("    Hello World"), isEqualTo(string("Hello World")));
-
             expect(strip("\n\n Hello World"), isEqualTo(string("Hello World")));
         });
 

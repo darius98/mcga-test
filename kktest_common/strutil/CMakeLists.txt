@@ -7,5 +7,8 @@ add_library(strutil
 )
 target_include_directories(strutil PUBLIC include)
 
-add_kktest(c_string_test tests/c_string_test.cpp)
-add_kktest(casing_test   tests/casing_test.cpp)
+add_kktest(strutil_test
+    tests/c_string_test.cpp
+    tests/casing_test.cpp
+    tests/substr_utils_test.cpp
+)
