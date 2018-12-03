@@ -8,6 +8,7 @@
 #include <kktest_common/interproc_impl/pipe.hpp>
 
 using std::pair;
+using std::string;
 
 namespace kktest {
 namespace interproc {
@@ -154,8 +155,8 @@ pair<PipeReader*, PipeWriter*> createAnonymousPipe() {
     return {new LinuxPipeReader(fd[0]), new LinuxPipeWriter(fd[1])};
 }
 
-void createNamedPipe(const char* pipeName) {
-    int pipeCreateStatus = mkfifo(pipeName, 0666);
+void createNamedPipe(const string& pipeName) {
+    int pipeCreateStatus = mkfifo(pipeName.c_str(), 0666);
     if (pipeCreateStatus < 0) {
         // TODO(darius98): Handle errors better than just exiting!
         perror("mkfifo");
@@ -163,16 +164,16 @@ void createNamedPipe(const char* pipeName) {
     }
 }
 
-void destroyNamedPipe(const char* pipeName) {
-    int removeStat = remove(pipeName);
+void destroyNamedPipe(const string& pipeName) {
+    int removeStat = remove(pipeName.c_str());
     if (removeStat < 0) {
         perror("remove pipe");
         exit(errno);
     }
 }
 
-PipeReader* openNamedPipeForReading(const char* pipeName) {
-    int pipeFD = open(pipeName, O_RDONLY | O_NONBLOCK);
+PipeReader* openNamedPipeForReading(const string& pipeName) {
+    int pipeFD = open(pipeName.c_str(), O_RDONLY | O_NONBLOCK);
     if (pipeFD < 0) {
         // TODO(darius98): Handle errors better than just exiting!
         perror("open");
@@ -181,8 +182,8 @@ PipeReader* openNamedPipeForReading(const char* pipeName) {
     return new LinuxPipeReader(pipeFD);
 }
 
-PipeWriter* openNamedPipeForWriting(const char* pipeName) {
-    int pipeFD = open(pipeName, O_WRONLY | O_NONBLOCK);
+PipeWriter* openNamedPipeForWriting(const string& pipeName) {
+    int pipeFD = open(pipeName.c_str(), O_WRONLY | O_NONBLOCK);
     if (pipeFD < 0) {
         // TODO(darius98): Handle errors better than just exiting!
         perror("open");

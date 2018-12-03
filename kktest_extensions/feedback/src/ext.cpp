@@ -55,7 +55,7 @@ void FeedbackExtension::initLogging(ExtensionApi* api) {
 }
 
 void FeedbackExtension::initPipe(ExtensionApi* api, const String& pipeName) {
-    pipe = openNamedPipeForWriting(pipeName.c_str());
+    pipe = openNamedPipeForWriting(pipeName);
 
     api->addBeforeGroupHook([this](const GroupInfo& groupInfo) {
         pipe->sendMessage(Message::build(PipeMessageType::GROUP,

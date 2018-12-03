@@ -51,8 +51,8 @@ void TestExecutionCycle::start() {
     for (int i = 0; i < 10; ++i) {
         pipeName += static_cast<char>(rand() % 26 + 97);
     }
-    createNamedPipe(pipeName.c_str());
-    pipeWithTestProcess = openNamedPipeForReading(pipeName.c_str());
+    createNamedPipe(pipeName);
+    pipeWithTestProcess = openNamedPipeForReading(pipeName);
 
     char* cmd = copyAsCString(testPath.c_str());
     char* quietArg = copyAsCString("--quiet");
@@ -116,14 +116,14 @@ void TestExecutionCycle::processMessage(const Message& message) {
             break;
         }
         case PipeMessageType::DONE: {
-            destroyNamedPipe(pipeName.c_str());
+            destroyNamedPipe(pipeName);
             info.finished = true;
             info.lastReceived = KKTestCaseInfo::FINISH;
             delete pipeWithTestProcess;
             break;
         }
         case PipeMessageType::ERROR: {
-            destroyNamedPipe(pipeName.c_str());
+            destroyNamedPipe(pipeName);
             info.finished = true;
             info.lastReceived = KKTestCaseInfo::FINISH_WITH_ERROR;
             reader << info.errorMessage;
