@@ -1,7 +1,5 @@
-#include <fcntl.h>
 #include <unistd.h>
 #include <sys/wait.h>
-#include <sys/stat.h>
 
 #include <cstdlib>
 
@@ -12,9 +10,11 @@
 #include <kktest_ext/feedback.hpp>
 #include "test_execution_cycle.hpp"
 
-using kktest::messaging::InputPipe;
-using kktest::messaging::Message;
-using kktest::messaging::MessageReader;
+using kktest::interproc::Message;
+using kktest::interproc::MessageReader;
+using kktest::interproc::PipeReader;
+using kktest::interproc::createNamedPipe;
+using kktest::interproc::openNamedPipeForReading;
 using kktest::strutil::copyAsCString;
 using std::cout;
 using std::function;
@@ -52,18 +52,8 @@ void TestExecutionCycle::start() {
     for (int i = 0; i < 10; ++i) {
         pipeName += static_cast<char>(rand() % 26 + 97);
     }
-    int pipeCreateStatus = mkfifo(pipeName.c_str(), 0666);
-    if (pipeCreateStatus < 0) {
-        perror("mkfifo");
-        exit(errno);
-    }
-    pipeFD = open(pipeName.c_str(), O_RDONLY | O_NONBLOCK);
-    if (pipeFD < 0) {
-        perror("open");
-        exit(errno);
-    }
-
-    pipeWithTestProcess = new InputPipe(pipeFD);
+    createNamedPipe(pipeName.c_str());
+    pipeWithTestProcess = openNamedPipeForReading(pipeName.c_str());
 
     testProcessPID = fork();
     if (testProcessPID < 0) {
@@ -146,9 +136,9 @@ void TestExecutionCycle::processMessage(const Message& message) {
                 perror("remove pipe");
                 exit(errno);
             }
-            close(pipeFD);
             info.finished = true;
             info.lastReceived = KKTestCaseInfo::FINISH;
+            delete pipeWithTestProcess;
             break;
         }
         case PipeMessageType::ERROR: {
@@ -157,10 +147,10 @@ void TestExecutionCycle::processMessage(const Message& message) {
                 perror("remove pipe");
                 exit(errno);
             }
-            close(pipeFD);
             info.finished = true;
             info.lastReceived = KKTestCaseInfo::FINISH_WITH_ERROR;
             reader << info.errorMessage;
+            delete pipeWithTestProcess;
             break;
         }
         default: {

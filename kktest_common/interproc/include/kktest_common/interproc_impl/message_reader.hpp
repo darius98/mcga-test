@@ -1,12 +1,12 @@
-#ifndef KKTEST_COMMON_MESSAGING_INCLUDE_KKTEST_COMMON_MESSAGING_IMPL_MESSAGE_READER_HPP_
-#define KKTEST_COMMON_MESSAGING_INCLUDE_KKTEST_COMMON_MESSAGING_IMPL_MESSAGE_READER_HPP_
+#ifndef KKTEST_COMMON_INTERPROC_INCLUDE_KKTEST_COMMON_INTERPROC_IMPL_MESSAGE_READER_HPP_
+#define KKTEST_COMMON_INTERPROC_INCLUDE_KKTEST_COMMON_INTERPROC_IMPL_MESSAGE_READER_HPP_
 
 #include <string>
 
-#include <kktest_common/messaging_impl/message.hpp>
+#include <kktest_common/interproc_impl/message.hpp>
 
 namespace kktest {
-namespace messaging {
+namespace interproc {
 
 class MessageReader {
  public:
@@ -27,7 +27,7 @@ class MessageReader {
     const Message& message;
 };
 
-}  // namespace messaging
+}  // namespace interproc
 }  // namespace kktest
 
-#endif  // KKTEST_COMMON_MESSAGING_INCLUDE_KKTEST_COMMON_MESSAGING_IMPL_MESSAGE_READER_HPP_
+#endif  // KKTEST_COMMON_INTERPROC_INCLUDE_KKTEST_COMMON_INTERPROC_IMPL_MESSAGE_READER_HPP_

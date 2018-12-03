@@ -1,11 +1,11 @@
-#ifndef KKTEST_COMMON_MESSAGING_INCLUDE_KKTEST_COMMON_MESSAGING_IMPL_MESSAGE_HPP_
-#define KKTEST_COMMON_MESSAGING_INCLUDE_KKTEST_COMMON_MESSAGING_IMPL_MESSAGE_HPP_
+#ifndef KKTEST_COMMON_INTERPROC_INCLUDE_KKTEST_COMMON_INTERPROC_IMPL_MESSAGE_HPP_
+#define KKTEST_COMMON_INTERPROC_INCLUDE_KKTEST_COMMON_INTERPROC_IMPL_MESSAGE_HPP_
 
 #include <functional>
 #include <string>
 
 namespace kktest {
-namespace messaging {
+namespace interproc {
 
 class BytesConsumer {
  public:
@@ -74,7 +74,7 @@ class Message: private BytesConsumer {
     std::size_t cursor;
 };
 
-}  // namespace messaging
+}  // namespace interproc
 }  // namespace kktest
 
-#endif  // KKTEST_COMMON_MESSAGING_INCLUDE_KKTEST_COMMON_MESSAGING_IMPL_MESSAGE_HPP_
+#endif  // KKTEST_COMMON_INTERPROC_INCLUDE_KKTEST_COMMON_INTERPROC_IMPL_MESSAGE_HPP_

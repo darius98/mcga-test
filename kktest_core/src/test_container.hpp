@@ -4,6 +4,7 @@
 #include <chrono>
 #include <string>
 
+#include <kktest_common/interproc.hpp>
 #include <kktest_impl/types.hpp>
 #include "test.hpp"
 
@@ -27,7 +28,7 @@ class TestContainer {
 
     Test* test;
     double testProcessTimeLimitMs;
-    int testProcessPipeFD;
+    interproc::PipeReader* testProcessPipe;
     pid_t testProcessPID;
     std::chrono::time_point<std::chrono::high_resolution_clock> testProcessStartTime;
 

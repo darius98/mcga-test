@@ -3,44 +3,44 @@
 
 #include <cstring>
 
-#include <kktest_common/messaging.hpp>
+#include <utility>
+
 #include <kktest_common/strutil.hpp>
 #include "test_container.hpp"
 
-using kktest::messaging::Message;
-using kktest::messaging::MessageReader;
-using kktest::messaging::InputPipe;
-using kktest::messaging::OutputPipe;
+using kktest::interproc::Message;
+using kktest::interproc::MessageReader;
+using kktest::interproc::PipeReader;
+using kktest::interproc::PipeWriter;
+using kktest::interproc::createAnonymousPipe;
 using kktest::strutil::unescapeCharacters;
+using std::pair;
+using std::to_string;
 using std::chrono::duration_cast;
 using std::chrono::high_resolution_clock;
 using std::chrono::milliseconds;
-using std::to_string;
 
 namespace kktest {
 
 TestContainer::TestContainer(Test *_test, double _testProcessTimeLimitMs, Executable run):
         test(_test), testProcessTimeLimitMs(_testProcessTimeLimitMs) {
-    int fd[2];
-    if (pipe(fd) < 0) {
-        perror("pipe");
-        exit(errno);
-    }
-    testProcessPipeFD = fd[0];
+    pair<PipeReader*, PipeWriter*> pipe = createAnonymousPipe();
     testProcessPID = fork();
     if (testProcessPID < 0) {
         perror("fork");
         exit(errno);
     }
     if (testProcessPID == 0) {  // child
-        close(testProcessPipeFD);
+        delete pipe.first;
         run();
-        OutputPipe(fd[1]).pipe(Message::build(test->isPassed(),
-                                              test->getExecutionTimeTicks(),
-                                              test->getFailureMessage()));
+        pipe.second->sendMessage(Message::build(test->isPassed(),
+                                                test->getExecutionTimeTicks(),
+                                                test->getFailureMessage()));
+        delete pipe.second;
         exit(0);
     }
-    close(fd[1]);
+    delete pipe.second;
+    testProcessPipe = pipe.first;
     testProcessStartTime = high_resolution_clock::now();
 }
 
@@ -68,14 +68,14 @@ bool TestContainer::isTestFinished() {
     if (!WIFSIGNALED(wStatus) && !WIFEXITED(wStatus)) {
         return finish(-1.0, false, "Unknown error occurred.");
     }
-    Message message = InputPipe(testProcessPipeFD).getNextMessage();
+    Message message = testProcessPipe->getNextMessage();
     if (message.getPayload() == nullptr) {
         return finish(-1.0, false, "Test unexpectedly exited with code 0");
     }
     MessageReader reader(message);
     bool isPassed;
     double ticks;
-    std::string failureMessage;
+    String failureMessage;
     reader << isPassed << ticks << failureMessage;
     return finish(ticks, isPassed, unescapeCharacters(failureMessage));
 }
@@ -97,7 +97,7 @@ String TestContainer::getFailureMessage() const {
 }
 
 bool TestContainer::finish(double _ticks, bool _passed, const String& _failureMessage) {
-    close(testProcessPipeFD);
+    delete testProcessPipe;
     ticks = _ticks;
     passed = _passed;
     failureMessage = _failureMessage;

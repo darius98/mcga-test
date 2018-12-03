@@ -1,6 +1,6 @@
 add_library(kktest_interface INTERFACE)
 target_include_directories(kktest_interface INTERFACE include)
-target_link_libraries(kktest_interface INTERFACE messaging strutil)
+target_link_libraries(kktest_interface INTERFACE interproc strutil)
 
 add_library(kktest_command_line_arguments
     src/arguments_api.cpp

@@ -1,11 +1,11 @@
 #include <cstring>
 
-#include <kktest_common/messaging_impl/message.hpp>
+#include <kktest_common/interproc_impl/message.hpp>
 
 using std::string;
 
 namespace kktest {
-namespace messaging {
+namespace interproc {
 
 BytesConsumer& BytesConsumer::add(const string& obj) {
     add(obj.size());
@@ -89,5 +89,5 @@ size_t Message::getSize() const {
     return sizeof(size_t) + *static_cast<size_t*>(payload);
 }
 
-}  // namespace messaging
+}  // namespace interproc
 }  // namespace kktest

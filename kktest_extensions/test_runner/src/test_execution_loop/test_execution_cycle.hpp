@@ -5,7 +5,7 @@
 #include <queue>
 #include <string>
 
-#include <kktest_common/messaging.hpp>
+#include <kktest_common/interproc.hpp>
 #include <test_execution_loop/kktest_lib_info.hpp>
 
 namespace kktest {
@@ -13,7 +13,7 @@ namespace test_runner {
 
 class TestExecutionCycle {
  public:
-    explicit TestExecutionCycle(const std::string& _testPath,
+    explicit TestExecutionCycle(const String& _testPath,
                                 int _maxParallelTests,
                                 const std::function<void(const KKTestCaseInfo&)>& _onInfoCallback);
 
@@ -28,16 +28,15 @@ class TestExecutionCycle {
  private:
     void processMessages(bool block);
 
-    void processMessage(const messaging::Message& message);
+    void processMessage(const interproc::Message& message);
 
     bool started;
-    std::string testPath;
+    String testPath;
     int maxParallelTests;
     std::function<void(const KKTestCaseInfo&)> onInfoCallback;
 
-    messaging::InputPipe* pipeWithTestProcess;
-    std::string pipeName;
-    int pipeFD;
+    interproc::PipeReader* pipeWithTestProcess;
+    String pipeName;
     pid_t testProcessPID;
 
     KKTestCaseInfo info;

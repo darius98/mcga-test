@@ -1,14 +1,12 @@
-#include <unistd.h>
-#include <fcntl.h>
-
 #include <iostream>
 
 #include <kktest_extension_api.hpp>
 #include <kktest_ext/feedback_impl/ext.hpp>
 #include <kktest_ext/feedback_impl/pipe_message_type.hpp>
 
-using kktest::messaging::Message;
-using kktest::messaging::OutputPipe;
+using kktest::interproc::Message;
+using kktest::interproc::PipeWriter;
+using kktest::interproc::openNamedPipeForWriting;
 using std::cout;
 using std::exception;
 
@@ -33,9 +31,6 @@ void FeedbackExtension::init(ExtensionApi* api) {
 
 void FeedbackExtension::destroy() {
     delete logger;
-    if (pipe) {
-        pipe->close();
-    }
     delete pipe;
 }
 
@@ -60,36 +55,31 @@ void FeedbackExtension::initLogging(ExtensionApi* api) {
 }
 
 void FeedbackExtension::initPipe(ExtensionApi* api, const String& pipeName) {
-    int pipeFD = open(pipeName.c_str(), O_WRONLY | O_NONBLOCK);
-    if (pipeFD < 0) {
-        perror("open");
-        exit(errno);
-    }
-    pipe = new OutputPipe(pipeFD);
+    pipe = openNamedPipeForWriting(pipeName.c_str());
 
     api->addBeforeGroupHook([this](const GroupInfo& groupInfo) {
-        pipe->pipe(Message::build(PipeMessageType::GROUP,
-                                  groupInfo.parentGroupIndex,
-                                  groupInfo.index,
-                                  groupInfo.description));
+        pipe->sendMessage(Message::build(PipeMessageType::GROUP,
+                                         groupInfo.parentGroupIndex,
+                                         groupInfo.index,
+                                         groupInfo.description));
     });
 
     api->addAfterTestHook([this](const TestInfo& testInfo) {
-        pipe->pipe(Message::build(PipeMessageType::TEST,
-                                  testInfo.groupIndex,
-                                  testInfo.index,
-                                  testInfo.optional,
-                                  testInfo.description,
-                                  testInfo.passed,
-                                  testInfo.failureMessage));
+        pipe->sendMessage(Message::build(PipeMessageType::TEST,
+                                         testInfo.groupIndex,
+                                         testInfo.index,
+                                         testInfo.optional,
+                                         testInfo.description,
+                                         testInfo.passed,
+                                         testInfo.failureMessage));
     });
 
     api->addBeforeDestroyHook([this]() {
-        pipe->pipe(Message::build(PipeMessageType::DONE));
+        pipe->sendMessage(Message::build(PipeMessageType::DONE));
     });
 
     api->addBeforeForceDestroyHook([this](const exception& error) {
-        pipe->pipe(Message::build(PipeMessageType::ERROR, String(error.what())));
+        pipe->sendMessage(Message::build(PipeMessageType::ERROR, String(error.what())));
     });
 }
 

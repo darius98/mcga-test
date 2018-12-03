@@ -17,6 +17,8 @@
 #include <utility>
 #include <vector>
 
+#include <kktest_impl/types.hpp>
+
 namespace kktest {
 namespace core_matchers {
 
@@ -98,7 +100,7 @@ struct Streamer {
     template<class T>
     static void formatType(std::stringstream& s) {
         int stat;
-        std::string rawName = typeid(T).name();
+        String rawName = typeid(T).name();
         char* name = abi::__cxa_demangle(rawName.c_str(), nullptr, nullptr, &stat);
         if (stat == 0) {
             rawName = name;
@@ -135,7 +137,7 @@ private:
     template<class T>
     static void formatType(std::stringstream& s) {
         int stat;
-        std::string rawName = typeid(T).name();
+        String rawName = typeid(T).name();
         char* name = abi::__cxa_demangle(rawName.c_str(), nullptr, nullptr, &stat);
         if (stat == 0) {
             rawName = name;

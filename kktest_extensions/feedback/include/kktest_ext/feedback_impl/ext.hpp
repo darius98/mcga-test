@@ -1,7 +1,7 @@
 #ifndef KKTEST_EXTENSIONS_FEEDBACK_INCLUDE_KKTEST_EXT_FEEDBACK_IMPL_EXT_HPP_
 #define KKTEST_EXTENSIONS_FEEDBACK_INCLUDE_KKTEST_EXT_FEEDBACK_IMPL_EXT_HPP_
 
-#include <kktest_common/messaging.hpp>
+#include <kktest_common/interproc.hpp>
 #include <kktest_extension_api.hpp>
 #include <kktest_ext/feedback_impl/test_logger.hpp>
 
@@ -22,7 +22,7 @@ class FeedbackExtension: public Extension {
     void initPipe(ExtensionApi* api, const String& pipeName);
 
     TestLogger* logger = nullptr;
-    messaging::OutputPipe* pipe = nullptr;
+    interproc::PipeWriter* pipe = nullptr;
 
     Flag* quietFlag;
     Argument* pipeNameArgument;

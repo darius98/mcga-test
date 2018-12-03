@@ -1,9 +1,9 @@
-#include <kktest_common/messaging_impl/message_reader.hpp>
+#include <kktest_common/interproc_impl/message_reader.hpp>
 
 using std::string;
 
 namespace kktest {
-namespace messaging {
+namespace interproc {
 
 MessageReader::MessageReader(const Message& _message): message(_message) {}
 
@@ -16,5 +16,5 @@ MessageReader& MessageReader::operator<<(string& obj) {
     return *this;
 }
 
-}  // namespace messaging
+}  // namespace interproc
 }  // namespace kktest
