@@ -1,7 +1,6 @@
 #include <cstring>
 
 #include <kktest.hpp>
-#include <kktest_ext/core_matchers.hpp>
 
 #include <kktest_common/strutil_impl/c_string.hpp>
 
@@ -9,7 +8,6 @@ using kktest::expect;
 using kktest::group;
 using kktest::tearDown;
 using kktest::test;
-using kktest::core_matchers::isEqualTo;
 using kktest::strutil::copyAsCString;
 using std::string;
 

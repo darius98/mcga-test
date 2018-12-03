@@ -1,9 +1,8 @@
 #include <kktest.hpp>
-#include <kktest_ext/core_matchers.hpp>
+#include <kktest_ext/core_matchers_impl/truth_matchers.hpp>
 
 using kktest::expect;
 using kktest::test;
-using kktest::core_matchers::Description;
 using kktest::core_matchers::isFalse;
 using kktest::core_matchers::isTrue;
 

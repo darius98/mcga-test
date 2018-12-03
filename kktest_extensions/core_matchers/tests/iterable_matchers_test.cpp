@@ -1,5 +1,6 @@
 #include <kktest.hpp>
-#include <kktest_ext/core_matchers.hpp>
+#include <kktest_ext/core_matchers_impl/iterable_matchers.hpp>
+#include <kktest_ext/core_matchers_impl/numeric_matchers.hpp>
 
 using kktest::expect;
 using kktest::test;

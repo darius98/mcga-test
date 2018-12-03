@@ -1,7 +1,7 @@
 #include <cctype>
 
 #include <kktest.hpp>
-#include <kktest_ext/core_matchers.hpp>
+#include <kktest_ext/core_matchers_impl/string_matchers.hpp>
 
 using kktest::expect;
 using kktest::group;
