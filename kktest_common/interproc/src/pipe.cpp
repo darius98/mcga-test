@@ -163,6 +163,14 @@ void createNamedPipe(const char* pipeName) {
     }
 }
 
+void destroyNamedPipe(const char* pipeName) {
+    int removeStat = remove(pipeName);
+    if (removeStat < 0) {
+        perror("remove pipe");
+        exit(errno);
+    }
+}
+
 PipeReader* openNamedPipeForReading(const char* pipeName) {
     int pipeFD = open(pipeName, O_RDONLY | O_NONBLOCK);
     if (pipeFD < 0) {

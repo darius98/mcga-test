@@ -34,6 +34,8 @@ std::pair<PipeReader*, PipeWriter*> createAnonymousPipe();
 
 void createNamedPipe(const char* pipeName);
 
+void destroyNamedPipe(const char* pipeName);
+
 PipeReader* openNamedPipeForReading(const char* pipeName);
 
 PipeWriter* openNamedPipeForWriting(const char* pipeName);

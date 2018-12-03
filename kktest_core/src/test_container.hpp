@@ -29,7 +29,7 @@ class TestContainer {
     Test* test;
     double testProcessTimeLimitMs;
     interproc::PipeReader* testProcessPipe;
-    pid_t testProcessPID;
+    interproc::SubprocessHandler* testProcessHandler;
     std::chrono::time_point<std::chrono::high_resolution_clock> testProcessStartTime;
 
     // Results

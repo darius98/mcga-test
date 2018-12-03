@@ -1,6 +1,3 @@
-#include <unistd.h>
-#include <sys/wait.h>
-
 #include <cstdlib>
 
 #include <stdexcept>
@@ -10,11 +7,13 @@
 #include <kktest_ext/feedback.hpp>
 #include "test_execution_cycle.hpp"
 
+using kktest::interproc::createNamedPipe;
+using kktest::interproc::destroyNamedPipe;
 using kktest::interproc::Message;
 using kktest::interproc::MessageReader;
 using kktest::interproc::PipeReader;
-using kktest::interproc::createNamedPipe;
 using kktest::interproc::openNamedPipeForReading;
+using kktest::interproc::openSubprocess;
 using kktest::strutil::copyAsCString;
 using std::cout;
 using std::function;
@@ -36,7 +35,7 @@ TestExecutionCycle::TestExecutionCycle(
         maxParallelTests(_maxParallelTests),
         onInfoCallback(_onInfoCallback),
         pipeWithTestProcess(nullptr),
-        testProcessPID(0) {
+        testProcess(nullptr) {
     info.testExecutablePath = testPath;
 }
 
@@ -55,36 +54,22 @@ void TestExecutionCycle::start() {
     createNamedPipe(pipeName.c_str());
     pipeWithTestProcess = openNamedPipeForReading(pipeName.c_str());
 
-    testProcessPID = fork();
-    if (testProcessPID < 0) {
-        perror("fork");
-        exit(errno);
-    }
-    if (testProcessPID == 0) {  // child process
-        char* cmd = copyAsCString(testPath.c_str());
-        char* quietArg = copyAsCString("--quiet");
-        char* boxedArg = copyAsCString("--boxed");
-        char* pipeToArg = copyAsCString(("--pipe_to=" + pipeName).c_str());
-        char* maxParallelTestsArg = copyAsCString(
+    char* cmd = copyAsCString(testPath.c_str());
+    char* quietArg = copyAsCString("--quiet");
+    char* boxedArg = copyAsCString("--boxed");
+    char* pipeToArg = copyAsCString(("--pipe_to=" + pipeName).c_str());
+    char* maxParallelTestsArg = copyAsCString(
             ("--max_parallel_tests=" + to_string(maxParallelTests)).c_str());
-        char* argv[] = {cmd, quietArg, boxedArg, pipeToArg, maxParallelTestsArg, nullptr};
-        execve(cmd, argv, nullptr);
-        perror("execve");
-        exit(errno);
-    }
+    char* argv[] = {cmd, quietArg, boxedArg, pipeToArg, maxParallelTestsArg, nullptr};
+    testProcess = openSubprocess(cmd, argv);
 }
 
 void TestExecutionCycle::step() {
     if (info.finished) {
         return;
     }
-    int ret = waitpid(testProcessPID, nullptr, WNOHANG);
-    if (ret < 0) {
-        perror("waitpid");
-        exit(errno);
-    }
     processMessages(false);
-    if (ret != 0) {  // process finished
+    if (testProcess->isFinished()) {
         processMessages(true);
     }
 }
@@ -131,22 +116,14 @@ void TestExecutionCycle::processMessage(const Message& message) {
             break;
         }
         case PipeMessageType::DONE: {
-            int removeStat = remove(pipeName.c_str());
-            if (removeStat < 0) {
-                perror("remove pipe");
-                exit(errno);
-            }
+            destroyNamedPipe(pipeName.c_str());
             info.finished = true;
             info.lastReceived = KKTestCaseInfo::FINISH;
             delete pipeWithTestProcess;
             break;
         }
         case PipeMessageType::ERROR: {
-            int removeStat = remove(pipeName.c_str());
-            if (removeStat < 0) {
-                perror("remove pipe");
-                exit(errno);
-            }
+            destroyNamedPipe(pipeName.c_str());
             info.finished = true;
             info.lastReceived = KKTestCaseInfo::FINISH_WITH_ERROR;
             reader << info.errorMessage;

@@ -37,7 +37,7 @@ class TestExecutionCycle {
 
     interproc::PipeReader* pipeWithTestProcess;
     String pipeName;
-    pid_t testProcessPID;
+    interproc::SubprocessHandler* testProcess;
 
     KKTestCaseInfo info;
 };
