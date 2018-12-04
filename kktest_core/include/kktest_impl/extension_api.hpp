@@ -17,6 +17,10 @@ typedef std::function<void(const std::exception&)> BeforeForceDestroyHook;
 
 class ExtensionApi {
  public:
+    static ExtensionApi* create();
+
+    virtual ~ExtensionApi() = default;
+
     virtual void addBeforeTestHook(const TestHook& hook) = 0;
     virtual void addAfterTestHook(const TestHook& hook) = 0;
     virtual void addBeforeGroupHook(const GroupHook& hook) = 0;

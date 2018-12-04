@@ -58,28 +58,30 @@ void FeedbackExtension::initPipe(ExtensionApi* api, const String& pipeName) {
     pipe = openNamedPipeForWriting(pipeName);
 
     api->addBeforeGroupHook([this](const GroupInfo& groupInfo) {
-        pipe->sendMessage(Message::build(PipeMessageType::GROUP,
-                                         groupInfo.parentGroupIndex,
-                                         groupInfo.index,
-                                         groupInfo.description));
+        pipe->sendMessage(
+            PipeMessageType::GROUP,
+            groupInfo.parentGroupIndex,
+            groupInfo.index,
+            groupInfo.description);
     });
 
     api->addAfterTestHook([this](const TestInfo& testInfo) {
-        pipe->sendMessage(Message::build(PipeMessageType::TEST,
-                                         testInfo.groupIndex,
-                                         testInfo.index,
-                                         testInfo.optional,
-                                         testInfo.description,
-                                         testInfo.passed,
-                                         testInfo.failureMessage));
+        pipe->sendMessage(
+            PipeMessageType::TEST,
+            testInfo.groupIndex,
+            testInfo.index,
+            testInfo.optional,
+            testInfo.description,
+            testInfo.passed,
+            testInfo.failureMessage);
     });
 
     api->addBeforeDestroyHook([this]() {
-        pipe->sendMessage(Message::build(PipeMessageType::DONE));
+        pipe->sendMessage(PipeMessageType::DONE);
     });
 
     api->addBeforeForceDestroyHook([this](const exception& error) {
-        pipe->sendMessage(Message::build(PipeMessageType::ERROR, String(error.what())));
+        pipe->sendMessage(PipeMessageType::ERROR, String(error.what()));
     });
 }
 

@@ -29,6 +29,11 @@ class PipeWriter {
     virtual void sendMessage(const Message& message) = 0;
 
     virtual void close() = 0;
+
+    template<class... Args>
+    void sendMessage(const Args... args) {
+        sendMessage(Message::build(args...));
+    }
 };
 
 std::pair<PipeReader*, PipeWriter*> createAnonymousPipe();

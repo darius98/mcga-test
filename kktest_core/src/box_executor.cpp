@@ -20,9 +20,9 @@ void BoxExecutor::execute(Test* test, Executable func) {
         [this, func, test](PipeWriter* pipe) {
             onTestFinished([](Test*) {});
             run(test, func);
-            pipe->sendMessage(Message::build(test->isPassed(),
-                                             test->getExecutionTimeTicks(),
-                                             test->getFailureMessage()));
+            pipe->sendMessage(test->isPassed(),
+                              test->getExecutionTimeTicks(),
+                              test->getFailureMessage());
         },
         [this, test](const Message& message) {
             MessageReader reader(message);
