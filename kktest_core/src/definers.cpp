@@ -47,23 +47,29 @@ void tearDown(Executable func) {
     TestingDriver::getInstance()->addTearDown(func);
 }
 
-namespace detail {
-
-void throwExpectationFailed(const String& message) {
-    if (message.empty()) {
-        throw ExpectationFailed("Expectation failed.");
-    } else {
-        throw ExpectationFailed(message);
+void expect(const bool& exprResult, const String& expr) {
+    if (!exprResult) {
+        if (expr.empty()) {
+            fail("Expectation failed.");
+        }
     }
 }
 
-}  // namespace detail
+void expect(const bool& exprResult, const char* expr) {
+    if (!exprResult) {
+        if (strlen(expr) == 0) {
+            fail("Expectation failed.");
+        } else {
+            fail(expr);
+        }
+    }
+}
 
 void fail(const String& message) {
     if (message.empty()) {
         throw ExpectationFailed("kktest::fail: Test failed.");
     } else {
-        throw ExpectationFailed("kktest::fail: " + message);
+        throw ExpectationFailed(message);
     }
 }
 

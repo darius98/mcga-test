@@ -23,36 +23,19 @@ void setUp(Executable func);
 
 void tearDown(Executable func);
 
-namespace detail {
+void fail(const String& message = "");
 
-void throwExpectationFailed(const String& message);
+void expect(const bool& exprResult, const String& expr = "");
 
-}
+void expect(const bool& exprResult, const char* expr);
 
-template<class T, class M, class... Args>
-void expect(const T& object, M matcher, const Args...) {
+template<class T, class M>
+void expect(const T& object, M matcher) {
     if (matcher.matches(object)) {
         return;
     }
-    detail::throwExpectationFailed("Expectation failed:\n\t"
-                                   + matcher.buildMismatchMessage(object));
+    fail("Expectation failed:\n\t" + matcher.buildMismatchMessage(object));
 }
-
-template<class... Args>
-void expect(const bool& exprResult, const String& expr = "", const Args...) {
-    if (!exprResult) {
-        detail::throwExpectationFailed(expr);
-    }
-}
-
-template<class... Args>
-void expect(const bool& exprResult, const char* expr, const Args...) {
-    if (!exprResult) {
-        detail::throwExpectationFailed(expr);
-    }
-}
-
-void fail(const String& message = "");
 
 }  // namespace kktest
 
