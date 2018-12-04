@@ -1,6 +1,13 @@
+#include <kktest_common/interproc.hpp>
+#include <kktest_common/strutil.hpp>
+
 #include "box_executor.hpp"
 
 using std::size_t;
+using kktest::interproc::Message;
+using kktest::interproc::MessageReader;
+using kktest::interproc::PipeWriter;
+using kktest::strutil::unescapeCharacters;
 
 namespace kktest {
 
@@ -9,11 +16,20 @@ BoxExecutor::BoxExecutor(size_t _maxNumContainers): maxNumContainers(_maxNumCont
 void BoxExecutor::execute(Test* test, Executable func) {
     ensureFreeContainers(1);
     openContainers.insert(new TestContainer(
-        test,
         test->getConfig().timeTicksLimit * getTimeTickLengthMs() + 100.0,
-        [this, func, test]() {
+        [this, func, test](PipeWriter* pipe) {
             onTestFinished([](Test*) {});
             run(test, func);
+            pipe->sendMessage(Message::build(test->isPassed(),
+                                             test->getExecutionTimeTicks(),
+                                             test->getFailureMessage()));
+        },
+        [this, test](const Message& message) {
+            MessageReader reader(message);
+            auto isPassed = reader.read<bool>();
+            auto ticks = reader.read<double>();
+            auto failureMessage = reader.read<String>();
+            setTestExecuted(test, ticks, isPassed, unescapeCharacters(failureMessage));
         }));
 }
 
@@ -24,13 +40,8 @@ void BoxExecutor::finalize() {
 void BoxExecutor::ensureFreeContainers(size_t numContainers) {
     while (openContainers.size() > maxNumContainers - numContainers) {
         for (auto it = openContainers.begin(); it != openContainers.end(); ) {
-            if ((*it)->isTestFinished()) {
-                auto container = *it;
-                setTestExecuted(container->getTest(),
-                                container->getTicks(),
-                                container->isPassed(),
-                                container->getFailureMessage());
-                delete container;
+            if ((*it)->poll()) {
+                delete *it;
                 it = openContainers.erase(it);
             } else {
                 ++it;

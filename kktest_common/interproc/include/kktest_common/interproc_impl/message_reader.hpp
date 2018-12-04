@@ -22,6 +22,13 @@ class MessageReader {
         return *this;
     }
 
+    template<class T>
+    T read() {
+        T obj;
+        (*this) << obj;
+        return obj;
+    }
+
  private:
     int cursor = sizeof(std::size_t);
     const Message& message;

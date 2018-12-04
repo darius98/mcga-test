@@ -2,7 +2,6 @@
 #define KKTEST_CORE_SRC_TEST_CONTAINER_HPP_
 
 #include <chrono>
-#include <string>
 
 #include <kktest_common/interproc.hpp>
 #include <kktest_impl/types.hpp>
@@ -12,30 +11,25 @@ namespace kktest {
 
 class TestContainer {
  public:
-    TestContainer(Test* _test, double _testProcessTimeLimitMs, Executable testFunc);
+    typedef std::function<void(const interproc::Message&)> Callback;
+    typedef std::function<void(interproc::PipeWriter*)> SubprocessFunc;
 
-    bool isTestFinished();
+    TestContainer(double _timeLimitMs, SubprocessFunc testFunc, Callback _callback);
 
-    Test* getTest() const;
-    double getTicks() const;
-    bool isPassed() const;
-    String getFailureMessage() const;
+    bool poll();
 
  private:
-    bool finish(double ticks, bool passed = true, const String& failureMessage = "");
+    bool finish(const String& failureMessage);
+
+    bool finish(const interproc::Message& message);
 
     bool killTestProcess();
 
-    Test* test;
-    double testProcessTimeLimitMs;
-    interproc::PipeReader* testProcessPipe;
-    interproc::SubprocessHandler* testProcessHandler;
-    std::chrono::time_point<std::chrono::high_resolution_clock> testProcessStartTime;
-
-    // Results
-    double ticks;
-    bool passed;
-    String failureMessage;
+    double timeLimitMs;
+    interproc::PipeReader* pipe;
+    interproc::SubprocessHandler* testProcess;
+    std::chrono::time_point<std::chrono::high_resolution_clock> startTime;
+    Callback callback;
 };
 
 }  // namespace kktest
