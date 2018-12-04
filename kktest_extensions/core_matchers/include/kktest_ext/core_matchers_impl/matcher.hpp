@@ -55,6 +55,18 @@ class Matcher {
 };
 
 }  // namespace core_matchers
+
+template<class T, class M>
+void expect(const T& object, M matcher) {
+    static_assert(std::is_base_of<core_matchers::Matcher, M>::value,
+                  "Invalid matcher provided to 'expect'.");
+
+    if (matcher.matches(object)) {
+        return;
+    }
+    fail("Expectation failed:\n\t" + matcher.buildMismatchMessage(object));
+}
+
 }  // namespace kktest
 
 #endif  // KKTEST_EXTENSIONS_CORE_MATCHERS_INCLUDE_KKTEST_EXT_CORE_MATCHERS_IMPL_MATCHER_HPP_

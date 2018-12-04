@@ -29,14 +29,6 @@ void expect(const bool& exprResult, const String& expr = "");
 
 void expect(const bool& exprResult, const char* expr);
 
-template<class T, class M>
-void expect(const T& object, M matcher) {
-    if (matcher.matches(object)) {
-        return;
-    }
-    fail("Expectation failed:\n\t" + matcher.buildMismatchMessage(object));
-}
-
 }  // namespace kktest
 
 #endif  // KKTEST_CORE_INCLUDE_KKTEST_IMPL_DEFINERS_HPP_
