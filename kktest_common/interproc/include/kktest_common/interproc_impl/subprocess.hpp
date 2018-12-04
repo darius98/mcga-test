@@ -3,9 +3,10 @@
 
 #include <functional>
 
+#include <kktest_common/interproc_impl/pipe.hpp>
+
 namespace kktest {
 namespace interproc {
-
 
 class SubprocessHandler {
  public:
@@ -29,6 +30,28 @@ class SubprocessHandler {
 SubprocessHandler* forkAndRunInSubprocess(const std::function<void()>& func);
 
 SubprocessHandler* openSubprocess(char* executable, char* argv[]);
+
+typedef const std::function<void(PipeWriter*)>& SubprocessWork;
+
+class WorkerSubprocess {
+ public:
+    WorkerSubprocess(SubprocessHandler* _subprocessHandler, PipeReader* _pipeReader);
+    WorkerSubprocess(WorkerSubprocess&& other) noexcept;
+
+    WorkerSubprocess(const WorkerSubprocess& other) = delete;
+
+    ~WorkerSubprocess();
+
+    SubprocessHandler* getSubprocessHandler();
+
+    PipeReader* getPipe();
+
+ private:
+    SubprocessHandler* subprocessHandler;
+    PipeReader* pipeReader;
+};
+
+WorkerSubprocess forkAndRunWorkerSubprocess(SubprocessWork work);
 
 }  // namespace interproc
 }  // namespace kktest

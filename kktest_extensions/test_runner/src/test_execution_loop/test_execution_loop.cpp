@@ -1,12 +1,10 @@
-#include <chrono>
 #include <iostream>
-#include <thread>
 
+#include <kktest_common/time.hpp>
 #include <test_execution_loop/test_execution_loop.hpp>
 
 using std::cout;
-using std::chrono::milliseconds;
-using std::this_thread::sleep_for;
+using kktest::utils::sleepForMs;
 
 namespace kktest {
 namespace test_runner {
@@ -64,7 +62,7 @@ void TestExecutionLoop::step() {
 int TestExecutionLoop::join() {
     while (!isEmpty()) {
         step();
-        sleep_for(milliseconds(10));
+        sleepForMs(10);
     }
     testLogger.logFinalInformation(true);
     return failedAnyTest;

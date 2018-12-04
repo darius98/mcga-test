@@ -1,4 +1,5 @@
 #include <kktest_common/interproc.hpp>
+#include <kktest_common/time.hpp>
 
 #include "box_executor.hpp"
 
@@ -6,6 +7,7 @@ using std::size_t;
 using kktest::interproc::Message;
 using kktest::interproc::MessageReader;
 using kktest::interproc::PipeWriter;
+using kktest::utils::sleepForMs;
 
 namespace kktest {
 
@@ -37,13 +39,18 @@ void BoxExecutor::finalize() {
 
 void BoxExecutor::ensureFreeContainers(size_t numContainers) {
     while (openContainers.size() > maxNumContainers - numContainers) {
+        bool progressed = false;
         for (auto it = openContainers.begin(); it != openContainers.end(); ) {
             if ((*it)->poll()) {
+                progressed = true;
                 delete *it;
                 it = openContainers.erase(it);
             } else {
                 ++it;
             }
+        }
+        if (!progressed) {
+            sleepForMs(10);
         }
     }
 }

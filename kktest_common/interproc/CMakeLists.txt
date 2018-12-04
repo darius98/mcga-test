@@ -1,4 +1,8 @@
-set(interproc_src src/message.cpp src/message_reader.cpp)
+set(interproc_src
+    src/message.cpp
+    src/message_reader.cpp
+    src/subprocess.cpp
+)
 if (UNIX)
     list(APPEND interproc_src src/unix/pipe.cpp src/unix/subprocess.cpp)
 endif ()

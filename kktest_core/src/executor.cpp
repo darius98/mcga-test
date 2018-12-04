@@ -1,11 +1,8 @@
-#include <chrono>
-
+#include <kktest_common/time.hpp>
 #include "errors.hpp"
 #include "executor.hpp"
 
-using std::chrono::duration_cast;
-using std::chrono::high_resolution_clock;
-using std::chrono::milliseconds;
+using kktest::utils::Timer;
 using std::exception;
 using std::function;
 
@@ -51,17 +48,14 @@ void Executor::run(Test* test, Executable func) {
             failureMessage = value;
         }
     };
-    auto begin = high_resolution_clock::now();
+    Timer t;
     Group* group = test->getGroup();
     runSetUpsRecursively(group, setFailure);
     runTest(func, setFailure);
     runTearDownsRecursively(group, setFailure);
-    auto end = high_resolution_clock::now();
+    double executionTimeMs = t.getMillisecondsElapsed();
     state = INACTIVE;
-    setTestExecuted(test,
-        /* executionTimeTicks=*/duration_cast<milliseconds>(end - begin).count() / timeTickLengthMs,
-        /*             passed=*/!failed,
-        /*     failureMessage=*/failureMessage);
+    setTestExecuted(test, executionTimeMs / timeTickLengthMs, !failed, failureMessage);
 }
 
 void Executor::setTestExecuted(Test* test,
