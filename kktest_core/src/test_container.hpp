@@ -4,7 +4,6 @@
 #include <kktest_common/interproc.hpp>
 #include <kktest_common/time.hpp>
 #include <kktest_impl/types.hpp>
-#include "test.hpp"
 
 namespace kktest {
 

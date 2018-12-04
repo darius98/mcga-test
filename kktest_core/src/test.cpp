@@ -2,23 +2,35 @@
 #include "group.hpp"
 #include "test.hpp"
 
+using kktest::interproc::Message;
+using kktest::interproc::MessageReader;
+
 namespace kktest {
+
+interproc::Message TestExecutionInfo::toMessage() const {
+    return Message::build(executionTimeTicks, passed, failureMessage);
+}
+
+TestExecutionInfo TestExecutionInfo::fromMessage(const Message& message) {
+    TestExecutionInfo info{};
+    MessageReader reader(message);
+    reader << info.executionTimeTicks << info.passed << info.failureMessage;
+    return info;
+}
 
 Test::Test(const TestConfig& _config, Group* _parentGroup, int _index):
         config(_config), parentGroup(_parentGroup), index(_index) {}
 
-void Test::setExecuted(double _executionTimeTicks, bool _passed, String _failureMessage) {
+void Test::setExecuted(const TestExecutionInfo& _executionInfo) {
     if (isExecuted()) {
         throw KKTestLibraryImplementationError("Test::setExecuted called twice on the same test.");
     }
     executed = true;
-    executionTimeTicks = _executionTimeTicks;
-    if (executionTimeTicks > getConfig().timeTicksLimit) {
-        _passed = false;
-        _failureMessage = "Execution timed out.";
+    executionInfo = _executionInfo;
+    if (executionInfo.executionTimeTicks > config.timeTicksLimit) {
+        executionInfo.passed = false;
+        executionInfo.failureMessage = "Execution timed out.";
     }
-    passed = _passed;
-    failureMessage = _failureMessage;
 }
 
 const TestConfig& Test::getConfig() const {
@@ -30,19 +42,7 @@ bool Test::isExecuted() const {
 }
 
 bool Test::isFailed() const {
-    return isExecuted() && !isPassed();
-}
-
-bool Test::isPassed() const {
-    return isExecuted() && passed;
-}
-
-String Test::getFailureMessage() const {
-    return isFailed() ? failureMessage : "";
-}
-
-double Test::getExecutionTimeTicks() const {
-    return executionTimeTicks;
+    return isExecuted() && !executionInfo.passed;
 }
 
 Group* Test::getGroup() const {
@@ -55,8 +55,8 @@ TestInfo Test::getTestInfo() const {
         index,
         config.optional,
         config.description,
-        isPassed(),
-        getFailureMessage()
+        executionInfo.passed,
+        executionInfo.failureMessage
     };
 }
 

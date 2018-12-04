@@ -1,12 +1,23 @@
 #ifndef KKTEST_CORE_SRC_TEST_HPP_
 #define KKTEST_CORE_SRC_TEST_HPP_
 
+#include <kktest_common/interproc.hpp>
 #include <kktest_impl/config.hpp>
 #include <kktest_impl/info.hpp>
 
 namespace kktest {
 
 class Group;
+
+struct TestExecutionInfo {
+    double executionTimeTicks = -1.0;
+    bool passed = true;
+    String failureMessage = "";
+
+    static TestExecutionInfo fromMessage(const interproc::Message& message);
+
+    interproc::Message toMessage() const;
+};
 
 class Test {
  public:
@@ -18,17 +29,11 @@ class Test {
 
     bool isFailed() const;
 
-    bool isPassed() const;
-
-    double getExecutionTimeTicks() const;
-
-    String getFailureMessage() const;
-
     TestInfo getTestInfo() const;
 
     Group* getGroup() const;
 
-    void setExecuted(double _executionTimeTicks, bool _passed, String _failureMessage);
+    void setExecuted(const TestExecutionInfo& _executionInfo);
 
  private:
     TestConfig config;
@@ -37,9 +42,7 @@ class Test {
     int index;
 
     bool executed = false;
-    bool passed = true;
-    String failureMessage = "";
-    double executionTimeTicks = -1.0;
+    TestExecutionInfo executionInfo;
 };
 
 }  // namespace kktest

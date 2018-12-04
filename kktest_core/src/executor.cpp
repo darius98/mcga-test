@@ -1,19 +1,14 @@
-#include <utility>
-
 #include <kktest_common/time.hpp>
 #include "errors.hpp"
 #include "executor.hpp"
 
 using kktest::utils::Timer;
 using std::exception;
-using std::function;
-using std::get;
 using std::move;
-using std::tuple;
 
 namespace kktest {
 
-Executor::Executor(function<void(Test*)> _onTestFinishedCallback):
+Executor::Executor(OnTestFinishedCallback _onTestFinishedCallback):
         onTestFinishedCallback(move(_onTestFinishedCallback)),
         timeTickLengthMs(computeTimeTickLengthFromHardware()) {}
 
@@ -38,12 +33,12 @@ double Executor::getTimeTickLengthMs() const {
 void Executor::finalize() {}
 
 void Executor::execute(Test* test, Executable func) {
-    auto results = run(test, func);
-    test->setExecuted(get<0>(results), get<1>(results), get<2>(results));
+    auto executionInfo = run(test, func);
+    test->setExecuted(executionInfo);
     onTestFinishedCallback(test);
 }
 
-tuple<double, bool, String> Executor::run(Test* test, Executable func) {
+TestExecutionInfo Executor::run(Test* test, Executable func) {
     state = ACTIVE;
     String failureMessage;
     bool failed = false;
