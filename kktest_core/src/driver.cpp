@@ -95,13 +95,13 @@ void TestingDriver::addGroup(const GroupConfig& config, Executable func) {
         throw e;
     } catch(const ExpectationFailed& e) {
         throw ConfigurationError(
-            "Expectation failed in group \"" + group->getConfig().description + "\": " + e.what());
+            "Expectation failed in group \"" + group->getDescription() + "\": " + e.what());
     } catch(const exception& e) {
         throw ConfigurationError(
-            "Exception thrown in group \"" + group->getConfig().description + "\": " + e.what());
+            "Exception thrown in group \"" + group->getDescription() + "\": " + e.what());
     } catch(...) {
         throw ConfigurationError(
-            "Non-exception object thrown in group \"" + group->getConfig().description + "\".");
+            "Non-exception object thrown in group \"" + group->getDescription() + "\".");
     }
     markAllTestsStarted(group);
     groupStack.pop_back();

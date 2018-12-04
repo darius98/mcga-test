@@ -81,9 +81,11 @@ void Executor::runSetUpsRecursively(Group* group, SetFailureType setFailure) {
     } catch(const ExpectationFailed& failure) {
         setFailure(failure.what());
     } catch(const exception& e) {
-        setFailure(group->getRenderedFailureMessageOnExceptionInSetUp(e.what()));
+        setFailure("Exception thrown in setUp of group \""
+                   + group->getDescription() + "\": " + e.what());
     } catch(...) {
-        setFailure(group->getRenderedFailureMessageOnNonExceptionInSetUp());
+        setFailure("Non-exception thrown in setUp of group \""
+                   + group->getDescription() + "\".");
     }
 }
 
@@ -113,9 +115,11 @@ void Executor::runTearDownsRecursively(Group* group, SetFailureType setFailure) 
     } catch(const ExpectationFailed& failure) {
         setFailure(failure.what());
     } catch(const exception& e) {
-        setFailure(group->getRenderedFailureMessageOnExceptionInTearDown(e.what()));
+        setFailure("Exception thrown in tearDown of group \"" +
+                   group->getDescription() + "\": " + e.what());
     } catch(...) {
-        setFailure(group->getRenderedFailureMessageOnNonExceptionInTearDown());
+        setFailure("Non-exception thrown in tearDown of group \"" +
+                   group->getDescription() + "\".");
     }
     runTearDownsRecursively(group->getParentGroup(), setFailure);
 }

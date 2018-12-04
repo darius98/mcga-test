@@ -19,8 +19,6 @@ class TestContainer {
  private:
     bool finishWithError(const String& failureMessage);
 
-    bool finish(const interproc::Message& message);
-
     bool killTestProcess();
 
     utils::Stopwatch testProcessStopwatch;

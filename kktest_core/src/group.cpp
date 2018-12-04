@@ -6,8 +6,8 @@ namespace kktest {
 Group::Group(const GroupConfig& _config, Group* _parentGroup, int _index):
         config(_config), parentGroup(_parentGroup), index(_index) {}
 
-const GroupConfig& Group::getConfig() const {
-    return config;
+String Group::getDescription() const {
+    return config.description;
 }
 
 void Group::addSetUp(Executable func) {
@@ -44,22 +44,6 @@ int Group::getIndex() const {
 
 Group* Group::getParentGroup() const {
     return parentGroup;
-}
-
-String Group::getRenderedFailureMessageOnExceptionInSetUp(const String& what) const {
-    return "Exception thrown in setUp of group \"" + config.description + "\": " + what;
-}
-
-String Group::getRenderedFailureMessageOnNonExceptionInSetUp() const {
-    return "Non-exception thrown in setUp of group \"" + config.description + "\".";
-}
-
-String Group::getRenderedFailureMessageOnExceptionInTearDown(const String& what) const {
-    return "Exception thrown in tearDown of group \"" + config.description + "\": " + what;
-}
-
-String Group::getRenderedFailureMessageOnNonExceptionInTearDown() const {
-    return "Non-exception thrown in tearDown of group \"" + config.description + "\".";
 }
 
 GroupInfo Group::getGroupInfo() const {

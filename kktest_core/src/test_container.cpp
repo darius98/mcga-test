@@ -35,15 +35,12 @@ bool TestContainer::poll() {
     if (message.getPayload() == nullptr) {
         return finishWithError("Test unexpectedly exited with code 0");
     }
-    return finish(message);
+    callback(message);
+    return true;
 }
 
 bool TestContainer::finishWithError(const String& failureMessage) {
-    return finish(Message::build(false, -1.0, failureMessage));
-}
-
-bool TestContainer::finish(const Message& message) {
-    callback(message);
+    callback(Message::build(false, -1.0, failureMessage));
     return true;
 }
 
