@@ -2,7 +2,6 @@ add_library(strutil
     src/c_string.cpp
     src/casing.cpp
     src/substr_utils.cpp
-    src/unescape.cpp
 )
 target_include_directories(strutil PUBLIC include)
 

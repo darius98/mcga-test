@@ -1,5 +1,4 @@
 #include <kktest_common/interproc.hpp>
-#include <kktest_common/strutil.hpp>
 
 #include "box_executor.hpp"
 
@@ -7,7 +6,6 @@ using std::size_t;
 using kktest::interproc::Message;
 using kktest::interproc::MessageReader;
 using kktest::interproc::PipeWriter;
-using kktest::strutil::unescapeCharacters;
 
 namespace kktest {
 
@@ -29,7 +27,7 @@ void BoxExecutor::execute(Test* test, Executable func) {
             auto isPassed = reader.read<bool>();
             auto ticks = reader.read<double>();
             auto failureMessage = reader.read<String>();
-            setTestExecuted(test, ticks, isPassed, unescapeCharacters(failureMessage));
+            setTestExecuted(test, ticks, isPassed, failureMessage);
         }));
 }
 
