@@ -3,7 +3,6 @@
 
 #include <kktest_common/strutil_impl/c_string.hpp>
 #include <kktest_common/strutil_impl/casing.hpp>
-#include <kktest_common/strutil_impl/string_key_comparable.hpp>
 #include <kktest_common/strutil_impl/substr_utils.hpp>
 #include <kktest_common/strutil_impl/unescape.hpp>
 

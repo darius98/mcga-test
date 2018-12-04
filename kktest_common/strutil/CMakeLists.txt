@@ -1,7 +1,6 @@
 add_library(strutil
     src/c_string.cpp
     src/casing.cpp
-    src/string_key_comparable.cpp
     src/substr_utils.cpp
     src/unescape.cpp
 )
