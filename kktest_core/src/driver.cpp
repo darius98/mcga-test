@@ -68,14 +68,14 @@ void TestingDriver::afterTestCase() {
 TestingDriver::TestingDriver(TestingDriverHooks hooks, bool flagBoxed, int argumentNumBoxes):
         hookManager(move(hooks)) {
     instance = this;
-    if (flagBoxed) {
-        executor = new BoxExecutor((size_t)argumentNumBoxes);
-    } else {
-        executor = new Executor();
-    }
-    executor->onTestFinished([this](Test* test) {
+    auto onTestFinishedCallback = [this](Test* test) {
         afterTest(test);
-    });
+    };
+    if (flagBoxed) {
+        executor = new BoxExecutor(onTestFinishedCallback, (size_t)argumentNumBoxes);
+    } else {
+        executor = new Executor(onTestFinishedCallback);
+    }
     hookManager.runHooks<TestingDriverHooks::AFTER_INIT>();
 }
 

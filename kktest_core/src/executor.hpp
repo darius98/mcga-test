@@ -1,6 +1,8 @@
 #ifndef KKTEST_CORE_SRC_EXECUTOR_HPP_
 #define KKTEST_CORE_SRC_EXECUTOR_HPP_
 
+#include <tuple>
+
 #include <kktest_impl/types.hpp>
 #include "group.hpp"
 #include "test.hpp"
@@ -15,7 +17,7 @@ class Executor {
     static double computeTimeTickLengthFromHardware();
 
  public:
-    Executor();
+    explicit Executor(std::function<void(Test*)> _onTestFinishedCallback);
 
     virtual ~Executor();
 
@@ -27,15 +29,10 @@ class Executor {
 
     virtual void finalize();
 
-    void onTestFinished(const std::function<void(Test*)>& _onTestFinishedCallback);
-
  protected:
-    void run(Test* test, Executable func);
+    std::tuple<double, bool, String> run(Test* test, Executable func);
 
-    void setTestExecuted(Test* test,
-                         double executionTimeTicks,
-                         bool passed,
-                         const String& failureMessage);
+    std::function<void(Test*)> onTestFinishedCallback;
 
  private:
     void runSetUpsRecursively(Group* group, SetFailureType setFailure);
@@ -46,7 +43,6 @@ class Executor {
 
     State state = State::INACTIVE;
     double timeTickLengthMs;
-    std::function<void(Test*)> onTestFinishedCallback;
 };
 
 }  // namespace kktest

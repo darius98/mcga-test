@@ -10,7 +10,8 @@ namespace kktest {
 
 class BoxExecutor: public Executor {
  public:
-    explicit BoxExecutor(std::size_t _maxNumContainers);
+    explicit BoxExecutor(const std::function<void(Test*)>& onTestFinishedCallback,
+                         std::size_t _maxNumContainers);
 
     void finalize() override;
 

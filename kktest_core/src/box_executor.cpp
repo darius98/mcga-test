@@ -3,23 +3,28 @@
 
 #include "box_executor.hpp"
 
-using std::size_t;
 using kktest::interproc::Message;
 using kktest::interproc::MessageReader;
 using kktest::interproc::PipeWriter;
 using kktest::utils::sleepForMs;
+using std::function;
+using std::get;
+using std::size_t;
 
 namespace kktest {
 
-BoxExecutor::BoxExecutor(size_t _maxNumContainers): maxNumContainers(_maxNumContainers) {}
+BoxExecutor::BoxExecutor(const function<void(Test*)>& onTestFinishedCallback,
+                         size_t _maxNumContainers):
+        Executor(onTestFinishedCallback),
+        maxNumContainers(_maxNumContainers) {}
 
 void BoxExecutor::execute(Test* test, Executable func) {
     ensureFreeContainers(1);
     openContainers.insert(new TestContainer(
         test->getConfig().timeTicksLimit * getTimeTickLengthMs() + 100.0,
         [this, func, test](PipeWriter* pipe) {
-            onTestFinished([](Test*) {});
-            run(test, func);
+            auto results = run(test, func);
+            test->setExecuted(get<0>(results), get<1>(results), get<2>(results));
             pipe->sendMessage(test->isPassed(),
                               test->getExecutionTimeTicks(),
                               test->getFailureMessage());
@@ -29,7 +34,8 @@ void BoxExecutor::execute(Test* test, Executable func) {
             auto isPassed = reader.read<bool>();
             auto ticks = reader.read<double>();
             auto failureMessage = reader.read<String>();
-            setTestExecuted(test, ticks, isPassed, failureMessage);
+            test->setExecuted(ticks, isPassed, failureMessage);
+            onTestFinishedCallback(test);
         }));
 }
 

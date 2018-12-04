@@ -47,15 +47,8 @@ Group* Group::getParentGroup() const {
 }
 
 GroupInfo Group::getGroupInfo() const {
-    int parentGroupIndex = -1;
-    if (parentGroup != nullptr) {
-        parentGroupIndex = parentGroup->index;
-    }
-    return GroupInfo{
-        parentGroupIndex,
-        index,
-        config.description
-    };
+    int parentGroupIndex = parentGroup == nullptr ? -1 : parentGroup->index;
+    return GroupInfo{parentGroupIndex, index, config.description};
 }
 
 }  // namespace kktest

@@ -1,3 +1,5 @@
+#include <utility>
+
 #include <kktest_common/time.hpp>
 #include "errors.hpp"
 #include "executor.hpp"
@@ -5,10 +7,15 @@
 using kktest::utils::Timer;
 using std::exception;
 using std::function;
+using std::get;
+using std::move;
+using std::tuple;
 
 namespace kktest {
 
-Executor::Executor(): timeTickLengthMs(computeTimeTickLengthFromHardware()) {}
+Executor::Executor(function<void(Test*)> _onTestFinishedCallback):
+        onTestFinishedCallback(move(_onTestFinishedCallback)),
+        timeTickLengthMs(computeTimeTickLengthFromHardware()) {}
 
 Executor::~Executor() = default;
 
@@ -31,14 +38,12 @@ double Executor::getTimeTickLengthMs() const {
 void Executor::finalize() {}
 
 void Executor::execute(Test* test, Executable func) {
-    run(test, func);
+    auto results = run(test, func);
+    test->setExecuted(get<0>(results), get<1>(results), get<2>(results));
+    onTestFinishedCallback(test);
 }
 
-void Executor::onTestFinished(const function<void(Test*)>& _onTestFinishedCallback) {
-    onTestFinishedCallback = _onTestFinishedCallback;
-}
-
-void Executor::run(Test* test, Executable func) {
+tuple<double, bool, String> Executor::run(Test* test, Executable func) {
     state = ACTIVE;
     String failureMessage;
     bool failed = false;
@@ -55,17 +60,7 @@ void Executor::run(Test* test, Executable func) {
     runTearDownsRecursively(group, setFailure);
     double executionTimeMs = t.getMillisecondsElapsed();
     state = INACTIVE;
-    setTestExecuted(test, executionTimeMs / timeTickLengthMs, !failed, failureMessage);
-}
-
-void Executor::setTestExecuted(Test* test,
-                               double executionTimeTicks,
-                               bool passed,
-                               const String& failureMessage) {
-    test->setExecuted(executionTimeTicks, passed, failureMessage);
-    if (onTestFinishedCallback) {
-        onTestFinishedCallback(test);
-    }
+    return {executionTimeMs / timeTickLengthMs, !failed, failureMessage};
 }
 
 void Executor::runSetUpsRecursively(Group* group, SetFailureType setFailure) {
