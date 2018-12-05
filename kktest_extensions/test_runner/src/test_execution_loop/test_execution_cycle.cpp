@@ -81,7 +81,7 @@ bool TestExecutionCycle::isDone() const {
 void TestExecutionCycle::processMessages(bool block) {
     while (!info.finished) {
         Message message = pipeWithTestProcess->getNextMessage();
-        if (message.getPayload() != nullptr) {
+        if (!message.isInvalid()) {
             processMessage(message);
         } else if (!block) {
             break;

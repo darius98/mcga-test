@@ -41,7 +41,6 @@ class LinuxPipeReader: public PipeReader {
 
     Message getNextMessage(int maxConsecutiveFailedReadAttempts) override {
         char block[128];
-        size_t messageSize = 0;
         int failedAttempts = 0;
         while (failedAttempts <= maxConsecutiveFailedReadAttempts) {
             ssize_t numBytesRead = read(inputFD, block, 128);
@@ -64,15 +63,15 @@ class LinuxPipeReader: public PipeReader {
                        static_cast<size_t>(numBytesRead));
                 bufferSize += numBytesRead;
             }
-            messageSize = Message::isSane(buffer, bufferSize);
-            if (messageSize != 0) {
-                break;
+            auto message = Message::read(buffer, bufferSize);
+            if (!message.isInvalid()) {
+                size_t size = message.getSize();
+                memcpy(buffer, static_cast<uint8_t*>(buffer) + size, bufferSize - size);
+                bufferSize -= size;
+                return message;
             }
         }
-        if (!messageSize) {
-            return Message(nullptr);
-        }
-        return extractMessageFromBuffer(messageSize);
+        return Message::invalid();
     }
 
  private:
@@ -84,14 +83,6 @@ class LinuxPipeReader: public PipeReader {
             buffer = newBuffer;
             bufferCapacity *= 2;
         }
-    }
-
-    Message extractMessageFromBuffer(std::size_t messageSize) {
-        void* messagePayload = malloc(messageSize);
-        memcpy(messagePayload, buffer, messageSize);
-        memcpy(buffer, static_cast<uint8_t*>(buffer) + messageSize, bufferSize - messageSize);
-        bufferSize -= messageSize;
-        return Message(messagePayload);
     }
 
     bool closed = false;

@@ -1,7 +1,9 @@
+#include <cstdlib>
 #include <cstring>
 
 #include <kktest_common/interproc_impl/message.hpp>
 
+using std::malloc;
 using std::string;
 
 namespace kktest {
@@ -22,12 +24,21 @@ size_t BytesCounter::getNumBytesConsumed() const {
     return bytesConsumed;
 }
 
-size_t Message::isSane(const void* ptr, size_t size) {
-    if (size < sizeof(size_t)) {
-        return 0;
+Message Message::read(const void* src, size_t maxSize) {
+    if (maxSize < sizeof(size_t)) {
+        return invalid();
     }
-    auto expectedSize = (*static_cast<const size_t*>(ptr)) + sizeof(size_t);
-    return expectedSize <= size ? expectedSize : 0;
+    auto expectedSize = (*static_cast<const size_t*>(src)) + sizeof(size_t);
+    if (expectedSize > maxSize) {
+        return invalid();
+    }
+    void* messagePayload = malloc(expectedSize);
+    memcpy(messagePayload, src, expectedSize);
+    return Message(messagePayload);
+}
+
+Message Message::invalid() {
+    return Message(nullptr);
 }
 
 Message::Message(size_t size): payload(malloc(size + sizeof(size_t))) {
@@ -36,10 +47,15 @@ Message::Message(size_t size): payload(malloc(size + sizeof(size_t))) {
 }
 
 Message::Message(const Message& other) {
-    auto size = other.getSize();
-    payload = malloc(size + sizeof(size_t));
-    memcpy(payload, other.payload, cursor);
-    cursor = other.cursor;
+    if (other.isInvalid()) {
+        payload = nullptr;
+        cursor = 0;
+    } else {
+        auto size = other.getSize();
+        payload = malloc(size + sizeof(size_t));
+        memcpy(payload, other.payload, cursor);
+        cursor = other.cursor;
+    }
 }
 
 Message::Message(Message&& other) noexcept: payload(other.payload), cursor(other.cursor) {
@@ -55,13 +71,21 @@ Message::~Message() {
 }
 
 Message& Message::operator=(const Message& other) {
+    if (this == &other) {
+        return *this;
+    }
     if (payload != nullptr) {
         free(payload);
     }
-    auto size = other.getSize();
-    payload = malloc(size + sizeof(size_t));
-    memcpy(payload, other.payload, cursor);
-    cursor = other.cursor;
+    if (other.payload == nullptr) {
+        payload = nullptr;
+        cursor = 0;
+    } else {
+        auto size = other.getSize();
+        payload = malloc(size + sizeof(size_t));
+        memcpy(payload, other.payload, cursor);
+        cursor = other.cursor;
+    }
     return *this;
 }
 
@@ -87,6 +111,10 @@ void* Message::getPayload() const {
 
 size_t Message::getSize() const {
     return sizeof(size_t) + *static_cast<size_t*>(payload);
+}
+
+bool Message::isInvalid() const {
+    return payload == nullptr;
 }
 
 }  // namespace interproc

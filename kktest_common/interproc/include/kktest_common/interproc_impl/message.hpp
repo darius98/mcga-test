@@ -51,12 +51,12 @@ class Message: private BytesConsumer {
             return message;
     }
 
-    static std::size_t isSane(const void* ptr, std::size_t size);
+    static Message read(const void* src, std::size_t maxSize);
 
-    explicit Message(std::size_t size);
+    static Message invalid();
+
     Message(const Message& other);
     Message(Message&& other) noexcept;
-    explicit Message(void* _payload);
 
     ~Message();
 
@@ -67,7 +67,12 @@ class Message: private BytesConsumer {
 
     std::size_t getSize() const;
 
+    bool isInvalid() const;
+
  private:
+    explicit Message(void* _payload);
+    explicit Message(std::size_t size);
+
     Message& addBytes(const void* bytes, size_t numBytes) override;
 
     void* payload;

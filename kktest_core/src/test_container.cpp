@@ -32,7 +32,7 @@ bool TestContainer::poll() {
         return finishWithError("Non-zero exit code: " + to_string(testProcess->getReturnCode()));
     }
     Message message = testWorker.getPipe()->getNextMessage();
-    if (message.getPayload() == nullptr) {
+    if (message.isInvalid()) {
         return finishWithError("Test unexpectedly exited with code 0");
     }
     callback(message);
