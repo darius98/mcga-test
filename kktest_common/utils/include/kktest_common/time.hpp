@@ -24,7 +24,7 @@ class Timer {
  public:
     Timer();
 
-    double getMillisecondsElapsed() const;
+    double getMsElapsed() const;
 
  private:
     TimePoint startTime;

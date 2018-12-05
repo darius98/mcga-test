@@ -19,7 +19,7 @@ bool Stopwatch::isElapsed() const {
 
 Timer::Timer(): startTime(Clock::now()) {}
 
-double Timer::getMillisecondsElapsed() const {
+double Timer::getMsElapsed() const {
     return msSince(startTime);
 }
 
