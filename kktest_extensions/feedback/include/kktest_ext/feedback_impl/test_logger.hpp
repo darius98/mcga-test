@@ -24,16 +24,25 @@ class TestLogger {
     void logFatalError(const String& errorMessage, const String& testCaseName = "");
 
  private:
+    typedef int Color;
+    static constexpr const Color RED = 31;
+    static constexpr const Color GREEN = 32;
+    static constexpr const Color YELLOW = 33;
+    static constexpr const Color GREY = 90;
+
     String getRecursiveGroupDescription(int groupId);
 
-    String getTestMessage(const TestInfo& testInfo);
+    void printTestMessage(const TestInfo& testInfo);
 
-    bool isInTerminal() const;
-
-    void modifyOutput(const int& code, std::ostream& streamToChange);
+    String colored(const String& message, Color color);
+    String red(const String& s);
+    String yellow(const String& s);
+    String green(const String& s);
+    String grey(const String& s);
 
     std::ostream& stream;
 
+    bool isInTerminal;
     bool maintainTestIndexOrder;
     int testCasesReceived = 0;
     int testCasesFatallyExited = 0;
@@ -41,7 +50,7 @@ class TestLogger {
     int failedTests = 0;
     int failedOptionalTests = 0;
     int testsLogged = 0;
-    std::set<std::pair<int, String>> testsQueue;
+    std::set<TestInfo> testsQueue;
 
     std::map<int, GroupInfo> allGroupsInfo;
 };

@@ -12,12 +12,20 @@ struct TestInfo {
     String description;
     bool passed;
     String failureMessage;
+
+    inline bool operator<(const TestInfo& other) const {
+        return index < other.index;
+    }
 };
 
 struct GroupInfo {
     int parentGroupIndex;
     int index;
     String description;
+
+    inline bool operator<(const GroupInfo& other) const {
+        return index < other.index;
+    }
 };
 
 }  // namespace kktest

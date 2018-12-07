@@ -10,29 +10,29 @@
 using std::cout;
 using std::ostream;
 using std::stringstream;
+using std::to_string;
 
 namespace kktest {
 namespace feedback {
 
 TestLogger::TestLogger(ostream& _stream, bool _maintainTestIndexOrder):
-        stream(_stream), maintainTestIndexOrder(_maintainTestIndexOrder) {}
+        stream(_stream),
+        maintainTestIndexOrder(_maintainTestIndexOrder),
+        isInTerminal(stream.rdbuf() == cout.rdbuf() && isatty(fileno(stdout)) != 0) {}
 
 void TestLogger::addGroupInfo(const GroupInfo& groupInfo) {
     allGroupsInfo[groupInfo.index] = groupInfo;
 }
 
 void TestLogger::logTest(const TestInfo& testInfo) {
-    testsQueue.insert({
-        testInfo.index,
-        getTestMessage(testInfo)
-    });
+    testsQueue.insert(testInfo);
     passedTests += testInfo.passed;
     failedTests += !testInfo.passed;
     failedOptionalTests += !testInfo.passed && testInfo.optional;
     testCasesReceived += (testInfo.index == 1);
     while (!testsQueue.empty() &&
-                (testsQueue.begin()->first == testsLogged + 1 || !maintainTestIndexOrder)) {
-        stream << testsQueue.begin()->second;
+                (testsQueue.begin()->index == testsLogged + 1 || !maintainTestIndexOrder)) {
+        printTestMessage(*testsQueue.begin());
         testsQueue.erase(testsQueue.begin());
         testsLogged += 1;
     }
@@ -42,45 +42,33 @@ void TestLogger::logFinalInformation(bool logNumTests) {
     stream << "\n";
     if (logNumTests) {
         if (testCasesFatallyExited != 0) {
-            modifyOutput(31, stream);
-            stream << "Warning: some test cases closed unexpectedly!\n\n";
-            modifyOutput(0, stream);
+            stream << red("Warning: some test cases closed unexpectedly!") << "\n\n";
             stream << "Test cases found: " << testCasesReceived << "\n"
                    << "Test cases executed successfully: "
                    << testCasesReceived - testCasesFatallyExited << "\n"
-                   << "Test cases executed with fatal errors: ";
-            modifyOutput(31, stream);
-            stream << testCasesFatallyExited;
-            modifyOutput(0, stream);
-            stream << "\n";
+                   << "Test cases executed with fatal errors: "
+                   << red(to_string(testCasesFatallyExited))
+                   << "\n";
         }
         stream << "Total tests executed: " << passedTests + failedTests << "\n";
     }
-    stream << "Tests passed: ";
-    modifyOutput(32, stream);
-    stream << passedTests;
-    modifyOutput(0, stream);
-    stream << "\nTests failed: ";
-    modifyOutput((failedTests == failedOptionalTests ? (failedTests == 0 ? 32 : 33) : 31), stream);
-    stream << failedTests;
-    modifyOutput(0, stream);
+    stream << "Tests passed: " << green(to_string(passedTests)) << "\n";
+    stream << "Tests failed: " << colored(
+        to_string(failedTests),
+        (failedTests == failedOptionalTests ? (failedTests == 0 ? GREEN : YELLOW) : RED));
     if (failedOptionalTests) {
-        stream << " (";
-        modifyOutput(33, stream);
-        stream << failedOptionalTests;
-        modifyOutput(0, stream);
-        stream << " " << (failedOptionalTests == 1 ? "was" : "were") << " optional)";
+        stream << " ("
+               << yellow(to_string(failedOptionalTests))
+               << " "
+               << (failedOptionalTests == 1 ? "was" : "were")
+               << " optional)";
     }
     stream << "\n";
 }
 
 void TestLogger::logFatalError(const String& errorMessage, const String& testCaseName) {
     testCasesFatallyExited += 1;
-    stream << "\nA fatal ";
-    modifyOutput(31, stream);
-    stream << "error";
-    modifyOutput(0, stream);
-    stream << " occurred during execution";
+    stream << "\nA fatal " << red("error") << " occurred during execution";
     if (!testCaseName.empty()) {
         stream << " of test case " << testCaseName;
     }
@@ -100,22 +88,16 @@ String TestLogger::getRecursiveGroupDescription(int groupId) {
     return recursive + groupInfo.description + "::";
 }
 
-String TestLogger::getTestMessage(const TestInfo& testInfo) {
-    stringstream sBuffer;
-    sBuffer << "[";
-    modifyOutput(testInfo.passed ? 32 : (testInfo.optional ? 33 : 31), sBuffer);
-    sBuffer << (testInfo.passed ? 'P' : 'F');
-    modifyOutput(0, sBuffer);
-    sBuffer << "] ";
+void TestLogger::printTestMessage(const TestInfo& testInfo) {
+    stream << "[" << colored(testInfo.passed ? "P" : "F",
+                             testInfo.passed ? GREEN : (testInfo.optional ? YELLOW : RED)) << "] ";
     String groupDescription = getRecursiveGroupDescription(testInfo.groupIndex);
     if (!groupDescription.empty()) {
-        modifyOutput(90, sBuffer);
-        sBuffer << groupDescription;
-        modifyOutput(0, sBuffer);
+        stream << grey(groupDescription);
     }
-    sBuffer << testInfo.description;
+    stream << testInfo.description;
     if (!testInfo.passed) {
-        sBuffer << "\n";
+        stream << "\n";
         // TODO(darius98): This should be somewhere else (in utils maybe?)
         size_t pos = 0;
         String failureMessage = testInfo.failureMessage;
@@ -123,21 +105,32 @@ String TestLogger::getTestMessage(const TestInfo& testInfo) {
             failureMessage.replace(pos, 1, "\n\t");
             pos += 2;
         }
-        sBuffer << "\t" << failureMessage;
+        stream << "\t" << failureMessage;
     }
-    sBuffer << "\n";
-    return sBuffer.str();
+    stream << "\n";
 }
 
-bool TestLogger::isInTerminal() const {
-    return stream.rdbuf() == cout.rdbuf() && isatty(fileno(stdout)) != 0;
+String TestLogger::colored(const String& message, Color color) {
+    if (isInTerminal) {
+        return "\x1b[" + to_string(color) + "m" + message + "\x1b[0m";
+    }
+    return message;
 }
 
-void TestLogger::modifyOutput(const int& code, ostream& streamToChange) {
-    if (!isInTerminal()) {
-        return;
-    }
-    streamToChange << "\x1b[" << code << "m";
+String TestLogger::red(const String& message) {
+    return colored(message, RED);
+}
+
+String TestLogger::yellow(const String& message) {
+    return colored(message, YELLOW);
+}
+
+String TestLogger::green(const String& message) {
+    return colored(message, GREEN);
+}
+
+String TestLogger::grey(const String& message) {
+    return colored(message, GREY);
 }
 
 }  // namespace feedback
