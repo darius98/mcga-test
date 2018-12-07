@@ -21,27 +21,35 @@ void kkTestCase(UtilsTime) {
         setUp([&] { watch = new Stopwatch(4.99); });
         tearDown([&] { delete watch; watch = nullptr; });
 
-        test("isElapsed() returns false when called immediately", [&] {
+        test(testConfig(
+                _.description = "isElapsed() returns false when called immediately",
+                _.optional = true), [&] {
             expect(watch->isElapsed(), isFalse);
             expect(watch->isElapsed(), isFalse);
             expect(watch->isElapsed(), isFalse);
         });
 
-        test("isElapsed() returns false when called after 2ms", [&] {
+        test(testConfig(
+                _.description = "isElapsed() returns false when called after 2ms",
+                _.optional = true), [&] {
             sleepForMs(2);
             expect(watch->isElapsed(), isFalse);
             expect(watch->isElapsed(), isFalse);
             expect(watch->isElapsed(), isFalse);
         });
 
-        test("isElapsed() returns true when called after 5ms", [&] {
+        test(testConfig(
+                _.description = "isElapsed() returns true when called after 5ms",
+                _.optional = true), [&] {
             sleepForMs(5);
             expect(watch->isElapsed(), isTrue);
             expect(watch->isElapsed(), isTrue);
             expect(watch->isElapsed(), isTrue);
         });
 
-        test("isElapsed() returns true when called after 7ms", [&] {
+        test(testConfig(
+                _.description = "isElapsed() returns true when called after 7ms",
+                _.optional = true), [&] {
             sleepForMs(7);
             expect(watch->isElapsed(), isTrue);
             expect(watch->isElapsed(), isTrue);
@@ -50,14 +58,18 @@ void kkTestCase(UtilsTime) {
     });
 
     group("Timer", [] {
-        test("Calling getMsElapsed() immediately returns almost 0", [] {
+        test(testConfig(
+                _.description = "Calling getMsElapsed() immediately returns almost 0",
+                _.optional = true), [] {
             Timer t;
             expect(t.getMsElapsed(), isAlmostEqualTo(0, 0.01));
             expect(t.getMsElapsed(), isAlmostEqualTo(0, 0.01));
             expect(t.getMsElapsed(), isAlmostEqualTo(0, 0.01));
         });
 
-        test("Calling getMsElapsed() after 2ms returns almost 2", [] {
+        test(testConfig(
+                _.description = "Calling getMsElapsed() after 2ms returns almost 2",
+                _.optional = true), [] {
             Timer t;
             sleepForMs(2);
             expect(t.getMsElapsed(), isAlmostEqualTo(2, 0.01));
@@ -65,7 +77,9 @@ void kkTestCase(UtilsTime) {
             expect(t.getMsElapsed(), isAlmostEqualTo(2, 0.01));
         });
 
-        test("Calling getMsElapsed() several times returns correctly", [] {
+        test(testConfig(
+                _.description = "Calling getMsElapsed() several times returns correctly",
+                _.optional = true), [] {
             Timer t;
             sleepForMs(2);
             expect(t.getMsElapsed(), isAlmostEqualTo(2, 0.01));
