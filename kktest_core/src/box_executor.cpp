@@ -5,6 +5,7 @@
 using kktest::interproc::Message;
 using kktest::interproc::MessageReader;
 using kktest::interproc::PipeWriter;
+using kktest::utils::sleepForMs;
 using std::size_t;
 
 namespace kktest {
@@ -34,13 +35,18 @@ void BoxExecutor::finalize() {
 
 void BoxExecutor::ensureFreeContainers(size_t numContainers) {
     while (openContainers.size() > maxNumContainers - numContainers) {
+        bool progress = false;
         for (auto it = openContainers.begin(); it != openContainers.end(); ) {
             if ((*it)->poll()) {
                 delete *it;
                 it = openContainers.erase(it);
+                progress = true;
             } else {
                 ++it;
             }
+        }
+        if (!progress) {
+            sleepForMs(10);
         }
     }
 }

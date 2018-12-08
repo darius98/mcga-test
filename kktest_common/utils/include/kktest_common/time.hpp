@@ -1,38 +1,35 @@
 #ifndef KKTEST_COMMON_UTILS_INCLUDE_KKTEST_COMMON_TIME_HPP_
 #define KKTEST_COMMON_UTILS_INCLUDE_KKTEST_COMMON_TIME_HPP_
 
-#include <chrono>
+#include <ctime>
 
 namespace kktest {
 namespace utils {
 
-typedef std::chrono::high_resolution_clock Clock;
-typedef std::chrono::time_point<Clock> TimePoint;
-
-class Stopwatch {
+class ProcessStopwatch {
  public:
-    explicit Stopwatch(double _ms);
+    explicit ProcessStopwatch(double _ms);
 
     bool isElapsed() const;
 
  private:
-    TimePoint startTime;
+    timespec startTime;
     double ms;
 };
 
-class Timer {
+class ProcessTimer {
  public:
-    Timer();
+    ProcessTimer();
 
     double getMsElapsed() const;
 
  private:
-    TimePoint startTime;
+    timespec startTime;
 };
 
-double msSince(TimePoint pastMoment);
-
 void sleepForMs(int ms);
+
+void spinForMs(double ms);
 
 }  // namespace utils
 }  // namespace kktest

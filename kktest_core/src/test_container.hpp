@@ -20,7 +20,7 @@ class TestContainer {
 
     bool killTestProcess();
 
-    utils::Stopwatch testProcessStopwatch;
+    utils::ProcessStopwatch testProcessStopwatch;
     interproc::WorkerSubprocess testWorker;
     Callback callback;
 };

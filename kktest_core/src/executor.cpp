@@ -2,7 +2,7 @@
 #include "errors.hpp"
 #include "executor.hpp"
 
-using kktest::utils::Timer;
+using kktest::utils::ProcessTimer;
 using std::exception;
 using std::move;
 
@@ -48,7 +48,7 @@ TestExecutionInfo Executor::run(Test* test, Executable func) {
             failureMessage = value;
         }
     };
-    Timer t;
+    ProcessTimer t;
     Group* group = test->getGroup();
     runSetUpsRecursively(group, setFailure);
     runTest(func, setFailure);

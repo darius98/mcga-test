@@ -1,3 +1,4 @@
+#include <chrono>
 #include <thread>
 
 #include <kktest_common/time.hpp>
@@ -7,28 +8,48 @@ using std::chrono::milliseconds;
 using std::chrono::time_point;
 using std::this_thread::sleep_for;
 
+namespace {
+
+timespec processNow() {
+    timespec t{};
+    clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &t);
+    return t;
+}
+
+double msSince(timespec pastMoment) {
+    timespec now = processNow();
+    return (now.tv_sec - pastMoment.tv_sec) * 1000.0
+            + (now.tv_nsec - pastMoment.tv_nsec) * 0.000001;
+}
+
+}  // namespace
+
 namespace kktest {
 namespace utils {
 
-Stopwatch::Stopwatch(double _ms):
-        ms(_ms), startTime(Clock::now()) {}
+ProcessStopwatch::ProcessStopwatch(double _ms):
+        ms(_ms), startTime(processNow()) {}
 
-bool Stopwatch::isElapsed() const {
+bool ProcessStopwatch::isElapsed() const {
     return msSince(startTime) > ms;
 }
 
-Timer::Timer(): startTime(Clock::now()) {}
+ProcessTimer::ProcessTimer(): startTime(processNow()) {}
 
-double Timer::getMsElapsed() const {
+double ProcessTimer::getMsElapsed() const {
     return msSince(startTime);
-}
-
-double msSince(TimePoint pastMoment) {
-    return duration_cast<milliseconds>(Clock::now() - pastMoment).count();
 }
 
 void sleepForMs(int ms) {
     sleep_for(milliseconds(ms));
+}
+
+void spinForMs(double ms) {
+    timespec start = processNow();
+    volatile int spins = 0;
+    while (msSince(start) < ms) {
+        spins += 1;
+    }
 }
 
 }  // namespace utils

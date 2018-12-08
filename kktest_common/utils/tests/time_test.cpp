@@ -11,46 +11,38 @@ using kktest::test;
 using kktest::core_matchers::isFalse;
 using kktest::core_matchers::isTrue;
 using kktest::core_matchers::isAlmostEqualTo;
-using kktest::utils::sleepForMs;
-using kktest::utils::Stopwatch;
-using kktest::utils::Timer;
+using kktest::utils::spinForMs;
+using kktest::utils::ProcessStopwatch;
+using kktest::utils::ProcessTimer;
 
 void kkTestCase(UtilsTime) {
-    group("Stopwatch::Starting a stopwatch with 4.99ms", [] {
-        Stopwatch* watch = nullptr;
-        setUp([&] { watch = new Stopwatch(4.99); });
+    group("ProcessStopwatch::Starting a stopwatch with 50ms", [] {
+        ProcessStopwatch* watch = nullptr;
+        setUp([&] { watch = new ProcessStopwatch(50); });
         tearDown([&] { delete watch; watch = nullptr; });
 
-        test(testConfig(
-                _.description = "isElapsed() returns false when called immediately",
-                _.optional = true), [&] {
+        test("isElapsed() returns false when called immediately", [&] {
             expect(watch->isElapsed(), isFalse);
             expect(watch->isElapsed(), isFalse);
             expect(watch->isElapsed(), isFalse);
         });
 
-        test(testConfig(
-                _.description = "isElapsed() returns false when called after 2ms",
-                _.optional = true), [&] {
-            sleepForMs(2);
+        test("isElapsed() returns false when called after 30ms", [&] {
+            spinForMs(30);
             expect(watch->isElapsed(), isFalse);
             expect(watch->isElapsed(), isFalse);
             expect(watch->isElapsed(), isFalse);
         });
 
-        test(testConfig(
-                _.description = "isElapsed() returns true when called after 5ms",
-                _.optional = true), [&] {
-            sleepForMs(5);
+        test("isElapsed() returns true when called after 51ms", [&] {
+            spinForMs(51);
             expect(watch->isElapsed(), isTrue);
             expect(watch->isElapsed(), isTrue);
             expect(watch->isElapsed(), isTrue);
         });
 
-        test(testConfig(
-                _.description = "isElapsed() returns true when called after 7ms",
-                _.optional = true), [&] {
-            sleepForMs(7);
+        test("isElapsed() returns true when called after 70ms", [&] {
+            spinForMs(70);
             expect(watch->isElapsed(), isTrue);
             expect(watch->isElapsed(), isTrue);
             expect(watch->isElapsed(), isTrue);
@@ -58,41 +50,35 @@ void kkTestCase(UtilsTime) {
     });
 
     group("Timer", [] {
-        test(testConfig(
-                _.description = "Calling getMsElapsed() immediately returns almost 0",
-                _.optional = true), [] {
-            Timer t;
-            expect(t.getMsElapsed(), isAlmostEqualTo(0, 0.01));
-            expect(t.getMsElapsed(), isAlmostEqualTo(0, 0.01));
-            expect(t.getMsElapsed(), isAlmostEqualTo(0, 0.01));
+        test("Calling getMsElapsed() immediately returns almost 0", [] {
+            ProcessTimer t;
+            expect(t.getMsElapsed(), isAlmostEqualTo(0, 4));
+            expect(t.getMsElapsed(), isAlmostEqualTo(0, 4));
+            expect(t.getMsElapsed(), isAlmostEqualTo(0, 4));
         });
 
-        test(testConfig(
-                _.description = "Calling getMsElapsed() after 2ms returns almost 2",
-                _.optional = true), [] {
-            Timer t;
-            sleepForMs(2);
-            expect(t.getMsElapsed(), isAlmostEqualTo(2, 0.01));
-            expect(t.getMsElapsed(), isAlmostEqualTo(2, 0.01));
-            expect(t.getMsElapsed(), isAlmostEqualTo(2, 0.01));
+        test("Calling getMsElapsed() after 20ms returns around 20", [] {
+            ProcessTimer t;
+            spinForMs(20);
+            expect(t.getMsElapsed(), isAlmostEqualTo(20, 4));
+            expect(t.getMsElapsed(), isAlmostEqualTo(20, 4));
+            expect(t.getMsElapsed(), isAlmostEqualTo(20, 4));
         });
 
-        test(testConfig(
-                _.description = "Calling getMsElapsed() several times returns correctly",
-                _.optional = true), [] {
-            Timer t;
-            sleepForMs(2);
-            expect(t.getMsElapsed(), isAlmostEqualTo(2, 0.01));
-            expect(t.getMsElapsed(), isAlmostEqualTo(2, 0.01));
-            expect(t.getMsElapsed(), isAlmostEqualTo(2, 0.01));
-            sleepForMs(2);
-            expect(t.getMsElapsed(), isAlmostEqualTo(4, 0.01));
-            expect(t.getMsElapsed(), isAlmostEqualTo(4, 0.01));
-            expect(t.getMsElapsed(), isAlmostEqualTo(4, 0.01));
-            sleepForMs(2);
-            expect(t.getMsElapsed(), isAlmostEqualTo(6, 0.01));
-            expect(t.getMsElapsed(), isAlmostEqualTo(6, 0.01));
-            expect(t.getMsElapsed(), isAlmostEqualTo(6, 0.01));
+        test("Calling getMsElapsed() several times returns correctly", [] {
+            ProcessTimer t;
+            spinForMs(20);
+            expect(t.getMsElapsed(), isAlmostEqualTo(20, 4));
+            expect(t.getMsElapsed(), isAlmostEqualTo(20, 4));
+            expect(t.getMsElapsed(), isAlmostEqualTo(20, 4));
+            spinForMs(20);
+            expect(t.getMsElapsed(), isAlmostEqualTo(40, 4));
+            expect(t.getMsElapsed(), isAlmostEqualTo(40, 4));
+            expect(t.getMsElapsed(), isAlmostEqualTo(40, 4));
+            spinForMs(20);
+            expect(t.getMsElapsed(), isAlmostEqualTo(60, 4));
+            expect(t.getMsElapsed(), isAlmostEqualTo(60, 4));
+            expect(t.getMsElapsed(), isAlmostEqualTo(60, 4));
         });
     });
 }
