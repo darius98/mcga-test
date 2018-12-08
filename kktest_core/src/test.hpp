@@ -16,6 +16,8 @@ struct TestExecutionInfo {
     bool passed = true;
     String failureMessage = "";
 
+    static interproc::Message toErrorMessage(const String& errorMessage);
+
     static TestExecutionInfo fromMessage(const interproc::Message& message);
 
     interproc::Message toMessage() const;

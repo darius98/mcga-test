@@ -10,6 +10,8 @@ namespace interproc {
 
 class SubprocessHandler {
  public:
+    enum FinishStatus { ZERO_EXIT, NON_ZERO_EXIT, SIGNALED, UNKNOWN };
+
     enum KillResult { KILLED, ALREADY_DEAD };
 
     virtual ~SubprocessHandler() = default;
@@ -25,6 +27,8 @@ class SubprocessHandler {
     virtual bool isSignaled() = 0;
 
     virtual int getSignal() = 0;
+
+    FinishStatus getFinishStatus();
 };
 
 SubprocessHandler* forkAndRunInSubprocess(const std::function<void()>& func);

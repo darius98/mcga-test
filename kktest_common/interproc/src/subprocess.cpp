@@ -28,6 +28,16 @@ PipeReader* WorkerSubprocess::getPipe() {
     return pipeReader;
 }
 
+SubprocessHandler::FinishStatus SubprocessHandler::getFinishStatus() {
+    if (isSignaled()) {
+        return SIGNALED;
+    }
+    if (!isExited()) {
+        return UNKNOWN;
+    }
+    return getReturnCode() == 0 ? ZERO_EXIT : NON_ZERO_EXIT;
+}
+
 WorkerSubprocess forkAndRunWorkerSubprocess(SubprocessWork work) {
     auto pipe = createAnonymousPipe();
     auto worker = forkAndRunInSubprocess([&pipe, &work]() {

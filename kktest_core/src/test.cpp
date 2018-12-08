@@ -15,6 +15,10 @@ interproc::Message TestExecutionInfo::toMessage() const {
             failureMessage);
 }
 
+Message TestExecutionInfo::toErrorMessage(const String& errorMessage) {
+    return Message::build(FINISHED_SUCCESSFULLY, -1.0, false, errorMessage);
+}
+
 TestExecutionInfo TestExecutionInfo::fromMessage(const Message& message) {
     TestExecutionInfo info{};
     MessageReader reader(message);
