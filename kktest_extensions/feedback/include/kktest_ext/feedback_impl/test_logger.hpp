@@ -15,13 +15,13 @@ class TestLogger {
  public:
     explicit TestLogger(std::ostream& _stream, bool _maintainTestIndexOrder = true);
 
-    void addGroupInfo(const GroupInfo& groupInfo);
+    void addGroupInfo(const GroupInfo& groupInfo, const String& testCaseName = "");
 
-    void logTest(const TestInfo& testInfo);
-
-    void logFinalInformation(bool logNumTests = false);
+    void logTest(const TestInfo& testInfo, const String& testCaseName = "");
 
     void logFatalError(const String& errorMessage, const String& testCaseName = "");
+
+    void logFinalInformation(bool logNumTests = false);
 
  private:
     typedef int Color;
@@ -30,9 +30,9 @@ class TestLogger {
     static constexpr const Color YELLOW = 33;
     static constexpr const Color GREY = 90;
 
-    String getRecursiveGroupDescription(int groupId);
+    String getRecursiveGroupDescription(int groupId, const String& testCaseName);
 
-    void printTestMessage(const TestInfo& testInfo);
+    void printTestMessage(const TestInfo& testInfo, const String& testCaseName);
 
     String colored(const String& message, Color color);
     String red(const String& s);
@@ -50,9 +50,9 @@ class TestLogger {
     int failedTests = 0;
     int failedOptionalTests = 0;
     int testsLogged = 0;
-    std::set<TestInfo> testsQueue;
+    std::set<std::pair<TestInfo, String>> testsQueue;
 
-    std::map<int, GroupInfo> allGroupsInfo;
+    std::map<std::pair<String, int>, GroupInfo> allGroupsInfo;
 };
 
 }  // namespace feedback

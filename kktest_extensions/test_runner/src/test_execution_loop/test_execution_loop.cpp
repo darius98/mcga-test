@@ -25,12 +25,12 @@ void TestExecutionLoop::addToLoop(const String& testPath, int maxParallelTests) 
                 case KKTestCaseInfo::FINISH:
                     break;
                 case KKTestCaseInfo::GROUP:
-                    testLogger.addGroupInfo(info.groupsReceived.back());
+                    testLogger.addGroupInfo(info.groupsReceived.back(), info.testExecutablePath);
                     break;
                 case KKTestCaseInfo::TEST:
                     failedAnyTest |= !info.testsReceived.back().passed
                                         && !info.testsReceived.back().optional;
-                    testLogger.logTest(info.testsReceived.back());
+                    testLogger.logTest(info.testsReceived.back(), info.testExecutablePath);
                     break;
             }
         });
