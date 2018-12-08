@@ -8,12 +8,23 @@ using kktest::interproc::MessageReader;
 namespace kktest {
 
 interproc::Message TestExecutionInfo::toMessage() const {
-    return Message::build(executionTimeTicks, passed, failureMessage);
+    return Message::build(
+            FINISHED_SUCCESSFULLY,
+            executionTimeTicks,
+            passed,
+            failureMessage);
 }
 
 TestExecutionInfo TestExecutionInfo::fromMessage(const Message& message) {
     TestExecutionInfo info{};
     MessageReader reader(message);
+    MessageStatus status;
+    reader << status;
+    if (status == CONFIGURATION_ERROR) {
+        String errorMessage;
+        reader << errorMessage;
+        throw ConfigurationError(errorMessage);
+    }
     reader << info.executionTimeTicks << info.passed << info.failureMessage;
     return info;
 }

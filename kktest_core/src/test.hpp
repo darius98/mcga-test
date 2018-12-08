@@ -10,6 +10,8 @@ namespace kktest {
 class Group;
 
 struct TestExecutionInfo {
+    enum MessageStatus { FINISHED_SUCCESSFULLY, CONFIGURATION_ERROR };
+
     double executionTimeTicks = -1.0;
     bool passed = true;
     String failureMessage = "";

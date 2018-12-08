@@ -1,6 +1,7 @@
 #include <kktest_common/interproc.hpp>
 
 #include "box_executor.hpp"
+#include "errors.hpp"
 
 using kktest::interproc::Message;
 using kktest::interproc::MessageReader;
@@ -20,8 +21,12 @@ void BoxExecutor::execute(Test* test, Executable func) {
     openContainers.insert(new TestContainer(
         test->getConfig().timeTicksLimit * getTimeTickLengthMs() + 100.0,
         [this, func, test](PipeWriter* pipe) {
-            auto executionInfo = run(test, func);
-            pipe->sendMessage(executionInfo.toMessage());
+            try {
+                auto executionInfo = run(test, func);
+                pipe->sendMessage(executionInfo.toMessage());
+            } catch(const ConfigurationError& error) {
+                pipe->sendMessage(TestExecutionInfo::CONFIGURATION_ERROR, String(error.what()));
+            }
         },
         [this, test](const Message& message) {
             test->setExecuted(TestExecutionInfo::fromMessage(message));
