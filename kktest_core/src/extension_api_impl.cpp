@@ -1,5 +1,7 @@
 #include "extension_api_impl.hpp"
 
+using kktest::arguments::ArgumentsApi;
+
 namespace kktest {
 
 Extension::~Extension() = default;

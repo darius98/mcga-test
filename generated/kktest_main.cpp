@@ -2,10 +2,10 @@
 
 #include <kktest_ext/feedback_impl/ext.hpp>
 
-using kktest::ArgumentsApi;
 using kktest::Extension;
 using kktest::InternalArgs;
 using kktest::registerInternalFlags;
+using kktest::arguments::ArgumentsApi;
 using std::vector;
 
 int main(int argc, char** argv) {

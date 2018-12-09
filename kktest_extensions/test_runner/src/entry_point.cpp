@@ -8,10 +8,10 @@
 
 #include <test_execution_loop/test_execution_loop.hpp>
 
-using kktest::ArgumentsApi;
-using kktest::IntArgument;
-using kktest::Flag;
 using kktest::String;
+using kktest::arguments::ArgumentsApi;
+using kktest::arguments::IntArgument;
+using kktest::arguments::Flag;
 using kktest::test_runner::explore;
 using kktest::test_runner::TestExecutionLoop;
 using std::cout;

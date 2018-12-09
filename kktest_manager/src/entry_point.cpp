@@ -2,11 +2,11 @@
 
 #include <iostream>
 
-#include <kktest_impl/arguments_api.hpp>
+#include <kktest_common/arguments.hpp>
 
-using kktest::ArgumentsApi;
-using kktest::Flag;
 using kktest::String;
+using kktest::arguments::ArgumentsApi;
+using kktest::arguments::Flag;
 using std::cout;
 using std::vector;
 

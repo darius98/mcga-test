@@ -23,6 +23,7 @@ function(add_kktest TEST_NAME)
 endfunction()
 
 add_subdirectory(kktest_common/strutil)
+add_subdirectory(kktest_common/arguments)
 add_subdirectory(kktest_common/interproc)
 add_subdirectory(kktest_common/utils)
 

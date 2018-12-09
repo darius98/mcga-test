@@ -2,8 +2,7 @@
 #include <map>
 #include <set>
 
-#include <kktest_common/strutil.hpp>
-#include <kktest_impl/arguments_api.hpp>
+#include <kktest_common/arguments.hpp>
 
 using kktest::strutil::startsWith;
 using kktest::strutil::toLower;
@@ -17,6 +16,7 @@ using std::to_string;
 using std::vector;
 
 namespace kktest {
+namespace arguments {
 
 class CommandLineSpecImpl {
  public:
@@ -347,4 +347,5 @@ ArgumentsApi* ArgumentsApi::create(const String& helpPrefix) {
     return api;
 }
 
+}  // namespace arguments
 }  // namespace kktest

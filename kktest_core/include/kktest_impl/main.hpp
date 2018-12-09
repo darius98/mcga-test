@@ -8,13 +8,13 @@
 namespace kktest {
 
 struct InternalArgs {
-    Flag* versionFlag = nullptr;
-    Flag* getSignatureFlag = nullptr;
-    Flag* boxedFlag = nullptr;
-    IntArgument* maxParallelTestsArgument = nullptr;
+    arguments::Flag* versionFlag = nullptr;
+    arguments::Flag* getSignatureFlag = nullptr;
+    arguments::Flag* boxedFlag = nullptr;
+    arguments::IntArgument* maxParallelTestsArgument = nullptr;
 };
 
-InternalArgs registerInternalFlags(ArgumentsApi* argumentsApi);
+InternalArgs registerInternalFlags(arguments::ArgumentsApi* argumentsApi);
 
 int main(const std::vector<Extension*>& extensions, InternalArgs internalFlags);
 

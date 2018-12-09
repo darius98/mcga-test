@@ -10,7 +10,7 @@ namespace feedback {
 
 class FeedbackExtension: public Extension {
  public:
-    void registerCommandLineArguments(ArgumentsApi* argumentsApi) override;
+    void registerCommandLineArguments(arguments::ArgumentsApi* argumentsApi) override;
 
     void init(ExtensionApi* api) override;
 
@@ -24,8 +24,8 @@ class FeedbackExtension: public Extension {
     TestLogger* logger = nullptr;
     interproc::PipeWriter* pipe = nullptr;
 
-    Flag* quietFlag;
-    Argument* pipeNameArgument;
+    arguments::Flag* quietFlag;
+    arguments::Argument* pipeNameArgument;
 };
 
 }  // namespace feedback

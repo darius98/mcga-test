@@ -5,6 +5,7 @@
 #include "driver.hpp"
 #include "test_case_registry.hpp"
 
+using kktest::arguments::ArgumentsApi;
 using std::cout;
 using std::exception;
 using std::invalid_argument;

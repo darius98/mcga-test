@@ -4,6 +4,7 @@
 #include <kktest_ext/feedback_impl/ext.hpp>
 #include <kktest_ext/feedback_impl/pipe_message_type.hpp>
 
+using kktest::arguments::ArgumentsApi;
 using kktest::interproc::Message;
 using kktest::interproc::PipeWriter;
 using kktest::interproc::openNamedPipeForWriting;

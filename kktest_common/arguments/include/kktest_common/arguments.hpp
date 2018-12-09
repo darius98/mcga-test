@@ -1,11 +1,12 @@
-#ifndef KKTEST_CORE_INCLUDE_KKTEST_IMPL_ARGUMENTS_API_HPP_
-#define KKTEST_CORE_INCLUDE_KKTEST_IMPL_ARGUMENTS_API_HPP_
+#ifndef KKTEST_COMMON_ARGUMENTS_INCLUDE_KKTEST_COMMON_ARGUMENTS_HPP_
+#define KKTEST_COMMON_ARGUMENTS_INCLUDE_KKTEST_COMMON_ARGUMENTS_HPP_
 
 #include <vector>
 
-#include <kktest_impl/types.hpp>
+#include <kktest_common/strutil.hpp>
 
 namespace kktest {
+namespace arguments {
 
 class Flag {
  public:
@@ -92,6 +93,7 @@ class ArgumentsApi {
     }
 };
 
+}  // namespace arguments
 }  // namespace kktest
 
-#endif  // KKTEST_CORE_INCLUDE_KKTEST_IMPL_ARGUMENTS_API_HPP_
+#endif  // KKTEST_COMMON_ARGUMENTS_INCLUDE_KKTEST_COMMON_ARGUMENTS_HPP_
