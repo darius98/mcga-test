@@ -34,6 +34,10 @@ class ArgumentsApi {
 
     virtual std::vector<String> interpret(int argc, char** argv) = 0;
 
+    virtual void addHelpFlag() = 0;
+
+    virtual void checkHelpFlag() = 0;
+
     inline Argument* addArgument(const String& name,
                                  const String& helpText,
                                  const String& shortName,

@@ -33,7 +33,9 @@ class ArgumentsApiImpl: public ArgumentsApi {
 
     std::vector<String> interpret(int argc, char** argv) override;
 
-    void addHelpFlag();
+    void addHelpFlag() override;
+
+    void checkHelpFlag() override;
 
  private:
     void addSpec(CommandLineSpec* spec, const String& name, const String& helpText,

@@ -22,6 +22,7 @@ using std::filesystem::path;
 
 int main(int argc, char** argv) {
     ArgumentsApi* argumentsApi = ArgumentsApi::create("KKTest Runner.");
+    argumentsApi->addHelpFlag();
 
     Flag* versionFlag = argumentsApi->addFlag(
             "version",
@@ -40,6 +41,7 @@ int main(int argc, char** argv) {
             1,
             5);
     vector<String> positional = argumentsApi->interpret(argc, argv);
+    argumentsApi->checkHelpFlag();
     if (versionFlag->get()) {
         cout << "KKTest test test_runner version " << VERSION << "\n";
         return 0;

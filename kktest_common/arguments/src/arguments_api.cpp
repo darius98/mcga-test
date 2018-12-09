@@ -5,9 +5,7 @@ namespace kktest {
 namespace arguments {
 
 ArgumentsApi* ArgumentsApi::create(const String& helpPrefix) {
-    auto api = new ArgumentsApiImpl(helpPrefix);
-    api->addHelpFlag();
-    return api;
+    return new ArgumentsApiImpl(helpPrefix);
 }
 
 }  // namespace arguments

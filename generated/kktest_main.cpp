@@ -11,6 +11,7 @@ using std::vector;
 int main(int argc, char** argv) {
     vector<Extension*> extensions;
     ArgumentsApi* argumentsApi = ArgumentsApi::create("KKTest test binary.");
+    argumentsApi->addHelpFlag();
     InternalArgs internalArgs = registerInternalFlags(argumentsApi);
 
 kktest::feedback::FeedbackExtension feedbackExtension;
@@ -18,6 +19,7 @@ feedbackExtension.registerCommandLineArguments(argumentsApi);
 extensions.push_back(&feedbackExtension);
 
     argumentsApi->interpret(argc, argv);
+    argumentsApi->checkHelpFlag();
     int ret = kktest::main(extensions, internalArgs);
     delete argumentsApi;
     return ret;

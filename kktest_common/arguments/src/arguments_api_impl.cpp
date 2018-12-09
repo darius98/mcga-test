@@ -146,15 +146,18 @@ vector<String> ArgumentsApiImpl::interpret(int argc, char** argv) {
     if (!lastShortName.empty()) {
         applyImplicit(lastShortName);
     }
-    if (helpFlag != nullptr && helpFlag->get()) {
-        cout << help << "\n";
-        exit(0);
-    }
     return positionalArguments;
 }
 
 void ArgumentsApiImpl::addHelpFlag() {
     helpFlag = addFlag("help", "Display this help menu.", "h");
+}
+
+void ArgumentsApiImpl::checkHelpFlag() {
+    if (helpFlag != nullptr && helpFlag->get()) {
+        cout << help << "\n";
+        exit(0);
+    }
 }
 
 void ArgumentsApiImpl::addSpec(CommandLineSpec* spec,
