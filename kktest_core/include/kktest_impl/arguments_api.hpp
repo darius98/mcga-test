@@ -21,6 +21,13 @@ class Argument {
     virtual String get() const = 0;
 };
 
+class IntArgument {
+ public:
+    virtual ~IntArgument() = default;
+
+    virtual int get() const = 0;
+};
+
 class ArgumentsApi {
  public:
     static ArgumentsApi* create(const String& helpPrefix);
@@ -32,6 +39,12 @@ class ArgumentsApi {
                                   const String& shortName,
                                   const String& defaultValue,
                                   const String& implicitValue) = 0;
+
+    virtual IntArgument* addIntArgument(const String& name,
+                                        const String& helpText,
+                                        const String& shortName,
+                                        int defaultValue,
+                                        int implicitValue) = 0;
 
     virtual Flag* addFlag(const String& name,
                           const String& helpText,
@@ -54,6 +67,24 @@ class ArgumentsApi {
 
     inline Argument* addArgument(const String& name, const String& helpText) {
         return addArgument(name, helpText, "");
+    }
+
+    inline IntArgument* addIntArgument(const String& name,
+                                       const String& helpText,
+                                       const String& shortName,
+                                       int defaultValue) {
+        return addIntArgument(name, helpText, shortName, defaultValue, 0);
+    }
+
+    inline IntArgument* addIntArgument(const String& name,
+                                       const String& helpText,
+                                       const String& shortName) {
+        return addIntArgument(name, helpText, shortName, 0);
+    }
+
+    inline IntArgument* addIntArgument(const String& name,
+                                       const String& helpText) {
+        return addIntArgument(name, helpText, "");
     }
 
     inline Flag* addFlag(const String& name, const String& helpText) {

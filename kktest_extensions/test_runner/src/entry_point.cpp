@@ -9,7 +9,7 @@
 #include <test_execution_loop/test_execution_loop.hpp>
 
 using kktest::ArgumentsApi;
-using kktest::Argument;
+using kktest::IntArgument;
 using kktest::Flag;
 using kktest::String;
 using kktest::test_runner::explore;
@@ -27,18 +27,18 @@ int main(int argc, char** argv) {
             "version",
             "Display program version.",
             "v");
-    Argument* maxParallelCasesArgument = argumentsApi->addArgument(
+    IntArgument* maxParallelCasesArgument = argumentsApi->addIntArgument(
             "parallel-cases",
             "Maximum number of concurrent test cases.",
             "",
-            "1",
-            "3");
-    Argument* maxParallelTestsPerCaseArgument = argumentsApi->addArgument(
+            1,
+            3);
+    IntArgument* maxParallelTestsPerCaseArgument = argumentsApi->addIntArgument(
             "parallel-tests-per-case",
             "Maximum number of concurrent tests per test case",
             "",
-            "1",
-            "5");
+            1,
+            5);
     vector<String> positional = argumentsApi->interpret(argc, argv);
     if (versionFlag->get()) {
         cout << "KKTest test test_runner version " << VERSION << "\n";
@@ -49,24 +49,8 @@ int main(int argc, char** argv) {
         rootPath = positional[0];
     }
 
-    int maxParallelTestCases;
-    try {
-        maxParallelTestCases = stoi(maxParallelCasesArgument->get());
-    } catch(const invalid_argument& exc) {
-        cout << "Invalid value provided for argument \"parallel-cases\": "
-             << "\"" << maxParallelCasesArgument->get() << "\"\n";
-        return 1;
-    }
-    int maxParallelTestsPerCase;
-    try {
-        maxParallelTestsPerCase = stoi(maxParallelTestsPerCaseArgument->get());
-    } catch(const invalid_argument& exc) {
-        cout << "Invalid value provided for argument \"parallel-tests-per-case\": "
-             << "\"" << maxParallelCasesArgument->get() << "\"\n";
-        return 1;
-    }
-
-
+    int maxParallelTestCases = maxParallelCasesArgument->get();
+    int maxParallelTestsPerCase = maxParallelTestsPerCaseArgument->get();
     auto executionLoop = new TestExecutionLoop(maxParallelTestCases);
     cout << "Searching for test cases...\n";
     explore(path(rootPath), [executionLoop, maxParallelTestsPerCase](path testCase) {

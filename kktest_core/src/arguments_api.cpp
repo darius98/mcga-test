@@ -8,9 +8,12 @@
 using kktest::strutil::startsWith;
 using kktest::strutil::toLower;
 using std::cout;
+using std::invalid_argument;
 using std::map;
 using std::runtime_error;
 using std::set;
+using std::stoi;
+using std::to_string;
 using std::vector;
 
 namespace kktest {
@@ -81,6 +84,42 @@ class ArgumentImpl: public Argument, public CommandLineSpecImpl {
     String implicitValue;
 };
 
+class IntArgumentImpl: public IntArgument, public CommandLineSpecImpl {
+ public:
+    IntArgumentImpl(int _defaultValue, int _implicitValue):
+            value(_defaultValue),
+            defaultValue(_defaultValue),
+            implicitValue(_implicitValue) {}
+
+    ~IntArgumentImpl() override = default;
+
+    int get() const override {
+        return value;
+    }
+
+    void setDefault() override {
+        value = defaultValue;
+    }
+
+    void setImplicit() override {
+        value = implicitValue;
+    }
+
+    void setValue(const String& _value) override {
+        try {
+            value = stoi(_value);
+        } catch(const invalid_argument& error) {
+            cout << "Invalid value for int argument: \"" << _value << "\"\n";
+            exit(1);
+        }
+    }
+
+ private:
+    int value;
+    int defaultValue;
+    int implicitValue;
+};
+
 class ArgumentsApiImpl: public ArgumentsApi {
  public:
     explicit ArgumentsApiImpl(String helpPrefix): help(move(helpPrefix)) {}
@@ -118,6 +157,40 @@ class ArgumentsApiImpl: public ArgumentsApi {
             specsByCommandLineString[shortName] = spec;
         }
         help += getHelpSection(name, helpText, shortName, defaultValue, implicitValue);
+        return spec;
+    }
+
+    IntArgument* addIntArgument(const String& name,
+                                const String& helpText,
+                                const String& shortName,
+                                int defaultValue,
+                                int implicitValue) override {
+        if (reservedNames.count(name) != 0) {
+            throw runtime_error(
+                    "Argument tried to register " + name + " as a command-line name, "
+                    "but a different argument already has it as a name.");
+        }
+        if (!shortName.empty() && reservedNames.count(shortName) != 0) {
+            throw runtime_error(
+                    "Argument tried to register " + shortName + " as a command-line "
+                    "short name, but a different argument already has it as a short name.");
+        }
+        if (shortName.size() > 1) {
+            throw runtime_error("Argument short name should always have length 1.");
+        }
+        auto spec = new IntArgumentImpl(defaultValue, implicitValue);
+        commandLineSpecs.push_back(spec);
+        reservedNames.insert(name);
+        specsByCommandLineString[name] = spec;
+        if (!shortName.empty()) {
+            reservedNames.insert(shortName);
+            specsByCommandLineString[shortName] = spec;
+        }
+        help += getHelpSection(name,
+                               helpText,
+                               shortName,
+                               to_string(defaultValue),
+                               to_string(implicitValue));
         return spec;
     }
 

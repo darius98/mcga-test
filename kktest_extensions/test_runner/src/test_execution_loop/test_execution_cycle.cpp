@@ -57,7 +57,7 @@ void TestExecutionCycle::start() {
     char* cmd = copyAsCString(testPath.c_str());
     char* quietArg = copyAsCString("--quiet");
     char* boxedArg = copyAsCString("--boxed");
-    char* pipeToArg = copyAsCString(("--pipe_to=" + pipeName).c_str());
+    char* pipeToArg = copyAsCString(("--pipe-to=" + pipeName).c_str());
     char* maxParallelTestsArg = copyAsCString(
             ("--max_parallel_tests=" + to_string(maxParallelTests)).c_str());
     char* argv[] = {cmd, quietArg, boxedArg, pipeToArg, maxParallelTestsArg, nullptr};

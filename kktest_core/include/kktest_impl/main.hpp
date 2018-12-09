@@ -11,7 +11,7 @@ struct InternalArgs {
     Flag* versionFlag = nullptr;
     Flag* getSignatureFlag = nullptr;
     Flag* boxedFlag = nullptr;
-    Argument* maxParallelTestsArgument = nullptr;
+    IntArgument* maxParallelTestsArgument = nullptr;
 };
 
 InternalArgs registerInternalFlags(ArgumentsApi* argumentsApi);

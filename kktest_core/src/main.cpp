@@ -23,11 +23,11 @@ InternalArgs registerInternalFlags(ArgumentsApi* argumentsApi) {
         "boxed",
         "Run each test in an isolated process (boxed)",
         "b");
-    args.maxParallelTestsArgument = argumentsApi->addArgument(
+    args.maxParallelTestsArgument = argumentsApi->addIntArgument(
         "max-parallel-tests",
         "Maximum number of tests to execute in parallel (processes to spawn) when running boxed",
         "",
-        "1");
+        1);
     return args;
 }
 
@@ -51,18 +51,9 @@ int main(const vector<Extension*>& extensions, InternalArgs args) {
         extension->init(&apiImpl);
     }
 
-    int maxParallelTests = 1;
-    try {
-        maxParallelTests = stoi(args.maxParallelTestsArgument->get());
-        if (maxParallelTests < 1) {
-            maxParallelTests = 1;
-        }
-    } catch(const invalid_argument& exc) {
-        if (args.boxedFlag->get()) {
-            cout << "Invalid value for argument max-parallel-tests: "
-                 << "\"" << args.maxParallelTestsArgument->get() << "\"\n";
-            return 1;
-        }
+    int maxParallelTests = args.maxParallelTestsArgument->get();
+    if (maxParallelTests < 1) {
+        maxParallelTests = 1;
     }
 
     TestingDriver* driver = TestingDriver::init(apiImpl.getHooks(),
