@@ -64,12 +64,15 @@ struct Streamer {
     }
 
     template<class K, class V>
-    static void format(std::stringstream& s, const std::unordered_map<K, V>& obj) {
+    static void format(std::stringstream& s,
+                       const std::unordered_map<K, V>& obj) {
         formatMap<K, V, std::unordered_map<K, V>>(s, obj);
     }
 
     template<class I, class T>
-    static void formatList(std::stringstream& s, T obj, char start = '[', char finish = ']') {
+    static void formatList(std::stringstream& s, T obj,
+                           char start = '[',
+                           char finish = ']') {
         s << start;
         for (auto it = obj.begin(); it != obj.end(); ++it) {
             if (it != obj.begin()) {
@@ -101,7 +104,10 @@ struct Streamer {
     static void formatType(std::stringstream& s) {
         int stat;
         String rawName = typeid(T).name();
-        char* name = abi::__cxa_demangle(rawName.c_str(), nullptr, nullptr, &stat);
+        char* name = abi::__cxa_demangle(rawName.c_str(),
+                                         nullptr,
+                                         nullptr,
+                                         &stat);
         if (stat == 0) {
             rawName = name;
             free(name);
@@ -138,7 +144,10 @@ private:
     static void formatType(std::stringstream& s) {
         int stat;
         String rawName = typeid(T).name();
-        char* name = abi::__cxa_demangle(rawName.c_str(), nullptr, nullptr, &stat);
+        char* name = abi::__cxa_demangle(rawName.c_str(),
+                                         nullptr,
+                                         nullptr,
+                                         &stat);
         if (stat == 0) {
             rawName = name;
             free(name);

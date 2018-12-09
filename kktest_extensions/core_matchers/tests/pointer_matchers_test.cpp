@@ -42,7 +42,8 @@ void kkTestCase(PointerMatchers) {
             expect(!isNotNull.matches(nullptr));
         });
 
-        test("isNotNull matcher does not match null pointer of different types", [&] {
+        test("isNotNull matcher does not match null pointer of different types",
+             [&] {
             expect(!isNotNull.matches(intNullPtr));
             expect(!isNotNull.matches(charNullPtr));
             expect(!isNotNull.matches(classNullPtr));

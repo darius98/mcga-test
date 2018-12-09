@@ -13,17 +13,15 @@
 
 namespace kktest {
 
-class TestingDriver {
+class Driver {
  public:
-    static TestingDriver* getInstance();
+    static Driver* getInstance();
 
-    static TestingDriver* init(const TestingDriverHooks& hooks,
-                               bool flagBoxed,
-                               int argumentNumBoxes);
+    static Driver* init(const Hooks& hooks, bool boxed, int numBoxes);
 
-    explicit TestingDriver(TestingDriverHooks hooks, bool flagBoxed, int argumentNumBoxes);
+    explicit Driver(Hooks hooks, bool boxed, int numBoxes);
 
-    ~TestingDriver();
+    ~Driver();
 
     int destroy();
 
@@ -51,12 +49,12 @@ class TestingDriver {
     void markTestStarted(Group* group);
     void markAllTestsStarted(Group* group);
 
-    static TestingDriver* instance;
+    static Driver* instance;
 
-    TestingDriverHooks hookManager;
+    Hooks hooks;
 
-    std::map<Group*, int> testsInExecutionPerGroup;
-    std::set<Group*> groupsWithAllTestsStarted;
+    std::map<Group*, int> testsInExecution;
+    std::set<Group*> groupsPendingFinish;
 
     Executor* executor = nullptr;
     Group* globalScope = nullptr;

@@ -10,7 +10,7 @@ using std::vector;
 
 namespace kktest {
 
-vector<pair<TestCaseRegistry::TestCase, String>>* TestCaseRegistry::testCases = nullptr;
+vector<pair<TestCaseRegistry::TestCase, String>>* TestCaseRegistry::testCases;
 
 void TestCaseRegistry::add(TestCase testCase, const char* name) {
     if (testCases == nullptr) {

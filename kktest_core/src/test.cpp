@@ -38,7 +38,7 @@ Test::Test(const TestConfig& _config, Group* _parentGroup, int _index):
 
 void Test::setExecuted(const TestExecutionInfo& _executionInfo) {
     if (isExecuted()) {
-        throw KKTestLibraryImplementationError("Test::setExecuted called twice on the same test.");
+        throw Bug("Test::setExecuted called twice on the same test.");
     }
     executed = true;
     executionInfo = _executionInfo;

@@ -39,7 +39,8 @@ typedef const std::function<void(PipeWriter*)>& SubprocessWork;
 
 class WorkerSubprocess {
  public:
-    WorkerSubprocess(SubprocessHandler* _subprocessHandler, PipeReader* _pipeReader);
+    WorkerSubprocess(SubprocessHandler* _subprocessHandler,
+                     PipeReader* _pipeReader);
     WorkerSubprocess(WorkerSubprocess&& other) noexcept;
 
     WorkerSubprocess(const WorkerSubprocess& other) = delete;

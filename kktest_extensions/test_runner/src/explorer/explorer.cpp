@@ -29,8 +29,8 @@ const unsigned char kkTestSignatureSecondHalf[] =
 
 bool containsKKTestSignature(unsigned char* buffer, size_t bufferSize) {
     for (size_t i = 0; i + kkTestSigSize < bufferSize; ++i) {
-        if (memcmp(buffer + i, kkTestSignatureFirstHalf, kkTestSigHalfSize) == 0 &&
-                memcmp(buffer + i + kkTestSigHalfSize,
+        if (memcmp(buffer + i, kkTestSignatureFirstHalf, kkTestSigHalfSize) == 0
+                && memcmp(buffer + i + kkTestSigHalfSize,
                        kkTestSignatureSecondHalf,
                        kkTestSigHalfSize) == 0) {
             return true;
@@ -64,7 +64,9 @@ bool isTestCase(const path& file) {
     }
     while (!feof(filePtr)) {
         memcpy(buffer, buffer + readLen - kkTestSigSize, kkTestSigSize);
-        readLen = fread(buffer + kkTestSigSize, 1, capacity - kkTestSigSize, filePtr);
+        readLen = fread(buffer + kkTestSigSize, 1,
+                        capacity - kkTestSigSize,
+                        filePtr);
         readLen += 32;
         if (ferror(filePtr)) {
             // TODO(darius98): Handle.
@@ -76,7 +78,8 @@ bool isTestCase(const path& file) {
     return false;
 }
 
-void findTestCases(const path& folder, const function<void(path)>& onTestFound) {
+void findTestCases(const path& folder,
+                   const function<void(path)>& onTestFound) {
     for (const path& child : directory_iterator(folder)) {
         if (is_regular_file(child) && isTestCase(child)) {
             onTestFound(child);

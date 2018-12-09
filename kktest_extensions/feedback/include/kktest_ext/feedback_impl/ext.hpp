@@ -10,7 +10,8 @@ namespace feedback {
 
 class FeedbackExtension: public Extension {
  public:
-    void registerCommandLineArguments(arguments::ArgumentsApi* argumentsApi) override;
+    void registerCommandLineArgs(
+            arguments::ArgumentsApi* argumentsApi) override;
 
     void init(ExtensionApi* api) override;
 

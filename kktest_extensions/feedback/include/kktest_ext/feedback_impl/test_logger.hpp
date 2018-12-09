@@ -13,13 +13,16 @@ namespace feedback {
 
 class TestLogger {
  public:
-    explicit TestLogger(std::ostream& _stream, bool _maintainTestIndexOrder = true);
+    explicit TestLogger(std::ostream& _stream,
+                        bool _maintainTestIndexOrder = true);
 
-    void addGroupInfo(const GroupInfo& groupInfo, const String& testCaseName = "");
+    void addGroupInfo(const GroupInfo& groupInfo,
+                      const String& testCaseName = "");
 
     void logTest(const TestInfo& testInfo, const String& testCaseName = "");
 
-    void logFatalError(const String& errorMessage, const String& testCaseName = "");
+    void logFatalError(const String& errorMessage,
+                       const String& testCaseName = "");
 
     void logFinalInformation(bool logNumTests = false);
 
@@ -30,7 +33,8 @@ class TestLogger {
     static constexpr const Color YELLOW = 33;
     static constexpr const Color GREY = 90;
 
-    String getRecursiveGroupDescription(int groupId, const String& testCaseName);
+    String getRecursiveGroupDescription(int groupId,
+                                        const String& testCaseName);
 
     void printTestMessage(const TestInfo& testInfo, const String& testCaseName);
 

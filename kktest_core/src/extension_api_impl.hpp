@@ -8,7 +8,7 @@
 
 namespace kktest {
 
-class TestingDriverHooks {
+class Hooks {
  public:
     enum Type {
         AFTER_INIT = 0,
@@ -46,18 +46,18 @@ class TestingDriverHooks {
 
 class ExtensionApiImpl: public ExtensionApi {
  public:
-    void addBeforeTestHook(const TestHook& hook) override;
-    void addAfterTestHook(const TestHook& hook) override;
-    void addBeforeGroupHook(const GroupHook& hook) override;
-    void addAfterGroupHook(const GroupHook& hook) override;
-    void addAfterInitHook(const AfterInitHook& hook) override;
-    void addBeforeDestroyHook(const BeforeDestroyHook& hook) override;
-    void addBeforeForceDestroyHook(const BeforeForceDestroyHook& hook) override;
+    void beforeTest(const TestHook& hook) override;
+    void afterTest(const TestHook& hook) override;
+    void beforeGroup(const GroupHook& hook) override;
+    void afterGroup(const GroupHook& hook) override;
+    void afterInit(const AfterInitHook& hook) override;
+    void beforeDestroy(const BeforeDestroyHook& hook) override;
+    void beforeForceDestroy(const BeforeForceDestroyHook& hook) override;
 
-    const TestingDriverHooks& getHooks() const;
+    const Hooks& getHooks() const;
 
  private:
-    TestingDriverHooks hooks;
+    Hooks hooks;
 };
 
 }  // namespace kktest

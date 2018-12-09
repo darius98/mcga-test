@@ -60,7 +60,8 @@ void TestExecutionCycle::start() {
     char* pipeToArg = copyAsCString(("--pipe-to=" + pipeName).c_str());
     char* maxParallelTestsArg = copyAsCString(
             ("--max_parallel_tests=" + to_string(maxParallelTests)).c_str());
-    char* argv[] = {cmd, quietArg, boxedArg, pipeToArg, maxParallelTestsArg, nullptr};
+    char* argv[] = {
+            cmd, quietArg, boxedArg, pipeToArg, maxParallelTestsArg, nullptr};
     testProcess = openSubprocess(cmd, argv);
 }
 
@@ -131,7 +132,9 @@ void TestExecutionCycle::processMessage(const Message& message) {
             break;
         }
         default: {
-            cout << "Unknown message received on pipe, type " << type << ". Exiting.\n";
+            cout << "Unknown message received on pipe, type "
+                 << type
+                 << ". Exiting.\n";
             exit(1);
         }
     }

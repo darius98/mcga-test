@@ -2,20 +2,22 @@
 
 // @<AUTO-GENERATE>[IMPORTS]
 
-using kktest::ArgumentsApi;
 using kktest::Extension;
 using kktest::InternalArgs;
 using kktest::registerInternalFlags;
+using kktest::arguments::ArgumentsApi;
 using std::vector;
 
 int main(int argc, char** argv) {
     vector<Extension*> extensions;
     ArgumentsApi* argumentsApi = ArgumentsApi::create("KKTest test binary.");
+    argumentsApi->addHelpFlag();
     InternalArgs internalArgs = registerInternalFlags(argumentsApi);
 
 // @<AUTO-GENERATE>[EXTENSIONS_DEF]
 
     argumentsApi->interpret(argc, argv);
+    argumentsApi->checkHelpFlag();
     int ret = kktest::main(extensions, internalArgs);
     delete argumentsApi;
     return ret;

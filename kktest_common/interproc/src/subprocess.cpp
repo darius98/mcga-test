@@ -6,11 +6,13 @@ using std::pair;
 namespace kktest {
 namespace interproc {
 
-WorkerSubprocess::WorkerSubprocess(SubprocessHandler* _subprocessHandler, PipeReader* _pipeReader):
+WorkerSubprocess::WorkerSubprocess(SubprocessHandler* _subprocessHandler,
+                                   PipeReader* _pipeReader):
         subprocessHandler(_subprocessHandler), pipeReader(_pipeReader) {}
 
 WorkerSubprocess::WorkerSubprocess(WorkerSubprocess&& other) noexcept:
-        subprocessHandler(other.subprocessHandler), pipeReader(other.pipeReader) {
+        subprocessHandler(other.subprocessHandler),
+        pipeReader(other.pipeReader) {
     other.subprocessHandler = nullptr;
     other.pipeReader = nullptr;
 }

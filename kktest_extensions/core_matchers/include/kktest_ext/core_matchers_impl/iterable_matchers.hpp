@@ -32,8 +32,12 @@ class IsNotEmptyMatcher: public Matcher {
 
 template<class M>
 class IterableSizeMatcher: public Matcher {
+    static_assert(std::is_base_of<Matcher, M>::value,
+                  "SizeMatcher only supports other matchers as template args.");
+
  public:
-    explicit IterableSizeMatcher(const M& _sizeMatcher): sizeMatcher(_sizeMatcher) {}
+    explicit IterableSizeMatcher(const M& _sizeMatcher):
+            sizeMatcher(_sizeMatcher) {}
 
     template<class T>
     bool matches(const T& object) {
@@ -56,8 +60,12 @@ class IterableSizeMatcher: public Matcher {
 
 template<class M>
 class IterableEachMatcher: public Matcher {
+    static_assert(std::is_base_of<Matcher, M>::value,
+                  "EachMatcher only supports other matchers as template args.");
+
  public:
-    explicit IterableEachMatcher(M _elementMatcher): elementMatcher(_elementMatcher) {}
+    explicit IterableEachMatcher(M _elementMatcher):
+            elementMatcher(_elementMatcher) {}
 
     IterableEachMatcher(const IterableEachMatcher& other):
             elementMatcher(other.elementMatcher),
@@ -98,8 +106,10 @@ class IterableEachMatcher: public Matcher {
 template<class M>
 class IterableAnyMatcher: public Matcher {
  public:
-    explicit IterableAnyMatcher(M _elementMatcher): elementMatcher(_elementMatcher) {}
-    IterableAnyMatcher(const IterableAnyMatcher& other): elementMatcher(other.elementMatcher) {}
+    explicit IterableAnyMatcher(M _elementMatcher):
+            elementMatcher(_elementMatcher) {}
+    IterableAnyMatcher(const IterableAnyMatcher& other):
+            elementMatcher(other.elementMatcher) {}
 
     template<class T>
     bool matches(const T& collection) {

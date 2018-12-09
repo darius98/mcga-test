@@ -13,9 +13,10 @@ namespace test_runner {
 
 class TestExecutionCycle {
  public:
-    explicit TestExecutionCycle(const String& _testPath,
-                                int _maxParallelTests,
-                                const std::function<void(const KKTestCaseInfo&)>& _onInfoCallback);
+    explicit TestExecutionCycle(
+        const String& _testPath,
+        int _maxParallelTests,
+        const std::function<void(const KKTestCaseInfo&)>& _onInfoCallback);
 
     bool isStarted() const;
 

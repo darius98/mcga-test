@@ -9,7 +9,8 @@ namespace interproc {
 
 class BytesConsumer {
  public:
-    virtual BytesConsumer& addBytes(const void* bytes, std::size_t numBytes) = 0;
+    virtual BytesConsumer& addBytes(const void* bytes,
+                                    std::size_t numBytes) = 0;
 
     BytesConsumer& add(const std::string& obj);
 

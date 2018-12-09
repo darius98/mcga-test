@@ -15,7 +15,7 @@ int main(int argc, char** argv) {
     InternalArgs internalArgs = registerInternalFlags(argumentsApi);
 
 kktest::feedback::FeedbackExtension feedbackExtension;
-feedbackExtension.registerCommandLineArguments(argumentsApi);
+    feedbackExtension.registerCommandLineArgs(argumentsApi);
 extensions.push_back(&feedbackExtension);
 
     argumentsApi->interpret(argc, argv);

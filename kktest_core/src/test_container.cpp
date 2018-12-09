@@ -10,12 +10,18 @@ using std::to_string;
 
 namespace kktest {
 
-TestContainer::TestContainer(double timeLimitMs, SubprocessWork run, Callback _callback):
+TestContainer::TestContainer(double timeLimitMs,
+                             SubprocessWork run,
+                             Callback _callback):
         testProcessStopwatch(timeLimitMs),
         testWorker(forkAndRunWorkerSubprocess(run)),
         callback(move(_callback)) {}
 
 bool TestContainer::poll() {
+    auto finishWithError = [this](const String& errorMessage) {
+        callback(TestExecutionInfo::toErrorMessage(errorMessage));
+    };
+
     auto testProcess = testWorker.getSubprocessHandler();
     if (!testProcess->isFinished()) {
         if (!testProcessStopwatch.isElapsed()) {
@@ -35,12 +41,14 @@ bool TestContainer::poll() {
             finishWithError("Unknown error occurred.");
             break;
         case SubprocessHandler::FinishStatus::SIGNALED:
-            finishWithError("Killed by signal " + to_string(testProcess->getSignal()));
+            finishWithError("Killed by signal "
+                            + to_string(testProcess->getSignal()));
             break;
         case SubprocessHandler::FinishStatus::NON_ZERO_EXIT:
-            finishWithError("Exit code " + to_string(testProcess->getReturnCode()) + ".");
+            finishWithError("Exit code "
+                            + to_string(testProcess->getReturnCode()) + ".");
             break;
-        default: {  // ZERO_EXIT
+        case SubprocessHandler::FinishStatus::ZERO_EXIT: {
             Message message = testWorker.getPipe()->getNextMessage();
             if (message.isInvalid()) {
                 finishWithError("Test unexpectedly exited with code 0");
@@ -48,12 +56,11 @@ bool TestContainer::poll() {
             callback(message);
             break;
         }
+        default:
+            finishWithError("Unknown error occurred.");
+            break;
     }
     return true;
-}
-
-void TestContainer::finishWithError(const String& failureMessage) {
-    callback(TestExecutionInfo::toErrorMessage(failureMessage));
 }
 
 }  // namespace kktest

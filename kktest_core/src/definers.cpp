@@ -15,9 +15,9 @@ TestCaseDefiner::TestCaseDefiner(void (*testCase)(),
                                  const char* name,
                                  const unsigned char* signature) noexcept {
     if (memcmp(signature, kkTestSignature, kkTestSigSize) != 0) {
-        cout << "Invalid signature passed to TestCaseDefiner. "
-                "If you didn't do anything weird when defining test cases, "
-                "then this might be a bug, please report.\n";
+        cout << "Invalid signature passed to TestCaseDefiner. If you didn't do "
+                "anything weird when defining test cases, then this is a bug, "
+                "please report.\n";
         exit(1);
     }
     TestCaseRegistry::add(testCase, name);
@@ -28,7 +28,7 @@ void test(String description, Executable func) {
 }
 
 void test(const TestConfig& config, Executable func) {
-    TestingDriver::getInstance()->addTest(config, func);
+    Driver::getInstance()->addTest(config, func);
 }
 
 void group(String description, Executable func) {
@@ -36,15 +36,15 @@ void group(String description, Executable func) {
 }
 
 void group(const GroupConfig& config, Executable func) {
-    TestingDriver::getInstance()->addGroup(config, func);
+    Driver::getInstance()->addGroup(config, func);
 }
 
 void setUp(Executable func) {
-    TestingDriver::getInstance()->addSetUp(func);
+    Driver::getInstance()->addSetUp(func);
 }
 
 void tearDown(Executable func) {
-    TestingDriver::getInstance()->addTearDown(func);
+    Driver::getInstance()->addTearDown(func);
 }
 
 void expect(const bool& exprResult, const String& expr) {

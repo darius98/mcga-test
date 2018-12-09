@@ -65,7 +65,8 @@ void kkTestCase(ComparisonMatchers) {
             expect(isLessThan(17).matches(-20));
             expect(isLessThan('c').matches('a'));
             expect(isLessThan(string("cadabra")).matches("abra"));
-            expect(isLessThan(vector<int>{2, 1, 3}).matches(vector<int>{1, 2, 3}));
+            expect(isLessThan(vector<int>{2, 1, 3})
+                       .matches(vector<int>{1, 2, 3}));
         });
 
         test("isLessThan does not match equal values", [&] {
@@ -73,7 +74,8 @@ void kkTestCase(ComparisonMatchers) {
             expect(!isLessThan(-17).matches(-17));
             expect(!isLessThan('c').matches('c'));
             expect(!isLessThan(string("cadabra")).matches("cadabra"));
-            expect(!isLessThan(vector<int>{2, 1, 3}).matches(vector<int>{2, 1, 3}));
+            expect(!isLessThan(vector<int>{2, 1, 3})
+                       .matches(vector<int>{2, 1, 3}));
         });
 
         test("isLessThan does not match greater values", [&] {
@@ -81,7 +83,8 @@ void kkTestCase(ComparisonMatchers) {
             expect(!isLessThan(-20).matches(17));
             expect(!isLessThan('a').matches('c'));
             expect(!isLessThan(string("abra")).matches("cadabra"));
-            expect(!isLessThan(vector<int>{1, 2, 3}).matches(vector<int>{2, 1, 3}));
+            expect(!isLessThan(vector<int>{1, 2, 3})
+                       .matches(vector<int>{2, 1, 3}));
         });
     });
 
@@ -91,7 +94,8 @@ void kkTestCase(ComparisonMatchers) {
             expect(isLessThanEqual(17).matches(-20));
             expect(isLessThanEqual('c').matches('a'));
             expect(isLessThanEqual(string("cada")).matches("abra"));
-            expect(isLessThanEqual(vector<int>{2, 1, 3}).matches(vector<int>{1, 2, 3}));
+            expect(isLessThanEqual(vector<int>{2, 1, 3})
+                       .matches(vector<int>{1, 2, 3}));
         });
 
         test("isLessThanEqual matches equal values", [&] {
@@ -99,7 +103,8 @@ void kkTestCase(ComparisonMatchers) {
             expect(isLessThanEqual(-17).matches(-17));
             expect(isLessThanEqual('c').matches('c'));
             expect(isLessThanEqual(string("cada")).matches("cada"));
-            expect(isLessThanEqual(vector<int>{2, 1, 3}).matches(vector<int>{2, 1, 3}));
+            expect(isLessThanEqual(vector<int>{2, 1, 3})
+                       .matches(vector<int>{2, 1, 3}));
         });
 
         test("isLessThanEqual does not match greater values", [&] {
@@ -107,7 +112,8 @@ void kkTestCase(ComparisonMatchers) {
             expect(!isLessThanEqual(-20).matches(17));
             expect(!isLessThanEqual('a').matches('c'));
             expect(!isLessThanEqual(string("abra")).matches("cada"));
-            expect(!isLessThanEqual(vector<int>{1, 2, 3}).matches(vector<int>{2, 1, 3}));
+            expect(!isLessThanEqual(vector<int>{1, 2, 3})
+                       .matches(vector<int>{2, 1, 3}));
         });
     });
 
@@ -117,7 +123,8 @@ void kkTestCase(ComparisonMatchers) {
             expect(!isGreaterThan(17).matches(-20));
             expect(!isGreaterThan('c').matches('a'));
             expect(!isGreaterThan(string("cadabra")).matches("abra"));
-            expect(!isGreaterThan(vector<int>{2, 1, 3}).matches(vector<int>{1, 2, 3}));
+            expect(!isGreaterThan(vector<int>{2, 1, 3})
+                       .matches(vector<int>{1, 2, 3}));
         });
 
         test("isGreaterThan does not match equal values", [&] {
@@ -125,7 +132,8 @@ void kkTestCase(ComparisonMatchers) {
             expect(!isGreaterThan(-17).matches(-17));
             expect(!isGreaterThan('c').matches('c'));
             expect(!isGreaterThan(string("cadabra")).matches("cadabra"));
-            expect(!isGreaterThan(vector<int>{2, 1, 3}).matches(vector<int>{2, 1, 3}));
+            expect(!isGreaterThan(vector<int>{2, 1, 3})
+                       .matches(vector<int>{2, 1, 3}));
         });
 
         test("isGreaterThan matches greater values", [&] {
@@ -133,7 +141,8 @@ void kkTestCase(ComparisonMatchers) {
             expect(isGreaterThan(-20).matches(17));
             expect(isGreaterThan('a').matches('c'));
             expect(isGreaterThan(string("abra")).matches("cadabra"));
-            expect(isGreaterThan(vector<int>{1, 2, 3}).matches(vector<int>{2, 1, 3}));
+            expect(isGreaterThan(vector<int>{1, 2, 3})
+                       .matches(vector<int>{2, 1, 3}));
         });
     });
 
@@ -143,7 +152,8 @@ void kkTestCase(ComparisonMatchers) {
             expect(!isGreaterThanEqual(17).matches(-20));
             expect(!isGreaterThanEqual('c').matches('a'));
             expect(!isGreaterThanEqual(string("cada")).matches("abra"));
-            expect(!isGreaterThanEqual(vector<int>{2, 1, 3}).matches(vector<int>{1, 2, 3}));
+            expect(!isGreaterThanEqual(vector<int>{2, 1, 3})
+                       .matches(vector<int>{1, 2, 3}));
         });
 
         test("isGreaterThanEqual matches equal values", [&] {
@@ -151,7 +161,8 @@ void kkTestCase(ComparisonMatchers) {
             expect(isGreaterThanEqual(-17).matches(-17));
             expect(isGreaterThanEqual('c').matches('c'));
             expect(isGreaterThanEqual(string("cada")).matches("cada"));
-            expect(isGreaterThanEqual(vector<int>{2, 1, 3}).matches(vector<int>{2, 1, 3}));
+            expect(isGreaterThanEqual(vector<int>{2, 1, 3})
+                       .matches(vector<int>{2, 1, 3}));
         });
 
         test("isGreaterThanEqual matches greater values", [&] {
@@ -159,7 +170,8 @@ void kkTestCase(ComparisonMatchers) {
             expect(isGreaterThanEqual(-20).matches(17));
             expect(isGreaterThanEqual('a').matches('c'));
             expect(isGreaterThanEqual(string("abra")).matches("cada"));
-            expect(isGreaterThanEqual(vector<int>{1, 2, 3}).matches(vector<int>{2, 1, 3}));
+            expect(isGreaterThanEqual(vector<int>{1, 2, 3})
+                       .matches(vector<int>{2, 1, 3}));
         });
     });
 }

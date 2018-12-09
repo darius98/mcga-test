@@ -12,9 +12,9 @@ class ConfigurationError: public std::runtime_error {
     explicit ConfigurationError(const String& str);
 };
 
-class KKTestLibraryImplementationError: public std::runtime_error {
+class Bug: public std::runtime_error {
  public:
-    explicit KKTestLibraryImplementationError(const String& str);
+    explicit Bug(const String& str);
 };
 
 class ExpectationFailed: public std::runtime_error {

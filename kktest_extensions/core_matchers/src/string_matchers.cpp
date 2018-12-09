@@ -7,7 +7,8 @@ using std::string;
 namespace kktest {
 namespace core_matchers {
 
-CharInStringMatcher::CharInStringMatcher(const char* _container, const char* _expectation) noexcept:
+CharInStringMatcher::CharInStringMatcher(const char* _container,
+                                         const char* _expectation) noexcept:
         container(_container), expectation(_expectation) {}
 
 bool CharInStringMatcher::matches(const char& ch) {
@@ -30,13 +31,17 @@ void CharInStringMatcher::describeMismatch(Description* description) {
     }
 }
 
-CharInStringMatcher isLetter("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", "a letter");
+CharInStringMatcher isLetter(
+        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",
+        "a letter");
 
 CharInStringMatcher isDigit("0123456789", "a digit");
 
-CharInStringMatcher isLowercaseLetter("abcdefghijklmnopqrstuvwxyz", "a lowercase letter");
+CharInStringMatcher isLowercaseLetter("abcdefghijklmnopqrstuvwxyz",
+                                      "a lowercase letter");
 
-CharInStringMatcher isUppercaseLetter("ABCDEFGHIJKLMNOPQRSTUVWXYZ", "an uppercase letter");
+CharInStringMatcher isUppercaseLetter("ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+                                      "an uppercase letter");
 
 CharInStringMatcher isBinaryDigit("01", "a binary digit");
 
@@ -46,7 +51,8 @@ CharInStringMatcher isHexDigit("0123456789ABCDEFabcdef", "a hex digit");
 
 CharInStringMatcher isWhitespace(" \t\r\n\f\v", "a whitespace character");
 
-IsSubstringMatcher::IsSubstringMatcher(string _container): container(move(_container)) {}
+IsSubstringMatcher::IsSubstringMatcher(string _container):
+        container(move(_container)) {}
 
 bool IsSubstringMatcher::matches(const string& object) {
     return container.find(object) != string::npos;

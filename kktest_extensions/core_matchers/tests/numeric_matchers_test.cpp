@@ -123,18 +123,9 @@ void kkTestCase(NumericMatchers) {
         });
     });
 
-    group("isAlmostEqualTo", [&] {
-        test("Default epsilon is high precision", [&] {
-            expect(isAlmostEqualTo(3.0).matches(3 + 1e-9));
-            expect(isAlmostEqualTo(3.0).matches(3 + 1e-12));
-            expect(!isAlmostEqualTo(3.00).matches(3.01));
-            expect(!isAlmostEqualTo(3.0).matches(3.1));
-        });
-
-        test("Changing epsilon changes precision", [&] {
-            expect(isAlmostEqualTo(3.0, 0.1).matches(3.05));
-            expect(isAlmostEqualTo(3.0, 2).matches(4.99));
-            expect(!isAlmostEqualTo(3.0, 1e-12).matches(3 + 1e-9));
-        });
+    test("isAlmostEqualTo: Changing epsilon changes precision", [&] {
+        expect(isAlmostEqualTo(3.0, 0.1).matches(3.05));
+        expect(isAlmostEqualTo(3.0, 2).matches(4.99));
+        expect(!isAlmostEqualTo(3.0, 1e-12).matches(3 + 1e-9));
     });
 }

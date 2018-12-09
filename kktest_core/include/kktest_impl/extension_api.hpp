@@ -19,20 +19,20 @@ class ExtensionApi {
  public:
     virtual ~ExtensionApi() = default;
 
-    virtual void addBeforeTestHook(const TestHook& hook) = 0;
-    virtual void addAfterTestHook(const TestHook& hook) = 0;
-    virtual void addBeforeGroupHook(const GroupHook& hook) = 0;
-    virtual void addAfterGroupHook(const GroupHook& hook) = 0;
-    virtual void addAfterInitHook(const AfterInitHook& hook) = 0;
-    virtual void addBeforeDestroyHook(const BeforeDestroyHook& hook) = 0;
-    virtual void addBeforeForceDestroyHook(const BeforeForceDestroyHook& hook) = 0;
+    virtual void beforeTest(const TestHook& hook) = 0;
+    virtual void afterTest(const TestHook& hook) = 0;
+    virtual void beforeGroup(const GroupHook& hook) = 0;
+    virtual void afterGroup(const GroupHook& hook) = 0;
+    virtual void afterInit(const AfterInitHook& hook) = 0;
+    virtual void beforeDestroy(const BeforeDestroyHook& hook) = 0;
+    virtual void beforeForceDestroy(const BeforeForceDestroyHook& hook) = 0;
 };
 
 class Extension {
  public:
     virtual ~Extension();
 
-    virtual void registerCommandLineArguments(arguments::ArgumentsApi* argumentsApi);
+    virtual void registerCommandLineArgs(arguments::ArgumentsApi* argumentsApi);
 
     virtual void init(ExtensionApi* api);
 

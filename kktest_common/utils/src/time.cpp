@@ -3,9 +3,7 @@
 
 #include <kktest_common/time.hpp>
 
-using std::chrono::duration_cast;
 using std::chrono::milliseconds;
-using std::chrono::time_point;
 using std::this_thread::sleep_for;
 
 namespace {

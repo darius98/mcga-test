@@ -25,7 +25,8 @@ void BoxExecutor::execute(Test* test, Executable func) {
                 auto executionInfo = run(test, func);
                 pipe->sendMessage(executionInfo.toMessage());
             } catch(const ConfigurationError& error) {
-                pipe->sendMessage(TestExecutionInfo::CONFIGURATION_ERROR, String(error.what()));
+                pipe->sendMessage(TestExecutionInfo::CONFIGURATION_ERROR,
+                                  String(error.what()));
             }
         },
         [this, test](const Message& message) {
@@ -41,17 +42,18 @@ void BoxExecutor::finalize() {
 void BoxExecutor::ensureFreeContainers(size_t numContainers) {
     while (openContainers.size() > maxNumContainers - numContainers) {
         bool progress = false;
-        for (auto it = openContainers.begin(); it != openContainers.end(); ) {
+        auto it = openContainers.begin();
+        while (it != openContainers.end()) {
             if ((*it)->poll()) {
                 delete *it;
                 it = openContainers.erase(it);
                 progress = true;
-            } else {
-                ++it;
+                continue;
             }
+            ++it;
         }
         if (!progress) {
-            sleepForMs(10);
+            sleepForMs(5);
         }
     }
 }

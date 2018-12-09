@@ -20,7 +20,9 @@ void FlagImpl::setImplicit() {
 }
 
 void FlagImpl::setValue(const String& _value) {
-    value = toLower(_value) == "true" || _value == "1" || toLower(_value) == "enabled";
+    value = toLower(_value) == "true" ||
+            _value == "1" ||
+            toLower(_value) == "enabled";
 }
 
 }  // namespace arguments

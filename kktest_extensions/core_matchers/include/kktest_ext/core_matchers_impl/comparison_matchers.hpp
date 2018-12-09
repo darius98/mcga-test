@@ -139,7 +139,8 @@ class IsGreaterThanEqualMatcher: public Matcher {
 class IdentityMatcher: public Matcher {
  public:
     template<class T>
-    explicit IdentityMatcher(const T& target): address(static_cast<const void*>(&target)) {}
+    explicit IdentityMatcher(const T& target):
+            address(static_cast<const void*>(&target)) {}
 
     IdentityMatcher(const IdentityMatcher& other): address(other.address) {}
 

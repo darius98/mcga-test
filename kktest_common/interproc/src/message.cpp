@@ -58,7 +58,8 @@ Message::Message(const Message& other) {
     }
 }
 
-Message::Message(Message&& other) noexcept: payload(other.payload), cursor(other.cursor) {
+Message::Message(Message&& other) noexcept:
+        payload(other.payload), cursor(other.cursor) {
     other.payload = nullptr;
 }
 

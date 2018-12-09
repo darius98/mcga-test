@@ -66,7 +66,9 @@ class LinuxPipeReader: public PipeReader {
             auto message = Message::read(buffer, bufferSize);
             if (!message.isInvalid()) {
                 size_t size = message.getSize();
-                memcpy(buffer, static_cast<uint8_t*>(buffer) + size, bufferSize - size);
+                memcpy(buffer,
+                       static_cast<uint8_t*>(buffer) + size,
+                       bufferSize - size);
                 bufferSize -= size;
                 return message;
             }

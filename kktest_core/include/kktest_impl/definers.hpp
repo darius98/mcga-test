@@ -9,7 +9,9 @@ namespace kktest {
 
 class TestCaseDefiner {
  public:
-    TestCaseDefiner(void (*testCase)(), const char* name, const unsigned char* signature) noexcept;
+    TestCaseDefiner(void (*testCase)(),
+                    const char* name,
+                    const unsigned char* signature) noexcept;
 };
 
 void test(const TestConfig& config, Executable func);

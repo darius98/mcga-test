@@ -13,24 +13,28 @@ TestExecutionLoop::TestExecutionLoop(int _concurrentRunningCyclesLimit):
         concurrentRunningCyclesLimit(_concurrentRunningCyclesLimit),
         testLogger(cout, false) {}
 
-void TestExecutionLoop::addToLoop(const String& testPath, int maxParallelTests) {
+void TestExecutionLoop::addToLoop(const String& testPath,
+                                  int maxParallelTests) {
     cycles.emplace_back(
         testPath,
         maxParallelTests,
         [this](const KKTestCaseInfo& info) {
             switch (info.lastReceived) {
                 case KKTestCaseInfo::FINISH_WITH_ERROR:
-                    testLogger.logFatalError(info.errorMessage, info.testExecutablePath);
+                    testLogger.logFatalError(info.errorMessage,
+                                             info.testExecutablePath);
                     break;
                 case KKTestCaseInfo::FINISH:
                     break;
                 case KKTestCaseInfo::GROUP:
-                    testLogger.addGroupInfo(info.groupsReceived.back(), info.testExecutablePath);
+                    testLogger.addGroupInfo(info.groupsReceived.back(),
+                                            info.testExecutablePath);
                     break;
                 case KKTestCaseInfo::TEST:
                     failedAnyTest |= !info.testsReceived.back().passed
                                         && !info.testsReceived.back().optional;
-                    testLogger.logTest(info.testsReceived.back(), info.testExecutablePath);
+                    testLogger.logTest(info.testsReceived.back(),
+                                       info.testExecutablePath);
                     break;
             }
         });

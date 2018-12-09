@@ -14,11 +14,15 @@ using std::exception;
 namespace kktest {
 namespace feedback {
 
-void FeedbackExtension::registerCommandLineArguments(ArgumentsApi* argumentsApi) {
-    quietFlag = argumentsApi->addFlag("quiet", "Disable STDOUT logging for this test run", "q");
+void FeedbackExtension::registerCommandLineArgs(ArgumentsApi* argumentsApi) {
+    quietFlag = argumentsApi->addFlag(
+        "quiet",
+        "Disable STDOUT logging for this test run",
+        "q");
     pipeNameArgument = argumentsApi->addArgument(
-            "pipe-to",
-            "A file with write access for piping the test results as they become available.");
+        "pipe-to",
+        "A file with write access for piping the test results as they become "
+        "available.");
 }
 
 void FeedbackExtension::init(ExtensionApi* api) {
@@ -38,19 +42,19 @@ void FeedbackExtension::destroy() {
 void FeedbackExtension::initLogging(ExtensionApi* api) {
     logger = new TestLogger(cout);
 
-    api->addBeforeGroupHook([this](const GroupInfo& groupInfo) {
+    api->beforeGroup([this](const GroupInfo& groupInfo) {
         logger->addGroupInfo(groupInfo);
     });
 
-    api->addAfterTestHook([this](const TestInfo& testInfo) {
+    api->afterTest([this](const TestInfo& testInfo) {
         logger->logTest(testInfo);
     });
 
-    api->addBeforeDestroyHook([this]() {
+    api->beforeDestroy([this]() {
         logger->logFinalInformation();
     });
 
-    api->addBeforeForceDestroyHook([this](const exception& error) {
+    api->beforeForceDestroy([this](const exception& error) {
         logger->logFatalError(error.what());
     });
 }
@@ -58,30 +62,30 @@ void FeedbackExtension::initLogging(ExtensionApi* api) {
 void FeedbackExtension::initPipe(ExtensionApi* api, const String& pipeName) {
     pipe = openNamedPipeForWriting(pipeName);
 
-    api->addBeforeGroupHook([this](const GroupInfo& groupInfo) {
+    api->beforeGroup([this](const GroupInfo& groupInfo) {
         pipe->sendMessage(
-            PipeMessageType::GROUP,
-            groupInfo.parentGroupIndex,
-            groupInfo.index,
-            groupInfo.description);
+                PipeMessageType::GROUP,
+                groupInfo.parentGroupIndex,
+                groupInfo.index,
+                groupInfo.description);
     });
 
-    api->addAfterTestHook([this](const TestInfo& testInfo) {
+    api->afterTest([this](const TestInfo& testInfo) {
         pipe->sendMessage(
-            PipeMessageType::TEST,
-            testInfo.groupIndex,
-            testInfo.index,
-            testInfo.optional,
-            testInfo.description,
-            testInfo.passed,
-            testInfo.failureMessage);
+                PipeMessageType::TEST,
+                testInfo.groupIndex,
+                testInfo.index,
+                testInfo.optional,
+                testInfo.description,
+                testInfo.passed,
+                testInfo.failureMessage);
     });
 
-    api->addBeforeDestroyHook([this]() {
+    api->beforeDestroy([this]() {
         pipe->sendMessage(PipeMessageType::DONE);
     });
 
-    api->addBeforeForceDestroyHook([this](const exception& error) {
+    api->beforeForceDestroy([this](const exception& error) {
         pipe->sendMessage(PipeMessageType::ERROR, String(error.what()));
     });
 }

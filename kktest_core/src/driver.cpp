@@ -10,54 +10,49 @@ using std::move;
 
 namespace kktest {
 
-TestingDriver* TestingDriver::instance = nullptr;
+Driver* Driver::instance = nullptr;
 
-TestingDriver* TestingDriver::getInstance() {
+Driver* Driver::getInstance() {
     if (instance == nullptr) {
-        throw KKTestLibraryImplementationError(
-                "TestingDriver::getInstance() called before TestingDriver::init.");
+        throw Bug("Driver: getInstance() called before init().");
     }
     return instance;
 }
 
-TestingDriver* TestingDriver::init(const TestingDriverHooks& hooks,
-                                   bool flagBoxed,
-                                   int argumentNumBoxes) {
+Driver* Driver::init(const Hooks& hooks, bool boxed, int numBoxes) {
     if (instance != nullptr) {
-        throw KKTestLibraryImplementationError("TestingDriver::init called a twice.");
+        throw Bug("Driver: init() called a twice.");
     }
-    return new TestingDriver(hooks, flagBoxed, argumentNumBoxes);
+    return new Driver(hooks, boxed, numBoxes);
 }
 
-int TestingDriver::destroy() {
+int Driver::destroy() {
     executor->finalize();
-    hookManager.runHooks<TestingDriverHooks::BEFORE_DESTROY>();
+    hooks.runHooks<Hooks::BEFORE_DESTROY>();
     int status = failedAnyNonOptionalTest ? 1 : 0;
     TestCaseRegistry::clean();
     delete this;
     return status;
 }
 
-void TestingDriver::forceDestroy(const ConfigurationError& error) {
-    hookManager.runHooks<TestingDriverHooks::BEFORE_FORCE_DESTROY>(error);
+void Driver::forceDestroy(const ConfigurationError& error) {
+    hooks.runHooks<Hooks::BEFORE_FORCE_DESTROY>(error);
     TestCaseRegistry::clean();
     delete this;
 }
 
-void TestingDriver::beforeTestCase(const String& name) {
+void Driver::beforeTestCase(const String& name) {
     if (globalScope != nullptr) {
-        throw KKTestLibraryImplementationError(
-            "TestingDriver::beforeTestCase called twice in a row.");
+        throw Bug("Driver: beforeTestCase() called twice in a row.");
     }
     globalScope = new Group(groupConfig(_.description = name), nullptr, 0);
     groupStack = {globalScope};
     beforeGroup(globalScope);
 }
 
-void TestingDriver::afterTestCase() {
+void Driver::afterTestCase() {
     if (globalScope == nullptr) {
-        throw KKTestLibraryImplementationError(
-            "TestingDriver::afterTestCase called twice in a row.");
+        throw Bug("Driver: afterTestCase() called twice in a row.");
     }
     executor->finalize();
     afterGroup(globalScope);
@@ -65,25 +60,25 @@ void TestingDriver::afterTestCase() {
     groupStack = {};
 }
 
-TestingDriver::TestingDriver(TestingDriverHooks hooks, bool flagBoxed, int argumentNumBoxes):
-        hookManager(move(hooks)) {
+Driver::Driver(Hooks hooks, bool boxed, int numBoxes):
+        hooks(move(hooks)) {
     instance = this;
     auto onTestFinishedCallback = [this](Test* test) {
         afterTest(test);
     };
-    if (flagBoxed) {
-        executor = new BoxExecutor(onTestFinishedCallback, (size_t)argumentNumBoxes);
+    if (boxed) {
+        executor = new BoxExecutor(onTestFinishedCallback, (size_t)numBoxes);
     } else {
         executor = new Executor(onTestFinishedCallback);
     }
-    hookManager.runHooks<TestingDriverHooks::AFTER_INIT>();
+    hooks.runHooks<Hooks::AFTER_INIT>();
 }
 
-TestingDriver::~TestingDriver() {
+Driver::~Driver() {
     delete executor;
 }
 
-void TestingDriver::addGroup(const GroupConfig& config, Executable func) {
+void Driver::addGroup(const GroupConfig& config, Executable func) {
     executor->checkIsInactive("group");
     auto group = new Group(config, groupStack.back(), ++currentGroupIndex);
     groupStack.push_back(group);
@@ -95,19 +90,22 @@ void TestingDriver::addGroup(const GroupConfig& config, Executable func) {
         throw e;
     } catch(const ExpectationFailed& e) {
         throw ConfigurationError(
-            "Expectation failed in group \"" + group->getDescription() + "\": " + e.what());
+            "Expectation failed in group \"" + group->getDescription() + "\""
+            ": " + e.what());
     } catch(const exception& e) {
         throw ConfigurationError(
-            "Exception thrown in group \"" + group->getDescription() + "\": " + e.what());
+            "Exception thrown in group \"" + group->getDescription() + "\""
+            ": " + e.what());
     } catch(...) {
         throw ConfigurationError(
-            "Non-exception object thrown in group \"" + group->getDescription() + "\".");
+            "Non-exception thrown in group \"" + group->getDescription() + "\""
+            ".");
     }
     markAllTestsStarted(group);
     groupStack.pop_back();
 }
 
-void TestingDriver::addTest(const TestConfig& config, Executable func) {
+void Driver::addTest(const TestConfig& config, Executable func) {
     executor->checkIsInactive("test");
     Group* parentGroup = groupStack.back();
     auto test = new Test(config, parentGroup, ++currentTestIndex);
@@ -116,62 +114,62 @@ void TestingDriver::addTest(const TestConfig& config, Executable func) {
     executor->execute(test, func);
 }
 
-void TestingDriver::addSetUp(Executable func) {
+void Driver::addSetUp(Executable func) {
     executor->checkIsInactive("setUp");
     groupStack.back()->addSetUp(func);
 }
 
-void TestingDriver::addTearDown(Executable func) {
+void Driver::addTearDown(Executable func) {
     executor->checkIsInactive("tearDown");
     groupStack.back()->addTearDown(func);
 }
 
-void TestingDriver::beforeTest(Test* test) {
-    hookManager.runHooks<TestingDriverHooks::BEFORE_TEST>(test->getTestInfo());
+void Driver::beforeTest(Test* test) {
+    hooks.runHooks<Hooks::BEFORE_TEST>(test->getTestInfo());
 }
 
-void TestingDriver::afterTest(Test* test) {
+void Driver::afterTest(Test* test) {
     if (!test->getConfig().optional) {
         failedAnyNonOptionalTest |= test->isFailed();
     }
     Group* group = test->getGroup();
-    hookManager.runHooks<TestingDriverHooks::AFTER_TEST>(test->getTestInfo());
+    hooks.runHooks<Hooks::AFTER_TEST>(test->getTestInfo());
     delete test;
     markTestFinished(group);
 }
 
-void TestingDriver::beforeGroup(Group* group) {
-    hookManager.runHooks<TestingDriverHooks::BEFORE_GROUP>(group->getGroupInfo());
+void Driver::beforeGroup(Group* group) {
+    hooks.runHooks<Hooks::BEFORE_GROUP>(group->getGroupInfo());
 }
 
-void TestingDriver::afterGroup(Group* group) {
-    hookManager.runHooks<TestingDriverHooks::AFTER_GROUP>(group->getGroupInfo());
+void Driver::afterGroup(Group* group) {
+    hooks.runHooks<Hooks::AFTER_GROUP>(group->getGroupInfo());
     delete group;
-    testsInExecutionPerGroup.erase(group);
-    groupsWithAllTestsStarted.erase(group);
+    testsInExecution.erase(group);
+    groupsPendingFinish.erase(group);
 }
 
-void TestingDriver::markTestStarted(Group* group) {
+void Driver::markTestStarted(Group* group) {
     while (group != nullptr) {
-        testsInExecutionPerGroup[group] += 1;
+        testsInExecution[group] += 1;
         group = group->getParentGroup();
     }
 }
 
-void TestingDriver::markTestFinished(Group* group) {
+void Driver::markTestFinished(Group* group) {
     while (group != nullptr) {
-        testsInExecutionPerGroup[group] -= 1;
+        testsInExecution[group] -= 1;
         Group* parentGroup = group->getParentGroup();
-        if (groupsWithAllTestsStarted.count(group) && testsInExecutionPerGroup[group] == 0) {
+        if (groupsPendingFinish.count(group) && testsInExecution[group] == 0) {
             afterGroup(group);
         }
         group = parentGroup;
     }
 }
 
-void TestingDriver::markAllTestsStarted(Group* group) {
-    groupsWithAllTestsStarted.insert(group);
-    if (groupsWithAllTestsStarted.count(group) && testsInExecutionPerGroup[group] == 0) {
+void Driver::markAllTestsStarted(Group* group) {
+    groupsPendingFinish.insert(group);
+    if (groupsPendingFinish.count(group) && testsInExecution[group] == 0) {
         afterGroup(group);
     }
 }

@@ -14,7 +14,10 @@ int main(int argc, char** argv) {
     auto argumentsApi = ArgumentsApi::create("KKTest Manager.");
     argumentsApi->addHelpFlag();
 
-    auto versionFlag = argumentsApi->addFlag("version", "Display program version.", "v");
+    auto versionFlag = argumentsApi->addFlag(
+        "version",
+        "Display program version.",
+        "v");
 
     vector<String> positional = argumentsApi->interpret(argc, argv);
     argumentsApi->checkHelpFlag();

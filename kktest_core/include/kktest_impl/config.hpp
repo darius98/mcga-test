@@ -17,7 +17,9 @@ struct GroupConfig {
 
 }  // namespace kktest
 
-#define testConfig(...) ([&] {kktest::TestConfig _; __VA_ARGS__; return _; }())
-#define groupConfig(...) ([&] {kktest::GroupConfig _; __VA_ARGS__; return _; }())
+#define testConfig(...) \
+            ([&] {kktest::TestConfig _; __VA_ARGS__; return _; }())
+#define groupConfig(...) \
+            ([&] {kktest::GroupConfig _; __VA_ARGS__; return _; }())
 
 #endif  // KKTEST_CORE_INCLUDE_KKTEST_IMPL_CONFIG_HPP_

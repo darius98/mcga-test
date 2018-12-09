@@ -29,7 +29,9 @@ class ArgumentsApiImpl: public ArgumentsApi {
                                 int defaultValue,
                                 int implicitValue) override;
 
-    Flag* addFlag(const String& name, const String& helpText, const String& shortName) override;
+    Flag* addFlag(const String& name,
+                  const String& helpText,
+                  const String& shortName) override;
 
     std::vector<String> interpret(int argc, char** argv) override;
 
@@ -38,11 +40,15 @@ class ArgumentsApiImpl: public ArgumentsApi {
     void checkHelpFlag() override;
 
  private:
-    void addSpec(CommandLineSpec* spec, const String& name, const String& helpText,
-                     const String& shortName, const String& defaultValue,
-                     const String& implicitValue);
+    void addSpec(CommandLineSpec* spec,
+                 const String& name,
+                 const String& helpText,
+                 const String& shortName,
+                 const String& defaultValue,
+                 const String& implicitValue);
 
-    void checkNameAvailability(const String& name, const String& shortName) const;
+    void checkNameAvailability(const String& name,
+                               const String& shortName) const;
 
     void applyValue(const String& commandLineString, const String& value);
 

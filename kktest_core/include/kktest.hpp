@@ -6,10 +6,13 @@
 
 #define KKTESTCASE_DEF_AUX_1_(x, y) x##_##y
 #define KKTESTCASE_DEF_AUX_2_(x, y) KKTESTCASE_DEF_AUX_1_(x, y)
-#define kkTestCase(NAME)                                                                           \
-            KKTESTCASE_DEF_AUX_2_(kkTestCaseInstance, NAME)();                                     \
-            kktest::TestCaseDefiner KKTESTCASE_DEF_AUX_2_(kkTestCaseDefiner, NAME)                 \
-                (KKTESTCASE_DEF_AUX_2_(kkTestCaseInstance, NAME), #NAME, kktest::kkTestSignature); \
+#define kkTestCase(NAME)                                                       \
+            KKTESTCASE_DEF_AUX_2_(kkTestCaseInstance, NAME)();                 \
+            kktest::TestCaseDefiner                                            \
+                    KKTESTCASE_DEF_AUX_2_(kkTestCaseDefiner, NAME)(            \
+                            KKTESTCASE_DEF_AUX_2_(kkTestCaseInstance, NAME),   \
+                            #NAME,                                             \
+                            kktest::kkTestSignature);                          \
             void KKTESTCASE_DEF_AUX_2_(kkTestCaseInstance, NAME)()
 
 #endif  // KKTEST_CORE_INCLUDE_KKTEST_HPP_

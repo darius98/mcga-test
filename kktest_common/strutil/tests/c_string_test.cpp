@@ -31,8 +31,9 @@ void kkTestCase(StrUtilCString) {
 
     test("copyAsCString(char*)", [&]() {
         const char* value = "raw_pointer";
-        char* ptr = static_cast<char*>(malloc((strlen(value) + 1) * sizeof(char)));
-        memcpy(ptr, value, (strlen(value) + 1) * sizeof(char));
+        size_t len = strlen(value);
+        auto ptr = static_cast<char*>(malloc((len + 1) * sizeof(char)));
+        memcpy(ptr, value, (len + 1) * sizeof(char));
         result = copyAsCString(ptr);
         expect(strcmp(result, ptr) == 0);
         free(ptr);

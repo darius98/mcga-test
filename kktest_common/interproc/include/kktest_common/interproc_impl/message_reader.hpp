@@ -16,8 +16,9 @@ class MessageReader {
 
     template<class T>
     MessageReader& operator<<(T& obj) {
-        void* objAddress = static_cast<std::uint8_t*>(message.getPayload()) + cursor;
-        obj = *static_cast<T*>(objAddress);
+        obj = *static_cast<T*>(
+                static_cast<void*>(
+                  static_cast<std::uint8_t*>(message.getPayload()) + cursor));
         cursor += sizeof(obj);
         return *this;
     }

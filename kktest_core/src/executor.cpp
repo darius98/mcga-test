@@ -58,7 +58,7 @@ TestExecutionInfo Executor::run(Test* test, Executable func) {
     return {executionTimeMs / timeTickLengthMs, !failed, failureMessage};
 }
 
-void Executor::runSetUpsRecursively(Group* group, SetFailureType setFailure) {
+void Executor::runSetUpsRecursively(Group* group, SetFailure setFailure) {
     if (group == nullptr) {
         return;
     }
@@ -79,7 +79,7 @@ void Executor::runSetUpsRecursively(Group* group, SetFailureType setFailure) {
     }
 }
 
-void Executor::runTest(Executable func, SetFailureType setFailure) {
+void Executor::runTest(Executable func, SetFailure setFailure) {
     try {
         func();
     } catch(const ConfigurationError& e) {
@@ -93,7 +93,7 @@ void Executor::runTest(Executable func, SetFailureType setFailure) {
     }
 }
 
-void Executor::runTearDownsRecursively(Group* group, SetFailureType setFailure) {
+void Executor::runTearDownsRecursively(Group* group, SetFailure setFailure) {
     if (group == nullptr) {
         return;
     }

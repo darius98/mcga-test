@@ -114,7 +114,8 @@ void kkTestCase(IterableMatchers) {
         expect(!eachElement(anyElement(isOdd)).matches(matrix));
     });
 
-    test("anyElement and eachElement can be chained with hasSize matchers", [&] {
+    test("anyElement and eachElement can be chained with hasSize matchers",
+         [&] {
         expect(anyElement(hasSize(isGreaterThan(3))).matches(matrix));
         expect(!anyElement(hasSize(isLessThan(2))).matches(matrix));
         expect(eachElement(hasSize(isLessThan(100))).matches(matrix));
