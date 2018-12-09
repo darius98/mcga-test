@@ -1,3 +1,9 @@
-add_library(arguments src/arguments.cpp)
+add_library(arguments
+    src/arguments_api.cpp
+    src/arguments_api_impl.cpp
+    src/argument_impl.cpp
+    src/flag_impl.cpp
+    src/int_argument_impl.cpp
+)
 target_include_directories(arguments PUBLIC include)
 target_link_libraries(arguments PUBLIC strutil)
