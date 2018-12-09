@@ -3,8 +3,6 @@
 
 #include "arguments_api_impl.hpp"
 #include "argument_impl.hpp"
-#include "flag_impl.hpp"
-#include "int_argument_impl.hpp"
 
 using kktest::strutil::startsWith;
 using std::cout;

@@ -6,12 +6,19 @@
 namespace kktest {
 namespace arguments {
 
-class Argument {
+template<class T>
+class GenericArgument {
  public:
-    virtual ~Argument() = default;
+    virtual ~GenericArgument() = default;
 
-    virtual String get() const = 0;
+    virtual T get() const = 0;
 };
+
+typedef GenericArgument<String> Argument;
+
+typedef GenericArgument<bool> Flag;
+
+typedef GenericArgument<int> IntArgument;
 
 }  // namespace arguments
 }  // namespace kktest

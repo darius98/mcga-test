@@ -8,24 +8,59 @@
 namespace kktest {
 namespace arguments {
 
-class ArgumentImpl: public Argument, public CommandLineSpec {
+template<class T>
+class GenericArgumentImpl: public GenericArgument<T>, public CommandLineSpec {
  public:
-    ArgumentImpl(const String& _defaultValue, String _implicitValue);
+    GenericArgumentImpl(const T& _defaultValue, const T& _implicitValue):
+            value(_defaultValue),
+            defaultValue(_defaultValue),
+            implicitValue(_implicitValue) {}
+
+    ~GenericArgumentImpl() override = default;
+
+    T get() const override {
+        return value;
+    }
+
+    void setDefault() override {
+        value = defaultValue;
+    }
+
+    void setImplicit() override {
+        value = implicitValue;
+    }
+
+ protected:
+    T value;
+    T defaultValue;
+    T implicitValue;
+};
+
+class ArgumentImpl: public GenericArgumentImpl<String> {
+ public:
+    ArgumentImpl(const String& defaultValue, String implicitValue);
 
     ~ArgumentImpl() override;
 
-    String get() const override;
+    void setValue(const String& _value) override;
+};
 
-    void setDefault() override;
+class FlagImpl: public GenericArgumentImpl<bool> {
+ public:
+    FlagImpl();
 
-    void setImplicit() override;
+    ~FlagImpl() override;
 
     void setValue(const String& _value) override;
+};
 
- private:
-    String value;
-    String defaultValue;
-    String implicitValue;
+class IntArgumentImpl: public GenericArgumentImpl<int> {
+ public:
+    IntArgumentImpl(int defaultValue, int implicitValue);
+
+    ~IntArgumentImpl() override;
+
+    void setValue(const String& _value) override;
 };
 
 }  // namespace arguments

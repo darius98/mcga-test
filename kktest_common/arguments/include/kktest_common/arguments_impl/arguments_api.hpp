@@ -4,8 +4,6 @@
 #include <vector>
 
 #include <kktest_common/arguments_impl/argument.hpp>
-#include <kktest_common/arguments_impl/flag.hpp>
-#include <kktest_common/arguments_impl/int_argument.hpp>
 
 namespace kktest {
 namespace arguments {
