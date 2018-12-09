@@ -1,7 +1,7 @@
 #ifndef KKTEST_EXTENSIONS_CORE_MATCHERS_INCLUDE_KKTEST_EXT_CORE_MATCHERS_IMPL_MATCHER_HPP_
 #define KKTEST_EXTENSIONS_CORE_MATCHERS_INCLUDE_KKTEST_EXT_CORE_MATCHERS_IMPL_MATCHER_HPP_
 
-#include <kktest_impl/types.hpp>
+#include <kktest_impl/executable.hpp>
 #include <kktest_ext/core_matchers_impl/streamer.hpp>
 
 namespace kktest {

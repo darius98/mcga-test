@@ -1,7 +1,7 @@
 #ifndef KKTEST_CORE_INCLUDE_KKTEST_IMPL_INFO_HPP_
 #define KKTEST_CORE_INCLUDE_KKTEST_IMPL_INFO_HPP_
 
-#include <kktest_impl/types.hpp>
+#include <kktest_common/strutil.hpp>
 
 namespace kktest {
 

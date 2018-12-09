@@ -17,7 +17,7 @@
 #include <utility>
 #include <vector>
 
-#include <kktest_impl/types.hpp>
+#include <kktest_common/strutil.hpp>
 
 namespace kktest {
 namespace core_matchers {
