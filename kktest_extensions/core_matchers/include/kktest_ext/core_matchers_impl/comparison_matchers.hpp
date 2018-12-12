@@ -163,6 +163,13 @@ class IdentityMatcher: public Matcher {
     const void* objectAddress = nullptr;
 };
 
+EqualityMatcher<std::string> isEqualTo(const char obj[]);
+NonEqualityMatcher<std::string> isNotEqualTo(const char obj[]);
+IsLessThanMatcher<std::string> isLessThan(const char obj[]);
+IsLessThanEqualMatcher<std::string> isLessThanEqual(const char obj[]);
+IsGreaterThanMatcher<std::string> isGreaterThan(const char obj[]);
+IsGreaterThanEqualMatcher<std::string> isGreaterThanEqual(const char obj[]);
+
 template<class T>
 EqualityMatcher<T> isEqualTo(const T& object) {
     return EqualityMatcher<T>(object);

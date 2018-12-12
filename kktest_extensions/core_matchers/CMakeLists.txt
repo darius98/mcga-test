@@ -1,4 +1,5 @@
 add_library(kktest_extension_core_matchers OBJECT
+    src/comparison_matchers.cpp
     src/functional_matchers.cpp
     src/iterable_matchers.cpp
     src/numeric_matchers.cpp
