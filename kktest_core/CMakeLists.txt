@@ -17,13 +17,3 @@ add_library(kktest_impl OBJECT
 )
 target_compile_options(kktest_impl PRIVATE -Wall -Wextra -pedantic)
 target_link_libraries(kktest_impl kktest_interface kktest_command_line_arguments)
-
-# Examples
-function(example FILE_NAME)
-    add_executable("example_${FILE_NAME}" examples/${FILE_NAME}.cpp)
-    target_link_libraries("example_${FILE_NAME}" kktest)
-endfunction()
-
-example(basic)
-example(set_up_tear_down)
-example(group)
