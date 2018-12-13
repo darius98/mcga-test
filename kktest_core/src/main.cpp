@@ -6,6 +6,8 @@
 #include "test_case_registry.hpp"
 
 using kktest::arguments::ArgumentsApi;
+using kktest::arguments::FlagBuilder;
+using kktest::arguments::IntArgumentBuilder;
 using std::cout;
 using std::exception;
 using std::invalid_argument;
@@ -16,23 +18,22 @@ namespace kktest {
 
 InternalArgs registerInternalFlags(ArgumentsApi* argumentsApi) {
     InternalArgs args;
-    args.versionFlag = argumentsApi->addFlag(
+    args.versionFlag = argumentsApi->addFlag(FlagBuilder(
         "version",
-        "Display program version",
-        "v");
-    args.getSignatureFlag = argumentsApi->addFlag(
+        "Display program version")
+        .withShortName("v"));
+    args.getSignatureFlag = argumentsApi->addFlag(FlagBuilder(
         "get-signature",
-        "Display the KKTest 32-byte signature in hexadecimal format");
-    args.boxedFlag = argumentsApi->addFlag(
+        "Display the KKTest 32-byte signature in hexadecimal format"));
+    args.boxedFlag = argumentsApi->addFlag(FlagBuilder(
         "boxed",
-        "Run each test in an isolated process (boxed)",
-        "b");
+        "Run each test in an isolated process (boxed)")
+        .withShortName("b"));
     args.maxParallelTestsArgument = argumentsApi->addIntArgument(
-        "max-parallel-tests",
-        "Maximum number of tests to execute in parallel "
-        "(processes to spawn) when running boxed",
-        "",
-        1);
+        IntArgumentBuilder("max-parallel-tests",
+                           "Maximum number of tests to execute in parallel "
+                           "(processes to spawn) when running boxed")
+        .withDefaultValue(1));
     return args;
 }
 

@@ -17,21 +17,11 @@ class ArgumentsApiImpl: public ArgumentsApi {
 
     ~ArgumentsApiImpl() override;
 
-    Argument* addArgument(const String& name,
-                          const String& helpText,
-                          const String& shortName,
-                          const String& defaultValue,
-                          const String& implicitValue) override;
+    Argument* addArgument(const ArgumentBuilder& builder) override;
 
-    IntArgument* addIntArgument(const String& name,
-                                const String& helpText,
-                                const String& shortName,
-                                int defaultValue,
-                                int implicitValue) override;
+    IntArgument* addIntArgument(const IntArgumentBuilder& builder) override;
 
-    Flag* addFlag(const String& name,
-                  const String& helpText,
-                  const String& shortName) override;
+    Flag* addFlag(const FlagBuilder& builder) override;
 
     std::vector<String> interpret(int argc, char** argv) override;
 

@@ -10,8 +10,10 @@
 
 using kktest::String;
 using kktest::arguments::ArgumentsApi;
-using kktest::arguments::IntArgument;
 using kktest::arguments::Flag;
+using kktest::arguments::FlagBuilder;
+using kktest::arguments::IntArgument;
+using kktest::arguments::IntArgumentBuilder;
 using kktest::test_runner::explore;
 using kktest::test_runner::TestExecutionLoop;
 using std::cout;
@@ -24,22 +26,21 @@ int main(int argc, char** argv) {
     ArgumentsApi* argumentsApi = ArgumentsApi::create("KKTest Runner.");
     argumentsApi->addHelpFlag();
 
-    Flag* versionFlag = argumentsApi->addFlag(
+    Flag* versionFlag = argumentsApi->addFlag(FlagBuilder(
             "version",
-            "Display program version.",
-            "v");
+            "Display program version.")
+            .withShortName("v"));
     IntArgument* maxParallelCasesArgument = argumentsApi->addIntArgument(
-            "parallel-cases",
-            "Maximum number of concurrent test cases.",
-            "",
-            1,
-            3);
+            IntArgumentBuilder("parallel-cases",
+                               "Maximum number of concurrent test cases.")
+                               .withDefaultValue(1)
+                               .withImplicitValue(3));
     IntArgument* maxParallelTestsPerCaseArgument = argumentsApi->addIntArgument(
-            "parallel-tests-per-case",
-            "Maximum number of concurrent tests per test case",
-            "",
-            1,
-            5);
+            IntArgumentBuilder(
+                "parallel-tests-per-case",
+                "Maximum number of concurrent tests per test case")
+                .withDefaultValue(1)
+                .withImplicitValue(5));
     vector<String> positional = argumentsApi->interpret(argc, argv);
     argumentsApi->checkHelpFlag();
     if (versionFlag->get()) {

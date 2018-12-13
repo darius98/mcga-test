@@ -20,6 +20,37 @@ typedef GenericArgument<bool> Flag;
 
 typedef GenericArgument<int> IntArgument;
 
+template<class T>
+struct GenericArgumentBuilder {
+    GenericArgumentBuilder(String _name, String _helpText):
+            name(std::move(_name)), helpText(std::move(_helpText)) {}
+
+    GenericArgumentBuilder& withShortName(const String& _shortName) {
+        shortName = _shortName;
+        return *this;
+    }
+
+    GenericArgumentBuilder& withDefaultValue(const T& _defaultValue) {
+        defaultValue = _defaultValue;
+        return *this;
+    }
+
+    GenericArgumentBuilder& withImplicitValue(const T& _implicitValue) {
+        implicitValue = _implicitValue;
+        return *this;
+    }
+
+    String name;
+    String helpText;
+    String shortName;
+    T defaultValue;
+    T implicitValue;
+};
+
+typedef GenericArgumentBuilder<String> ArgumentBuilder;
+typedef GenericArgumentBuilder<bool> FlagBuilder;
+typedef GenericArgumentBuilder<int> IntArgumentBuilder;
+
 }  // namespace arguments
 }  // namespace kktest
 

@@ -7,6 +7,7 @@
 using kktest::String;
 using kktest::arguments::ArgumentsApi;
 using kktest::arguments::Flag;
+using kktest::arguments::FlagBuilder;
 using std::cout;
 using std::vector;
 
@@ -15,9 +16,9 @@ int main(int argc, char** argv) {
     argumentsApi->addHelpFlag();
 
     auto versionFlag = argumentsApi->addFlag(
-        "version",
-        "Display program version.",
-        "v");
+        FlagBuilder("version",
+                    "Display program version.")
+                    .withShortName("v"));
 
     vector<String> positional = argumentsApi->interpret(argc, argv);
     argumentsApi->checkHelpFlag();

@@ -15,6 +15,7 @@ using kktest::setUp;
 using kktest::tearDown;
 using kktest::test;
 using kktest::arguments::Argument;
+using kktest::arguments::ArgumentBuilder;
 using kktest::arguments::ArgumentsApi;
 using kktest::core_matchers::isEqualTo;
 using kktest::strutil::copyAsCString;
@@ -51,7 +52,10 @@ void kkTestCase(Arguments) {
         Argument* arg = nullptr;
 
         setUp([&] {
-            arg = api->addArgument("name", "Description.", "n", "a", "b");
+            arg = api->addArgument(ArgumentBuilder("name", "Description.")
+                    .withShortName("n")
+                    .withDefaultValue("a")
+                    .withImplicitValue("b"));
         });
 
         test("no value provided leads to argument taking default value", [&] {

@@ -22,39 +22,36 @@ ArgumentsApiImpl::~ArgumentsApiImpl() {
     }
 }
 
-Argument* ArgumentsApiImpl::addArgument(const String& name,
-                                        const String& helpText,
-                                        const String& shortName,
-                                        const String& defaultValue,
-                                        const String& implicitValue) {
-    checkNameAvailability(name, shortName);
-    auto spec = new ArgumentImpl(defaultValue, implicitValue);
-    addSpec(spec, name, helpText, shortName, defaultValue, implicitValue);
-    return spec;
-}
-
-IntArgument* ArgumentsApiImpl::addIntArgument(const String& name,
-                                              const String& helpText,
-                                              const String& shortName,
-                                              int defaultValue,
-                                              int implicitValue) {
-    checkNameAvailability(name, shortName);
-    auto spec = new IntArgumentImpl(defaultValue, implicitValue);
+Argument* ArgumentsApiImpl::addArgument(const ArgumentBuilder& builder) {
+    checkNameAvailability(builder.name, builder.shortName);
+    auto spec = new ArgumentImpl(builder.defaultValue, builder.implicitValue);
     addSpec(spec,
-            name,
-            helpText,
-            shortName,
-            to_string(defaultValue),
-            to_string(implicitValue));
+            builder.name,
+            builder.helpText,
+            builder.shortName,
+            builder.defaultValue,
+            builder.implicitValue);
     return spec;
 }
 
-Flag* ArgumentsApiImpl::addFlag(const String& name,
-                                const String& helpText,
-                                const String& shortName) {
-    checkNameAvailability(name, shortName);
+IntArgument* ArgumentsApiImpl::addIntArgument(
+        const IntArgumentBuilder& builder) {
+    checkNameAvailability(builder.name, builder.shortName);
+    auto spec = new IntArgumentImpl(builder.defaultValue,
+                                    builder.implicitValue);
+    addSpec(spec,
+            builder.name,
+            builder.helpText,
+            builder.shortName,
+            to_string(builder.defaultValue),
+            to_string(builder.implicitValue));
+    return spec;
+}
+
+Flag* ArgumentsApiImpl::addFlag(const FlagBuilder& builder) {
+    checkNameAvailability(builder.name, builder.shortName);
     auto spec = new FlagImpl();
-    addSpec(spec, name, helpText, shortName, "", "");
+    addSpec(spec, builder.name, builder.helpText, builder.shortName, "", "");
     return spec;
 }
 
@@ -148,7 +145,8 @@ vector<String> ArgumentsApiImpl::interpret(int argc, char** argv) {
 }
 
 void ArgumentsApiImpl::addHelpFlag() {
-    helpFlag = addFlag("help", "Display this help menu.", "h");
+    helpFlag = addFlag(
+        FlagBuilder("help", "Display this help menu.").withShortName("h"));
 }
 
 void ArgumentsApiImpl::checkHelpFlag() {
