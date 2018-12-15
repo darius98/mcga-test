@@ -2,6 +2,7 @@
 #define KKTEST_EXTENSIONS_CORE_MATCHERS_INCLUDE_KKTEST_EXT_CORE_MATCHERS_IMPL_COMPARISON_MATCHERS_HPP_
 
 #include <functional>
+#include <string>
 
 #include <kktest_ext/core_matchers_impl/matcher.hpp>
 

@@ -32,7 +32,7 @@ void kkTestCase(Arguments) {
         char** cStyleArgs = static_cast<char**>(malloc(cStyleArgsSize));
         cStyleArgs[0] = copyAsCString("binaryName");
         int index = 1;
-        for (const String& arg: args) {
+        for (const String& arg : args) {
             cStyleArgs[index++] = copyAsCString(arg);
         }
         int numCArgs = static_cast<int>(args.size() + 1);
