@@ -145,8 +145,8 @@ vector<String> ArgumentsApiImpl::interpret(int argc, char** argv) {
 }
 
 void ArgumentsApiImpl::addHelpFlag() {
-    helpFlag = addFlag(
-        FlagBuilder("help", "Display this help menu.").withShortName("h"));
+    helpFlag = addFlag(FlagBuilder("help", "Display this help menu.")
+                       .withShortName("h"));
 }
 
 void ArgumentsApiImpl::checkHelpFlag() {

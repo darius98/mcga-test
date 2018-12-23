@@ -34,12 +34,7 @@ IntArgumentImpl::IntArgumentImpl(int defaultValue, int implicitValue):
 IntArgumentImpl::~IntArgumentImpl() = default;
 
 void IntArgumentImpl::setValue(const String& _value) {
-    try {
-        value = stoi(_value);
-    } catch(const invalid_argument& error) {
-        cout << "Invalid value for int argument: \"" << _value << "\"\n";
-        exit(1);
-    }
+    value = stoi(_value);
 }
 
 }  // namespace arguments
