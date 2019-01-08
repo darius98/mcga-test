@@ -9,7 +9,6 @@
 #include <kktest_common/interproc_impl/pipe.hpp>
 
 using std::pair;
-using std::string;
 
 namespace kktest {
 namespace interproc {
@@ -118,7 +117,7 @@ class LinuxPipeWriter: public PipeWriter {
     }
 
     void sendMessage(const Message& message) override {
-        const void* bytes = message.getPayload();
+        const void* bytes = message.raw();
         size_t numBytes = message.getSize();
         size_t written = 0;
         while (written < numBytes) {
@@ -149,7 +148,7 @@ pair<PipeReader*, PipeWriter*> createAnonymousPipe() {
     return {new LinuxPipeReader(fd[0]), new LinuxPipeWriter(fd[1])};
 }
 
-void createNamedPipe(const string& pipeName) {
+void createNamedPipe(const String& pipeName) {
     int pipeCreateStatus = mkfifo(pipeName.c_str(), 0666);
     if (pipeCreateStatus < 0) {
         // TODO(darius98): Handle errors better than just exiting!
@@ -158,7 +157,7 @@ void createNamedPipe(const string& pipeName) {
     }
 }
 
-void destroyNamedPipe(const string& pipeName) {
+void destroyNamedPipe(const String& pipeName) {
     int removeStat = remove(pipeName.c_str());
     if (removeStat < 0) {
         perror("remove pipe");
@@ -166,7 +165,7 @@ void destroyNamedPipe(const string& pipeName) {
     }
 }
 
-PipeReader* openNamedPipeForReading(const string& pipeName) {
+PipeReader* openNamedPipeForReading(const String& pipeName) {
     int pipeFD = open(pipeName.c_str(), O_RDONLY | O_NONBLOCK);
     if (pipeFD < 0) {
         // TODO(darius98): Handle errors better than just exiting!
@@ -176,7 +175,7 @@ PipeReader* openNamedPipeForReading(const string& pipeName) {
     return new LinuxPipeReader(pipeFD);
 }
 
-PipeWriter* openNamedPipeForWriting(const string& pipeName) {
+PipeWriter* openNamedPipeForWriting(const String& pipeName) {
     int pipeFD = open(pipeName.c_str(), O_WRONLY | O_NONBLOCK);
     if (pipeFD < 0) {
         // TODO(darius98): Handle errors better than just exiting!

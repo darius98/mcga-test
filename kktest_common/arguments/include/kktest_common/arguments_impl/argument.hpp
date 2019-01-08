@@ -14,12 +14,6 @@ class GenericArgument {
     virtual T get() const = 0;
 };
 
-typedef GenericArgument<String> Argument;
-
-typedef GenericArgument<bool> Flag;
-
-typedef GenericArgument<int> IntArgument;
-
 template<class T>
 struct GenericArgumentBuilder {
     GenericArgumentBuilder(String _name, String _helpText):
@@ -47,8 +41,13 @@ struct GenericArgumentBuilder {
     T implicitValue;
 };
 
+typedef GenericArgument<String> Argument;
 typedef GenericArgumentBuilder<String> ArgumentBuilder;
+
+typedef GenericArgument<bool> Flag;
 typedef GenericArgumentBuilder<bool> FlagBuilder;
+
+typedef GenericArgument<int> IntArgument;
 typedef GenericArgumentBuilder<int> IntArgumentBuilder;
 
 }  // namespace arguments

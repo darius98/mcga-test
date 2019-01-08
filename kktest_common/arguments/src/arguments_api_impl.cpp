@@ -4,7 +4,6 @@
 #include "arguments_api_impl.hpp"
 #include "argument_impl.hpp"
 
-using kktest::strutil::startsWith;
 using std::cout;
 using std::move;
 using std::runtime_error;
@@ -83,7 +82,7 @@ vector<String> ArgumentsApiImpl::interpret(int argc, char** argv) {
         // considered special, and therefore will be treated like either a
         // positional argument or a value filler for the last unfulfilled short
         // name argument given in the format "-XYZ".
-        if (!startsWith(arg, '-') || arg == "-") {
+        if (!arg.startsWith('-') || arg == "-") {
             if (lastShortName.empty()) {
                 // no unfulfilled argument given by short name, considering a
                 // positional argument.
@@ -110,19 +109,19 @@ vector<String> ArgumentsApiImpl::interpret(int argc, char** argv) {
         auto equalPos = arg.find('=');
 
         // 1. for "--X", give argument "X" its implicit value
-        if (startsWith(arg, "--") && equalPos == String::npos) {
+        if (arg.startsWith("--") && equalPos == String::npos) {
             applyImplicit(arg.substr(2));
         }
 
         // 2. for "--X=v", give argument "X" value "v"
-        if (startsWith(arg, "--") && equalPos != String::npos) {
+        if (arg.startsWith("--") && equalPos != String::npos) {
             applyValue(arg.substr(2, equalPos - 2), arg.substr(equalPos + 1));
         }
 
         // 3. for "-XYZ", give arguments "X" and "Y" their implicit values, and
         // remember "Z" as the last short name, as a construct of the form
         // "-XYZ v" is allowed, equivalent with "--X --Y --Z=v".
-        if (!startsWith(arg, "--") && equalPos == String::npos) {
+        if (!arg.startsWith("--") && equalPos == String::npos) {
             for (size_t j = 1; j + 1 < arg.length(); ++j) {
                 applyImplicit(arg.substr(j, 1));
             }
@@ -131,7 +130,7 @@ vector<String> ArgumentsApiImpl::interpret(int argc, char** argv) {
 
         // 4. for "-XYZ=v", give arguments "X" and "Y" their implicit values and
         // argument "Z" value "v".
-        if (!startsWith(arg, "--") && equalPos != String::npos) {
+        if (!arg.startsWith("--") && equalPos != String::npos) {
             for (size_t j = 1; j + 1 < equalPos; ++j) {
                 applyImplicit(arg.substr(j, 1));
             }

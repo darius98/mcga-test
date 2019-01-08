@@ -1,7 +1,6 @@
 #ifndef KKTEST_EXTENSIONS_TEST_RUNNER_SRC_TEST_EXECUTION_LOOP_TEST_EXECUTION_LOOP_HPP_
 #define KKTEST_EXTENSIONS_TEST_RUNNER_SRC_TEST_EXECUTION_LOOP_TEST_EXECUTION_LOOP_HPP_
 
-#include <string>
 #include <vector>
 
 #include <kktest_ext/feedback.hpp>
@@ -15,7 +14,7 @@ class TestExecutionLoop {
  public:
     explicit TestExecutionLoop(int _concurrentRunningCyclesLimit);
 
-    void addToLoop(const kktest::String& testPath, int maxParallelTests);
+    void addToLoop(const String& testPath, int maxParallelTests);
 
     bool isEmpty() const;
 

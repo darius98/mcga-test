@@ -3,7 +3,6 @@
 
 #include <map>
 #include <queue>
-#include <string>
 
 #include <kktest_common/interproc.hpp>
 #include <test_execution_loop/kktest_lib_info.hpp>
@@ -13,10 +12,12 @@ namespace test_runner {
 
 class TestExecutionCycle {
  public:
+    typedef std::function<void(const KKTestCaseInfo&)> OnInfoCallback;
+
     explicit TestExecutionCycle(
         const String& _testPath,
         int _maxParallelTests,
-        const std::function<void(const KKTestCaseInfo&)>& _onInfoCallback);
+        const OnInfoCallback& _onInfoCallback);
 
     bool isStarted() const;
 
@@ -31,14 +32,16 @@ class TestExecutionCycle {
 
     void processMessage(const interproc::Message& message);
 
-    bool started;
+    bool started = false;
+
     String testPath;
     int maxParallelTests;
-    std::function<void(const KKTestCaseInfo&)> onInfoCallback;
+    OnInfoCallback onInfoCallback;
 
-    interproc::PipeReader* pipeWithTestProcess;
     String pipeName;
-    interproc::SubprocessHandler* testProcess;
+
+    interproc::PipeReader* pipeWithTestProcess = nullptr;
+    interproc::SubprocessHandler* testProcess = nullptr;
 
     KKTestCaseInfo info;
 };

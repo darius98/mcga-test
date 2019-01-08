@@ -18,18 +18,18 @@ void kkTestCase(StrUtilCString) {
         free(result);
     });
 
-    test("copyAsCString(string literal)", [&]() {
+    test("copyAsCString(string literal)", [&] {
         result = copyAsCString("string_literal");
         expect(strcmp(result, "string_literal") == 0);
     });
 
-    test("copyAsCString(const char*)", [&]() {
+    test("copyAsCString(const char*)", [&] {
         const char* ptr = "const_pointer";
         result = copyAsCString(ptr);
         expect(strcmp(result, ptr) == 0);
     });
 
-    test("copyAsCString(char*)", [&]() {
+    test("copyAsCString(char*)", [&] {
         const char* value = "raw_pointer";
         size_t len = strlen(value);
         auto ptr = static_cast<char*>(malloc((len + 1) * sizeof(char)));
@@ -39,7 +39,7 @@ void kkTestCase(StrUtilCString) {
         free(ptr);
     });
 
-    test("copyAsCString(std::string)", [&]() {
+    test("copyAsCString(std::string)", [&] {
         string s = "cpp_string";
         result = copyAsCString(s);
         expect(strcmp(result, s.c_str()) == 0);

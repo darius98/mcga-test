@@ -2,7 +2,6 @@
 
 #include "argument_impl.hpp"
 
-using kktest::strutil::toLower;
 using std::cout;
 using std::invalid_argument;
 
@@ -23,9 +22,9 @@ FlagImpl::FlagImpl(): GenericArgumentImpl<bool>(false, true) {}
 FlagImpl::~FlagImpl() = default;
 
 void FlagImpl::setValue(const String& _value) {
-    value = toLower(_value) == "true" ||
-            _value == "1" ||
-            toLower(_value) == "enabled";
+    value = _value.toLower() == "true"
+            || _value == "1"
+            || _value.toLower() == "enabled";
 }
 
 IntArgumentImpl::IntArgumentImpl(int defaultValue, int implicitValue):

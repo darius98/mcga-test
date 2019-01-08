@@ -8,4 +8,5 @@ if (UNIX)
 endif ()
 
 add_library(interproc ${interproc_src})
+target_link_libraries(interproc PUBLIC strutil)
 target_include_directories(interproc PUBLIC include)

@@ -5,7 +5,33 @@
 
 namespace kktest {
 
-typedef std::string String;
+class String: public std::string {
+ public:
+    String();
+    String(std::string::size_type sz, char ch);
+    String(const std::string& s);
+    String(const char* s);
+
+    String toUpper() const;
+    String toLower() const;
+
+    String stripTrailingWhitespace() const;
+    String strip() const;
+
+    std::string str() const;
+
+    bool startsWith(const String& prefix);
+
+    bool startsWith(char ch);
+
+    bool endsWith(const String& suffix);
+
+    bool endsWith(char ch);
+
+    bool containsSubstring(const String& substr);
+
+    bool containsCharacter(char ch);
+};
 
 }
 

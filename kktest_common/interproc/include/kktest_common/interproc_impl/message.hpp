@@ -2,7 +2,8 @@
 #define KKTEST_COMMON_INTERPROC_INCLUDE_KKTEST_COMMON_INTERPROC_IMPL_MESSAGE_HPP_
 
 #include <functional>
-#include <string>
+
+#include <kktest_common/strutil.hpp>
 
 namespace kktest {
 namespace interproc {
@@ -12,7 +13,7 @@ class BytesConsumer {
     virtual BytesConsumer& addBytes(const void* bytes,
                                     std::size_t numBytes) = 0;
 
-    BytesConsumer& add(const std::string& obj);
+    BytesConsumer& add(const String& obj);
 
     template<class T>
     BytesConsumer& add(const T& obj) {
@@ -43,6 +44,11 @@ class BytesCounter: public BytesConsumer {
 
 class Message: private BytesConsumer {
  public:
+    /// Size of prefix of the message that contains metadata about the message.
+    ///
+    /// The message content starts at index `METADATA_SIZE`.
+    static constexpr const int METADATA_SIZE = sizeof(std::size_t);
+
     template<class... Args>
     static Message build(const Args... args) {
             BytesCounter counter;
@@ -64,7 +70,7 @@ class Message: private BytesConsumer {
     Message& operator=(const Message& other);
     Message& operator=(Message&& other) noexcept;
 
-    void* getPayload() const;
+    void* raw() const;
 
     std::size_t getSize() const;
 

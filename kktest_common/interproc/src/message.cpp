@@ -4,12 +4,11 @@
 #include <kktest_common/interproc_impl/message.hpp>
 
 using std::malloc;
-using std::string;
 
 namespace kktest {
 namespace interproc {
 
-BytesConsumer& BytesConsumer::add(const string& obj) {
+BytesConsumer& BytesConsumer::add(const String& obj) {
     add(obj.size());
     addBytes(obj.c_str(), obj.size());
     return *this;
@@ -106,7 +105,7 @@ Message& Message::addBytes(const void* bytes, size_t numBytes) {
     return *this;
 }
 
-void* Message::getPayload() const {
+void* Message::raw() const {
     return payload;
 }
 

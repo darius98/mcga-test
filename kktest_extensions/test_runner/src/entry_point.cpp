@@ -56,7 +56,7 @@ int main(int argc, char** argv) {
     int maxParallelTestsPerCase = maxParallelTestsPerCaseArgument->get();
     auto executionLoop = new TestExecutionLoop(maxParallelTestCases);
     cout << "Searching for test cases...\n";
-    explore(path(rootPath),
+    explore(path(rootPath.str()),
             [executionLoop, maxParallelTestsPerCase](path testCase) {
         cout << "\tFound test case at " << testCase.c_str() << "\n";
         executionLoop->addToLoop(testCase.c_str(), maxParallelTestsPerCase);

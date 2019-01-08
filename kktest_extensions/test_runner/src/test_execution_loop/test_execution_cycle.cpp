@@ -30,12 +30,9 @@ TestExecutionCycle::TestExecutionCycle(
             const String& _testPath,
             int _maxParallelTests,
             const function<void(const KKTestCaseInfo&)>& _onInfoCallback):
-        started(false),
         testPath(_testPath),
         maxParallelTests(_maxParallelTests),
-        onInfoCallback(_onInfoCallback),
-        pipeWithTestProcess(nullptr),
-        testProcess(nullptr) {
+        onInfoCallback(_onInfoCallback) {
     info.testExecutablePath = testPath;
 }
 
@@ -54,14 +51,15 @@ void TestExecutionCycle::start() {
     createNamedPipe(pipeName);
     pipeWithTestProcess = openNamedPipeForReading(pipeName);
 
-    char* cmd = copyAsCString(testPath.c_str());
-    char* quietArg = copyAsCString("--quiet");
-    char* boxedArg = copyAsCString("--boxed");
-    char* pipeToArg = copyAsCString(("--pipe-to=" + pipeName).c_str());
-    char* maxParallelTestsArg = copyAsCString(
-            ("--max_parallel_tests=" + to_string(maxParallelTests)).c_str());
+    char* cmd = copyAsCString(testPath);
     char* argv[] = {
-            cmd, quietArg, boxedArg, pipeToArg, maxParallelTestsArg, nullptr};
+        cmd,
+        copyAsCString("--quiet"),
+        copyAsCString("--boxed"),
+        copyAsCString("--pipe-to=" + pipeName),
+        copyAsCString("--max-parallel-tests=" + to_string(maxParallelTests)),
+        nullptr,
+    };
     testProcess = openSubprocess(cmd, argv);
 }
 
