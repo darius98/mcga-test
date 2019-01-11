@@ -5,7 +5,7 @@
 #include <kktest.hpp>
 
 #include <kktest_common/arguments.hpp>
-#include <kktest_common/strutil.hpp>
+#include <kktest_common/string.hpp>
 #include <kktest_ext/core_matchers.hpp>
 
 using kktest::expect;
@@ -25,7 +25,6 @@ using kktest::core_matchers::isEqualTo;
 using kktest::core_matchers::isFalse;
 using kktest::core_matchers::isTrue;
 using kktest::core_matchers::throws;
-using kktest::strutil::copyAsCString;
 using std::malloc;
 using std::size_t;
 using std::initializer_list;
@@ -37,10 +36,10 @@ void kkTestCase(Arguments) {
     auto interpretArgs = [&](const initializer_list<String>& args) {
         size_t cStyleArgsSize = (args.size() + 2) * sizeof(char*);
         char** cStyleArgs = static_cast<char**>(malloc(cStyleArgsSize));
-        cStyleArgs[0] = copyAsCString("binaryName");
+        cStyleArgs[0] = String("binaryName").copyAsCStr();
         int index = 1;
         for (const String& arg : args) {
-            cStyleArgs[index++] = copyAsCString(arg);
+            cStyleArgs[index++] = arg.copyAsCStr();
         }
         int numCArgs = static_cast<int>(args.size() + 1);
         cStyleArgs[numCArgs] = nullptr;

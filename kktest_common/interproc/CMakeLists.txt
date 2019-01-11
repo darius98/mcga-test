@@ -8,5 +8,5 @@ if (UNIX)
 endif ()
 
 add_library(interproc ${interproc_src})
-target_link_libraries(interproc PUBLIC strutil)
+target_link_libraries(interproc PUBLIC kktest_string)
 target_include_directories(interproc PUBLIC include)

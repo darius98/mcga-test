@@ -1,7 +1,7 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <sys/stat.h>
-#include <zconf.h>
+#include <unistd.h>
 
 #include <cstdlib>
 #include <cstring>

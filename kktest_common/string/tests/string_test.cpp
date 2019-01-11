@@ -1,7 +1,9 @@
+#include <cstring>
+
 #include <kktest.hpp>
 #include <kktest_ext/core_matchers.hpp>
 
-#include <kktest_common/strutil_impl/kktest_string.hpp>
+#include <kktest_common/string.hpp>
 
 using kktest::expect;
 using kktest::group;
@@ -11,9 +13,9 @@ using kktest::test;
 using kktest::core_matchers::isEqualTo;
 using kktest::core_matchers::isFalse;
 using kktest::core_matchers::isTrue;
-using std::string;
+using kktest::core_matchers::isZero;
 
-void kkTestCase(StrUtilCasing) {
+void kkTestCase(KKTestString) {
     group("toLower", [] {
         test("toLower does not modify string with no letters", [] {
             expect(String("12345!@#$").toLower(),
@@ -221,5 +223,12 @@ void kkTestCase(StrUtilCasing) {
             expect(String("abcdef").containsSubstring("bcdef"), isTrue);
             expect(String("abcdef").containsSubstring("abcdef"), isTrue);
         });
+    });
+
+    test("String::copyAsCStr()", [&] {
+        String s = "cpp_string";
+        char* result = s.copyAsCStr();
+        expect(strcmp(result, s.c_str()), isZero);
+        free(result);
     });
 }

@@ -1,7 +1,7 @@
 #ifndef KKTEST_COMMON_ARGUMENTS_INCLUDE_KKTEST_COMMON_ARGUMENTS_IMPL_ARGUMENT_HPP_
 #define KKTEST_COMMON_ARGUMENTS_INCLUDE_KKTEST_COMMON_ARGUMENTS_IMPL_ARGUMENT_HPP_
 
-#include <kktest_common/strutil.hpp>
+#include <kktest_common/string.hpp>
 
 namespace kktest {
 namespace arguments {

@@ -17,7 +17,8 @@
 #include <utility>
 #include <vector>
 
-#include <kktest_common/strutil.hpp>
+// TODO(darius98): Remove this include!
+#include <kktest_common/string.hpp>
 
 namespace kktest {
 namespace core_matchers {

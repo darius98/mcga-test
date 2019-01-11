@@ -1,5 +1,5 @@
-#ifndef KKTEST_COMMON_STRUTIL_INCLUDE_KKTEST_COMMON_STRUTIL_IMPL_KKTEST_STRING_HPP_
-#define KKTEST_COMMON_STRUTIL_INCLUDE_KKTEST_COMMON_STRUTIL_IMPL_KKTEST_STRING_HPP_
+#ifndef KKTEST_COMMON_STRING_INCLUDE_KKTEST_COMMON_STRING_HPP_
+#define KKTEST_COMMON_STRING_INCLUDE_KKTEST_COMMON_STRING_HPP_
 
 #include <string>
 
@@ -19,6 +19,7 @@ class String: public std::string {
     String strip() const;
 
     std::string str() const;
+    char* copyAsCStr() const;
 
     bool startsWith(const String& prefix);
 
@@ -35,4 +36,4 @@ class String: public std::string {
 
 }
 
-#endif  // KKTEST_COMMON_STRUTIL_INCLUDE_KKTEST_COMMON_STRUTIL_IMPL_KKTEST_STRING_HPP_
+#endif  // KKTEST_COMMON_STRING_INCLUDE_KKTEST_COMMON_STRING_HPP_

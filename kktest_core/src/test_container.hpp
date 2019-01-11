@@ -2,7 +2,7 @@
 #define KKTEST_CORE_SRC_TEST_CONTAINER_HPP_
 
 #include <kktest_common/interproc.hpp>
-#include <kktest_common/strutil.hpp>
+#include <kktest_common/string.hpp>
 #include <kktest_common/time.hpp>
 
 namespace kktest {

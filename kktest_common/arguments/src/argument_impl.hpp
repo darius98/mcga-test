@@ -1,8 +1,8 @@
 #ifndef KKTEST_COMMON_ARGUMENTS_SRC_ARGUMENT_IMPL_HPP_
 #define KKTEST_COMMON_ARGUMENTS_SRC_ARGUMENT_IMPL_HPP_
 
-#include <kktest_common/strutil.hpp>
 #include <kktest_common/arguments_impl/argument.hpp>
+#include <kktest_common/string.hpp>
 #include "command_line_spec.hpp"
 
 namespace kktest {

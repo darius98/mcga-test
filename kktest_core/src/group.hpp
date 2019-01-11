@@ -1,7 +1,7 @@
 #ifndef KKTEST_CORE_SRC_GROUP_HPP_
 #define KKTEST_CORE_SRC_GROUP_HPP_
 
-#include <kktest_common/strutil.hpp>
+#include <kktest_common/string.hpp>
 #include <kktest_impl/executable.hpp>
 #include <kktest_impl/info.hpp>
 #include "test.hpp"

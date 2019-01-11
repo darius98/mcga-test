@@ -3,7 +3,7 @@
 
 #include <stdexcept>
 
-#include <kktest_common/strutil.hpp>
+#include <kktest_common/string.hpp>
 
 namespace kktest {
 

@@ -1,7 +1,7 @@
 #ifndef KKTEST_COMMON_ARGUMENTS_SRC_COMMAND_LINE_SPEC_HPP_
 #define KKTEST_COMMON_ARGUMENTS_SRC_COMMAND_LINE_SPEC_HPP_
 
-#include <kktest_common/strutil.hpp>
+#include <kktest_common/string.hpp>
 
 namespace kktest {
 namespace arguments {

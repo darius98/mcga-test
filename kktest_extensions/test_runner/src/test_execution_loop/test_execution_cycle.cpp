@@ -3,7 +3,7 @@
 #include <stdexcept>
 #include <iostream>
 
-#include <kktest_common/strutil.hpp>
+#include <kktest_common/string.hpp>
 #include <kktest_ext/feedback.hpp>
 #include "test_execution_cycle.hpp"
 
@@ -14,7 +14,7 @@ using kktest::interproc::MessageReader;
 using kktest::interproc::PipeReader;
 using kktest::interproc::openNamedPipeForReading;
 using kktest::interproc::openSubprocess;
-using kktest::strutil::copyAsCString;
+using kktest::String;
 using std::cout;
 using std::function;
 using std::runtime_error;
@@ -51,13 +51,13 @@ void TestExecutionCycle::start() {
     createNamedPipe(pipeName);
     pipeWithTestProcess = openNamedPipeForReading(pipeName);
 
-    char* cmd = copyAsCString(testPath);
+    char* cmd = String(testPath).copyAsCStr();
     char* argv[] = {
         cmd,
-        copyAsCString("--quiet"),
-        copyAsCString("--boxed"),
-        copyAsCString("--pipe-to=" + pipeName),
-        copyAsCString("--max-parallel-tests=" + to_string(maxParallelTests)),
+        String("--quiet").copyAsCStr(),
+        String("--boxed").copyAsCStr(),
+        String("--pipe-to=" + pipeName).copyAsCStr(),
+        String("--max-parallel-tests=" + to_string(maxParallelTests)).copyAsCStr(),
         nullptr,
     };
     testProcess = openSubprocess(cmd, argv);

@@ -1,6 +1,8 @@
+#include <cstring>
+
 #include <algorithm>
 
-#include <kktest_common/strutil_impl/kktest_string.hpp>
+#include <kktest_common/string.hpp>
 
 using std::string;
 using std::transform;
@@ -80,6 +82,13 @@ bool String::containsSubstring(const String& substr) {
 
 bool String::containsCharacter(char ch) {
     return find(ch) != npos;
+}
+
+char* String::copyAsCStr() const {
+    auto size = (length() + 1) * sizeof(char);
+    auto destination = malloc(size);
+    memcpy(destination, c_str(), size);
+    return static_cast<char*>(destination);
 }
 
 }
