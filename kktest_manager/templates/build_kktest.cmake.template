@@ -1,7 +1,7 @@
 
 # @<AUTO-GENERATE>[SUBDIRECTORIES]
 
-add_library(kktest SHARED $<TARGET_OBJECTS:kktest_impl>
+add_library(kktest $<TARGET_OBJECTS:kktest_impl>
     generated/kktest_main.cpp
 
 # @<AUTO-GENERATE>[OBJECT_LIBS]

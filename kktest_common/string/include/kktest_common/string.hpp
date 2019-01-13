@@ -34,6 +34,6 @@ class String: public std::string {
     bool containsCharacter(char ch);
 };
 
-}
+}  // namespace kktest
 
 #endif  // KKTEST_COMMON_STRING_INCLUDE_KKTEST_COMMON_STRING_HPP_

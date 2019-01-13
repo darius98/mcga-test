@@ -1,7 +1,6 @@
 #ifndef KKTEST_CORE_INCLUDE_KKTEST_IMPL_CONFIG_HPP_
 #define KKTEST_CORE_INCLUDE_KKTEST_IMPL_CONFIG_HPP_
 
-// TODO(darius98): Remove this include!
 #include <kktest_common/string.hpp>
 
 namespace kktest {

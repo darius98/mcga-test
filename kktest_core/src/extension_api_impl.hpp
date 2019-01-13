@@ -34,13 +34,13 @@ class Hooks {
 
  private:
     std::tuple<
-        std::vector<AfterInitHook>,
-        std::vector<GroupHook>,
-        std::vector<GroupHook>,
-        std::vector<TestHook>,
-        std::vector<TestHook>,
-        std::vector<BeforeDestroyHook>,
-        std::vector<BeforeForceDestroyHook>
+        std::vector<ExtensionApi::AfterInitHook>,
+        std::vector<ExtensionApi::GroupHook>,
+        std::vector<ExtensionApi::GroupHook>,
+        std::vector<ExtensionApi::TestHook>,
+        std::vector<ExtensionApi::TestHook>,
+        std::vector<ExtensionApi::BeforeDestroyHook>,
+        std::vector<ExtensionApi::BeforeForceDestroyHook>
     > hooks;
 };
 

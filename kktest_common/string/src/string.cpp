@@ -19,17 +19,13 @@ String::String(const char* s): string(s) {}
 
 String String::toUpper() const {
     String ret(length(), '\0');
-    transform(begin(), end(), ret.begin(), [](unsigned char c) {
-        return toupper(c);
-    });
+    transform(begin(), end(), ret.begin(), toupper);
     return ret;
 }
 
 String String::toLower() const {
     String ret(length(), '\0');
-    transform(begin(), end(), ret.begin(), [](unsigned char c) {
-        return tolower(c);
-    });
+    transform(begin(), end(), ret.begin(), tolower);
     return ret;
 }
 

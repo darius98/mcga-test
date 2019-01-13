@@ -9,14 +9,14 @@
 
 namespace kktest {
 
-typedef std::function<void(const TestInfo&)> TestHook;
-typedef std::function<void(const GroupInfo&)> GroupHook;
-typedef std::function<void()> AfterInitHook;
-typedef std::function<void()> BeforeDestroyHook;
-typedef std::function<void(const std::exception&)> BeforeForceDestroyHook;
-
 class ExtensionApi {
  public:
+    typedef std::function<void(const TestInfo&)> TestHook;
+    typedef std::function<void(const GroupInfo&)> GroupHook;
+    typedef std::function<void()> AfterInitHook;
+    typedef std::function<void()> BeforeDestroyHook;
+    typedef std::function<void(const std::exception&)> BeforeForceDestroyHook;
+
     virtual ~ExtensionApi() = default;
 
     virtual void beforeTest(const TestHook& hook) = 0;
