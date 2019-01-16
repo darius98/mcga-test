@@ -1,8 +1,0 @@
-{
-  "folderName": "feedback",
-  "linkToMainLibrary": true,
-  "linkObjectLibrary": "kktest_extension_feedback",
-  "hookExtensionInMain": true,
-  "extensionIncludePath": "kktest_ext/feedback_impl/ext.hpp",
-  "extensionClass": "kktest::feedback::FeedbackExtension"
-}

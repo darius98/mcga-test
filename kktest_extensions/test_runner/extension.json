@@ -1,7 +1,0 @@
-{
-  "folderName": "test_runner",
-  "linkToMainLibrary": false,
-  "hookExtensionInMain": false,
-  "binaries": ["kktest_test_runner"],
-  "dependencies": ["feedback"]
-}

@@ -1,0 +1,7 @@
+name: test_runner
+
+dependencies:
+  - feedback
+
+binaries:
+  - kktest_test_runner
