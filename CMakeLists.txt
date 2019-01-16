@@ -4,11 +4,11 @@ set(CMAKE_CXX_STANDARD 17)
 
 set(CMAKE_POSITION_INDEPENDENT_CODE TRUE)
 
-set(TESTS_PATH "${CMAKE_CURRENT_SOURCE_DIR}/test_binaries")
+set(TESTS_PATH "${CMAKE_CURRENT_SOURCE_DIR}/build/tests")
 
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/lib")
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/lib")
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/bin")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/build/lib")
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/build/lib")
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/build/bin")
 
 function(add_kktest TEST_NAME)
     set(PREV_CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
@@ -20,12 +20,12 @@ function(add_kktest TEST_NAME)
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PREV_CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 endfunction()
 
-add_subdirectory(kktest_common/string)
-add_subdirectory(kktest_common/arguments)
-add_subdirectory(kktest_common/interproc)
-add_subdirectory(kktest_common/utils)
+add_subdirectory(common/string)
+add_subdirectory(common/arguments)
+add_subdirectory(common/interproc)
+add_subdirectory(common/utils)
 
-add_subdirectory(kktest_core)
-add_subdirectory(kktest_manager)
+add_subdirectory(core)
+add_subdirectory(manager)
 
 include(generated/build_kktest.cmake)

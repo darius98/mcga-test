@@ -1,6 +1,6 @@
 #include <kktest_impl/main.hpp>
 
-#include <kktest_ext/feedback_impl/ext.hpp>
+#include <kktest_ext/feedback.hpp>
 
 using kktest::Extension;
 using kktest::InternalArgs;

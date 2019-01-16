@@ -1,7 +1,0 @@
-#ifndef KKTEST_EXTENSIONS_FEEDBACK_INCLUDE_KKTEST_EXT_FEEDBACK_HPP_
-#define KKTEST_EXTENSIONS_FEEDBACK_INCLUDE_KKTEST_EXT_FEEDBACK_HPP_
-
-#include <kktest_ext/feedback_impl/test_logger.hpp>
-#include <kktest_ext/feedback_impl/pipe_message_type.hpp>
-
-#endif  // KKTEST_EXTENSIONS_FEEDBACK_INCLUDE_KKTEST_EXT_FEEDBACK_HPP_

@@ -1,7 +1,7 @@
 
-add_subdirectory(kktest_extensions/core_matchers)
-add_subdirectory(kktest_extensions/feedback)
-add_subdirectory(kktest_extensions/test_runner)
+add_subdirectory(extensions/core_matchers)
+add_subdirectory(extensions/feedback)
+add_subdirectory(extensions/test_runner)
 
 add_library(kktest $<TARGET_OBJECTS:kktest_impl>
     generated/kktest_main.cpp
