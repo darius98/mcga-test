@@ -1,4 +1,4 @@
-add_library(kktest_extension_feedback_test_logger
+add_library(kktest_extension_feedback_test_logger OBJECT
     src/test_logger.cpp
 )
 target_include_directories(kktest_extension_feedback_test_logger PUBLIC include)

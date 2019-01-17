@@ -1,4 +1,4 @@
-add_library(kktest_string
+add_library(kktest_string OBJECT
     src/string.cpp
 )
 target_include_directories(kktest_string PUBLIC include)

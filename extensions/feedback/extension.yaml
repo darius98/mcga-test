@@ -2,7 +2,8 @@ name: feedback
 author: The KKTest team
 
 link:
-  cmake_obj_library: kktest_extension_feedback
+  - kktest_extension_feedback
+  - kktest_extension_feedback_test_logger
 
 hook:
   include: kktest_ext/feedback.hpp

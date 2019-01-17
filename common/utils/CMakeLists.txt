@@ -1,4 +1,6 @@
-add_library(kktest_time src/time.cpp)
+add_library(kktest_time OBJECT
+    src/time.cpp
+)
 target_include_directories(kktest_time PUBLIC include)
 install(DIRECTORY include DESTINATION .)
 

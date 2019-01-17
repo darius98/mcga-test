@@ -1,10 +1,9 @@
-add_library(arguments
+add_library(arguments OBJECT
     src/arguments_api.cpp
     src/arguments_api_impl.cpp
     src/argument_impl.cpp
 )
 target_include_directories(arguments PUBLIC include)
-target_link_libraries(arguments PUBLIC kktest_string)
 install(DIRECTORY include DESTINATION include)
 
 add_kktest(arguments_test tests/arguments_test.cpp)
