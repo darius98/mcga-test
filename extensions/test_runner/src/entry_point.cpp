@@ -8,33 +8,33 @@
 
 #include <test_execution_loop/test_execution_loop.hpp>
 
+using namespace cppli;
 using namespace kktest;
-using namespace kktest::arguments;
 using namespace kktest::test_runner;
 using namespace std;
 using namespace std::filesystem;
 
 int main(int argc, char** argv) {
-    ArgumentsApi* argumentsApi = ArgumentsApi::create("KKTest Runner.");
-    argumentsApi->addHelpFlag();
+    Cppli* cliApi = Cppli::create("KKTest Runner.");
+    cliApi->addHelpFlag();
 
-    Flag* versionFlag = argumentsApi->addFlag(FlagBuilder(
+    Flag* versionFlag = cliApi->addFlag(FlagBuilder(
             "version",
             "Display program version.")
             .withShortName("v"));
-    IntArgument* maxParallelCasesArgument = argumentsApi->addIntArgument(
+    IntArgument* maxParallelCasesArgument = cliApi->addIntArgument(
             IntArgumentBuilder("parallel-cases",
                                "Maximum number of concurrent test cases.")
                                .withDefaultValue(1)
                                .withImplicitValue(3));
-    IntArgument* maxParallelTestsPerCaseArgument = argumentsApi->addIntArgument(
+    IntArgument* maxParallelTestsPerCaseArgument = cliApi->addIntArgument(
             IntArgumentBuilder(
                 "parallel-tests-per-case",
                 "Maximum number of concurrent tests per test case")
                 .withDefaultValue(1)
                 .withImplicitValue(5));
-    vector<String> positional = argumentsApi->interpret(argc, argv);
-    argumentsApi->checkHelpFlag();
+    vector<string> positional = cliApi->interpret(argc, argv);
+    cliApi->checkHelpFlag();
     if (versionFlag->get()) {
         cout << "KKTest test test_runner version " << VERSION << "\n";
         return 0;

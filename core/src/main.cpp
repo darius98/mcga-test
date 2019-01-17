@@ -5,25 +5,25 @@
 #include "driver.hpp"
 #include "test_case_registry.hpp"
 
-using namespace kktest::arguments;
+using namespace cppli;
 using namespace std;
 
 namespace kktest {
 
-InternalArgs registerInternalFlags(ArgumentsApi* argumentsApi) {
+InternalArgs registerInternalFlags(Cppli* cliApi) {
     InternalArgs args;
-    args.versionFlag = argumentsApi->addFlag(FlagBuilder(
+    args.versionFlag = cliApi->addFlag(FlagBuilder(
         "version",
         "Display program version")
         .withShortName("v"));
-    args.getSignatureFlag = argumentsApi->addFlag(FlagBuilder(
+    args.getSignatureFlag = cliApi->addFlag(FlagBuilder(
         "get-signature",
         "Display the KKTest 32-byte signature in hexadecimal format"));
-    args.boxedFlag = argumentsApi->addFlag(FlagBuilder(
+    args.boxedFlag = cliApi->addFlag(FlagBuilder(
         "boxed",
         "Run each test in an isolated process (boxed)")
         .withShortName("b"));
-    args.maxParallelTestsArgument = argumentsApi->addIntArgument(
+    args.maxParallelTestsArgument = cliApi->addIntArgument(
         IntArgumentBuilder("max-parallel-tests",
                            "Maximum number of tests to execute in parallel "
                            "(processes to spawn) when running boxed")

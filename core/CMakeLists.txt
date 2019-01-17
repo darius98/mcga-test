@@ -1,6 +1,6 @@
 add_library(kktest_interface INTERFACE)
 target_include_directories(kktest_interface INTERFACE include)
-target_link_libraries(kktest_interface INTERFACE interproc kktest_string arguments kktest_time)
+target_link_libraries(kktest_interface INTERFACE interproc kktest_string kktest_time)
 
 add_library(kktest_impl OBJECT
     src/box_executor.cpp

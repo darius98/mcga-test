@@ -6,7 +6,7 @@ add_subdirectory(extensions/test_runner)
 add_library(kktest
     generated/kktest_main.cpp
 
-    $<TARGET_OBJECTS:arguments>
+    $<TARGET_OBJECTS:cppli_objects>
     $<TARGET_OBJECTS:interproc>
     $<TARGET_OBJECTS:kktest_string>
     $<TARGET_OBJECTS:kktest_time>

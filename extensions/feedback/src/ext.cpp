@@ -4,19 +4,19 @@
 #include <kktest_ext/feedback_impl/ext.hpp>
 #include <kktest_ext/feedback_impl/pipe_message_type.hpp>
 
-using namespace kktest::arguments;
+using namespace cppli;
 using namespace kktest::interproc;
 using namespace std;
 
 namespace kktest {
 namespace feedback {
 
-void FeedbackExtension::registerCommandLineArgs(ArgumentsApi* argumentsApi) {
-    quietFlag = argumentsApi->addFlag(FlagBuilder(
+void FeedbackExtension::registerCommandLineArgs(Cppli* cliApi) {
+    quietFlag = cliApi->addFlag(FlagBuilder(
         "quiet",
         "Disable STDOUT logging for this test run")
         .withShortName("q"));
-    pipeNameArgument = argumentsApi->addArgument(ArgumentBuilder(
+    pipeNameArgument = cliApi->addArgument(ArgumentBuilder(
         "pipe-to",
         "A file with write access for piping the test results as they become "
         "available."));

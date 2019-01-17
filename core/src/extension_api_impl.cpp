@@ -1,12 +1,12 @@
 #include "extension_api_impl.hpp"
 
-using namespace kktest::arguments;
+using namespace cppli;
 
 namespace kktest {
 
 Extension::~Extension() = default;
 
-void Extension::registerCommandLineArgs(ArgumentsApi*) {}
+void Extension::registerCommandLineArgs(Cppli*) {}
 
 void Extension::init(ExtensionApi*) {}
 

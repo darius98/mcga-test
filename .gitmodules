@@ -1,0 +1,3 @@
+[submodule "third_party/cppli"]
+	path = third_party/cppli
+	url = https://github.com/darius98/cppli

@@ -4,7 +4,8 @@
 #include <functional>
 #include <vector>
 
-#include <kktest_common/arguments.hpp>
+#include <cppli.hpp>
+
 #include <kktest_impl/info.hpp>
 
 namespace kktest {
@@ -32,7 +33,7 @@ class Extension {
  public:
     virtual ~Extension();
 
-    virtual void registerCommandLineArgs(arguments::ArgumentsApi* argumentsApi);
+    virtual void registerCommandLineArgs(cppli::Cppli* cliApi);
 
     virtual void init(ExtensionApi* api);
 

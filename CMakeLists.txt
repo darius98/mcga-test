@@ -21,8 +21,9 @@ function(add_kktest TEST_NAME)
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PREV_CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 endfunction()
 
+add_subdirectory(third_party)
+
 add_subdirectory(common/string)
-add_subdirectory(common/arguments)
 add_subdirectory(common/interproc)
 add_subdirectory(common/utils)
 

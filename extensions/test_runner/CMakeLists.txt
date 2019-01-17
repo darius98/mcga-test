@@ -5,7 +5,7 @@ add_executable(kktest_test_runner
     src/test_execution_loop/test_execution_loop.cpp
     src/entry_point.cpp
 
-    $<TARGET_OBJECTS:arguments>
+    $<TARGET_OBJECTS:cppli_objects>
     $<TARGET_OBJECTS:interproc>
     $<TARGET_OBJECTS:kktest_string>
     $<TARGET_OBJECTS:kktest_time>

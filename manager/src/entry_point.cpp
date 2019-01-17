@@ -2,28 +2,26 @@
 
 #include <iostream>
 
-#include <kktest_common/arguments.hpp>
+#include <cppli.hpp>
 
-using namespace kktest;
-using namespace kktest::arguments;
+using namespace cppli;
 using namespace std;
 
 int main(int argc, char** argv) {
-    auto argumentsApi = ArgumentsApi::create("KKTest Manager.");
-    argumentsApi->addHelpFlag();
+    auto cliApi = Cppli::create("KKTest Manager.");
+    cliApi->addHelpFlag();
 
-    auto versionFlag = argumentsApi->addFlag(
-        FlagBuilder("version",
-                    "Display program version.")
-                    .withShortName("v"));
+    auto versionFlag = cliApi->addFlag(FlagBuilder("version",
+                                                   "Display program version.")
+                                                   .withShortName("v"));
 
-    vector<String> positional = argumentsApi->interpret(argc, argv);
-    argumentsApi->checkHelpFlag();
+    vector<string> positional = cliApi->interpret(argc, argv);
+    cliApi->checkHelpFlag();
 
     if (versionFlag->get()) {
         cout << "KKTest Manager version " << VERSION << "\n";
     }
 
-    delete argumentsApi;
+    delete cliApi;
     return 0;
 }
