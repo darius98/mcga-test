@@ -3,3 +3,6 @@ author: The KKTest team
 
 link:
   cmake_obj_library: kktest_extension_core_matchers
+
+include:
+  install: true

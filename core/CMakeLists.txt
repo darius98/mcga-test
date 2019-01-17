@@ -17,3 +17,5 @@ add_library(kktest_impl OBJECT
 )
 target_compile_options(kktest_impl PRIVATE -Wall -Wextra -pedantic)
 target_link_libraries(kktest_impl kktest_interface)
+
+install(DIRECTORY include DESTINATION .)

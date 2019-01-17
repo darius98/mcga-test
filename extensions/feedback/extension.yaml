@@ -7,3 +7,6 @@ link:
 hook:
   include: kktest_ext/feedback.hpp
   class: kktest::feedback::FeedbackExtension
+
+include:
+  install: true
