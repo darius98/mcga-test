@@ -12,3 +12,4 @@ add_executable(kktest_test_runner
 )
 target_include_directories(kktest_test_runner PRIVATE ${SRC_FOLDER})
 target_link_libraries(kktest_test_runner kktest_extension_feedback_test_logger stdc++fs)
+set_property(TARGET kktest_test_runner PROPERTY CXX_STANDARD 17)

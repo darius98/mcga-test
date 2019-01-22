@@ -54,7 +54,11 @@ TestExecutionInfo Executor::run(Test* test, Executable func) {
     runTearDownsRecursively(group, setFailure);
     double executionTimeMs = t.getMsElapsed();
     state = INACTIVE;
-    return {executionTimeMs / timeTickLengthMs, !failed, failureMessage};
+    TestExecutionInfo result;
+    result.executionTimeTicks = executionTimeMs / timeTickLengthMs;
+    result.passed = !failed;
+    result.failureMessage = failureMessage;
+    return result;
 }
 
 void Executor::runSetUpsRecursively(Group* group, SetFailure setFailure) {

@@ -4,6 +4,7 @@
 #include <functional>
 
 #include <kktest_ext/core_matchers_impl/matcher.hpp>
+#include <kktest_ext/core_matchers_impl/detail/std_invoke_polyfill.hpp>
 
 namespace kktest {
 namespace core_matchers {
@@ -61,7 +62,7 @@ ThrowsSpecificMatcher<E> throwsA() {
 
 template<class F, class... Args>
 std::function<void()> wrapFunc(const F& func, const Args... args) {
-    return [&]() { std::invoke(func, args...); };
+    return [&]() { detail::invokePolyfill(func, args...); };
 }
 
 }

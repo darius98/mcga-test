@@ -142,31 +142,46 @@ extern IsEmptyMatcher isEmpty;
 
 extern IsNotEmptyMatcher isNotEmpty;
 
-template<class T>
-auto hasSize(const T& size) {
-    if constexpr (std::is_base_of<Matcher, T>::value) {
-        return IterableSizeMatcher<T>(size);
-    } else {
-        return IterableSizeMatcher<EqualityMatcher<T>>(isEqualTo(size));
-    }
+template<
+    class T,
+    class=typename std::enable_if<std::is_base_of<Matcher, T>::value>::type>
+IterableSizeMatcher<T> hasSize(const T& size) {
+    return IterableSizeMatcher<T>(size);
 }
 
-template<class T>
-auto eachElement(const T& each) {
-    if constexpr (std::is_base_of<Matcher, T>::value) {
-        return IterableEachMatcher<T>(each);
-    } else {
-        return IterableEachMatcher<EqualityMatcher<T>>(isEqualTo(each));
-    }
+template<
+    class T,
+    class=typename std::enable_if<!std::is_base_of<Matcher, T>::value>::type>
+IterableSizeMatcher<EqualityMatcher<T>> hasSize(const T& size) {
+    return IterableSizeMatcher<EqualityMatcher<T>>(isEqualTo(size));
 }
 
-template<class T>
-auto anyElement(const T& any) {
-    if constexpr (std::is_base_of<Matcher, T>::value) {
-        return IterableAnyMatcher<T>(any);
-    } else {
-        return IterableAnyMatcher<EqualityMatcher<T>>(isEqualTo(any));
-    }
+template<
+    class T,
+    class=typename std::enable_if<std::is_base_of<Matcher, T>::value>::type>
+IterableEachMatcher<T> eachElement(const T& size) {
+    return IterableEachMatcher<T>(size);
+}
+
+template<
+    class T,
+    class=typename std::enable_if<!std::is_base_of<Matcher, T>::value>::type>
+IterableEachMatcher<EqualityMatcher<T>> eachElement(const T& size) {
+    return IterableEachMatcher<EqualityMatcher<T>>(isEqualTo(size));
+}
+
+template<
+    class T,
+    class=typename std::enable_if<std::is_base_of<Matcher, T>::value>::type>
+IterableAnyMatcher<T> anyElement(const T& size) {
+    return IterableAnyMatcher<T>(size);
+}
+
+template<
+    class T,
+    class=typename std::enable_if<!std::is_base_of<Matcher, T>::value>::type>
+IterableAnyMatcher<EqualityMatcher<T>> anyElement(const T& size) {
+    return IterableAnyMatcher<EqualityMatcher<T>>(isEqualTo(size));
 }
 
 }
