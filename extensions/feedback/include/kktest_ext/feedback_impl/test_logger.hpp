@@ -6,7 +6,7 @@
 #include <set>
 #include <utility>
 
-#include <kktest_extension_api.hpp>
+#include <kktest_impl/info.hpp>
 
 namespace kktest {
 namespace feedback {

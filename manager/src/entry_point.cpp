@@ -11,9 +11,10 @@ int main(int argc, char** argv) {
     auto cliApi = Cppli::create("KKTest Manager.");
     cliApi->addHelpFlag();
 
-    auto versionFlag = cliApi->addFlag(FlagBuilder("version",
-                                                   "Display program version.")
-                                                   .withShortName("v"));
+    auto versionFlag = cliApi->addFlag(
+        FlagSpec("version")
+        .setDescription("Display program version.")
+        .setShortName("v"));
 
     vector<string> positional = cliApi->interpret(argc, argv);
     cliApi->checkHelpFlag();

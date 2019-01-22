@@ -18,21 +18,20 @@ int main(int argc, char** argv) {
     Cppli* cliApi = Cppli::create("KKTest Runner.");
     cliApi->addHelpFlag();
 
-    Flag* versionFlag = cliApi->addFlag(FlagBuilder(
-            "version",
-            "Display program version.")
-            .withShortName("v"));
+    Flag* versionFlag = cliApi->addFlag(
+            FlagSpec("version")
+            .setDescription("Display program version.")
+            .setShortName("v"));
     IntArgument* maxParallelCasesArgument = cliApi->addIntArgument(
-            IntArgumentBuilder("parallel-cases",
-                               "Maximum number of concurrent test cases.")
-                               .withDefaultValue(1)
-                               .withImplicitValue(3));
+            IntArgumentSpec("parallel-cases")
+            .setDescription("Maximum number of concurrent test cases.")
+            .setDefaultValue(1)
+            .setImplicitValue(3));
     IntArgument* maxParallelTestsPerCaseArgument = cliApi->addIntArgument(
-            IntArgumentBuilder(
-                "parallel-tests-per-case",
-                "Maximum number of concurrent tests per test case")
-                .withDefaultValue(1)
-                .withImplicitValue(5));
+            IntArgumentSpec("parallel-tests-per-case")
+            .setDescription("Maximum number of concurrent tests per test case")
+            .setDefaultValue(1)
+            .setImplicitValue(5));
     vector<string> positional = cliApi->interpret(argc, argv);
     cliApi->checkHelpFlag();
     if (versionFlag->get()) {

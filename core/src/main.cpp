@@ -12,22 +12,23 @@ namespace kktest {
 
 InternalArgs registerInternalFlags(Cppli* cliApi) {
     InternalArgs args;
-    args.versionFlag = cliApi->addFlag(FlagBuilder(
-        "version",
-        "Display program version")
-        .withShortName("v"));
-    args.getSignatureFlag = cliApi->addFlag(FlagBuilder(
-        "get-signature",
-        "Display the KKTest 32-byte signature in hexadecimal format"));
-    args.boxedFlag = cliApi->addFlag(FlagBuilder(
-        "boxed",
-        "Run each test in an isolated process (boxed)")
-        .withShortName("b"));
+    args.versionFlag = cliApi->addFlag(
+        FlagSpec("version")
+        .setDescription("Display program version")
+        .setShortName("v"));
+    args.getSignatureFlag = cliApi->addFlag(
+        FlagSpec("get-signature")
+        .setDescription("Display the KKTest 32-byte "
+                        "signature in hexadecimal format"));
+    args.boxedFlag = cliApi->addFlag(
+        FlagSpec("boxed")
+        .setDescription("Run each test in an isolated process (boxed)")
+        .setShortName("b"));
     args.maxParallelTestsArgument = cliApi->addIntArgument(
-        IntArgumentBuilder("max-parallel-tests",
-                           "Maximum number of tests to execute in parallel "
-                           "(processes to spawn) when running boxed")
-        .withDefaultValue(1));
+        IntArgumentSpec("max-parallel-tests")
+        .setDescription("Maximum number of tests to execute in parallel "
+                        "(processes to spawn) when running boxed")
+        .setDefaultValue(1));
     return args;
 }
 

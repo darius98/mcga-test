@@ -12,14 +12,16 @@ namespace kktest {
 namespace feedback {
 
 void FeedbackExtension::registerCommandLineArgs(Cppli* cliApi) {
-    quietFlag = cliApi->addFlag(FlagBuilder(
-        "quiet",
-        "Disable STDOUT logging for this test run")
-        .withShortName("q"));
-    pipeNameArgument = cliApi->addArgument(ArgumentBuilder(
-        "pipe-to",
-        "A file with write access for piping the test results as they become "
-        "available."));
+    quietFlag = cliApi->addFlag(
+        FlagSpec("quiet")
+        .setHelpGroup("Feedback")
+        .setDescription("Disable STDOUT logging for this test run")
+        .setShortName("q"));
+    pipeNameArgument = cliApi->addArgument(
+        ArgumentSpec("pipe-to")
+        .setHelpGroup("Feedback")
+        .setDescription("A file or fifo with write access for piping the test "
+                        "results as they become available."));
 }
 
 void FeedbackExtension::init(ExtensionApi* api) {
