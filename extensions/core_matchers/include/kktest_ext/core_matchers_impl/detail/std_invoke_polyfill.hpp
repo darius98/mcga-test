@@ -1,3 +1,6 @@
+#ifndef KKTEST_EXTENSIONS_CORE_MATCHERS_KKTEST_EXT_CORE_MATCHERS_IMPL_DETAIL_STD_INVOKE_POLYFILL_HPP_
+#define KKTEST_EXTENSIONS_CORE_MATCHERS_KKTEST_EXT_CORE_MATCHERS_IMPL_DETAIL_STD_INVOKE_POLYFILL_HPP_
+
 #include <utility>
 #include <type_traits>
 
@@ -42,8 +45,7 @@ template<
     class... Args,
     class=typename std::enable_if<std::is_member_function_pointer<Type T::*>::value>::type,
     class=typename enableIfNotDecayDerived<T, T1>::type,
-    class=typename std::enable_if<isReferenceWrapper<typename std::decay<T1>::type>::value>::type
->
+    class=typename std::enable_if<isReferenceWrapper<typename std::decay<T1>::type>::value>::type>
 auto invokePolyfillImpl(Type T::* f, T1&& t1, Args&&... args) -> decltype((t1.get().*f)(std::forward<Args>(args)...)) {
     return (t1.get().*f)(std::forward<Args>(args)...);
 }
@@ -114,3 +116,5 @@ auto invokePolyfill(F&& f, Args&&... args) -> decltype(invokePolyfillImpl(std::f
 }
 }
 }
+
+#endif
