@@ -5,31 +5,7 @@ using namespace std;
 namespace kktest {
 namespace interproc {
 
-WorkerSubprocess::WorkerSubprocess(SubprocessHandler* _subprocessHandler,
-                                   PipeReader* _pipeReader):
-        subprocessHandler(_subprocessHandler), pipeReader(_pipeReader) {}
-
-WorkerSubprocess::WorkerSubprocess(WorkerSubprocess&& other) noexcept:
-        subprocessHandler(other.subprocessHandler),
-        pipeReader(other.pipeReader) {
-    other.subprocessHandler = nullptr;
-    other.pipeReader = nullptr;
-}
-
-WorkerSubprocess::~WorkerSubprocess() {
-    delete subprocessHandler;
-    delete pipeReader;
-}
-
-SubprocessHandler* WorkerSubprocess::getSubprocessHandler() {
-    return subprocessHandler;
-}
-
-PipeReader* WorkerSubprocess::getPipe() {
-    return pipeReader;
-}
-
-SubprocessHandler::FinishStatus SubprocessHandler::getFinishStatus() {
+Subprocess::FinishStatus Subprocess::getFinishStatus() {
     if (isSignaled()) {
         return SIGNALED;
     }
@@ -39,9 +15,32 @@ SubprocessHandler::FinishStatus SubprocessHandler::getFinishStatus() {
     return getReturnCode() == 0 ? ZERO_EXIT : NON_ZERO_EXIT;
 }
 
-WorkerSubprocess forkAndRunWorkerSubprocess(SubprocessWork work) {
+WorkerSubprocess::WorkerSubprocess(Subprocess* _subprocess,
+                                   PipeReader* _pipeReader):
+        subprocess(_subprocess), pipeReader(_pipeReader) {}
+
+WorkerSubprocess::WorkerSubprocess(WorkerSubprocess&& other) noexcept:
+        subprocess(other.subprocess), pipeReader(other.pipeReader) {
+    other.subprocess = nullptr;
+    other.pipeReader = nullptr;
+}
+
+WorkerSubprocess::~WorkerSubprocess() {
+    delete subprocess;
+    delete pipeReader;
+}
+
+Subprocess* WorkerSubprocess::getSubprocessHandler() {
+    return subprocess;
+}
+
+PipeReader* WorkerSubprocess::getPipe() {
+    return pipeReader;
+}
+
+WorkerSubprocess WorkerSubprocess::open(Work work) {
     auto pipe = createAnonymousPipe();
-    auto worker = forkAndRunInSubprocess([&pipe, &work]() {
+    auto worker = Subprocess::fork([&pipe, &work]() {
         delete pipe.first;
         work(pipe.second);
         delete pipe.second;

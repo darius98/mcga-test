@@ -14,7 +14,7 @@ namespace kktest {
 namespace interproc {
 
 
-class LinuxSubprocessHandler: public SubprocessHandler {
+class LinuxSubprocessHandler: public Subprocess {
  public:
     explicit LinuxSubprocessHandler(pid_t _pid): pid(_pid) {}
 
@@ -77,8 +77,8 @@ class LinuxSubprocessHandler: public SubprocessHandler {
     int lastWaitStatus = 0;
 };
 
-SubprocessHandler* forkAndRunInSubprocess(const function<void()>& func) {
-    pid_t forkPid = fork();
+Subprocess* Subprocess::fork(const function<void()>& func) {
+    pid_t forkPid = ::fork();
     if (forkPid < 0) {
         perror("fork");
         exit(errno);
@@ -90,8 +90,8 @@ SubprocessHandler* forkAndRunInSubprocess(const function<void()>& func) {
     return new LinuxSubprocessHandler(forkPid);
 }
 
-SubprocessHandler* openSubprocess(char* executable, char* argv[]) {
-    pid_t forkPid = fork();
+Subprocess* Subprocess::open(char* executable, char* argv[]) {
+    pid_t forkPid = ::fork();
     if (forkPid < 0) {
         perror("fork");
         exit(errno);

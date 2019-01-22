@@ -12,7 +12,7 @@ class TestContainer {
     typedef std::function<void(const interproc::Message&)> Callback;
 
     TestContainer(double timeLimitMs,
-                  interproc::SubprocessWork run,
+                  interproc::WorkerSubprocess::Work run,
                   Callback _callback);
 
     bool poll();

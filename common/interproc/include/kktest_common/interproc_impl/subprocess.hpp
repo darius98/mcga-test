@@ -8,13 +8,17 @@
 namespace kktest {
 namespace interproc {
 
-class SubprocessHandler {
+class Subprocess {
  public:
     enum FinishStatus { ZERO_EXIT, NON_ZERO_EXIT, SIGNALED, UNKNOWN };
 
     enum KillResult { KILLED, ALREADY_DEAD };
 
-    virtual ~SubprocessHandler() = default;
+    static Subprocess* fork(const std::function<void()>& func);
+
+    static Subprocess* open(char* executable, char* argv[]);
+
+    virtual ~Subprocess() = default;
 
     virtual bool isFinished() = 0;
 
@@ -31,32 +35,28 @@ class SubprocessHandler {
     FinishStatus getFinishStatus();
 };
 
-SubprocessHandler* forkAndRunInSubprocess(const std::function<void()>& func);
-
-SubprocessHandler* openSubprocess(char* executable, char* argv[]);
-
-typedef const std::function<void(PipeWriter*)>& SubprocessWork;
-
 class WorkerSubprocess {
  public:
-    WorkerSubprocess(SubprocessHandler* _subprocessHandler,
-                     PipeReader* _pipeReader);
+    typedef const std::function<void(PipeWriter*)>& Work;
+
+    static WorkerSubprocess open(Work work);
+
     WorkerSubprocess(WorkerSubprocess&& other) noexcept;
 
     WorkerSubprocess(const WorkerSubprocess& other) = delete;
 
     ~WorkerSubprocess();
 
-    SubprocessHandler* getSubprocessHandler();
+    Subprocess* getSubprocessHandler();
 
     PipeReader* getPipe();
 
  private:
-    SubprocessHandler* subprocessHandler;
+    WorkerSubprocess(Subprocess* _subprocess, PipeReader* _pipeReader);
+
+    Subprocess* subprocess;
     PipeReader* pipeReader;
 };
-
-WorkerSubprocess forkAndRunWorkerSubprocess(SubprocessWork work);
 
 }
 }

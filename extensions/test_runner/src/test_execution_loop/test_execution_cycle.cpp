@@ -50,7 +50,7 @@ void TestExecutionCycle::start() {
         String("--max-parallel-tests=" + to_string(maxParallelTests)).copyAsCStr(),
         nullptr,
     };
-    testProcess = openSubprocess(cmd, argv);
+    testProcess = Subprocess::open(cmd, argv);
 }
 
 void TestExecutionCycle::step() {

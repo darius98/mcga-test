@@ -7,10 +7,10 @@ using namespace std;
 namespace kktest {
 
 TestContainer::TestContainer(double timeLimitMs,
-                             SubprocessWork run,
+                             WorkerSubprocess::Work run,
                              Callback _callback):
         testProcessStopwatch(timeLimitMs),
-        testWorker(forkAndRunWorkerSubprocess(run)),
+        testWorker(WorkerSubprocess::open(run)),
         callback(move(_callback)) {}
 
 bool TestContainer::poll() {
@@ -24,7 +24,7 @@ bool TestContainer::poll() {
             return false;
         }
         auto killStatus = testWorker.getSubprocessHandler()->kill();
-        if (killStatus == SubprocessHandler::ALREADY_DEAD) {
+        if (killStatus == Subprocess::ALREADY_DEAD) {
             // The child might have finished during a context switch.
             // In this case, return false so we can retry waiting it later.
             return false;
@@ -33,18 +33,18 @@ bool TestContainer::poll() {
         return true;
     }
     switch (testProcess->getFinishStatus()) {
-        case SubprocessHandler::FinishStatus::UNKNOWN:
+        case Subprocess::FinishStatus::UNKNOWN:
             finishWithError("Unknown error occurred.");
             break;
-        case SubprocessHandler::FinishStatus::SIGNALED:
+        case Subprocess::FinishStatus::SIGNALED:
             finishWithError("Killed by signal "
                             + to_string(testProcess->getSignal()));
             break;
-        case SubprocessHandler::FinishStatus::NON_ZERO_EXIT:
+        case Subprocess::FinishStatus::NON_ZERO_EXIT:
             finishWithError("Exit code "
                             + to_string(testProcess->getReturnCode()) + ".");
             break;
-        case SubprocessHandler::FinishStatus::ZERO_EXIT: {
+        case Subprocess::FinishStatus::ZERO_EXIT: {
             Message message = testWorker.getPipe()->getNextMessage();
             if (message.isInvalid()) {
                 finishWithError("Test unexpectedly exited with code 0");

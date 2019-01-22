@@ -41,7 +41,7 @@ class TestExecutionCycle {
     String pipeName;
 
     interproc::PipeReader* pipeWithTestProcess = nullptr;
-    interproc::SubprocessHandler* testProcess = nullptr;
+    interproc::Subprocess* testProcess = nullptr;
 
     KKTestCaseInfo info;
 };
