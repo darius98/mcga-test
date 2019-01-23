@@ -2,6 +2,7 @@
 #define KKTEST_COMMON_INTERPROC_IMPL_SUBPROCESS_HPP_
 
 #include <functional>
+#include <vector>
 
 #include <kktest_common/interproc_impl/message.hpp>
 #include <kktest_common/interproc_impl/pipe.hpp>
@@ -18,6 +19,9 @@ class Subprocess {
     static Subprocess* fork(const std::function<void()>& func);
 
     static Subprocess* open(char* executable, char* argv[]);
+
+    static Subprocess* open(const String& executable,
+                            const std::vector<String>& argv);
 
     virtual ~Subprocess() = default;
 

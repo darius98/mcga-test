@@ -41,16 +41,13 @@ void TestExecutionCycle::start() {
     createNamedPipe(pipeName);
     pipeWithTestProcess = openNamedPipeForReading(pipeName);
 
-    char* cmd = String(testPath).copyAsCStr();
-    char* argv[] = {
-        cmd,
-        String("--quiet").copyAsCStr(),
-        String("--boxed").copyAsCStr(),
-        String("--pipe-to=" + pipeName).copyAsCStr(),
-        String("--max-parallel-tests=" + to_string(maxParallelTests)).copyAsCStr(),
-        nullptr,
-    };
-    testProcess = Subprocess::open(cmd, argv);
+    testProcess = Subprocess::open(testPath, {
+        testPath,
+        "--quiet",
+        "--boxed",
+        "--pipe-to=" + pipeName,
+        "--max-parallel-tests=" + to_string(maxParallelTests)
+    });
 }
 
 void TestExecutionCycle::step() {
