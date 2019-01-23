@@ -18,17 +18,16 @@ Message TestExecutionInfo::toErrorMessage(const String& errorMessage) {
     return Message::build(FINISHED_SUCCESSFULLY, -1.0, false, errorMessage);
 }
 
-TestExecutionInfo TestExecutionInfo::fromMessage(const Message& message) {
+TestExecutionInfo TestExecutionInfo::fromMessage(Message message) {
     TestExecutionInfo info{};
-    MessageReader reader(message);
     MessageStatus status;
-    reader << status;
+    message << status;
     if (status == CONFIGURATION_ERROR) {
         String errorMessage;
-        reader << errorMessage;
+        message << errorMessage;
         throw ConfigurationError(errorMessage);
     }
-    reader << info.executionTimeTicks << info.passed << info.failureMessage;
+    message << info.executionTimeTicks << info.passed << info.failureMessage;
     return info;
 }
 

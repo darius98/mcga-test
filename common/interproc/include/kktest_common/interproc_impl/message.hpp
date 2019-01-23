@@ -37,17 +37,21 @@ class Message {
 
     bool isInvalid() const;
 
+    Message& operator<<(String& obj);
+
+    template<class T>
+    Message& operator<<(T& obj) {
+        obj = *reinterpret_cast<T*>(
+                    static_cast<std::uint8_t*>(payload) + readHead);
+        readHead += sizeof(obj);
+        return *this;
+    }
+
  private:
     explicit Message(void* _payload) noexcept;
 
-    void* raw() const;
-
     void* payload;
-
-    /// Size of prefix of the message that contains metadata about the message.
-    ///
-    /// The message content starts at index `METADATA_SIZE`.
-    static constexpr const int METADATA_SIZE = sizeof(std::size_t);
+    std::size_t readHead = sizeof(std::size_t);
 
     // helper internal classes
 

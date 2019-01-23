@@ -30,7 +30,7 @@ class TestExecutionCycle {
  private:
     void processMessages(bool block);
 
-    void processMessage(const interproc::Message& message);
+    void processMessage(interproc::Message& message);
 
     bool started = false;
 

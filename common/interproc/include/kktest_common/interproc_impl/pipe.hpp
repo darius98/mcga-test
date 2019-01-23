@@ -26,7 +26,7 @@ class PipeWriter {
     virtual ~PipeWriter() = default;
 
     inline void sendMessage(const Message& message) {
-        sendBytes(message.raw(), message.getSize());
+        sendBytes(message.payload, message.getSize());
     }
 
     virtual void close() = 0;
