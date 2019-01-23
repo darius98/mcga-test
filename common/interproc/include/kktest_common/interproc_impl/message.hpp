@@ -10,10 +10,7 @@ namespace interproc {
 
 class Message {
  public:
-    /// Size of prefix of the message that contains metadata about the message.
-    ///
-    /// The message content starts at index `METADATA_SIZE`.
-    static constexpr const int METADATA_SIZE = sizeof(std::size_t);
+    static const Message INVALID;
 
     template<class... Args>
     static Message build(const Args... args) {
@@ -26,8 +23,6 @@ class Message {
 
     static Message read(const void* src, std::size_t maxSize);
 
-    static Message invalid();
-
     Message(const Message& other);
     Message(Message&& other) noexcept;
 
@@ -36,16 +31,23 @@ class Message {
     Message& operator=(const Message& other);
     Message& operator=(Message&& other) noexcept;
 
-    void* raw() const;
+    bool operator==(const Message& other) const;
 
     std::size_t getSize() const;
 
     bool isInvalid() const;
 
  private:
-    explicit Message(void* _payload);
+    explicit Message(void* _payload) noexcept;
+
+    void* raw() const;
 
     void* payload;
+
+    /// Size of prefix of the message that contains metadata about the message.
+    ///
+    /// The message content starts at index `METADATA_SIZE`.
+    static constexpr const int METADATA_SIZE = sizeof(std::size_t);
 
     // helper internal classes
 
@@ -97,6 +99,10 @@ class Message {
         void* payloadBuilder;
         std::size_t cursor;
     };
+
+    friend class MessageReader;
+    friend class PipeReader;
+    friend class PipeWriter;
 };
 
 }

@@ -40,7 +40,7 @@ class Subprocess {
     FinishStatus getFinishStatus();
 };
 
-class WorkerSubprocess : public Subprocess {
+class WorkerSubprocess: public Subprocess {
  public:
     typedef const std::function<void(PipeWriter*)>& Work;
 

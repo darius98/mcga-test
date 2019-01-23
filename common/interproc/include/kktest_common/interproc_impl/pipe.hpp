@@ -25,7 +25,9 @@ class PipeWriter {
  public:
     virtual ~PipeWriter() = default;
 
-    virtual void sendMessage(const Message& message) = 0;
+    inline void sendMessage(const Message& message) {
+        sendBytes(message.raw(), message.getSize());
+    }
 
     virtual void close() = 0;
 
@@ -33,6 +35,9 @@ class PipeWriter {
     void sendMessage(const Args... args) {
         sendMessage(Message::build(args...));
     }
+
+ private:
+    virtual void sendBytes(void* bytes, std::size_t numBytes) = 0;
 };
 
 std::pair<PipeReader*, PipeWriter*> createAnonymousPipe();

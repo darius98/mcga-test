@@ -73,7 +73,7 @@ class LinuxPipeReader: public PipeReader {
                 return message;
             }
         }
-        return Message::invalid();
+        return Message::INVALID;
     }
 
  private:
@@ -116,9 +116,8 @@ class LinuxPipeWriter: public PipeWriter {
         closed = true;
     }
 
-    void sendMessage(const Message& message) override {
-        const void* bytes = message.raw();
-        size_t numBytes = message.getSize();
+ private:
+    void sendBytes(void* bytes, size_t numBytes) override {
         size_t written = 0;
         while (written < numBytes) {
             auto target = static_cast<const uint8_t*>(bytes) + written;
@@ -133,7 +132,6 @@ class LinuxPipeWriter: public PipeWriter {
         }
     }
 
- private:
     bool closed = false;
     int outputFD;
 };
