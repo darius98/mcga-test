@@ -18,12 +18,11 @@ bool TestContainer::poll() {
         callback(TestExecutionInfo::toErrorMessage(errorMessage));
     };
 
-    auto testProcess = testWorker.getSubprocessHandler();
-    if (!testProcess->isFinished()) {
+    if (!testWorker.isFinished()) {
         if (!testProcessStopwatch.isElapsed()) {
             return false;
         }
-        auto killStatus = testWorker.getSubprocessHandler()->kill();
+        auto killStatus = testWorker.kill();
         if (killStatus == Subprocess::ALREADY_DEAD) {
             // The child might have finished during a context switch.
             // In this case, return false so we can retry waiting it later.
@@ -32,20 +31,20 @@ bool TestContainer::poll() {
         finishWithError("Execution timed out.");
         return true;
     }
-    switch (testProcess->getFinishStatus()) {
+    switch (testWorker.getFinishStatus()) {
         case Subprocess::FinishStatus::UNKNOWN:
             finishWithError("Unknown error occurred.");
             break;
         case Subprocess::FinishStatus::SIGNALED:
             finishWithError("Killed by signal "
-                            + to_string(testProcess->getSignal()));
+                            + to_string(testWorker.getSignal()));
             break;
         case Subprocess::FinishStatus::NON_ZERO_EXIT:
             finishWithError("Exit code "
-                            + to_string(testProcess->getReturnCode()) + ".");
+                            + to_string(testWorker.getReturnCode()) + ".");
             break;
         case Subprocess::FinishStatus::ZERO_EXIT: {
-            Message message = testWorker.getPipe()->getNextMessage();
+            Message message = testWorker.getNextMessage();
             if (message.isInvalid()) {
                 finishWithError("Test unexpectedly exited with code 0");
             }

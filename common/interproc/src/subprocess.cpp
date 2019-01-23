@@ -30,12 +30,32 @@ WorkerSubprocess::~WorkerSubprocess() {
     delete pipeReader;
 }
 
-Subprocess* WorkerSubprocess::getSubprocessHandler() {
-    return subprocess;
+Message WorkerSubprocess::getNextMessage() {
+    return pipeReader->getNextMessage();
 }
 
-PipeReader* WorkerSubprocess::getPipe() {
-    return pipeReader;
+bool WorkerSubprocess::isFinished() {
+    return subprocess->isFinished();
+}
+
+Subprocess::KillResult WorkerSubprocess::kill() {
+    return subprocess->kill();
+}
+
+bool WorkerSubprocess::isExited() {
+    return subprocess->isExited();
+}
+
+int WorkerSubprocess::getReturnCode() {
+    return subprocess->getReturnCode();
+}
+
+bool WorkerSubprocess::isSignaled() {
+    return subprocess->isSignaled();
+}
+
+int WorkerSubprocess::getSignal() {
+    return subprocess->getSignal();
 }
 
 WorkerSubprocess WorkerSubprocess::open(Work work) {

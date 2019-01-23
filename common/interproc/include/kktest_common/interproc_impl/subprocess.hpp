@@ -3,6 +3,7 @@
 
 #include <functional>
 
+#include <kktest_common/interproc_impl/message.hpp>
 #include <kktest_common/interproc_impl/pipe.hpp>
 
 namespace kktest {
@@ -35,7 +36,7 @@ class Subprocess {
     FinishStatus getFinishStatus();
 };
 
-class WorkerSubprocess {
+class WorkerSubprocess : public Subprocess {
  public:
     typedef const std::function<void(PipeWriter*)>& Work;
 
@@ -45,11 +46,21 @@ class WorkerSubprocess {
 
     WorkerSubprocess(const WorkerSubprocess& other) = delete;
 
-    ~WorkerSubprocess();
+    ~WorkerSubprocess() override;
 
-    Subprocess* getSubprocessHandler();
+    Message getNextMessage();
 
-    PipeReader* getPipe();
+    bool isFinished() override;
+
+    KillResult kill() override;
+
+    bool isExited() override;
+
+    int getReturnCode() override;
+
+    bool isSignaled() override;
+
+    int getSignal() override;
 
  private:
     WorkerSubprocess(Subprocess* _subprocess, PipeReader* _pipeReader);
