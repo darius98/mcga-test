@@ -19,7 +19,7 @@ int main(int argc, char** argv) {
     vector<string> positional = cliApi.interpret(argc, argv);
     cliApi.checkHelpFlag();
 
-    if (versionFlag->get()) {
+    if (versionFlag.get()) {
         cout << "KKTest Manager version " << VERSION << "\n";
     }
 

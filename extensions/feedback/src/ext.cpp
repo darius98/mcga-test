@@ -25,11 +25,11 @@ void FeedbackExtension::registerCommandLineArgs(Cppli* cliApi) {
 }
 
 void FeedbackExtension::init(ExtensionApi* api) {
-    if (!quietFlag->get()) {
+    if (!quietFlag.get()) {
         initLogging(api);
     }
-    if (!pipeNameArgument->get().empty()) {
-        initPipe(api, pipeNameArgument->get());
+    if (!pipeNameArgument.get().empty()) {
+        initPipe(api, pipeNameArgument.get());
     }
 }
 

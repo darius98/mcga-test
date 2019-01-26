@@ -24,8 +24,8 @@ class FeedbackExtension: public Extension {
     TestLogger* logger = nullptr;
     interproc::PipeWriter* pipe = nullptr;
 
-    cppli::Flag* quietFlag;
-    cppli::Argument* pipeNameArgument;
+    cppli::FlagAccessor quietFlag;
+    cppli::ArgumentAccessor pipeNameArgument;
 };
 
 }

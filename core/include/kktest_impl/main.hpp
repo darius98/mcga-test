@@ -8,10 +8,10 @@
 namespace kktest {
 
 struct InternalArgs {
-    cppli::Flag* versionFlag = nullptr;
-    cppli::Flag* getSignatureFlag = nullptr;
-    cppli::Flag* boxedFlag = nullptr;
-    cppli::NumericArgument<int>* maxParallelTestsArgument = nullptr;
+    cppli::FlagAccessor versionFlag;
+    cppli::FlagAccessor getSignatureFlag;
+    cppli::FlagAccessor boxedFlag;
+    cppli::NumericArgumentAccessor<int> maxParallelTestsArgument;
 };
 
 InternalArgs registerInternalFlags(cppli::Cppli* cliApi);

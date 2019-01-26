@@ -18,7 +18,7 @@ int main(int argc, char** argv) {
     Cppli cliApi("KKTest Runner.");
     cliApi.addHelpFlag();
 
-    Flag* versionFlag = cliApi.addFlag(
+    auto versionFlag = cliApi.addFlag(
             FlagSpec("version")
             .setDescription("Display program version.")
             .setShortName("v"));
@@ -34,7 +34,7 @@ int main(int argc, char** argv) {
             .setImplicitValue(5));
     vector<string> positional = cliApi.interpret(argc, argv);
     cliApi.checkHelpFlag();
-    if (versionFlag->get()) {
+    if (versionFlag.get()) {
         cout << "KKTest test test_runner version " << VERSION << "\n";
         return 0;
     }
@@ -43,8 +43,8 @@ int main(int argc, char** argv) {
         rootPath = positional[0];
     }
 
-    int maxParallelTestCases = maxParallelCasesArgument->get();
-    int maxParallelTestsPerCase = maxParallelTestsPerCaseArgument->get();
+    int maxParallelTestCases = maxParallelCasesArgument.get();
+    int maxParallelTestsPerCase = maxParallelTestsPerCaseArgument.get();
     auto executionLoop = new TestExecutionLoop(maxParallelTestCases);
     cout << "Searching for test cases...\n";
     explore(path(rootPath.str()),

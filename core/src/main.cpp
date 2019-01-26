@@ -33,12 +33,12 @@ InternalArgs registerInternalFlags(Cppli* cliApi) {
 }
 
 int main(const vector<Extension*>& extensions, InternalArgs args) {
-    if (args.versionFlag->get()) {
+    if (args.versionFlag.get()) {
         cout << "KKTest generated test-case.\n";
         cout << "KKTest version: 1.0.0\n";
         return 0;
     }
-    if (args.getSignatureFlag->get()) {
+    if (args.getSignatureFlag.get()) {
         for (int i = 0; i < kkTestSigSize; ++i) {
             cout << "0123456789ABCDEF"[kkTestSignature[i] >> 4u]
                  << "0123456789ABCDEF"[kkTestSignature[i] & 15u];
@@ -52,13 +52,13 @@ int main(const vector<Extension*>& extensions, InternalArgs args) {
         extension->init(&apiImpl);
     }
 
-    int maxParallelTests = args.maxParallelTestsArgument->get();
+    int maxParallelTests = args.maxParallelTestsArgument.get();
     if (maxParallelTests < 1) {
         maxParallelTests = 1;
     }
 
     Driver* driver = Driver::init(apiImpl.getHooks(),
-                                  args.boxedFlag->get(),
+                                  args.boxedFlag.get(),
                                   maxParallelTests);
     int ret = 1;
     try {
