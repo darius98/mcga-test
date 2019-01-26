@@ -22,13 +22,13 @@ int main(int argc, char** argv) {
             FlagSpec("version")
             .setDescription("Display program version.")
             .setShortName("v"));
-    IntArgument* maxParallelCasesArgument = cliApi.addIntArgument(
-            IntArgumentSpec("parallel-cases")
+    auto maxParallelCasesArgument = cliApi.addNumericArgument(
+            NumericArgumentSpec<int>("parallel-cases")
             .setDescription("Maximum number of concurrent test cases.")
             .setDefaultValue(1)
             .setImplicitValue(3));
-    IntArgument* maxParallelTestsPerCaseArgument = cliApi.addIntArgument(
-            IntArgumentSpec("parallel-tests-per-case")
+    auto maxParallelTestsPerCaseArgument = cliApi.addNumericArgument(
+            NumericArgumentSpec<int>("parallel-tests-per-case")
             .setDescription("Maximum number of concurrent tests per test case")
             .setDefaultValue(1)
             .setImplicitValue(5));

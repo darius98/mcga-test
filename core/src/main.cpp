@@ -24,8 +24,8 @@ InternalArgs registerInternalFlags(Cppli* cliApi) {
         FlagSpec("boxed")
         .setDescription("Run each test in an isolated process (boxed)")
         .setShortName("b"));
-    args.maxParallelTestsArgument = cliApi->addIntArgument(
-        IntArgumentSpec("max-parallel-tests")
+    args.maxParallelTestsArgument = cliApi->addNumericArgument(
+        NumericArgumentSpec<int>("max-parallel-tests")
         .setDescription("Maximum number of tests to execute in parallel "
                         "(processes to spawn) when running boxed")
         .setDefaultValue(1));

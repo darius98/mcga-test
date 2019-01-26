@@ -11,7 +11,7 @@ struct InternalArgs {
     cppli::Flag* versionFlag = nullptr;
     cppli::Flag* getSignatureFlag = nullptr;
     cppli::Flag* boxedFlag = nullptr;
-    cppli::IntArgument* maxParallelTestsArgument = nullptr;
+    cppli::NumericArgument<int>* maxParallelTestsArgument = nullptr;
 };
 
 InternalArgs registerInternalFlags(cppli::Cppli* cliApi);
