@@ -15,25 +15,25 @@ using namespace std;
 using namespace std::filesystem;
 
 int main(int argc, char** argv) {
-    Cppli* cliApi = Cppli::create("KKTest Runner.");
-    cliApi->addHelpFlag();
+    Cppli cliApi("KKTest Runner.");
+    cliApi.addHelpFlag();
 
-    Flag* versionFlag = cliApi->addFlag(
+    Flag* versionFlag = cliApi.addFlag(
             FlagSpec("version")
             .setDescription("Display program version.")
             .setShortName("v"));
-    IntArgument* maxParallelCasesArgument = cliApi->addIntArgument(
+    IntArgument* maxParallelCasesArgument = cliApi.addIntArgument(
             IntArgumentSpec("parallel-cases")
             .setDescription("Maximum number of concurrent test cases.")
             .setDefaultValue(1)
             .setImplicitValue(3));
-    IntArgument* maxParallelTestsPerCaseArgument = cliApi->addIntArgument(
+    IntArgument* maxParallelTestsPerCaseArgument = cliApi.addIntArgument(
             IntArgumentSpec("parallel-tests-per-case")
             .setDescription("Maximum number of concurrent tests per test case")
             .setDefaultValue(1)
             .setImplicitValue(5));
-    vector<string> positional = cliApi->interpret(argc, argv);
-    cliApi->checkHelpFlag();
+    vector<string> positional = cliApi.interpret(argc, argv);
+    cliApi.checkHelpFlag();
     if (versionFlag->get()) {
         cout << "KKTest test test_runner version " << VERSION << "\n";
         return 0;
