@@ -15,29 +15,32 @@ using namespace std;
 using namespace std::filesystem;
 
 int main(int argc, char** argv) {
-    Cppli cliApi("KKTest Runner.");
-    cliApi.addHelpFlag();
+    Cppli cppli("KKTest Runner.");
+    cppli.addTerminalFlag(FlagSpec("help")
+                          .setShortName("h")
+                          .setDescription("Display this help menu."),
+                          [&]() {
+        cout << cppli.renderHelp();
+    });
+    cppli.addTerminalFlag(FlagSpec("version")
+                          .setShortName("v")
+                          .setDescription("Display program version."),
+                          [&]() {
+        cout << "KKTest Test Runner version " << VERSION << "\n";
+    });
 
-    auto versionFlag = cliApi.addFlag(
-            FlagSpec("version")
-            .setDescription("Display program version.")
-            .setShortName("v"));
-    auto maxParallelCasesArgument = cliApi.addNumericArgument(
+    auto maxParallelCasesArgument = cppli.addNumericArgument(
             NumericArgumentSpec<int>("parallel-cases")
             .setDescription("Maximum number of concurrent test cases.")
             .setDefaultValue(1)
             .setImplicitValue(3));
-    auto maxParallelTestsPerCaseArgument = cliApi.addNumericArgument(
+    auto maxParallelTestsPerCaseArgument = cppli.addNumericArgument(
             NumericArgumentSpec<int>("parallel-tests-per-case")
             .setDescription("Maximum number of concurrent tests per test case")
             .setDefaultValue(1)
             .setImplicitValue(5));
-    vector<string> positional = cliApi.interpret(argc, argv);
-    cliApi.checkHelpFlag();
-    if (versionFlag.get()) {
-        cout << "KKTest test test_runner version " << VERSION << "\n";
-        return 0;
-    }
+    vector<string> positional = cppli.interpret(argc, argv);
+
     String rootPath = ".";
     if (!positional.empty() && !positional[0].empty()) {
         rootPath = positional[0];

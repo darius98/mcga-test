@@ -12,14 +12,6 @@ namespace kktest {
 
 InternalArgs registerInternalFlags(Cppli* cliApi) {
     InternalArgs args;
-    args.versionFlag = cliApi->addFlag(
-        FlagSpec("version")
-        .setDescription("Display program version")
-        .setShortName("v"));
-    args.getSignatureFlag = cliApi->addFlag(
-        FlagSpec("get-signature")
-        .setDescription("Display the KKTest 32-byte "
-                        "signature in hexadecimal format"));
     args.boxedFlag = cliApi->addFlag(
         FlagSpec("boxed")
         .setDescription("Run each test in an isolated process (boxed)")
@@ -28,25 +20,12 @@ InternalArgs registerInternalFlags(Cppli* cliApi) {
         NumericArgumentSpec<int>("max-parallel-tests")
         .setDescription("Maximum number of tests to execute in parallel "
                         "(processes to spawn) when running boxed")
-        .setDefaultValue(1));
+        .setDefaultValue(1)
+        .setImplicitValue(1));
     return args;
 }
 
 int main(const vector<Extension*>& extensions, InternalArgs args) {
-    if (args.versionFlag.get()) {
-        cout << "KKTest generated test-case.\n";
-        cout << "KKTest version: 1.0.0\n";
-        return 0;
-    }
-    if (args.getSignatureFlag.get()) {
-        for (int i = 0; i < kkTestSigSize; ++i) {
-            cout << "0123456789ABCDEF"[kkTestSignature[i] >> 4u]
-                 << "0123456789ABCDEF"[kkTestSignature[i] & 15u];
-        }
-        cout << "\n";
-        return 0;
-    }
-
     ExtensionApiImpl apiImpl;
     for (Extension* extension : extensions) {
         extension->init(&apiImpl);

@@ -8,20 +8,19 @@ using namespace cppli;
 using namespace std;
 
 int main(int argc, char** argv) {
-    Cppli cliApi("KKTest Manager.");
-    cliApi.addHelpFlag();
-
-    auto versionFlag = cliApi.addFlag(
-        FlagSpec("version")
-        .setDescription("Display program version.")
-        .setShortName("v"));
-
-    vector<string> positional = cliApi.interpret(argc, argv);
-    cliApi.checkHelpFlag();
-
-    if (versionFlag.get()) {
+    Cppli cppli("KKTest Manager.");
+    cppli.addTerminalFlag(FlagSpec("help")
+                          .setShortName("h")
+                          .setDescription("Display this help menu."),
+                          [&]() {
+        cout << cppli.renderHelp();
+    });
+    cppli.addTerminalFlag(FlagSpec("version")
+                          .setShortName("v")
+                          .setDescription("Display program version."),
+                          [&]() {
         cout << "KKTest Manager version " << VERSION << "\n";
-    }
-
+    });
+    vector<string> positional = cppli.interpret(argc, argv);
     return 0;
 }
