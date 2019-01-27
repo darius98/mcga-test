@@ -10,7 +10,19 @@ using namespace std;
 
 namespace kktest {
 
-InternalArgs registerInternalFlags(Cppli* cliApi) {
+InternalArgs registerInternalFlags(Cppli* cliApi, const string& versionString) {
+    cliApi->addTerminalFlag(
+            FlagSpec("version")
+            .setShortName("v")
+            .setDescription("Display program version."),
+            "KKTest generated test-case.\n"
+            "KKTest version: " + versionString +  "\n");
+    cliApi->addTerminalFlag(
+            FlagSpec("get-signature")
+            .setDescription("Display the KKTest 32-byte "
+                            "signature in hexadecimal format"),
+            string(kkTestSignatureHex) + "\n");
+
     InternalArgs args;
     args.boxedFlag = cliApi->addFlag(
         FlagSpec("boxed")
