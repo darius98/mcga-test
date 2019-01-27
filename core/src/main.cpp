@@ -10,25 +10,25 @@ using namespace std;
 
 namespace kktest {
 
-InternalArgs registerInternalFlags(Cppli* cliApi, const string& versionString) {
-    cliApi->addTerminalFlag(
+InternalArgs registerInternalFlags(Cppli& cppli, const string& versionString) {
+    cppli.addTerminalFlag(
             FlagSpec("version")
             .setShortName("v")
             .setDescription("Display program version."),
             "KKTest generated test-case.\n"
             "KKTest version: " + versionString +  "\n");
-    cliApi->addTerminalFlag(
+    cppli.addTerminalFlag(
             FlagSpec("get-signature")
             .setDescription("Display the KKTest 32-byte "
                             "signature in hexadecimal format"),
             string(kkTestSignatureHex) + "\n");
 
     InternalArgs args;
-    args.boxedFlag = cliApi->addFlag(
+    args.boxedFlag = cppli.addFlag(
         FlagSpec("boxed")
         .setDescription("Run each test in an isolated process (boxed)")
         .setShortName("b"));
-    args.maxParallelTestsArgument = cliApi->addNumericArgument(
+    args.maxParallelTestsArgument = cppli.addNumericArgument(
         NumericArgumentSpec<int>("max-parallel-tests")
         .setDescription("Maximum number of tests to execute in parallel "
                         "(processes to spawn) when running boxed")

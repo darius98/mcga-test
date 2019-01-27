@@ -16,13 +16,11 @@ int main(int argc, char** argv) {
     cppli.addHelpFlag();
 
     kktest::feedback::FeedbackExtension feedbackExtension;
-    feedbackExtension.registerCommandLineArgs(&cppli);
+    feedbackExtension.registerCommandLineArgs(cppli);
 
-    InternalArgs internalArgs = registerInternalFlags(&cppli, VERSION);
+    InternalArgs internalArgs = registerInternalFlags(cppli, VERSION);
 
     cppli.interpret(argc, argv);
 
-    return kktest::main({
-        &feedbackExtension
-    }, internalArgs);
+    return kktest::main({&feedbackExtension}, internalArgs);
 }

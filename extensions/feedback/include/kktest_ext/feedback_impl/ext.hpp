@@ -10,7 +10,7 @@ namespace feedback {
 
 class FeedbackExtension: public Extension {
  public:
-    void registerCommandLineArgs(cppli::Cppli* cliApi) override;
+    void registerCommandLineArgs(cppli::Cppli& cppli) override;
 
     void init(ExtensionApi* api) override;
 
