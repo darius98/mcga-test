@@ -9,7 +9,8 @@
 #include "errors.hpp"
 #include "executor.hpp"
 #include "group.hpp"
-#include "extension_api_impl.hpp"
+#include "hooks.hpp"
+#include "test.hpp"
 
 namespace kktest {
 
@@ -19,7 +20,7 @@ class Driver {
 
     static Driver* init(const Hooks& hooks, bool boxed, int numBoxes);
 
-    explicit Driver(Hooks hooks, bool boxed, int numBoxes);
+    Driver(Hooks hooks, bool boxed, int numBoxes);
 
     ~Driver();
 

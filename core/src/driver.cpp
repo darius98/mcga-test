@@ -1,5 +1,3 @@
-#include <utility>
-
 #include <kktest_impl/config.hpp>
 #include "box_executor.hpp"
 #include "driver.hpp"

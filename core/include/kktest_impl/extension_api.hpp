@@ -2,7 +2,7 @@
 #define KKTEST_CORE_KKTEST_IMPL_EXTENSION_API_HPP_
 
 #include <functional>
-#include <vector>
+#include <stdexcept>
 
 #include <cppli.hpp>
 

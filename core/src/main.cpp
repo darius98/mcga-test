@@ -1,8 +1,7 @@
-#include <iostream>
-
 #include <kktest_impl/main.hpp>
 #include <kktest_impl/signature.hpp>
 #include "driver.hpp"
+#include "extension_api_impl.hpp"
 #include "test_case_registry.hpp"
 
 using namespace cppli;
