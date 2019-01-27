@@ -20,3 +20,5 @@ add_kktest(core_matchers_test
     tests/string_matchers_test.cpp
     tests/truth_matchers_test.cpp
 )
+
+install(DIRECTORY extensions/core_matchers/include DESTINATION .)

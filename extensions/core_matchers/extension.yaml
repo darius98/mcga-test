@@ -1,8 +1,0 @@
-name: core_matchers
-author: The KKTest team
-
-link:
-  - kktest_extension_core_matchers
-
-include:
-  install: true

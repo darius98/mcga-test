@@ -16,18 +16,11 @@ using namespace std::filesystem;
 
 int main(int argc, char** argv) {
     Cppli cppli("KKTest Runner.");
-    cppli.addTerminalFlag(FlagSpec("help")
-                          .setShortName("h")
-                          .setDescription("Display this help menu."),
-                          [&]() {
-        cout << cppli.renderHelp();
-    });
+    cppli.addHelpFlag();
     cppli.addTerminalFlag(FlagSpec("version")
                           .setShortName("v")
                           .setDescription("Display program version."),
-                          [&]() {
-        cout << "KKTest Test Runner version " << VERSION << "\n";
-    });
+                          "KKTest Test Runner version " VERSION "\n");
 
     auto maxParallelCasesArgument = cppli.addNumericArgument(
             NumericArgumentSpec<int>("parallel-cases")
