@@ -1,0 +1,23 @@
+language: c++
+os:
+  - linux
+  - osx
+compiler:
+  - gcc
+  - clang
+jobs:
+  include:
+    - stage: build
+      script: cmake CMakeLists.txt
+    - stage: build
+      script: make
+    - stage: test
+      script: ./build/tests/common_utils_test
+    - stage: test
+      script: ./build/tests/kktest_string_test
+    - stage: test
+      script: ./build/tests/core_matchers_test
+
+stages:
+  - build
+  - test
