@@ -57,8 +57,7 @@ void Driver::afterTestCase() {
     groupStack = {};
 }
 
-Driver::Driver(Hooks hooks, bool boxed, int numBoxes):
-        hooks(move(hooks)) {
+Driver::Driver(Hooks hooks, bool boxed, int numBoxes): hooks(move(hooks)) {
     instance = this;
     auto onTestFinishedCallback = [this](Test* test) {
         afterTest(test);
