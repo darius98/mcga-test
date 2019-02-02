@@ -5,19 +5,15 @@ os:
 compiler:
   - gcc
   - clang
-jobs:
-  include:
-    - stage: build
-      script: cmake CMakeLists.txt
-    - stage: build
-      script: make
-    - stage: test
-      script: ./build/tests/common_utils_test
-    - stage: test
-      script: ./build/tests/kktest_string_test
-    - stage: test
-      script: ./build/tests/core_matchers_test
 
-stages:
-  - build
-  - test
+before_script:
+  - cmake CMakeLists.txt
+  - make
+
+script:
+  - ./build/tests/common_utils_test
+  - ./build/tests/common_utils_test -b
+  - ./build/tests/kktest_string_test
+  - ./build/tests/kktest_string_test -b
+  - ./build/tests/core_matchers_test
+  - ./build/tests/core_matchers_test -b
