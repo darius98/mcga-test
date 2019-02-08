@@ -1,6 +1,5 @@
 set(interproc_src OBJECT
     src/message.cpp
-    src/message_reader.cpp
     src/subprocess.cpp
 )
 if (UNIX)

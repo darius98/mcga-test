@@ -37,9 +37,19 @@ class Message {
 
     bool isInvalid() const;
 
+    template<class T>
+    const Message& operator<<(T& obj) const {
+        obj = *static_cast<T*>(
+                static_cast<void*>(
+                        static_cast<std::uint8_t*>(payload) + readHead));
+        readHead += sizeof(obj);
+        return *this;
+    }
+
  private:
     explicit Message(void* _payload) noexcept;
 
+    mutable std::size_t readHead = sizeof(std::size_t);
     void* payload;
 
     // helper internal classes
@@ -99,6 +109,9 @@ class Message {
     friend class PipeReader;
     friend class PipeWriter;
 };
+
+template<>
+const Message& Message::operator<<(String& obj) const;
 
 }
 }

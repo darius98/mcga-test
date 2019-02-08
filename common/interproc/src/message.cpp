@@ -83,6 +83,16 @@ bool Message::isInvalid() const {
     return payload == nullptr;
 }
 
+template<>
+const Message& Message::operator<<(String& obj) const {
+    decltype(obj.size()) size;
+    (*this) << size;
+    obj.assign(static_cast<char*>(payload) + readHead,
+               static_cast<char*>(payload) + readHead + size);
+    readHead += size;
+    return *this;
+}
+
 Message::BytesConsumer& Message::BytesConsumer::add(const String& obj) {
     add(obj.size());
     addBytes(obj.c_str(), obj.size());

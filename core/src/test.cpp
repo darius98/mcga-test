@@ -21,14 +21,13 @@ Message TestExecutionInfo::toErrorMessage(const String& errorMessage) {
 TestExecutionInfo TestExecutionInfo::fromMessage(const Message& message) {
     TestExecutionInfo info{};
     MessageStatus status;
-    MessageReader reader(message);
-    reader << status;
+    message << status;
     if (status == CONFIGURATION_ERROR) {
         String errorMessage;
-        reader << errorMessage;
+        message << errorMessage;
         throw ConfigurationError(errorMessage);
     }
-    reader << info.executionTimeTicks << info.passed << info.failureMessage;
+    message << info.executionTimeTicks << info.passed << info.failureMessage;
     return info;
 }
 
