@@ -15,24 +15,24 @@ using namespace std;
 using namespace std::filesystem;
 
 int main(int argc, char** argv) {
-    Cppli cppli("KKTest Runner.");
-    cppli.addHelpFlag();
-    cppli.addTerminalFlag(FlagSpec("version")
+    Parser parser("KKTest Runner.");
+    parser.addHelpFlag();
+    parser.addTerminalFlag(FlagSpec("version")
                           .setShortName("v")
                           .setDescription("Display program version."),
                           "KKTest Test Runner version " VERSION "\n");
 
-    auto maxParallelCasesArgument = cppli.addNumericArgument(
+    auto maxParallelCasesArgument = parser.addNumericArgument(
             NumericArgumentSpec<int>("parallel-cases")
             .setDescription("Maximum number of concurrent test cases.")
             .setDefaultValue(1)
             .setImplicitValue(3));
-    auto maxParallelTestsPerCaseArgument = cppli.addNumericArgument(
+    auto maxParallelTestsPerCaseArgument = parser.addNumericArgument(
             NumericArgumentSpec<int>("parallel-tests-per-case")
             .setDescription("Maximum number of concurrent tests per test case")
             .setDefaultValue(1)
             .setImplicitValue(5));
-    vector<string> positional = cppli.interpret(argc, argv);
+    vector<string> positional = parser.interpret(argc, argv);
 
     String rootPath = ".";
     if (!positional.empty() && !positional[0].empty()) {

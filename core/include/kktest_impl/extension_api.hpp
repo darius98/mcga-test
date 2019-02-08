@@ -33,7 +33,7 @@ class Extension {
  public:
     virtual ~Extension();
 
-    virtual void registerCommandLineArgs(cppli::Cppli& cppli);
+    virtual void registerCommandLineArgs(cppli::Parser& parser);
 
     virtual void init(ExtensionApi* api);
 

@@ -9,25 +9,25 @@ using namespace std;
 
 namespace kktest {
 
-InternalArgs registerInternalFlags(Cppli& cppli, const string& versionString) {
-    cppli.addTerminalFlag(
+InternalArgs registerInternalFlags(Parser& parser, const string& versionString) {
+    parser.addTerminalFlag(
             FlagSpec("version")
             .setShortName("v")
             .setDescription("Display program version."),
             "KKTest generated test-case.\n"
             "KKTest version: " + versionString +  "\n");
-    cppli.addTerminalFlag(
+    parser.addTerminalFlag(
             FlagSpec("get-signature")
             .setDescription("Display the KKTest 32-byte "
                             "signature in hexadecimal format"),
             string(kkTestSignatureHex) + "\n");
 
     InternalArgs args;
-    args.boxedFlag = cppli.addFlag(
+    args.boxedFlag = parser.addFlag(
         FlagSpec("boxed")
         .setDescription("Run each test in an isolated process (boxed)")
         .setShortName("b"));
-    args.maxParallelTestsArgument = cppli.addNumericArgument(
+    args.maxParallelTestsArgument = parser.addNumericArgument(
         NumericArgumentSpec<int>("max-parallel-tests")
         .setDescription("Maximum number of tests to execute in parallel "
                         "(processes to spawn) when running boxed")

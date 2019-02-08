@@ -11,13 +11,13 @@ using namespace std;
 namespace kktest {
 namespace feedback {
 
-void FeedbackExtension::registerCommandLineArgs(Cppli& cppli) {
-    quietFlag = cppli.addFlag(
+void FeedbackExtension::registerCommandLineArgs(Parser& parser) {
+    quietFlag = parser.addFlag(
         FlagSpec("quiet")
         .setHelpGroup("Feedback")
         .setDescription("Disable STDOUT logging for this test run")
         .setShortName("q"));
-    pipeNameArgument = cppli.addArgument(
+    pipeNameArgument = parser.addArgument(
         ArgumentSpec("pipe-to")
         .setHelpGroup("Feedback")
         .setDescription("A file or fifo with write access for piping the test "

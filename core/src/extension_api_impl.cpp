@@ -6,7 +6,7 @@ namespace kktest {
 
 Extension::~Extension() = default;
 
-void Extension::registerCommandLineArgs(Cppli&) {}
+void Extension::registerCommandLineArgs(Parser&) {}
 
 void Extension::init(ExtensionApi*) {}
 
