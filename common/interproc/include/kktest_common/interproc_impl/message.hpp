@@ -104,7 +104,6 @@ class Message {
         std::size_t cursor;
     };
 
-    friend class MessageReader;
     friend class PipeReader;
     friend class PipeWriter;
 };
