@@ -75,27 +75,28 @@ void TestExecutionCycle::processMessages(bool block) {
     }
 }
 
-void TestExecutionCycle::processMessage(Message& message) {
+void TestExecutionCycle::processMessage(const Message& message) {
     PipeMessageType type;
-    message << type;
+    MessageReader reader(message);
+    reader << type;
     switch (type) {
         case PipeMessageType::GROUP: {
             GroupInfo groupInfo;
-            message << groupInfo.parentGroupIndex
-                    << groupInfo.index
-                    << groupInfo.description;
+            reader << groupInfo.parentGroupIndex
+                   << groupInfo.index
+                   << groupInfo.description;
             info.groupsReceived.push_back(groupInfo);
             info.lastReceived = KKTestCaseInfo::GROUP;
             break;
         }
         case PipeMessageType::TEST: {
             TestInfo testInfo;
-            message << testInfo.groupIndex
-                    << testInfo.index
-                    << testInfo.optional
-                    << testInfo.description
-                    << testInfo.passed
-                    << testInfo.failureMessage;
+            reader << testInfo.groupIndex
+                   << testInfo.index
+                   << testInfo.optional
+                   << testInfo.description
+                   << testInfo.passed
+                   << testInfo.failureMessage;
             info.testsReceived.push_back(testInfo);
             info.lastReceived = KKTestCaseInfo::TEST;
             break;
@@ -111,7 +112,7 @@ void TestExecutionCycle::processMessage(Message& message) {
             destroyNamedPipe(pipeName);
             info.finished = true;
             info.lastReceived = KKTestCaseInfo::FINISH_WITH_ERROR;
-            message << info.errorMessage;
+            reader << info.errorMessage;
             delete pipeWithTestProcess;
             break;
         }

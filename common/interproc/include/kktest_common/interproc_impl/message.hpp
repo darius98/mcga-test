@@ -37,23 +37,14 @@ class Message {
 
     bool isInvalid() const;
 
-    Message& operator<<(String& obj);
-
-    template<class T>
-    Message& operator<<(T& obj) {
-        obj = *reinterpret_cast<T*>(
-                    static_cast<std::uint8_t*>(payload) + readHead);
-        readHead += sizeof(obj);
-        return *this;
-    }
-
  private:
     explicit Message(void* _payload) noexcept;
 
     void* payload;
-    std::size_t readHead = sizeof(std::size_t);
 
     // helper internal classes
+
+    static constexpr const int METADATA_SIZE = sizeof(std::size_t);
 
     class BytesConsumer {
      public:
@@ -104,6 +95,7 @@ class Message {
         std::size_t cursor;
     };
 
+    friend class MessageReader;
     friend class PipeReader;
     friend class PipeWriter;
 };

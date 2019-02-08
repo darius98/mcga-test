@@ -18,7 +18,7 @@ struct TestExecutionInfo {
 
     static interproc::Message toErrorMessage(const String& errorMessage);
 
-    static TestExecutionInfo fromMessage(interproc::Message message);
+    static TestExecutionInfo fromMessage(const interproc::Message& message);
 
     interproc::Message toMessage() const;
 };

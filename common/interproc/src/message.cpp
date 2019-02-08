@@ -71,15 +71,6 @@ Message& Message::operator=(Message&& other) noexcept {
     return *this;
 }
 
-Message& Message::operator<<(String& obj) {
-    decltype(obj.size()) size;
-    (*this) << size;
-    obj.assign(static_cast<char*>(payload) + readHead,
-               static_cast<char*>(payload) + readHead + size);
-    readHead += size;
-    return *this;
-}
-
 size_t Message::getSize() const {
     return sizeof(size_t) + *static_cast<size_t*>(payload);
 }
