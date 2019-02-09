@@ -93,6 +93,7 @@ const Message& Message::operator<<(String& obj) const {
     return *this;
 }
 
+template<>
 Message::BytesConsumer& Message::BytesConsumer::add(const String& obj) {
     add(obj.size());
     addBytes(obj.c_str(), obj.size());

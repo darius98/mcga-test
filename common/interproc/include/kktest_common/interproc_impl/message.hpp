@@ -61,8 +61,6 @@ class Message {
         virtual BytesConsumer& addBytes(const void* bytes,
                                         std::size_t numBytes) = 0;
 
-        BytesConsumer& add(const String& obj);
-
         template<class T>
         BytesConsumer& add(const T& obj) {
             return addBytes(&obj, sizeof(obj));
@@ -91,7 +89,6 @@ class Message {
         std::size_t bytesConsumed = 0;
     };
 
-
     class Builder: public BytesConsumer {
      public:
         explicit Builder(std::size_t size);
@@ -105,13 +102,15 @@ class Message {
         std::size_t cursor;
     };
 
-    friend class MessageReader;
     friend class PipeReader;
     friend class PipeWriter;
 };
 
 template<>
 const Message& Message::operator<<(String& obj) const;
+
+template<>
+Message::BytesConsumer& Message::BytesConsumer::add(const String& obj);
 
 }
 }
