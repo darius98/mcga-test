@@ -66,7 +66,7 @@ bool TestExecutionCycle::isDone() const {
 
 void TestExecutionCycle::processMessages(bool block) {
     while (!info.finished) {
-        Message message = pipeWithTestProcess->getNextMessage();
+        Message message = pipeWithTestProcess->getNextMessage(32);
         if (!message.isInvalid()) {
             processMessage(message);
         } else if (!block) {

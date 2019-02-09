@@ -42,8 +42,8 @@ WorkerSubprocess::~WorkerSubprocess() {
     delete pipeReader;
 }
 
-Message WorkerSubprocess::getNextMessage() {
-    return pipeReader->getNextMessage();
+Message WorkerSubprocess::getNextMessage(int maxConsecutiveFailedReadAttempts) {
+    return pipeReader->getNextMessage(maxConsecutiveFailedReadAttempts);
 }
 
 bool WorkerSubprocess::isFinished() {

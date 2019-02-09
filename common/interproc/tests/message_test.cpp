@@ -54,24 +54,50 @@ void kkTestCase(InterprocMessage) {
         expect(c, isEqualTo(t));
     });
 
+    test("Default constructor provides an invalid message", [] {
+        Message message;
+        expect(message.isInvalid(), isTrue);
+    });
+
     test("Message::INVALID is invalid", [] {
         expect(Message::INVALID.isInvalid(), isTrue);
     });
 
     test("Copying", [] {
-        int a = 2, b = 4;
-        auto message = Message::build(a, b);
+        int a = 2;
+        int b = 4;
+        String s = "abc";
+        auto message = Message::build(a, b, s);
+
         expect(message.isInvalid(), isFalse);
-        int x, y;
-        message << x << y;
+
+        int x;
+        int y;
+        String t;
+        message << x << y << t;
         expect(x, isEqualTo(a));
         expect(y, isEqualTo(b));
+        expect(t, isEqualTo(s));
+
         Message messageCopy(message);
         expect(messageCopy.isInvalid(), isFalse);
-        int x2, y2;
-        messageCopy << x2 << y2;
+        int x2;
+        int y2;
+        String t2;
+        messageCopy << x2 << y2 << t2;
         expect(x2, isEqualTo(a));
         expect(y2, isEqualTo(b));
+        expect(t2, isEqualTo(s));
+
+        messageCopy = message;
+        expect(messageCopy.isInvalid(), isFalse);
+        int x3;
+        int y3;
+        String t3;
+        messageCopy << x3 << y3 << t3;
+        expect(x3, isEqualTo(a));
+        expect(y3, isEqualTo(b));
+        expect(t3, isEqualTo(s));
     });
 
     test("Messages are only equal if both invalid or same object", [] {

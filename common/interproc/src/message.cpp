@@ -23,18 +23,16 @@ Message Message::read(const void* src, size_t maxSize) {
     return Message(messagePayload);
 }
 
+Message::Message(): Message(INVALID) {}
+
 Message::Message(const Message& other) {
-    if (other.isInvalid()) {
-        payload = nullptr;
-    } else {
-        auto size = other.getSize();
-        payload = malloc(size);
-        memcpy(payload, other.payload, size + sizeof(size_t));
-    }
+    copyContent(other);
 }
 
 Message::Message(Message&& other) noexcept: payload(other.payload) {
-    other.payload = nullptr;
+    if (this != &other) {
+        other.payload = nullptr;
+    }
 }
 
 Message::Message(void* _payload) noexcept: payload(_payload) {}
@@ -52,23 +50,29 @@ Message& Message::operator=(const Message& other) {
     if (payload != nullptr) {
         free(payload);
     }
-    if (other.payload == nullptr) {
-        payload = nullptr;
-    } else {
-        auto size = other.getSize();
-        payload = malloc(size);
-        memcpy(payload, other.payload, size);
-    }
+    copyContent(other);
+    readHead = sizeof(size_t);
     return *this;
 }
 
 Message& Message::operator=(Message&& other) noexcept {
+    readHead = sizeof(size_t);
     if (this == &other) {
         return *this;
     }
     payload = other.payload;
     other.payload = nullptr;
     return *this;
+}
+
+void Message::copyContent(const Message& other) {
+    if (other.isInvalid()) {
+        payload = nullptr;
+    } else {
+        auto size = other.getSize();
+        payload = malloc(size);
+        memcpy(payload, other.payload, size);
+    }
 }
 
 size_t Message::getSize() const {

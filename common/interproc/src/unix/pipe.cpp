@@ -18,6 +18,7 @@ class LinuxPipeReader: public PipeReader {
     explicit LinuxPipeReader(const int& _inputFD):
         inputFD(_inputFD),
         buffer(malloc(128)),
+        bufferReadHead(0),
         bufferSize(0),
         bufferCapacity(128) {}
 
@@ -26,23 +27,17 @@ class LinuxPipeReader: public PipeReader {
         free(buffer);
     }
 
-    void close() {
-        if (closed) {
-            return;
-        }
-        int ret = ::close(inputFD);
-        if (ret < 0) {
-            // TODO(darius98): Handle errors better than just exiting!
-            perror("close");
-            exit(errno);
-        }
-        closed = true;
-    }
-
     Message getNextMessage(int maxConsecutiveFailedReadAttempts) override {
+        // Try reading a message first, maybe we received multiple at once.
+        auto message = readMessageFromBuffer();
+        if (!message.isInvalid()) {
+            return message;
+        }
+
         char block[128];
         int failedAttempts = 0;
-        while (failedAttempts <= maxConsecutiveFailedReadAttempts) {
+        while (maxConsecutiveFailedReadAttempts == -1 ||
+               failedAttempts <= maxConsecutiveFailedReadAttempts) {
             ssize_t numBytesRead = read(inputFD, block, 128);
             if (numBytesRead < 0) {
                 if (errno == EWOULDBLOCK || errno == EAGAIN) {
@@ -63,13 +58,8 @@ class LinuxPipeReader: public PipeReader {
                        static_cast<size_t>(numBytesRead));
                 bufferSize += numBytesRead;
             }
-            auto message = Message::read(buffer, bufferSize);
+            message = readMessageFromBuffer();
             if (!message.isInvalid()) {
-                size_t size = message.getSize();
-                memcpy(buffer,
-                       static_cast<uint8_t*>(buffer) + size,
-                       bufferSize - size);
-                bufferSize -= size;
                 return message;
             }
         }
@@ -77,7 +67,27 @@ class LinuxPipeReader: public PipeReader {
     }
 
  private:
+    void close() {
+        if (closed) {
+            return;
+        }
+        int ret = ::close(inputFD);
+        if (ret < 0) {
+            // TODO(darius98): Handle errors better than just exiting!
+            perror("close");
+            exit(errno);
+        }
+        closed = true;
+    }
+
     void resizeBufferToFit(std::size_t extraBytes) {
+        if (bufferCapacity < bufferSize + extraBytes && bufferReadHead > 0) {
+            memcpy(buffer,
+                   static_cast<uint8_t*>(buffer) + bufferReadHead,
+                   bufferCapacity - bufferReadHead);
+            bufferSize -= bufferReadHead;
+            bufferReadHead = 0;
+        }
         while (bufferCapacity < bufferSize + extraBytes) {
             void* newBuffer = malloc(2 * bufferCapacity);
             memcpy(newBuffer, buffer, bufferSize);
@@ -87,11 +97,22 @@ class LinuxPipeReader: public PipeReader {
         }
     }
 
+    Message readMessageFromBuffer() {
+        auto message = Message::read(
+                static_cast<uint8_t*>(buffer) + bufferReadHead,
+                bufferSize - bufferReadHead);
+        if (!message.isInvalid()) {
+            bufferReadHead += message.getSize();
+        }
+        return message;
+    }
+
     bool closed = false;
     int inputFD;
     void* buffer;
-    std::size_t bufferSize;
-    std::size_t bufferCapacity;
+    size_t bufferReadHead;
+    size_t bufferSize;
+    size_t bufferCapacity;
 };
 
 class LinuxPipeWriter: public PipeWriter {
@@ -103,6 +124,7 @@ class LinuxPipeWriter: public PipeWriter {
         close();
     }
 
+ private:
     void close() {
         if (closed) {
             return;
@@ -116,7 +138,6 @@ class LinuxPipeWriter: public PipeWriter {
         closed = true;
     }
 
- private:
     void sendBytes(void* bytes, size_t numBytes) override {
         size_t written = 0;
         while (written < numBytes) {
@@ -143,6 +164,8 @@ pair<PipeReader*, PipeWriter*> createAnonymousPipe() {
         perror("pipe");
         exit(errno);
     }
+    fcntl(fd[0], F_SETFL, O_NONBLOCK);
+    fcntl(fd[1], F_SETFL, O_NONBLOCK);
     return {new LinuxPipeReader(fd[0]), new LinuxPipeWriter(fd[1])};
 }
 

@@ -52,7 +52,7 @@ class WorkerSubprocess: public Subprocess {
 
     ~WorkerSubprocess() override;
 
-    Message getNextMessage();
+    Message getNextMessage(int maxConsecutiveFailedReadAttempts = -1);
 
     bool isFinished() override;
 

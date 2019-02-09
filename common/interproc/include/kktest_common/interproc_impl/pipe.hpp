@@ -12,10 +12,11 @@ class PipeReader {
  public:
     virtual ~PipeReader() = default;
 
+    // If maxConsecutiveFailedReadAttempts = -1, we block instead.
     virtual Message getNextMessage(int maxConsecutiveFailedReadAttempts) = 0;
 
     inline Message getNextMessage() {
-        return getNextMessage(32);
+        return getNextMessage(-1);
     }
 };
 

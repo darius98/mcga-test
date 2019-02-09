@@ -23,6 +23,7 @@ class Message {
 
     static Message read(const void* src, std::size_t maxSize);
 
+    Message();
     Message(const Message& other);
     Message(Message&& other) noexcept;
 
@@ -49,12 +50,12 @@ class Message {
  private:
     explicit Message(void* _payload) noexcept;
 
+    void copyContent(const Message& other);
+
     mutable std::size_t readHead = sizeof(std::size_t);
     void* payload;
 
     // helper internal classes
-
-    static constexpr const int METADATA_SIZE = sizeof(std::size_t);
 
     class BytesConsumer {
      public:
