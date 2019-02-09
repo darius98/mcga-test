@@ -47,21 +47,21 @@ void tearDown(Executable func) {
     Driver::getInstance()->addTearDown(func);
 }
 
-void expect(const bool& exprResult, const String& expr) {
+void expect(bool exprResult, const String& failMessage) {
     if (!exprResult) {
-        if (expr.empty()) {
-            fail("Expectation failed.");
-        }
+        fail(failMessage);
     }
 }
 
-void expect(const bool& exprResult, const char* expr) {
+void expect(bool exprResult, const char* failMessage) {
     if (!exprResult) {
-        if (strlen(expr) == 0) {
-            fail("Expectation failed.");
-        } else {
-            fail(expr);
-        }
+        fail(failMessage);
+    }
+}
+
+void expect(bool exprResult, const string& failMessage) {
+    if (!exprResult) {
+        fail(failMessage);
     }
 }
 

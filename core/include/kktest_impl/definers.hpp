@@ -28,9 +28,11 @@ void tearDown(Executable func);
 
 void fail(const String& message = "");
 
-void expect(const bool& exprResult, const String& expr = "");
+void expect(bool exprResult, const String& failMessage = "");
 
-void expect(const bool& exprResult, const char* expr);
+void expect(bool exprResult, const char* failMessage);
+
+void expect(bool exprResult, const std::string& failMessage);
 
 }
 
