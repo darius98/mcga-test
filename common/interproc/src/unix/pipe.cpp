@@ -26,7 +26,7 @@ class LinuxPipeReader: public PipeReader {
         free(buffer);
     }
 
-    void close() override {
+    void close() {
         if (closed) {
             return;
         }
@@ -103,7 +103,7 @@ class LinuxPipeWriter: public PipeWriter {
         close();
     }
 
-    void close() override {
+    void close() {
         if (closed) {
             return;
         }

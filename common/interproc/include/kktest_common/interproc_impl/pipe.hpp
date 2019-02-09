@@ -14,8 +14,6 @@ class PipeReader {
 
     virtual Message getNextMessage(int maxConsecutiveFailedReadAttempts) = 0;
 
-    virtual void close() = 0;
-
     inline Message getNextMessage() {
         return getNextMessage(32);
     }
@@ -28,8 +26,6 @@ class PipeWriter {
     inline void sendMessage(const Message& message) {
         sendBytes(message.payload, message.getSize());
     }
-
-    virtual void close() = 0;
 
     template<class... Args>
     void sendMessage(const Args... args) {
