@@ -19,7 +19,7 @@ class EqualityMatcher: public Matcher {
         return object == target;
     }
 
-    void describe(Description* description) override {
+    void describe(Description* description) {
         (*description) << "'" << target << "'";
     }
 
@@ -36,12 +36,11 @@ class EqualityMatcher<std::string>: public Matcher {
 
     bool matches(const char* obj);
 
-    void describe(Description* description) override;
+    void describe(Description* description);
 
-    void describeMismatch(Description* description) override;
+    void describeMismatch(Description* description, const std::string& obj);
 
  private:
-    std::string object;
     std::string target;
 };
 
@@ -51,15 +50,16 @@ class NonEqualityMatcher: public Matcher {
     explicit NonEqualityMatcher(const T& _target): target(_target) {}
 
     template<class O>
-    bool matches(const O& object) {
-        return object != target;
+    bool matches(const O& obj) {
+        return obj != target;
     }
 
-    void describe(Description* description) override {
+    void describe(Description* description) {
         (*description) << "not '" << target << "'";
     }
 
-    void describeMismatch(Description* description) override {
+    template<class O>
+    void describeMismatch(Description* description, const O& obj) {
         (*description) << "'" << target << "'";
     }
 
@@ -77,11 +77,12 @@ class IsLessThanMatcher: public Matcher {
         return object < target;
     }
 
-    void describe(Description* description) override {
+    void describe(Description* description) {
         (*description) << "< '" << target << "'";
     }
 
-    void describeMismatch(Description* description) override {
+    template<class O>
+    void describeMismatch(Description* description, const O& obj) {
         (*description) << ">= '" << target << "'";
     }
 
@@ -99,11 +100,12 @@ class IsLessThanEqualMatcher: public Matcher {
         return object <= target;
     }
 
-    void describe(Description* description) override {
+    void describe(Description* description) {
         (*description) << "<= '" << target << "'";
     }
 
-    void describeMismatch(Description* description) override {
+    template<class O>
+    void describeMismatch(Description* description, const O& obj) {
         (*description) << "> '" << target << "'";
     }
 
@@ -121,11 +123,12 @@ class IsGreaterThanMatcher: public Matcher {
         return object > target;
     }
 
-    void describe(Description* description) override {
+    void describe(Description* description) {
         (*description) << "> '" << target << "'";
     }
 
-    void describeMismatch(Description* description) override {
+    template<class O>
+    void describeMismatch(Description* description, const O& obj) {
         (*description) << "<= '" << target << "'";
     }
 
@@ -143,11 +146,12 @@ class IsGreaterThanEqualMatcher: public Matcher {
         return object >= target;
     }
 
-    void describe(Description* description) override {
+    void describe(Description* description) {
         (*description) << ">= '" << target << "'";
     }
 
-    void describeMismatch(Description* description) override {
+    template<class O>
+    void describeMismatch(Description* description, const O& obj) {
         (*description) << "< '" << target << "'";
     }
 
@@ -165,21 +169,20 @@ class IdentityMatcher: public Matcher {
 
     template<class T>
     bool matches(const T& object) {
-        objectAddress = static_cast<const void*>(&object);
-        return objectAddress == address;
+        return &object == address;
     }
 
-    void describe(Description* description) override {
+    void describe(Description* description) {
         (*description) << "variable at address '" << address << "'";
     }
 
-    void describeMismatch(Description* description) override {
-        (*description) << "variable at address '" << objectAddress << "'";
+    template<class T>
+    void describeMismatch(Description* description, const T& object) {
+        (*description) << "variable at address '" << &object << "'";
     }
 
  private:
     const void* address;
-    const void* objectAddress = nullptr;
 };
 
 EqualityMatcher<std::string> isEqualTo(const char obj[]);

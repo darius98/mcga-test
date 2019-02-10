@@ -23,7 +23,8 @@ void CharInStringMatcher::describe(Description* description) {
     }
 }
 
-void CharInStringMatcher::describeMismatch(Description* description) {
+void CharInStringMatcher::describeMismatch(Description* description,
+                                           const char& ch) {
     if (expectation != nullptr) {
         (*description) << "not " << expectation;
     } else {

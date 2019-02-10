@@ -18,7 +18,8 @@ void ThrowsAnythingMatcher::describe(Description* description) {
     (*description) << "a function that throws";
 }
 
-void ThrowsAnythingMatcher::describeMismatch(Description* description) {
+void ThrowsAnythingMatcher::describeMismatch(Description* description,
+                                             const function<void()>& func) {
     (*description) << "a function that did not throw";
 }
 

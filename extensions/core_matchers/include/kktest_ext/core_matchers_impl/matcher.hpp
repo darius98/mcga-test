@@ -2,6 +2,7 @@
 #define KKTEST_EXTENSIONS_CORE_MATCHERS_KKTEST_EXT_CORE_MATCHERS_IMPL_MATCHER_HPP_
 
 #include <kktest_common/string.hpp>
+#include <kktest_impl/definers.hpp>
 #include <kktest_impl/executable.hpp>
 #include <kktest_ext/core_matchers_impl/streamer.hpp>
 
@@ -34,34 +35,91 @@ class Description {
 };
 
 class Matcher {
- public:
+    // template<class T>
     // virtual bool matches(const T& object) = 0;
 
-    virtual void describe(Description* description) = 0;
+    // virtual void describe(Description* description) = 0;
 
-    virtual void describeMismatch(Description* description);
-
-    template<class T>
-    String buildMismatchMessage(const T& object) {
-        Description description;
-        description << "Expected ";
-        describe(&description);
-        description << "\n\tGot      '" << object << "'\n\tWhich is ";
-        describeMismatch(&description);
-        return description.toString();
-    }
+    // ** Will only be called with the same type as `matches` was called. **
+    //
+    // template<class T>
+    // virtual void describeMismatch(Description* description,
+    //                               const T& object) = 0;
 };
+
+// A little bit of SFINAE never killed anyone :D
+namespace detail {
+
+template<class M, class S>
+class DescribeMismatchMethodExists {
+private:
+    template<class T, T> class Check;
+
+    typedef char Yes;
+    typedef struct { char _[2]; } No;
+
+    template <class T> struct DescribeMismatchSig {
+        typedef void (T::*describeMismatch)(Description*, const S&);
+    };
+
+    template <class T> static Yes exists(
+            Check<typename DescribeMismatchSig<T>::describeMismatch,
+                    &T::describeMismatch>*);
+    template <class T> static No  exists(...);
+
+public:
+    static constexpr bool value = (sizeof(exists<M>(nullptr)) == sizeof(Yes));
+};
+
+template<
+        class T,
+        class M,
+        class = typename std::enable_if<
+                    std::is_base_of<core_matchers::Matcher, M>::value
+                >,
+        class = typename std::enable_if<
+                    DescribeMismatchMethodExists<M, T>::value
+                >::type
+        >
+void __describeMismatch(const T& object, M& matcher, Description& description) {
+    matcher.describeMismatch(&description, object);
+}
+
+
+template<
+        class T,
+        class M,
+        class = typename std::enable_if<
+                    std::is_base_of<core_matchers::Matcher, M>::value
+                    && !DescribeMismatchMethodExists<M, T>::value
+                >::type
+        >
+void __describeMismatch(const T& object, M& matcher, Description& description) {
+    description << "not ";
+    matcher.describe(&description);
+}
 
 }
 
-template<class T, class M, class=typename std::enable_if<
-                               std::is_base_of<core_matchers::Matcher, M>::value
-                                                         >::type>
+}
+
+template<
+        class T,
+        class M,
+        class = typename std::enable_if<
+                    std::is_base_of<core_matchers::Matcher, M>::value
+                >
+        >
 void expect(const T& object, M matcher) {
     if (matcher.matches(object)) {
         return;
     }
-    fail("Expectation failed:\n\t" + matcher.buildMismatchMessage(object));
+    core_matchers::Description description;
+    description << "Expected ";
+    matcher.describe(&description);
+    description << "\n\tGot      '" << object << "'\n\tWhich is ";
+    core_matchers::detail::__describeMismatch(object, matcher, description);
+    fail("Expectation failed:\n\t" + description.toString());
 }
 
 }

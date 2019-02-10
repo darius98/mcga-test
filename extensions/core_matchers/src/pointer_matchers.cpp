@@ -11,7 +11,7 @@ void IsNullptrMatcher::describe(Description* description) {
     (*description) << "nullptr";
 }
 
-void IsNullptrMatcher::describeMismatch(Description* description) {
+void IsNullptrMatcher::describeMismatch(Description* description, void*const&) {
     (*description) << "non-null pointer";
 }
 
@@ -25,7 +25,8 @@ void IsNotNullptrMatcher::describe(Description* description) {
     (*description) << "non-null pointer";
 }
 
-void IsNotNullptrMatcher::describeMismatch(Description* description) {
+void IsNotNullptrMatcher::describeMismatch(Description* description,
+                                           void*const&) {
     (*description) << "nullptr";
 }
 

@@ -23,17 +23,18 @@ class AndMatcher: public Matcher {
         return m1Matches && m2Matches;
     }
 
-    void describe(Description* description) override {
+    void describe(Description* description) {
         m1.describe(description);
         (*description) << " and ";
         m2.describe(description);
     }
 
-    void describeMismatch(Description* description) override {
+    template<class T>
+    void describeMismatch(Description* description, const T& obj) {
         if (m1Matches) {
-            m2.describeMismatch(description);
+            detail::__describeMismatch(obj, m2, description);
         } else {
-            m1.describeMismatch(description);
+            detail::__describeMismatch(obj, m1, description);
         }
     }
 
@@ -62,16 +63,17 @@ class OrMatcher: public Matcher {
         return m1Matches || m2Matches;
     }
 
-    void describe(Description* description) override {
+    void describe(Description* description) {
         m1.describe(description);
         (*description) << " or ";
         m2.describe(description);
     }
 
-    void describeMismatch(Description* description) override {
-        m1.describeMismatch(description);
+    template<class T>
+    void describeMismatch(Description* description, const T& obj) {
+        detail::__describeMismatch(obj, m1, description);
         (*description) << " and ";
-        m2.describeMismatch(description);
+        detail::__describeMismatch(obj, m2, description);
     }
 
  private:
@@ -95,12 +97,13 @@ class NotMatcher: public Matcher {
         return !matcher.matches(obj);
     }
 
-    void describe(Description* description) override {
+    void describe(Description* description) {
         (*description) << "not ";
         matcher.describe(description);
     }
 
-    void describeMismatch(Description* description) override {
+    template<class T>
+    void describeMismatch(Description* description, const T& obj) {
         matcher.describe(description);
     }
  private:

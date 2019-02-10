@@ -19,10 +19,5 @@ String Description::toString() const {
     return String(stream.str());
 }
 
-void Matcher::describeMismatch(Description* description) {
-    (*description) << "not ";
-    describe(description);
-}
-
 }
 }

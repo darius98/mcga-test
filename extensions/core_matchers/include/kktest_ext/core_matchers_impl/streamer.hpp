@@ -162,7 +162,11 @@ private:
 };
 
 template<>
-struct Streamer<std::string, void_t<decltype(std::cout << std::declval<std::string>())>> {
+struct Streamer<std::string,
+                void_t<decltype(std::declval<std::ostream>()
+                                       << std::declval<std::string>())
+                      >
+                > {
 public:
     static void sendType(std::stringstream& stream) {
         formatType<std::string>(stream);

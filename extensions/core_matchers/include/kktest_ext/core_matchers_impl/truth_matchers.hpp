@@ -10,9 +10,9 @@ class IsTrueMatcher: public Matcher {
  public:
     bool matches(const bool& object);
 
-    void describe(Description* description) override;
+    void describe(Description* description);
 
-    void describeMismatch(Description* description) override;
+    void describeMismatch(Description* description, const bool&);
 };
 
 extern IsTrueMatcher isTrue;
@@ -21,9 +21,9 @@ class IsFalseMatcher: public Matcher {
  public:
     bool matches(const bool& object);
 
-    void describe(Description* description) override;
+    void describe(Description* description);
 
-    void describeMismatch(Description* description) override;
+    void describeMismatch(Description* description, const bool&);
 };
 
 extern IsFalseMatcher isFalse;

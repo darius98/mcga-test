@@ -13,9 +13,7 @@ class IsPositiveMatcher: public Matcher {
         return object > 0;
     }
 
-    void describe(Description* description) override;
-
-    void describeMismatch(Description* description) override;
+    void describe(Description* description);
 };
 
 extern IsPositiveMatcher isPositive;
@@ -27,9 +25,7 @@ class IsNegativeMatcher: public Matcher {
         return object < 0;
     }
 
-    void describe(Description* description) override;
-
-    void describeMismatch(Description* description) override;
+    void describe(Description* description);
 };
 
 extern IsNegativeMatcher isNegative;
@@ -41,9 +37,7 @@ class IsEvenMatcher: public Matcher {
         return object % 2 == 0;
     }
 
-    void describe(Description* description) override;
-
-    void describeMismatch(Description* description) override;
+    void describe(Description* description);
 };
 
 extern IsEvenMatcher isEven;
@@ -55,9 +49,7 @@ class IsOddMatcher: public Matcher {
         return object % 2 == 1 || object % 2 == -1;
     }
 
-    void describe(Description* description) override;
-
-    void describeMismatch(Description* description) override;
+    void describe(Description* description);
 };
 
 extern IsOddMatcher isOdd;
@@ -69,7 +61,7 @@ class IsZeroMatcher: public Matcher {
         return object == 0;
     }
 
-    void describe(Description* description) override;
+    void describe(Description* description);
 };
 
 extern IsZeroMatcher isZero;
@@ -85,11 +77,11 @@ class IsAlmostEqualMatcher: public Matcher {
         return -eps < delta && delta < eps;
     }
 
-    void describe(Description* description) override {
+    void describe(Description* description) {
         (*description) << "a number within " << eps << " of " << target;
     }
 
-    void describeMismatch(Description* description) override {
+    void describeMismatch(Description* description, const T&) {
         (*description) << "a number not within " << eps << " of " << target;
     }
 

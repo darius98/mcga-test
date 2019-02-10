@@ -13,9 +13,10 @@ class ThrowsAnythingMatcher: public Matcher {
  public:
     bool matches(const std::function<void()>& func);
 
-    void describe(Description* description) override;
+    void describe(Description* description);
 
-    void describeMismatch(Description* description) override;
+    void describeMismatch(Description* description,
+                          const std::function<void()>& func);
 };
 
 extern ThrowsAnythingMatcher throws;
@@ -37,12 +38,13 @@ class ThrowsSpecificMatcher: public Matcher {
         }
     }
 
-    void describe(Description* description) override {
+    void describe(Description* description) {
         (*description) << "a function that throws ";
         description->appendType<E>();
     }
 
-    void describeMismatch(Description* description) override {
+    void describeMismatch(Description* description,
+                          const std::function<void()>& func) {
         if (failureType == 1) {
             (*description) << "a function that did not throw";
         }

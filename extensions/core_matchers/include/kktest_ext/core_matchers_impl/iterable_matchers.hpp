@@ -13,9 +13,12 @@ class IsEmptyMatcher: public Matcher {
         return object.empty();
     }
 
-    void describe(Description* description) override;
+    void describe(Description* description);
 
-    void describeMismatch(Description* description) override;
+    template<class T>
+    void describeMismatch(Description* description, const T&) {
+        (*description) << "a non-empty iterable";
+    }
 };
 
 class IsNotEmptyMatcher: public Matcher {
@@ -25,9 +28,12 @@ class IsNotEmptyMatcher: public Matcher {
         return !object.empty();
     }
 
-    void describe(Description* description) override;
+    void describe(Description* description);
 
-    void describeMismatch(Description* description) override;
+    template<class T>
+    void describeMismatch(Description* description, const T&) {
+        (*description) << "empty iterable";
+    }
 };
 
 template<class M>
@@ -44,14 +50,15 @@ class IterableSizeMatcher: public Matcher {
         return sizeMatcher.matches(object.size());
     }
 
-    void describe(Description* description) override {
+    void describe(Description* description) {
         (*description) << "iterable where size is ";
         sizeMatcher.describe(description);
     }
 
-    void describeMismatch(Description* description) override {
+    template<class T>
+    void describeMismatch(Description* description, const T& obj) {
         (*description) << "iterable where size is ";
-        sizeMatcher.describeMismatch(description);
+        detail::__describeMismatch(obj, sizeMatcher, *description);
     }
 
  private:
@@ -78,19 +85,22 @@ class IterableEachMatcher: public Matcher {
         for (const auto& obj : iterable) {
             index += 1;
             if (!elementMatcher.matches(obj)) {
-                elementMatcher.describeMismatch(&elementFailureDescription);
+                detail::__describeMismatch(obj,
+                                           elementMatcher,
+                                           elementFailureDescription);
                 return false;
             }
         }
         return true;
     }
 
-    void describe(Description* description) override {
+    void describe(Description* description) {
         (*description) << "an iterable where each element is ";
         elementMatcher.describe(description);
     }
 
-    void describeMismatch(Description* description) override {
+    template<class T>
+    void describeMismatch(Description* description, const T&) {
         (*description) << "an iterable where at index "
                        << index
                        << " the element is "
@@ -123,12 +133,13 @@ class IterableAnyMatcher: public Matcher {
         return false;
     }
 
-    void describe(Description* description) override {
+    void describe(Description* description) {
         (*description) << "an iterable where at least one element is ";
         elementMatcher.describe(description);
     }
 
-    void describeMismatch(Description* description) override {
+    template<class T>
+    void describeMismatch(Description* description, const T&) {
         (*description) << "an iterable where no element is ";
         elementMatcher.describe(description);
     }

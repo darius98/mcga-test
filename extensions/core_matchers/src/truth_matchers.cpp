@@ -11,7 +11,7 @@ void IsTrueMatcher::describe(Description* description) {
     (*description) << "true";
 }
 
-void IsTrueMatcher::describeMismatch(Description* description) {
+void IsTrueMatcher::describeMismatch(Description* description, const bool&) {
     (*description) << "false";
 }
 
@@ -25,7 +25,7 @@ void IsFalseMatcher::describe(Description* description) {
     (*description) << "false";
 }
 
-void IsFalseMatcher::describeMismatch(Description* description) {
+void IsFalseMatcher::describeMismatch(Description* description, const bool&) {
     (*description) << "true";
 }
 

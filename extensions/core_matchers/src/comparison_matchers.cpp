@@ -29,23 +29,22 @@ EqualityMatcher<string>::EqualityMatcher(string _target):
         target(move(_target)) {}
 
 bool EqualityMatcher<string>::matches(const string& obj) {
-    object = obj;
-    return object == target;
+    return obj == target;
 }
 
 bool EqualityMatcher<string>::matches(const char* obj) {
-    object = obj;
-    return object == target;
+    return obj == target;
 }
 
 void EqualityMatcher<string>::describe(Description* description) {
     (*description) << "'" << target << "'";
 }
 
-void EqualityMatcher<string>::describeMismatch(Description* description) {
+void EqualityMatcher<string>::describeMismatch(Description* description,
+                                               const string& obj) {
     size_t mismatchIndex = 0;
-    while (mismatchIndex < min(target.size(), object.size())
-            && target[mismatchIndex] == object[mismatchIndex]) {
+    while (mismatchIndex < min(target.size(), obj.size())
+            && target[mismatchIndex] == obj[mismatchIndex]) {
         mismatchIndex += 1;
     }
 
@@ -77,7 +76,7 @@ void EqualityMatcher<string>::describeMismatch(Description* description) {
     description->appendRawString("\n\tExpected: '");
     (*description) << extractRelevantSection(target, mismatchIndex);
     description->appendRawString("'\n\t     Got: '");
-    (*description) << extractRelevantSection(object, mismatchIndex);
+    (*description) << extractRelevantSection(obj, mismatchIndex);
     description->appendRawString("'\n\t" + String(numSpaces, ' ') + "^");
 }
 
