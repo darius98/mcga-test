@@ -32,7 +32,7 @@ void kkTestCase(InterprocPipe) {
         int y;
         int z;
         expect(message.isInvalid(), isFalse);
-        message << x << y << z;
+        message >> x >> y >> z;
         expect(x, isEqualTo(1));
         expect(y, isEqualTo(2));
         expect(z, isEqualTo(3));
@@ -49,7 +49,7 @@ void kkTestCase(InterprocPipe) {
             message = reader->getNextMessage();
             expect(!message.isInvalid(),
                    "Message " + to_string(i) + "is invalid!");
-            message << x << y << z;
+            message >> x >> y >> z;
             expect(x, isEqualTo(3 * i - 2));
             expect(y, isEqualTo(3 * i - 1));
             expect(z, isEqualTo(3 * i));
@@ -70,7 +70,7 @@ void kkTestCase(InterprocPipe) {
                     message = reader->getNextMessage();
                     expect(!message.isInvalid(),
                            "Message " + to_string(j) + "is invalid!");
-                    message << x << y << z;
+                    message >> x >> y >> z;
                     expect(x, isEqualTo(3 * j - 2));
                     expect(y, isEqualTo(3 * j - 1));
                     expect(z, isEqualTo(3 * j));
@@ -89,7 +89,7 @@ void kkTestCase(InterprocPipe) {
             expect(!message.isInvalid(),
                    "Message " + to_string(i) + " is invalid!");
             int x, y, z;
-            message << x << y << z;
+            message >> x >> y >> z;
             expect(x, isEqualTo(3 * i - 2));
             expect(y, isEqualTo(3 * i - 1));
             expect(z, isEqualTo(3 * i));

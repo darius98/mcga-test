@@ -14,7 +14,7 @@ void kkTestCase(InterprocMessage) {
     test("Building & reading a message from 3 ints", [] {
         auto message = Message::build(1, 2, 3);
         int x, y, z;
-        message << x << y << z;
+        message >> x >> y >> z;
         expect(message.isInvalid(), isFalse);
         expect(x, isEqualTo(1));
         expect(y, isEqualTo(2));
@@ -31,7 +31,7 @@ void kkTestCase(InterprocMessage) {
         long long b;
         double c;
         char d;
-        message << a << b << c << d;
+        message >> a >> b >> c >> d;
         expect(message.isInvalid(), isFalse);
         expect(a, isEqualTo(x));
         expect(b, isEqualTo(y));
@@ -48,7 +48,7 @@ void kkTestCase(InterprocMessage) {
         String a;
         int b;
         String c;
-        message << a << b << c;
+        message >> a >> b >> c;
         expect(a, isEqualTo(s));
         expect(b, isEqualTo(r));
         expect(c, isEqualTo(t));
@@ -74,7 +74,7 @@ void kkTestCase(InterprocMessage) {
         int x;
         int y;
         String t;
-        message << x << y << t;
+        message >> x >> y >> t;
         expect(x, isEqualTo(a));
         expect(y, isEqualTo(b));
         expect(t, isEqualTo(s));
@@ -84,7 +84,7 @@ void kkTestCase(InterprocMessage) {
         int x2;
         int y2;
         String t2;
-        messageCopy << x2 << y2 << t2;
+        messageCopy >> x2 >> y2 >> t2;
         expect(x2, isEqualTo(a));
         expect(y2, isEqualTo(b));
         expect(t2, isEqualTo(s));
@@ -94,7 +94,7 @@ void kkTestCase(InterprocMessage) {
         int x3;
         int y3;
         String t3;
-        messageCopy << x3 << y3 << t3;
+        messageCopy >> x3 >> y3 >> t3;
         expect(x3, isEqualTo(a));
         expect(y3, isEqualTo(b));
         expect(t3, isEqualTo(s));
@@ -132,7 +132,7 @@ void kkTestCase(InterprocMessage) {
         expect(message.isInvalid(), isFalse);
         expect(message.getSize(), isEqualTo(sizeof(size_t) + sizeof(int)));
         int actualContent;
-        message << actualContent;
+        message >> actualContent;
         expect(actualContent, isEqualTo(messageContent));
     });
 }

@@ -88,9 +88,9 @@ bool Message::isInvalid() const {
 }
 
 template<>
-const Message& Message::operator<<(String& obj) const {
+const Message& Message::operator>>(String& obj) const {
     decltype(obj.size()) size;
-    (*this) << size;
+    (*this) >> size;
     obj.assign(static_cast<char*>(payload) + readHead,
                static_cast<char*>(payload) + readHead + size);
     readHead += size;
