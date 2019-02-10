@@ -1,7 +1,9 @@
 #ifndef KKTEST_EXTENSIONS_CORE_MATCHERS_KKTEST_EXT_CORE_MATCHERS_IMPL_STREAMER_HPP_
 #define KKTEST_EXTENSIONS_CORE_MATCHERS_KKTEST_EXT_CORE_MATCHERS_IMPL_STREAMER_HPP_
 
+#ifdef KKTEST_USE_ABI_DEMANGLE
 #include <cxxabi.h>
+#endif
 
 #include <deque>
 #include <functional>
@@ -10,14 +12,12 @@
 #include <map>
 #include <set>
 #include <sstream>
-#include <string>
 #include <tuple>
 #include <unordered_map>
 #include <unordered_set>
 #include <utility>
 #include <vector>
 
-// TODO(darius98): Remove this include!
 #include <kktest_common/string.hpp>
 
 namespace kktest {
@@ -105,6 +105,7 @@ struct Streamer {
     static void formatType(std::stringstream& s) {
         int stat;
         String rawName = typeid(T).name();
+#ifdef KKTEST_USE_ABI_DEMANGLE
         char* name = abi::__cxa_demangle(rawName.c_str(),
                                          nullptr,
                                          nullptr,
@@ -113,6 +114,7 @@ struct Streamer {
             rawName = name;
             free(name);
         }
+#endif
         s << rawName;
     }
 
@@ -145,6 +147,7 @@ private:
     static void formatType(std::stringstream& s) {
         int stat;
         String rawName = typeid(T).name();
+#ifdef KKTEST_USE_ABI_DEMANGLE
         char* name = abi::__cxa_demangle(rawName.c_str(),
                                          nullptr,
                                          nullptr,
@@ -153,6 +156,7 @@ private:
             rawName = name;
             free(name);
         }
+#endif
         s << rawName;
     }
 };

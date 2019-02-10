@@ -2,6 +2,9 @@ cmake_minimum_required(VERSION 3.7)
 project(KKTest)
 set(CMAKE_CXX_STANDARD 11)
 
+# TODO(darius98): Find a cleaner way to detect this automatically.
+add_definitions(-DKKTEST_USE_ABI_DEMANGLE)
+
 set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
 set(CMAKE_POSITION_INDEPENDENT_CODE TRUE)
 set(CMAKE_INSTALL_PREFIX /usr/local/)
