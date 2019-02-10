@@ -1,6 +1,7 @@
 #ifndef KKTEST_EXTENSIONS_CORE_MATCHERS_KKTEST_EXT_CORE_MATCHERS_IMPL_MATCHER_HPP_
 #define KKTEST_EXTENSIONS_CORE_MATCHERS_KKTEST_EXT_CORE_MATCHERS_IMPL_MATCHER_HPP_
 
+#include <kktest_common/string.hpp>
 #include <kktest_impl/executable.hpp>
 #include <kktest_ext/core_matchers_impl/streamer.hpp>
 
@@ -9,8 +10,8 @@ namespace core_matchers {
 
 class Description {
  public:
-    Description() = default;
-    Description(const Description& other): stream(other.stream.str()) {}
+    Description();
+    Description(const Description& other);
 
     template<class T>
     Description& operator<<(T obj) {
@@ -24,9 +25,10 @@ class Description {
         return *this;
     }
 
-    String toString() const {
-        return String(stream.str());
-    }
+    Description& appendRawString(const String& str);
+
+    String toString() const;
+
  private:
     std::stringstream stream;
 };
@@ -37,30 +39,25 @@ class Matcher {
 
     virtual void describe(Description* description) = 0;
 
-    virtual void describeMismatch(Description* description) {
-        (*description) << "not ";
-        describe(description);
-    }
+    virtual void describeMismatch(Description* description);
 
     template<class T>
     String buildMismatchMessage(const T& object) {
         Description description;
         description << "Expected ";
         describe(&description);
-        description << ".\n\tGot      '" << object << "'.\n\tWhich is ";
+        description << "\n\tGot      '" << object << "'\n\tWhich is ";
         describeMismatch(&description);
-        description << ".";
         return description.toString();
     }
 };
 
 }
 
-template<class T, class M>
+template<class T, class M, class=typename std::enable_if<
+                               std::is_base_of<core_matchers::Matcher, M>::value
+                                                         >::type>
 void expect(const T& object, M matcher) {
-    static_assert(std::is_base_of<core_matchers::Matcher, M>::value,
-                  "Invalid matcher provided to 'expect'.");
-
     if (matcher.matches(object)) {
         return;
     }

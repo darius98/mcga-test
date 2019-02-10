@@ -27,6 +27,24 @@ class EqualityMatcher: public Matcher {
     T target;
 };
 
+template<>
+class EqualityMatcher<std::string>: public Matcher {
+ public:
+    explicit EqualityMatcher(std::string _target);
+
+    bool matches(const std::string& obj);
+
+    bool matches(const char* obj);
+
+    void describe(Description* description) override;
+
+    void describeMismatch(Description* description) override;
+
+ private:
+    std::string object;
+    std::string target;
+};
+
 template<class T>
 class NonEqualityMatcher: public Matcher {
  public:
