@@ -161,6 +161,52 @@ private:
     }
 };
 
+template<>
+struct Streamer<std::string, void_t<decltype(std::cout << std::declval<std::string>())>> {
+public:
+    static void sendType(std::stringstream& stream) {
+        formatType<std::string>(stream);
+    }
+
+    static void send(std::stringstream& s, std::string obj) {
+        // TODO(darius98): This should be somewhere else (in utils maybe?)
+        size_t pos = 0;
+        while ((pos = obj.find('\n', pos)) != String::npos) {
+            obj.replace(pos, 1, "\\n");
+            pos += 2;
+        }
+        pos = 0;
+        while ((pos = obj.find('\t', pos)) != String::npos) {
+            obj.replace(pos, 1, "\\t");
+            pos += 2;
+        }
+        pos = 0;
+        while ((pos = obj.find('\r', pos)) != String::npos) {
+            obj.replace(pos, 1, "\\r");
+            pos += 2;
+        }
+        s << obj;
+    }
+
+private:
+    template<class T>
+    static void formatType(std::stringstream& s) {
+        int stat;
+        String rawName = typeid(T).name();
+#ifdef KKTEST_USE_ABI_DEMANGLE
+        char* name = abi::__cxa_demangle(rawName.c_str(),
+                                         nullptr,
+                                         nullptr,
+                                         &stat);
+        if (stat == 0) {
+            rawName = name;
+            free(name);
+        }
+#endif
+        s << rawName;
+    }
+};
+
 }
 }
 

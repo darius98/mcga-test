@@ -47,7 +47,7 @@ class Matcher {
         Description description;
         description << "Expected ";
         describe(&description);
-        description << ".\n\tGot '" << object << "'.\n\tWhich is ";
+        description << ".\n\tGot      '" << object << "'.\n\tWhich is ";
         describeMismatch(&description);
         description << ".";
         return description.toString();
