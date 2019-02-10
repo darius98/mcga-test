@@ -18,6 +18,10 @@ class BoxExecutor: public Executor {
  private:
     void execute(Test* test, Executable func) override;
 
+    void runContained(Test* test, Executable func, interproc::PipeWriter* pipe);
+
+    void onContainerMessage(Test* test, const interproc::Message& message);
+
     void ensureFreeContainers(std::size_t numContainers);
 
     std::size_t maxNumContainers;

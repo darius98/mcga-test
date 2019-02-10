@@ -18,19 +18,23 @@ void BoxExecutor::execute(Test* test, Executable func) {
     ensureFreeContainers(1);
     openContainers.insert(new TestContainer(
         test->getConfig().timeTicksLimit * getTimeTickLengthMs() + 100.0,
-        [this, func, test](PipeWriter* pipe) {
-            try {
-                auto executionInfo = run(test, func);
-                pipe->sendMessage(executionInfo.toMessage());
-            } catch(const ConfigurationError& error) {
-                pipe->sendMessage(TestExecutionInfo::CONFIGURATION_ERROR,
-                                  String(error.what()));
-            }
-        },
-        [this, test](const Message& message) {
-            test->setExecuted(TestExecutionInfo::fromMessage(message));
-            onTestFinishedCallback(test);
-        }));
+        bind(&BoxExecutor::runContained, this, test, func, placeholders::_1),
+        bind(&BoxExecutor::onContainerMessage, this, test, placeholders::_1)));
+}
+
+void BoxExecutor::runContained(Test* test, Executable func, PipeWriter* pipe) {
+    try {
+        auto executionInfo = run(test, func);
+        pipe->sendMessage(executionInfo.toMessage());
+    } catch(const ConfigurationError& error) {
+        pipe->sendMessage(TestExecutionInfo::CONFIGURATION_ERROR,
+                          String(error.what()));
+    }
+}
+
+void BoxExecutor::onContainerMessage(Test* test, const Message& message) {
+    test->setExecuted(TestExecutionInfo::fromMessage(message));
+    onTestFinishedCallback(test);
 }
 
 void BoxExecutor::finalize() {
