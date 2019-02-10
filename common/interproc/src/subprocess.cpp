@@ -8,8 +8,7 @@ namespace interproc {
 Subprocess* Subprocess::open(const String& executable,
                              const vector<String>& argv) {
     char* executableCStr = executable.copyAsCStr();
-    char** cArgv = static_cast<char**>(
-            malloc(sizeof(char*) * (argv.size() + 1)));
+    auto cArgv = static_cast<char**>(malloc(sizeof(char*) * (argv.size() + 1)));
     for (size_t i = 0; i < argv.size(); ++ i) {
         cArgv[i] = argv[i].copyAsCStr();
     }

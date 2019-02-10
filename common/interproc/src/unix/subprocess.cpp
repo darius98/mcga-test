@@ -1,9 +1,9 @@
-#include <errno.h>
-#include <signal.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
 
+#include <cerrno>
+#include <csignal>
 #include <cstdlib>
 
 #include <kktest_common/interproc_impl/subprocess.hpp>
