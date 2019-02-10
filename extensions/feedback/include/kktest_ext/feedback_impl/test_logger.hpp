@@ -27,26 +27,13 @@ class TestLogger {
     void logFinalInformation(bool logNumTests = false);
 
  private:
-    typedef int Color;
-    static constexpr const Color RED = 31;
-    static constexpr const Color GREEN = 32;
-    static constexpr const Color YELLOW = 33;
-    static constexpr const Color GREY = 90;
-
     String getRecursiveGroupDescription(int groupId,
                                         const String& testCaseName);
 
     void printTestMessage(const TestInfo& testInfo, const String& testCaseName);
 
-    String colored(const String& message, Color color);
-    String red(const String& s);
-    String yellow(const String& s);
-    String green(const String& s);
-    String grey(const String& s);
-
     std::ostream& stream;
 
-    bool isInTerminal;
     bool maintainTestIndexOrder;
     int testCasesReceived = 0;
     int testCasesFatallyExited = 0;

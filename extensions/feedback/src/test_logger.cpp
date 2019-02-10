@@ -1,9 +1,4 @@
-#include <unistd.h>
-
-#include <cstdio>
-
-#include <iostream>
-#include <sstream>
+#include <termcolor/termcolor.hpp>
 
 #include <kktest_ext/feedback_impl/test_logger.hpp>
 
@@ -14,9 +9,7 @@ namespace feedback {
 
 TestLogger::TestLogger(ostream& _stream, bool _maintainTestIndexOrder):
         stream(_stream),
-        maintainTestIndexOrder(_maintainTestIndexOrder),
-        isInTerminal(stream.rdbuf() == cout.rdbuf() &&
-                     isatty(fileno(stdout)) != 0) {}
+        maintainTestIndexOrder(_maintainTestIndexOrder) {}
 
 void TestLogger::addGroupInfo(const GroupInfo& groupInfo,
                               const String& testCaseName) {
@@ -42,7 +35,9 @@ void TestLogger::logFinalInformation(bool logNumTests) {
     stream << "\n";
     if (logNumTests) {
         if (testCasesFatallyExited != 0) {
-            stream << red("Warning: some test cases closed unexpectedly!")
+            stream << termcolor::red
+                   << "Warning: some test cases closed unexpectedly!"
+                   << termcolor::reset
                    << "\n\n"
                    << "Test cases found: "
                    << testCasesReceived
@@ -51,20 +46,26 @@ void TestLogger::logFinalInformation(bool logNumTests) {
                    << testCasesReceived - testCasesFatallyExited
                    << "\n"
                    << "Test cases executed with fatal errors: "
-                   << red(to_string(testCasesFatallyExited))
+                   << termcolor::red
+                   << testCasesFatallyExited
+                   << termcolor::reset
                    << "\n";
         }
         stream << "Total tests executed: " << passedTests + failedTests << "\n";
     }
-    stream << "Tests passed: " << green(to_string(passedTests)) << "\n";
-    stream << "Tests failed: " << colored(
-        to_string(failedTests),
-        (failedTests == failedOptionalTests ?
-            (failedTests == 0 ? GREEN : YELLOW) :
-            RED));
-    if (failedOptionalTests) {
+    stream << "Tests passed: "
+           << termcolor::green
+           << passedTests
+           << termcolor::reset
+           << "\nTests failed: "
+           << (failedTests == failedOptionalTests
+                    ? (failedTests == 0 ? termcolor::green : termcolor::yellow)
+                    : termcolor::red)
+           << failedTests
+           << termcolor::reset;
+    if (failedOptionalTests != 0) {
         stream << " ("
-               << yellow(to_string(failedOptionalTests))
+               << termcolor::yellow << failedOptionalTests << termcolor::reset
                << " "
                << (failedOptionalTests == 1 ? "was" : "were")
                << " optional)";
@@ -75,7 +76,11 @@ void TestLogger::logFinalInformation(bool logNumTests) {
 void TestLogger::logFatalError(const String& errorMessage,
                                const String& testCaseName) {
     testCasesFatallyExited += 1;
-    stream << "\nA fatal " << red("error") << " occurred during execution";
+    stream << "\nA fatal "
+           << termcolor::red
+           << "error"
+           << termcolor::reset
+           << " occurred during execution";
     if (!testCaseName.empty()) {
         stream << " of test case " << testCaseName;
     }
@@ -99,19 +104,21 @@ String TestLogger::getRecursiveGroupDescription(int groupId,
 
 void TestLogger::printTestMessage(const TestInfo& testInfo,
                                   const String& testCaseName) {
-    stream << "["
-           << colored(
-                  testInfo.passed ? "P" : "F",
-                  testInfo.passed ? GREEN : (testInfo.optional ? YELLOW : RED))
-           << "] ";
+    stream << "[";
+    if (testInfo.passed) {
+        stream << termcolor::green << "P" << termcolor::reset;
+    } else {
+        stream << termcolor::red << "F" << termcolor::reset;
+    }
+    stream << "] ";
     String groupDescription = getRecursiveGroupDescription(testInfo.groupIndex,
                                                            testCaseName);
-    if (!groupDescription.empty()) {
-        stream << grey(groupDescription);
-    }
-    stream << testInfo.description;
+    stream << termcolor::grey
+           << groupDescription
+           << termcolor::reset
+           << testInfo.description;
     if (!testInfo.passed) {
-        stream << "\n";
+        stream << "\n\t";
         // TODO(darius98): This should be somewhere else (in utils maybe?)
         size_t pos = 0;
         String failureMessage = testInfo.failureMessage;
@@ -119,32 +126,9 @@ void TestLogger::printTestMessage(const TestInfo& testInfo,
             failureMessage.replace(pos, 1, "\n\t");
             pos += 2;
         }
-        stream << "\t" << failureMessage;
+        stream << termcolor::red << failureMessage << termcolor::reset;
     }
     stream << "\n";
-}
-
-String TestLogger::colored(const String& message, Color color) {
-    if (isInTerminal) {
-        return "\x1b[" + to_string(color) + "m" + message + "\x1b[0m";
-    }
-    return message;
-}
-
-String TestLogger::red(const String& message) {
-    return colored(message, RED);
-}
-
-String TestLogger::yellow(const String& message) {
-    return colored(message, YELLOW);
-}
-
-String TestLogger::green(const String& message) {
-    return colored(message, GREEN);
-}
-
-String TestLogger::grey(const String& message) {
-    return colored(message, GREY);
 }
 
 }

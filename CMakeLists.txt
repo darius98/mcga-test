@@ -54,3 +54,4 @@ target_link_libraries(kktest kktest_interface
         kktest_extension_feedback)
 
 add_subdirectory(third_party/cppli)
+add_subdirectory(third_party/termcolor)
