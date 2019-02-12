@@ -4,7 +4,7 @@
 #include <kktest_common/string.hpp>
 #include <kktest_impl/definers.hpp>
 #include <kktest_impl/executable.hpp>
-#include <kktest_ext/core_matchers_impl/streamer.hpp>
+#include <kktest_ext/core_matchers_impl/detail/streamer.hpp>
 
 namespace kktest {
 namespace core_matchers {
@@ -16,13 +16,13 @@ class Description {
 
     template<class T>
     Description& operator<<(T obj) {
-        Streamer<T>::send(stream, obj);
+        detail::Streamer<T>::send(stream, obj);
         return *this;
     }
 
     template<class T>
     Description& appendType() {
-        Streamer<T>::sendType(stream);
+        detail::Streamer<T>::sendType(stream);
         return *this;
     }
 
@@ -47,7 +47,6 @@ class Matcher {
     //                               const T& object) = 0;
 };
 
-// A little bit of SFINAE never killed anyone :D
 namespace detail {
 
 template<class M, class S>
@@ -64,8 +63,8 @@ private:
 
     template <class T> static Yes exists(
             Check<typename DescribeMismatchSig<T>::describeMismatch,
-                    &T::describeMismatch>*);
-    template <class T> static No  exists(...);
+                    &T::describeMismatch>*) { return 'a'; }
+    template <class T> static No  exists(...) { return {'a', 'b'}; }
 
 public:
     static constexpr bool value = (sizeof(exists<M>(nullptr)) == sizeof(Yes));
@@ -85,8 +84,8 @@ private:
 
     template <class T> static Yes exists(
             Check<typename DescribeObjectSig<T>::describeMismatch,
-                    &T::describeObject>*);
-    template <class T> static No  exists(...);
+                    &T::describeObject>*) { return 'a'; }
+    template <class T> static No  exists(...) { return {'a', 'b'}; }
 
 public:
     static constexpr bool value = (sizeof(exists<M>(nullptr)) == sizeof(Yes));
@@ -146,30 +145,7 @@ void __describeObject(M& matcher, Description* description, const T& object) {
 }
 
 }
-
 }
-
-template<
-        class T,
-        class M,
-        class = typename std::enable_if<
-                    std::is_base_of<core_matchers::Matcher, M>::value
-                >
-        >
-void expect(const T& object, M matcher) {
-    if (matcher.matches(object)) {
-        return;
-    }
-    core_matchers::Description description;
-    description << "Expected ";
-    matcher.describe(&description);
-    description << "\n\tGot      '";
-    core_matchers::detail::__describeObject(matcher, &description, object);
-    description << "'\n";
-    core_matchers::detail::__describeMismatch(matcher, &description, object);
-    fail("Expectation failed:\n\t" + description.toString());
-}
-
 }
 
 #endif

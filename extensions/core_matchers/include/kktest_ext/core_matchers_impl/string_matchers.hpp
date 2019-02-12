@@ -4,9 +4,30 @@
 #include <string>
 
 #include <kktest_ext/core_matchers_impl/matcher.hpp>
+#include <kktest_ext/core_matchers_impl/detail/decl.hpp>
 
 namespace kktest {
 namespace core_matchers {
+
+extern detail::CharInStringMatcher isLetter;
+
+extern detail::CharInStringMatcher isDigit;
+
+extern detail::CharInStringMatcher isLowercaseLetter;
+
+extern detail::CharInStringMatcher isUppercaseLetter;
+
+extern detail::CharInStringMatcher isBinaryDigit;
+
+extern detail::CharInStringMatcher isOctDigit;
+
+extern detail::CharInStringMatcher isHexDigit;
+
+extern detail::CharInStringMatcher isWhitespace;
+
+detail::IsSubstringMatcher isSubstringOf(const std::string& s);
+
+namespace detail {
 
 class CharInStringMatcher: public Matcher {
  public:
@@ -24,22 +45,6 @@ class CharInStringMatcher: public Matcher {
     const char* expectation;
 };
 
-extern CharInStringMatcher isLetter;
-
-extern CharInStringMatcher isDigit;
-
-extern CharInStringMatcher isLowercaseLetter;
-
-extern CharInStringMatcher isUppercaseLetter;
-
-extern CharInStringMatcher isBinaryDigit;
-
-extern CharInStringMatcher isOctDigit;
-
-extern CharInStringMatcher isHexDigit;
-
-extern CharInStringMatcher isWhitespace;
-
 class IsSubstringMatcher: public Matcher {
  public:
     explicit IsSubstringMatcher(std::string _container);
@@ -52,8 +57,7 @@ class IsSubstringMatcher: public Matcher {
     std::string container;
 };
 
-IsSubstringMatcher isSubstringOf(const std::string& s);
-
+}
 }
 }
 

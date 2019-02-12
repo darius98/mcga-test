@@ -24,6 +24,7 @@ string extractRelevantSection(const string& s, const size_t index) {
 
 namespace kktest {
 namespace core_matchers {
+namespace detail {
 
 EqualityMatcher<string>::EqualityMatcher(string _target):
         target(move(_target)) {}
@@ -95,7 +96,8 @@ void NonEqualityMatcher<string>::describe(Description* description) {
     (*description) << "not '" << target << "'";
 }
 
-void NonEqualityMatcher<string>::describeMismatch(Description* description, const string&) {
+void NonEqualityMatcher<string>::describeMismatch(Description* description,
+                                                  const string&) {
     (*description) << "'" << target << "'";
 }
 
@@ -114,7 +116,8 @@ void IsLessThanMatcher<string>::describe(Description* description) {
     (*description) << "< '" << target << "'";
 }
 
-void IsLessThanMatcher<string>::describeMismatch(Description* description, const string&) {
+void IsLessThanMatcher<string>::describeMismatch(Description* description,
+                                                 const string&) {
     (*description) << ">= '" << target << "'";
 }
 
@@ -133,7 +136,8 @@ void IsLessThanEqualMatcher<string>::describe(Description* description) {
     (*description) << "<= '" << target << "'";
 }
 
-void IsLessThanEqualMatcher<string>::describeMismatch(Description* description, const string&) {
+void IsLessThanEqualMatcher<string>::describeMismatch(Description* description,
+                                                      const string&) {
     (*description) << "> '" << target << "'";
 }
 
@@ -152,7 +156,8 @@ void IsGreaterThanMatcher<string>::describe(Description* description) {
     (*description) << "> '" << target << "'";
 }
 
-void IsGreaterThanMatcher<string>::describeMismatch(Description* description, const string& obj) {
+void IsGreaterThanMatcher<string>::describeMismatch(Description* description,
+                                                    const string& obj) {
     (*description) << "<= '" << target << "'";
 }
 
@@ -171,9 +176,12 @@ void IsGreaterThanEqualMatcher<string>::describe(Description* description) {
     (*description) << ">= '" << target << "'";
 }
 
-void IsGreaterThanEqualMatcher<string>::describeMismatch(Description* description, const string&) {
+void IsGreaterThanEqualMatcher<string>::describeMismatch(
+        Description* description,
+        const string&) {
     (*description) << "< '" << target << "'";
 }
 
+}
 }
 }

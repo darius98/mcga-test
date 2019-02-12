@@ -106,10 +106,10 @@ class ExitsWithCodeMatcher: public core_matchers::Matcher {
              class=typename std::enable_if<
                        !std::is_base_of<core_matchers::Matcher, T>::value
                    >::type>
-    ExitsWithCodeAndOutputMatcher<M, core_matchers::EqualityMatcher<T>>
+    ExitsWithCodeAndOutputMatcher<M, core_matchers::detail::EqualityMatcher<T>>
             withOutput(const T& output) {
         return ExitsWithCodeAndOutputMatcher
-                <M, core_matchers::EqualityMatcher<T>>(codeMatcher,
+                <M, core_matchers::detail::EqualityMatcher<T>>(codeMatcher,
                         core_matchers::isEqualTo(output));
     }
 
@@ -161,10 +161,11 @@ class ExitsWithOutputMatcher: public core_matchers::Matcher {
              class=typename std::enable_if<
                        !std::is_base_of<core_matchers::Matcher, T>::value
                    >::type>
-    ExitsWithCodeAndOutputMatcher<
-            core_matchers::EqualityMatcher<T>, M> withCode(const T& code) {
+    ExitsWithCodeAndOutputMatcher
+            <core_matchers::detail::EqualityMatcher<T>, M> withCode(
+                    const T& code) {
         return ExitsWithCodeAndOutputMatcher
-                <core_matchers::EqualityMatcher<T>, M>(
+                <core_matchers::detail::EqualityMatcher<T>, M>(
                         core_matchers::isEqualTo(code), outputMatcher);
     }
 
@@ -200,8 +201,8 @@ class ExitsMatcher: public core_matchers::Matcher {
                        !std::is_base_of<core_matchers::Matcher, T>::value
                    >::type>
     ExitsWithCodeMatcher<
-            core_matchers::EqualityMatcher<T>> withCode(const T& code) {
-        return ExitsWithCodeMatcher<core_matchers::EqualityMatcher<T>>(
+            core_matchers::detail::EqualityMatcher<T>> withCode(const T& code) {
+        return ExitsWithCodeMatcher<core_matchers::detail::EqualityMatcher<T>>(
                 core_matchers::isEqualTo(code));
     }
 
@@ -218,13 +219,16 @@ class ExitsMatcher: public core_matchers::Matcher {
                        !std::is_base_of<core_matchers::Matcher, T>::value
                    >::type>
     ExitsWithOutputMatcher<
-            core_matchers::EqualityMatcher<T>> withOutput(const T& output) {
-        return ExitsWithOutputMatcher<core_matchers::EqualityMatcher<T>>(
-                core_matchers::isEqualTo(output));
+            core_matchers::detail::EqualityMatcher<T>
+            > withOutput(const T& output) {
+        return ExitsWithOutputMatcher
+                <core_matchers::detail::EqualityMatcher<T>>(
+                        core_matchers::isEqualTo(output));
     }
 
-    ExitsWithCodeMatcher<core_matchers::EqualityMatcher<int>> zero;
-    ExitsWithCodeMatcher<core_matchers::NonEqualityMatcher<int>> nonZero;
+    ExitsWithCodeMatcher<core_matchers::detail::EqualityMatcher<int>> zero;
+    ExitsWithCodeMatcher<core_matchers::detail::NonEqualityMatcher<int>>
+            nonZero;
 
  private:
     DeathStatus status;
@@ -304,10 +308,11 @@ extern detail::ExitsMatcher exits;
 extern detail::HasExitedMatcher hasExited;
 
 extern detail::HasExitedWithCodeMatcher<
-        core_matchers::EqualityMatcher<int>> hasExitedWithCodeZero;
+        core_matchers::detail::EqualityMatcher<int>> hasExitedWithCodeZero;
 
 extern detail::HasExitedWithCodeMatcher<
-        core_matchers::NonEqualityMatcher<int>> hasExitedWithNonZeroCode;
+        core_matchers::detail::NonEqualityMatcher<int>
+       > hasExitedWithNonZeroCode;
 
 template<class T,
          class=typename std::enable_if<
@@ -321,10 +326,11 @@ template<class T,
          class=typename std::enable_if<
                    !std::is_base_of<core_matchers::Matcher, T>::value
                >::type>
-detail::HasExitedWithCodeMatcher<core_matchers::EqualityMatcher<T>>
+detail::HasExitedWithCodeMatcher<core_matchers::detail::EqualityMatcher<T>>
         hasExitedWithCode(const T& exitCode) {
-    return detail::HasExitedWithCodeMatcher<core_matchers::EqualityMatcher<T>>(
-        core_matchers::isEqualTo(exitCode));
+    return detail::HasExitedWithCodeMatcher
+            <core_matchers::detail::EqualityMatcher<T>>(
+                    core_matchers::isEqualTo(exitCode));
 }
 
 template<class T,
@@ -339,9 +345,9 @@ template<class T,
          class=typename std::enable_if<
                    !std::is_base_of<core_matchers::Matcher, T>::value
                >::type>
-detail::HasOutputMatcher<core_matchers::EqualityMatcher<T>>
+detail::HasOutputMatcher<core_matchers::detail::EqualityMatcher<T>>
         hasOutput(const T& output) {
-    return detail::HasOutputMatcher<core_matchers::EqualityMatcher<T>>(
+    return detail::HasOutputMatcher<core_matchers::detail::EqualityMatcher<T>>(
         core_matchers::isEqualTo(output));
 }
 

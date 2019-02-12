@@ -1,5 +1,5 @@
-#ifndef KKTEST_EXTENSIONS_CORE_MATCHERS_KKTEST_EXT_CORE_MATCHERS_IMPL_STREAMER_HPP_
-#define KKTEST_EXTENSIONS_CORE_MATCHERS_KKTEST_EXT_CORE_MATCHERS_IMPL_STREAMER_HPP_
+#ifndef KKTEST_EXTENSIONS_CORE_MATCHERS_KKTEST_EXT_CORE_MATCHERS_IMPL_DETAIL_STREAMER_HPP_
+#define KKTEST_EXTENSIONS_CORE_MATCHERS_KKTEST_EXT_CORE_MATCHERS_IMPL_DETAIL_STREAMER_HPP_
 
 #ifdef KKTEST_USE_ABI_DEMANGLE
 #include <cxxabi.h>
@@ -22,6 +22,7 @@
 
 namespace kktest {
 namespace core_matchers {
+namespace detail {
 
 template<class S, class = void>
 struct Streamer {
@@ -211,6 +212,7 @@ private:
     }
 };
 
+}
 }
 }
 

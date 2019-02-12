@@ -4,10 +4,25 @@
 #include <functional>
 
 #include <kktest_ext/core_matchers_impl/matcher.hpp>
+#include <kktest_ext/core_matchers_impl/detail/decl.hpp>
 #include <kktest_ext/core_matchers_impl/detail/std_invoke_polyfill.hpp>
 
 namespace kktest {
 namespace core_matchers {
+
+extern detail::ThrowsAnythingMatcher throws;
+
+template<class E>
+detail::ThrowsSpecificMatcher<E> throwsA() {
+    return detail::ThrowsSpecificMatcher<E>();
+}
+
+template<class F, class... Args>
+std::function<void()> wrapFunc(const F& func, const Args... args) {
+    return [&]() { detail::invokePolyfill(func, args...); };
+}
+
+namespace detail {
 
 class ThrowsAnythingMatcher: public Matcher {
  public:
@@ -18,8 +33,6 @@ class ThrowsAnythingMatcher: public Matcher {
     void describeMismatch(Description* description,
                           const std::function<void()>& func);
 };
-
-extern ThrowsAnythingMatcher throws;
 
 template<class E>
 class ThrowsSpecificMatcher: public Matcher {
@@ -57,16 +70,7 @@ class ThrowsSpecificMatcher: public Matcher {
     int failureType = -1;
 };
 
-template<class E>
-ThrowsSpecificMatcher<E> throwsA() {
-    return ThrowsSpecificMatcher<E>();
 }
-
-template<class F, class... Args>
-std::function<void()> wrapFunc(const F& func, const Args... args) {
-    return [&]() { detail::invokePolyfill(func, args...); };
-}
-
 }
 }
 

@@ -5,6 +5,10 @@ using namespace std;
 namespace kktest {
 namespace core_matchers {
 
+detail::ThrowsAnythingMatcher throws;
+
+namespace detail {
+
 bool ThrowsAnythingMatcher::matches(const function<void()>& func) {
     try {
         func();
@@ -23,7 +27,6 @@ void ThrowsAnythingMatcher::describeMismatch(Description* description,
     (*description) << "a function that did not throw";
 }
 
-ThrowsAnythingMatcher throws;
-
+}
 }
 }

@@ -3,6 +3,12 @@
 namespace kktest {
 namespace core_matchers {
 
+detail::IsTrueMatcher isTrue;
+
+detail::IsFalseMatcher isFalse;
+
+namespace detail {
+
 bool IsTrueMatcher::matches(const bool& object) {
     return object;
 }
@@ -14,8 +20,6 @@ void IsTrueMatcher::describe(Description* description) {
 void IsTrueMatcher::describeMismatch(Description* description, const bool&) {
     (*description) << "false";
 }
-
-IsTrueMatcher isTrue;
 
 bool IsFalseMatcher::matches(const bool& object) {
     return !object;
@@ -29,7 +33,6 @@ void IsFalseMatcher::describeMismatch(Description* description, const bool&) {
     (*description) << "true";
 }
 
-IsFalseMatcher isFalse;
-
+}
 }
 }

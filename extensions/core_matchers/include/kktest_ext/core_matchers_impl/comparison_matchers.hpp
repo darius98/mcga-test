@@ -5,9 +5,47 @@
 #include <string>
 
 #include <kktest_ext/core_matchers_impl/matcher.hpp>
+#include <kktest_ext/core_matchers_impl/detail/decl.hpp>
 
 namespace kktest {
 namespace core_matchers {
+
+template<class T>
+detail::EqualityMatcher<T> isEqualTo(const T& object) {
+    return detail::EqualityMatcher<T>(object);
+}
+
+template<class T>
+detail::NonEqualityMatcher<T> isNotEqualTo(const T& object) {
+    return detail::NonEqualityMatcher<T>(object);
+}
+
+template<class T>
+detail::IsLessThanMatcher<T> isLessThan(const T& object) {
+    return detail::IsLessThanMatcher<T>(object);
+}
+
+template<class T>
+detail::IsLessThanEqualMatcher<T> isLessThanEqual(const T& object) {
+    return detail::IsLessThanEqualMatcher<T>(object);
+}
+
+template<class T>
+detail::IsGreaterThanMatcher<T> isGreaterThan(const T& object) {
+    return detail::IsGreaterThanMatcher<T>(object);
+}
+
+template<class T>
+detail::IsGreaterThanEqualMatcher<T> isGreaterThanEqual(const T& object) {
+    return detail::IsGreaterThanEqualMatcher<T>(object);
+}
+
+template<class T>
+detail::IdentityMatcher<T> isIdenticalTo(const T& object) {
+    return detail::IdentityMatcher<T>(object);
+}
+
+namespace detail {
 
 template<class T>
 class EqualityMatcher: public Matcher {
@@ -142,16 +180,16 @@ class IsGreaterThanEqualMatcher: public Matcher {
     T target;
 };
 
+template<class T>
 class IdentityMatcher: public Matcher {
  public:
-    template<class T>
     explicit IdentityMatcher(const T& target):
             address(static_cast<const void*>(&target)) {}
 
     IdentityMatcher(const IdentityMatcher& other): address(other.address) {}
 
-    template<class T>
-    bool matches(const T& object) {
+    template<class S>
+    bool matches(const S& object) {
         return &object == address;
     }
 
@@ -159,8 +197,8 @@ class IdentityMatcher: public Matcher {
         (*description) << "variable at address '" << address << "'";
     }
 
-    template<class T>
-    void describeMismatch(Description* description, const T& object) {
+    template<class S>
+    void describeMismatch(Description* description, const S& object) {
         (*description) << "variable at address '" << &object << "'";
     }
 
@@ -168,44 +206,200 @@ class IdentityMatcher: public Matcher {
     const void* address;
 };
 
-template<class T>
-EqualityMatcher<T> isEqualTo(const T& object) {
-    return EqualityMatcher<T>(object);
+template<>
+class EqualityMatcher<std::string>: public Matcher {
+ public:
+    explicit EqualityMatcher(std::string _target);
+
+    bool matches(const std::string& obj);
+
+    bool matches(const char* obj);
+
+    void describe(Description* description);
+
+    void describeMismatch(Description* description, const std::string& obj);
+
+    template<int n>
+    operator EqualityMatcher<char[n]>() const;
+
+ protected:
+    std::string target;
+};
+
+template<int n>
+class EqualityMatcher<char[n]>: public EqualityMatcher<std::string> {
+ public:
+    using EqualityMatcher<std::string>::EqualityMatcher;
+};
+
+template<int n>
+EqualityMatcher<std::string>::operator EqualityMatcher<char[n]>() const {
+    return EqualityMatcher<char[n]>(target);
 }
 
-template<class T>
-NonEqualityMatcher<T> isNotEqualTo(const T& object) {
-    return NonEqualityMatcher<T>(object);
+template<>
+class NonEqualityMatcher<std::string>: public Matcher {
+ public:
+    explicit NonEqualityMatcher(std::string _target);
+
+    bool matches(const std::string& obj);
+
+    bool matches(const char* obj);
+
+    void describe(Description* description);
+
+    void describeMismatch(Description* description, const std::string& obj);
+
+    template<int n>
+    operator NonEqualityMatcher<char[n]>() const;
+
+ protected:
+    std::string target;
+};
+
+template<int n>
+class NonEqualityMatcher<char[n]>: public NonEqualityMatcher<std::string> {
+ public:
+    using NonEqualityMatcher<std::string>::NonEqualityMatcher;
+};
+
+template<int n>
+NonEqualityMatcher<std::string>::operator NonEqualityMatcher<char[n]>() const {
+    return EqualityMatcher<char[n]>(target);
 }
 
-template<class T>
-IsLessThanMatcher<T> isLessThan(const T& object) {
-    return IsLessThanMatcher<T>(object);
+template<>
+class IsLessThanMatcher<std::string>: public Matcher {
+ public:
+    explicit IsLessThanMatcher(std::string _target);
+
+    bool matches(const std::string& obj);
+
+    bool matches(const char* obj);
+
+    void describe(Description* description);
+
+    void describeMismatch(Description* description, const std::string& obj);
+
+    template<int n>
+    operator IsLessThanMatcher<char[n]>() const;
+
+ protected:
+    std::string target;
+};
+
+template<int n>
+class IsLessThanMatcher<char[n]>: public IsLessThanMatcher<std::string> {
+ public:
+    using IsLessThanMatcher<std::string>::IsLessThanMatcher;
+};
+
+template<int n>
+IsLessThanMatcher<std::string>::operator IsLessThanMatcher<char[n]>() const {
+    return IsLessThanMatcher<char[n]>(target);
 }
 
-template<class T>
-IsLessThanEqualMatcher<T> isLessThanEqual(const T& object) {
-    return IsLessThanEqualMatcher<T>(object);
+template<>
+class IsLessThanEqualMatcher<std::string>: public Matcher {
+ public:
+    explicit IsLessThanEqualMatcher(std::string _target);
+
+    bool matches(const std::string& obj);
+
+    bool matches(const char* obj);
+
+    void describe(Description* description);
+
+    void describeMismatch(Description* description, const std::string& obj);
+
+    template<int n>
+    operator IsLessThanEqualMatcher<char[n]>() const;
+
+ protected:
+    std::string target;
+};
+
+template<int n>
+class IsLessThanEqualMatcher<char[n]>:
+        public IsLessThanEqualMatcher<std::string> {
+ public:
+    using IsLessThanEqualMatcher<std::string>::IsLessThanEqualMatcher;
+};
+
+template<int n>
+IsLessThanEqualMatcher<std::string>::
+        operator IsLessThanEqualMatcher<char[n]>() const {
+    return IsLessThanEqualMatcher<char[n]>(target);
 }
 
-template<class T>
-IsGreaterThanMatcher<T> isGreaterThan(const T& object) {
-    return IsGreaterThanMatcher<T>(object);
+template<>
+class IsGreaterThanMatcher<std::string>: public Matcher {
+ public:
+    explicit IsGreaterThanMatcher(std::string _target);
+
+    bool matches(const std::string& obj);
+
+    bool matches(const char* obj);
+
+    void describe(Description* description);
+
+    void describeMismatch(Description* description, const std::string& obj);
+
+    template<int n>
+    operator IsGreaterThanMatcher<char[n]>() const;
+
+ protected:
+    std::string target;
+};
+
+template<int n>
+class IsGreaterThanMatcher<char[n]>: public IsGreaterThanMatcher<std::string> {
+ public:
+    using IsGreaterThanMatcher<std::string>::IsGreaterThanMatcher;
+};
+
+template<int n>
+IsGreaterThanMatcher<std::string>::
+        operator IsGreaterThanMatcher<char[n]>() const {
+    return IsGreaterThanMatcher<char[n]>(target);
 }
 
-template<class T>
-IsGreaterThanEqualMatcher<T> isGreaterThanEqual(const T& object) {
-    return IsGreaterThanEqualMatcher<T>(object);
+template<>
+class IsGreaterThanEqualMatcher<std::string>: public Matcher {
+ public:
+    explicit IsGreaterThanEqualMatcher(std::string _target);
+
+    bool matches(const std::string& obj);
+
+    bool matches(const char* obj);
+
+    void describe(Description* description);
+
+    void describeMismatch(Description* description, const std::string& obj);
+
+    template<int n>
+    operator IsGreaterThanEqualMatcher<char[n]>() const;
+
+ protected:
+    std::string target;
+};
+
+template<int n>
+class IsGreaterThanEqualMatcher<char[n]>:
+        public IsGreaterThanEqualMatcher<std::string> {
+ public:
+    using IsGreaterThanEqualMatcher<std::string>::IsGreaterThanEqualMatcher;
+};
+
+template<int n>
+IsGreaterThanEqualMatcher<std::string>::
+        operator IsGreaterThanEqualMatcher<char[n]>() const {
+    return IsGreaterThanEqualMatcher<char[n]>(target);
 }
 
-template<class T>
-IdentityMatcher isIdenticalTo(const T& object) {
-    return IdentityMatcher(object);
 }
 
 }
 }
-
-#include "comparison_matchers_string_spec.hpp"
 
 #endif

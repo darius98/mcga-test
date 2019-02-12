@@ -3,9 +3,11 @@
 namespace kktest {
 namespace core_matchers {
 
-IsEmptyMatcher isEmpty;
+detail::IsEmptyMatcher isEmpty;
 
-IsNotEmptyMatcher isNotEmpty;
+detail::IsNotEmptyMatcher isNotEmpty;
+
+namespace detail {
 
 void IsEmptyMatcher::describe(Description* description) {
     (*description) << "empty iterable";
@@ -15,5 +17,6 @@ void IsNotEmptyMatcher::describe(Description* description) {
     (*description) << "non-empty iterable";
 }
 
+}
 }
 }

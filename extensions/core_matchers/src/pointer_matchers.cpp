@@ -3,6 +3,12 @@
 namespace kktest {
 namespace core_matchers {
 
+detail::IsNullptrMatcher isNull;
+
+detail::IsNotNullptrMatcher isNotNull;
+
+namespace detail {
+
 bool IsNullptrMatcher::matches(void*const& obj) {
     return obj == nullptr;
 }
@@ -14,8 +20,6 @@ void IsNullptrMatcher::describe(Description* description) {
 void IsNullptrMatcher::describeMismatch(Description* description, void*const&) {
     (*description) << "non-null pointer";
 }
-
-IsNullptrMatcher isNull;
 
 bool IsNotNullptrMatcher::matches(void*const& obj) {
     return obj != nullptr;
@@ -30,7 +34,6 @@ void IsNotNullptrMatcher::describeMismatch(Description* description,
     (*description) << "nullptr";
 }
 
-IsNotNullptrMatcher isNotNull;
-
+}
 }
 }

@@ -2,9 +2,28 @@
 #define KKTEST_EXTENSIONS_CORE_MATCHERS_KKTEST_EXT_CORE_MATCHERS_IMPL_NUMERIC_MATCHERS_HPP_
 
 #include <kktest_ext/core_matchers_impl/matcher.hpp>
+#include <kktest_ext/core_matchers_impl/detail/decl.hpp>
 
 namespace kktest {
 namespace core_matchers {
+
+extern detail::IsPositiveMatcher isPositive;
+
+extern detail::IsNegativeMatcher isNegative;
+
+extern detail::IsEvenMatcher isEven;
+
+extern detail::IsOddMatcher isOdd;
+
+extern detail::IsZeroMatcher isZero;
+
+template<class T>
+detail::IsAlmostEqualMatcher<T> isAlmostEqualTo(const T& target,
+                                                const double& eps) {
+    return detail::IsAlmostEqualMatcher<T>(target, eps);
+}
+
+namespace detail {
 
 class IsPositiveMatcher: public Matcher {
  public:
@@ -16,8 +35,6 @@ class IsPositiveMatcher: public Matcher {
     void describe(Description* description);
 };
 
-extern IsPositiveMatcher isPositive;
-
 class IsNegativeMatcher: public Matcher {
  public:
     template<class T>
@@ -27,8 +44,6 @@ class IsNegativeMatcher: public Matcher {
 
     void describe(Description* description);
 };
-
-extern IsNegativeMatcher isNegative;
 
 class IsEvenMatcher: public Matcher {
  public:
@@ -40,8 +55,6 @@ class IsEvenMatcher: public Matcher {
     void describe(Description* description);
 };
 
-extern IsEvenMatcher isEven;
-
 class IsOddMatcher: public Matcher {
  public:
     template<class T>
@@ -52,8 +65,6 @@ class IsOddMatcher: public Matcher {
     void describe(Description* description);
 };
 
-extern IsOddMatcher isOdd;
-
 class IsZeroMatcher: public Matcher {
  public:
     template<class T>
@@ -63,8 +74,6 @@ class IsZeroMatcher: public Matcher {
 
     void describe(Description* description);
 };
-
-extern IsZeroMatcher isZero;
 
 template<class T>
 class IsAlmostEqualMatcher: public Matcher {
@@ -90,11 +99,7 @@ class IsAlmostEqualMatcher: public Matcher {
     double eps;
 };
 
-template<class T>
-IsAlmostEqualMatcher<T> isAlmostEqualTo(const T& target, const double& eps) {
-    return IsAlmostEqualMatcher<T>(target, eps);
 }
-
 }
 }
 

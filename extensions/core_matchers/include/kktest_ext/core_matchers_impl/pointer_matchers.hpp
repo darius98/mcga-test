@@ -2,9 +2,15 @@
 #define KKTEST_EXTENSIONS_CORE_MATCHERS_KKTEST_EXT_CORE_MATCHERS_IMPL_POINTER_MATCHERS_HPP_
 
 #include <kktest_ext/core_matchers_impl/matcher.hpp>
+#include <kktest_ext/core_matchers_impl/detail/decl.hpp>
 
 namespace kktest {
 namespace core_matchers {
+
+extern detail::IsNullptrMatcher isNull;
+extern detail::IsNotNullptrMatcher isNotNull;
+
+namespace detail {
 
 class IsNullptrMatcher: public Matcher {
  public:
@@ -15,8 +21,6 @@ class IsNullptrMatcher: public Matcher {
     void describeMismatch(Description* description, void*const&);
 };
 
-extern IsNullptrMatcher isNull;
-
 class IsNotNullptrMatcher: public Matcher {
  public:
     bool matches(void*const& obj);
@@ -26,8 +30,7 @@ class IsNotNullptrMatcher: public Matcher {
     void describeMismatch(Description* description, void*const&);
 };
 
-extern IsNotNullptrMatcher isNotNull;
-
+}
 }
 }
 

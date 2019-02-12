@@ -7,6 +7,33 @@ using namespace std;
 namespace kktest {
 namespace core_matchers {
 
+detail::CharInStringMatcher isLetter(
+        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",
+        "a letter");
+
+detail::CharInStringMatcher isDigit("0123456789", "a digit");
+
+detail::CharInStringMatcher isLowercaseLetter("abcdefghijklmnopqrstuvwxyz",
+                                      "a lowercase letter");
+
+detail::CharInStringMatcher isUppercaseLetter("ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+                                      "an uppercase letter");
+
+detail::CharInStringMatcher isBinaryDigit("01", "a binary digit");
+
+detail::CharInStringMatcher isOctDigit("01234567", "an oct digit");
+
+detail::CharInStringMatcher isHexDigit("0123456789ABCDEFabcdef", "a hex digit");
+
+detail::CharInStringMatcher isWhitespace(" \t\r\n\f\v",
+                                         "a whitespace character");
+
+detail::IsSubstringMatcher isSubstringOf(const string& s) {
+    return detail::IsSubstringMatcher(s);
+}
+
+namespace detail {
+
 CharInStringMatcher::CharInStringMatcher(const char* _container,
                                          const char* _expectation) noexcept:
         container(_container), expectation(_expectation) {}
@@ -32,26 +59,6 @@ void CharInStringMatcher::describeMismatch(Description* description,
     }
 }
 
-CharInStringMatcher isLetter(
-        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",
-        "a letter");
-
-CharInStringMatcher isDigit("0123456789", "a digit");
-
-CharInStringMatcher isLowercaseLetter("abcdefghijklmnopqrstuvwxyz",
-                                      "a lowercase letter");
-
-CharInStringMatcher isUppercaseLetter("ABCDEFGHIJKLMNOPQRSTUVWXYZ",
-                                      "an uppercase letter");
-
-CharInStringMatcher isBinaryDigit("01", "a binary digit");
-
-CharInStringMatcher isOctDigit("01234567", "an oct digit");
-
-CharInStringMatcher isHexDigit("0123456789ABCDEFabcdef", "a hex digit");
-
-CharInStringMatcher isWhitespace(" \t\r\n\f\v", "a whitespace character");
-
 IsSubstringMatcher::IsSubstringMatcher(string _container):
         container(move(_container)) {}
 
@@ -63,9 +70,6 @@ void IsSubstringMatcher::describe(Description* description) {
     (*description) << "a substring of '" << container << "'";
 }
 
-IsSubstringMatcher isSubstringOf(const string& s) {
-    return IsSubstringMatcher(s);
 }
-
 }
 }

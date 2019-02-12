@@ -2,9 +2,63 @@
 #define KKTEST_EXTENSIONS_CORE_MATCHERS_KKTEST_EXT_CORE_MATCHERS_IMPL_ITERABLE_MATCHERS_HPP_
 
 #include <kktest_ext/core_matchers_impl/comparison_matchers.hpp>
+#include <kktest_ext/core_matchers_impl/detail/decl.hpp>
 
 namespace kktest {
 namespace core_matchers {
+
+extern detail::IsEmptyMatcher isEmpty;
+
+extern detail::IsNotEmptyMatcher isNotEmpty;
+
+template<
+    class T,
+    class=typename std::enable_if<std::is_base_of<Matcher, T>::value>::type>
+detail::IterableSizeMatcher<T> hasSize(const T& size) {
+    return detail::IterableSizeMatcher<T>(size);
+}
+
+template<
+    class T,
+    class=typename std::enable_if<!std::is_base_of<Matcher, T>::value>::type>
+detail::IterableSizeMatcher<detail::EqualityMatcher<T>> hasSize(const T& size) {
+    return detail::IterableSizeMatcher
+            <detail::EqualityMatcher<T>>(isEqualTo(size));
+}
+
+template<
+    class T,
+    class=typename std::enable_if<std::is_base_of<Matcher, T>::value>::type>
+detail::IterableEachMatcher<T> eachElement(const T& size) {
+    return detail::IterableEachMatcher<T>(size);
+}
+
+template<
+    class T,
+    class=typename std::enable_if<!std::is_base_of<Matcher, T>::value>::type>
+detail::IterableEachMatcher<detail::EqualityMatcher<T>> eachElement(
+        const T& size) {
+    return detail::IterableEachMatcher
+            <detail::EqualityMatcher<T>>(isEqualTo(size));
+}
+
+template<
+    class T,
+    class=typename std::enable_if<std::is_base_of<Matcher, T>::value>::type>
+detail::IterableAnyMatcher<T> anyElement(const T& size) {
+    return detail::IterableAnyMatcher<T>(size);
+}
+
+template<
+    class T,
+    class=typename std::enable_if<!std::is_base_of<Matcher, T>::value>::type>
+detail::IterableAnyMatcher<detail::EqualityMatcher<T>> anyElement(
+        const T& size) {
+    return detail::IterableAnyMatcher
+            <detail::EqualityMatcher<T>>(isEqualTo(size));
+}
+
+namespace detail {
 
 class IsEmptyMatcher: public Matcher {
  public:
@@ -149,52 +203,7 @@ class IterableAnyMatcher: public Matcher {
     int index = -1;
 };
 
-extern IsEmptyMatcher isEmpty;
-
-extern IsNotEmptyMatcher isNotEmpty;
-
-template<
-    class T,
-    class=typename std::enable_if<std::is_base_of<Matcher, T>::value>::type>
-IterableSizeMatcher<T> hasSize(const T& size) {
-    return IterableSizeMatcher<T>(size);
 }
-
-template<
-    class T,
-    class=typename std::enable_if<!std::is_base_of<Matcher, T>::value>::type>
-IterableSizeMatcher<EqualityMatcher<T>> hasSize(const T& size) {
-    return IterableSizeMatcher<EqualityMatcher<T>>(isEqualTo(size));
-}
-
-template<
-    class T,
-    class=typename std::enable_if<std::is_base_of<Matcher, T>::value>::type>
-IterableEachMatcher<T> eachElement(const T& size) {
-    return IterableEachMatcher<T>(size);
-}
-
-template<
-    class T,
-    class=typename std::enable_if<!std::is_base_of<Matcher, T>::value>::type>
-IterableEachMatcher<EqualityMatcher<T>> eachElement(const T& size) {
-    return IterableEachMatcher<EqualityMatcher<T>>(isEqualTo(size));
-}
-
-template<
-    class T,
-    class=typename std::enable_if<std::is_base_of<Matcher, T>::value>::type>
-IterableAnyMatcher<T> anyElement(const T& size) {
-    return IterableAnyMatcher<T>(size);
-}
-
-template<
-    class T,
-    class=typename std::enable_if<!std::is_base_of<Matcher, T>::value>::type>
-IterableAnyMatcher<EqualityMatcher<T>> anyElement(const T& size) {
-    return IterableAnyMatcher<EqualityMatcher<T>>(isEqualTo(size));
-}
-
 }
 }
 

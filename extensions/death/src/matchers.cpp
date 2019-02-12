@@ -60,10 +60,10 @@ detail::ExitsMatcher exits;
 
 detail::HasExitedMatcher hasExited;
 
-detail::HasExitedWithCodeMatcher<core_matchers::EqualityMatcher<int>>
+detail::HasExitedWithCodeMatcher<core_matchers::detail::EqualityMatcher<int>>
         hasExitedWithCodeZero(isEqualTo(0));
 
-detail::HasExitedWithCodeMatcher<core_matchers::NonEqualityMatcher<int>>
+detail::HasExitedWithCodeMatcher<core_matchers::detail::NonEqualityMatcher<int>>
         hasExitedWithNonZeroCode(isNotEqualTo(0));
 
 }
