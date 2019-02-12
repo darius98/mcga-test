@@ -3,7 +3,7 @@ language: cpp
 matrix:
   include:
     - os: linux
-      env: CXX=g++-5 BUILD_TYPE=Debug
+      env: COMPILER=g++-5 BUILD_TYPE=Debug
       addons: &gcc5
         apt:
           packages:
@@ -12,12 +12,12 @@ matrix:
             - ubuntu-toolchain-r-test
 
     - os: linux
-      env: CXX=g++-5 BUILD_TYPE=Release
+      env: COMPILER=g++-5 BUILD_TYPE=Release
       addons: *gcc5
 
 
     - os: linux
-      env: CXX=g++-7 BUILD_TYPE=Debug
+      env: COMPILER=g++-7 BUILD_TYPE=Debug
       addons: &gcc7
         apt:
           packages:
@@ -26,16 +26,17 @@ matrix:
             - ubuntu-toolchain-r-test
 
     - os: linux
-      env: CXX=g++-7 BUILD_TYPE=Release
+      env: COMPILER=g++-7 BUILD_TYPE=Release
       addons: *gcc7
 
     - os: osx
-      env: CXX=clang++ BUILD_TYPE=Release
+      env: COMPILER=clang++ BUILD_TYPE=Release
 
     - os: osx
-      env: CXX=clang++ BUILD_TYPE=Debug
+      env: COMPILER=clang++ BUILD_TYPE=Debug
 
 script:
+  - export CXX=${COMPILER}
   - cmake CMakeLists.txt -DCMAKE_BUILD_TYPE=${BUILD_TYPE}
   - make common_interproc_test -j2
   - make common_utils_test -j2
