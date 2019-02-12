@@ -14,8 +14,6 @@ addons:
       - ubuntu-toolchain-r-test
 
 before_script:
-  - g++-7 --version
-  - export CXX="g++-7"
   - cmake CMakeLists.txt
   - make common_interproc_test -j2
   - make common_utils_test -j2
