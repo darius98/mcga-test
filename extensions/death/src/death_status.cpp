@@ -34,5 +34,14 @@ string DeathStatus::getOutput() const {
 DeathStatus::DeathStatus(int _exitCode, int _signal, String _output):
         exitCode(_exitCode), signal(_signal), output(move(_output)) {}
 
+ostream& operator<<(ostream& out, const DeathStatus& status) {
+    out << "(exit_code="
+        << status.exitCode
+        << ", signal="
+        << status.signal
+        << ")";
+    return out;
+}
+
 }
 }

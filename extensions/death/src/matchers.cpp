@@ -44,6 +44,11 @@ void ExitsMatcher::describe(Description* description) {
     (*description) << "the program's end";
 }
 
+void ExitsMatcher::describeObject(Description* description,
+                                  const function<void()>& func) {
+    (*description) << status;
+}
+
 void ExitsMatcher::describeMismatch(Description* description,
                                     const function<void()>& func) {
     describeStatus(description, status);

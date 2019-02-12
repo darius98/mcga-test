@@ -1,6 +1,8 @@
 #ifndef KKTEST_EXTENSIONS_DEATH_KKTEST_EXT_DEATH_IMPL_DEATH_STATUS_HPP_
 #define KKTEST_EXTENSIONS_DEATH_KKTEST_EXT_DEATH_IMPL_DEATH_STATUS_HPP_
 
+#include <ostream>
+
 #include <kktest_common/string.hpp>
 #include <kktest_impl/executable.hpp>
 
@@ -31,6 +33,7 @@ class DeathStatus {
     String output;
 
 friend DeathStatus checkDeath(const std::function<void()>& func);
+friend std::ostream& operator<<(std::ostream& out, const DeathStatus& status);
 };
 
 }

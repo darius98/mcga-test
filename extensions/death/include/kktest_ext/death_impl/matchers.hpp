@@ -40,6 +40,11 @@ class ExitsWithCodeAndOutputMatcher: public core_matchers::Matcher {
         outputMatcher.describe(description);
     }
 
+    void describeObject(core_matchers::Description* description,
+                        const std::function<void()>& func) {
+        (*description) << status;
+    }
+
     void describeMismatch(core_matchers::Description* description,
                           const std::function<void()>& func) {
         if (!codeMatcherMatched) {
@@ -77,6 +82,11 @@ class ExitsWithCodeMatcher: public core_matchers::Matcher {
     void describe(core_matchers::Description* description) {
         (*description) << "the program's end with code that is ";
         codeMatcher.describe(description);
+    }
+
+    void describeObject(core_matchers::Description* description,
+                        const std::function<void()>& func) {
+        (*description) << status;
     }
 
     void describeMismatch(core_matchers::Description* description,
@@ -127,6 +137,11 @@ class ExitsWithOutputMatcher: public core_matchers::Matcher {
         outputMatcher.describe(description);
     }
 
+    void describeObject(core_matchers::Description* description,
+                        const std::function<void()>& func) {
+        (*description) << status;
+    }
+
     void describeMismatch(core_matchers::Description* description,
                           const std::function<void()>& func) {
         core_matchers::detail::__describeMismatch(outputMatcher,
@@ -165,6 +180,9 @@ class ExitsMatcher: public core_matchers::Matcher {
     bool matches(const std::function<void()>& func);
 
     void describe(core_matchers::Description* description);
+
+    void describeObject(core_matchers::Description* description,
+                        const std::function<void()>& func);
 
     void describeMismatch(core_matchers::Description* description,
                           const std::function<void()>& func);
