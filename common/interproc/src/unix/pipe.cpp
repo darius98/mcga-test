@@ -34,30 +34,15 @@ class LinuxPipeReader: public PipeReader {
             return message;
         }
 
-        char block[128];
         int failedAttempts = 0;
         while (maxConsecutiveFailedReadAttempts == -1 ||
                failedAttempts <= maxConsecutiveFailedReadAttempts) {
-            ssize_t numBytesRead = read(inputFD, block, 128);
-            if (numBytesRead < 0) {
-                if (errno == EWOULDBLOCK || errno == EAGAIN) {
-                    failedAttempts += 1;
-                    continue;
-                }
-                // TODO(darius98): Handle errors better than just exiting!
-                perror("read");
-                exit(errno);
-            }
-            if (numBytesRead == 0) {
+            bool successful = readBytes();
+            if (!successful) {
                 failedAttempts += 1;
-            } else {
-                failedAttempts = 0;
-                resizeBufferToFit((size_t)numBytesRead);
-                memcpy(static_cast<uint8_t*>(buffer) + bufferSize,
-                       block,
-                       static_cast<size_t>(numBytesRead));
-                bufferSize += numBytesRead;
+                continue;
             }
+            failedAttempts = 0;
             message = readMessageFromBuffer();
             if (!message.isInvalid()) {
                 return message;
@@ -66,7 +51,47 @@ class LinuxPipeReader: public PipeReader {
         return Message::INVALID;
     }
 
+    vector<uint8_t> getBytes(int maxConsecutiveFailedReadAttempts) override {
+        int failedAttempts = 0;
+        while (failedAttempts <= maxConsecutiveFailedReadAttempts) {
+            bool successful = readBytes();
+            if (!successful) {
+                failedAttempts += 1;
+            } else {
+                failedAttempts = 0;
+            }
+        }
+        vector<uint8_t> result(bufferSize - bufferReadHead, 0);
+        for (size_t i = 0; i < bufferSize - bufferReadHead; ++ i) {
+            result[i] = *(static_cast<uint8_t*>(buffer) + bufferReadHead + i);
+        }
+        bufferReadHead = bufferSize;
+        return result;
+    }
+
  private:
+    bool readBytes() {
+        char block[128];
+        ssize_t numBytesRead = read(inputFD, block, 128);
+        if (numBytesRead < 0) {
+            if (errno == EWOULDBLOCK || errno == EAGAIN) {
+                return false;
+            }
+            // TODO(darius98): Handle errors better than just exiting!
+            perror("read");
+            exit(errno);
+        }
+        if (numBytesRead == 0) {
+            return false;
+        }
+        resizeBufferToFit((size_t)numBytesRead);
+        memcpy(static_cast<uint8_t*>(buffer) + bufferSize,
+               block,
+               static_cast<size_t>(numBytesRead));
+        bufferSize += numBytesRead;
+        return true;
+    }
+
     void close() {
         if (closed) {
             return;
@@ -122,6 +147,22 @@ class LinuxPipeWriter: public PipeWriter {
 
     ~LinuxPipeWriter() override {
         close();
+    }
+
+    void redirectStdout() override {
+        int ret = dup2(outputFD, STDOUT_FILENO);
+        if (ret < 0) {
+            // TODO(darius98): Handle errors better than just exiting!
+            perror("close");
+            exit(errno);
+        }
+        ret = ::close(outputFD);
+        if (ret < 0) {
+            // TODO(darius98): Handle errors better than just exiting!
+            perror("close");
+            exit(errno);
+        }
+        outputFD = STDOUT_FILENO;
     }
 
  private:

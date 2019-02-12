@@ -27,18 +27,23 @@ Subprocess::FinishStatus Subprocess::getFinishStatus() {
 }
 
 WorkerSubprocess::WorkerSubprocess(Subprocess* _subprocess,
-                                   PipeReader* _pipeReader):
-        subprocess(_subprocess), pipeReader(_pipeReader) {}
+                                   PipeReader* _pipeReader,
+                                   PipeReader* _stdoutReader):
+        subprocess(_subprocess),
+        pipeReader(_pipeReader),
+        stdoutReader(_stdoutReader) {}
 
 WorkerSubprocess::WorkerSubprocess(WorkerSubprocess&& other) noexcept:
         subprocess(other.subprocess), pipeReader(other.pipeReader) {
     other.subprocess = nullptr;
     other.pipeReader = nullptr;
+    other.stdoutReader = nullptr;
 }
 
 WorkerSubprocess::~WorkerSubprocess() {
     delete subprocess;
     delete pipeReader;
+    delete stdoutReader;
 }
 
 Message WorkerSubprocess::getNextMessage(int maxConsecutiveFailedReadAttempts) {
@@ -46,6 +51,10 @@ Message WorkerSubprocess::getNextMessage(int maxConsecutiveFailedReadAttempts) {
 }
 
 bool WorkerSubprocess::isFinished() {
+    auto newBytes = stdoutReader->getBytes(32);
+    for (uint8_t byte : newBytes) {
+        output += static_cast<char>(byte);
+    }
     return subprocess->isFinished();
 }
 
@@ -69,15 +78,33 @@ int WorkerSubprocess::getSignal() {
     return subprocess->getSignal();
 }
 
+string WorkerSubprocess::getOutput() {
+    return output;
+}
+
+void WorkerSubprocess::wait() {
+    subprocess->wait();
+    auto newBytes = stdoutReader->getBytes(32);
+    for (uint8_t byte : newBytes) {
+        output += static_cast<char>(byte);
+    }
+}
+
 WorkerSubprocess WorkerSubprocess::open(Work work) {
     auto pipe = createAnonymousPipe();
-    auto worker = Subprocess::fork([&pipe, &work]() {
+    pair<PipeReader*, PipeWriter*> stdoutPipe{nullptr, nullptr};
+    stdoutPipe = createAnonymousPipe();
+    auto worker = Subprocess::fork([&stdoutPipe, &pipe, &work]() {
         delete pipe.first;
+        delete stdoutPipe.first;
+        stdoutPipe.second->redirectStdout();
         work(pipe.second);
         delete pipe.second;
+        delete stdoutPipe.second;
     });
     delete pipe.second;
-    return WorkerSubprocess(worker, pipe.first);
+    delete stdoutPipe.second;
+    return WorkerSubprocess(worker, pipe.first, stdoutPipe.first);
 }
 
 }

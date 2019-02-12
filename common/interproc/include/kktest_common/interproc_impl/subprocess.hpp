@@ -37,6 +37,8 @@ class Subprocess {
 
     virtual int getSignal() = 0;
 
+    virtual void wait() = 0;
+
     FinishStatus getFinishStatus();
 };
 
@@ -66,11 +68,19 @@ class WorkerSubprocess: public Subprocess {
 
     int getSignal() override;
 
- private:
-    WorkerSubprocess(Subprocess* _subprocess, PipeReader* _pipeReader);
+    void wait() override;
 
+    std::string getOutput();
+
+ private:
+    WorkerSubprocess(Subprocess* _subprocess,
+                     PipeReader* _pipeReader,
+                     PipeReader* _stdoutReader);
+
+    std::string output;
     Subprocess* subprocess;
     PipeReader* pipeReader;
+    PipeReader* stdoutReader;
 };
 
 }
