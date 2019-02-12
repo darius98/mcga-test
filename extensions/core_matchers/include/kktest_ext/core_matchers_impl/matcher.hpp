@@ -71,6 +71,27 @@ public:
     static constexpr bool value = (sizeof(exists<M>(nullptr)) == sizeof(Yes));
 };
 
+template<class M, class S>
+class DescribeObjectMethodExists {
+private:
+    template<class T, T> class Check;
+
+    typedef char Yes;
+    typedef struct { char _[2]; } No;
+
+    template <class T> struct DescribeObjectSig {
+        typedef void (T::*describeObject)(Description*, const S&);
+    };
+
+    template <class T> static Yes exists(
+            Check<typename DescribeObjectSig<T>::describeMismatch,
+                    &T::describeObject>*);
+    template <class T> static No  exists(...);
+
+public:
+    static constexpr bool value = (sizeof(exists<M>(nullptr)) == sizeof(Yes));
+};
+
 template<
         class T,
         class M,
@@ -97,6 +118,33 @@ template<
 void __describeMismatch(M& matcher, Description* description, const T& object) {
     (*description) << "not ";
     matcher.describe(description);
+}
+
+
+template<
+        class T,
+        class M,
+        class = typename std::enable_if<
+                    std::is_base_of<core_matchers::Matcher, M>::value
+                >,
+        class = typename std::enable_if<
+                    DescribeObjectMethodExists<M, T>::value
+                >::type
+        >
+void __describeObject(M& matcher, Description* description, const T& object) {
+    matcher.describeObject(description, object);
+}
+
+template<
+        class T,
+        class M,
+        class = typename std::enable_if<
+                    std::is_base_of<core_matchers::Matcher, M>::value
+                    && !DescribeObjectMethodExists<M, T>::value
+                >::type
+        >
+void __describeObject(M& matcher, Description* description, const T& object) {
+    (*description) << object;
 }
 
 }
