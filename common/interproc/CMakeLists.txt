@@ -1,4 +1,4 @@
-set(interproc_src OBJECT
+list(APPEND interproc_src
     src/message.cpp
     src/subprocess.cpp
 )
