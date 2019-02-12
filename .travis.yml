@@ -15,6 +15,19 @@ matrix:
       env: COMPILER=g++-5 BUILD_TYPE=Release
       addons: *gcc5
 
+    - os: linux
+      env: COMPILER=g++-6 BUILD_TYPE=Debug
+      addons: &gcc6
+        apt:
+          packages:
+            - g++-6
+          sources:
+            - ubuntu-toolchain-r-test
+
+    - os: linux
+      env: COMPILER=g++-6 BUILD_TYPE=Release
+      addons: *gcc6
+
 
     - os: linux
       env: COMPILER=g++-7 BUILD_TYPE=Debug
@@ -30,10 +43,10 @@ matrix:
       addons: *gcc7
 
     - os: osx
-      env: COMPILER=clang++ BUILD_TYPE=Release
+      env: COMPILER=clang++ BUILD_TYPE=Debug
 
     - os: osx
-      env: COMPILER=clang++ BUILD_TYPE=Debug
+      env: COMPILER=clang++ BUILD_TYPE=Release
 
 script:
   - export CXX=${COMPILER}
