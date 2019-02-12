@@ -35,23 +35,16 @@ add_subdirectory(extensions/core_matchers)
 add_subdirectory(extensions/feedback)
 add_subdirectory(extensions/test_runner)
 
-add_library(kktest
-    entry/entry_point.cpp
-    $<TARGET_OBJECTS:cppli_objects>
-    $<TARGET_OBJECTS:interproc>
-    $<TARGET_OBJECTS:kktest_string>
-    $<TARGET_OBJECTS:kktest_time>
-    $<TARGET_OBJECTS:kktest_impl>
-
-    $<TARGET_OBJECTS:kktest_extension_core_matchers>
-    $<TARGET_OBJECTS:kktest_extension_feedback>
-    $<TARGET_OBJECTS:kktest_extension_feedback_test_logger>)
-
-install(TARGETS kktest ARCHIVE DESTINATION lib)
-
+add_library(kktest SHARED entry/entry_point.cpp)
 target_link_libraries(kktest kktest_interface
+        cppli
+        common_interproc
+        common_string
+        common_utils_time
+        kktest_impl
         kktest_extension_core_matchers
         kktest_extension_feedback)
+install(TARGETS kktest LIBRARY DESTINATION lib)
 
 add_subdirectory(third_party/cppli)
 add_subdirectory(third_party/termcolor)

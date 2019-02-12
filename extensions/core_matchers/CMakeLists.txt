@@ -1,4 +1,4 @@
-add_library(kktest_extension_core_matchers OBJECT
+add_library(kktest_extension_core_matchers
     src/comparison_matchers.cpp
     src/functional_matchers.cpp
     src/iterable_matchers.cpp
@@ -22,4 +22,4 @@ add_kktest(core_matchers_test
     tests/truth_matchers_test.cpp
 )
 
-install(DIRECTORY extensions/core_matchers/include DESTINATION .)
+install(DIRECTORY include DESTINATION .)
