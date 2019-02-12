@@ -1,26 +1,46 @@
-language: c++
-os:
-  - linux
-  - osx
-compiler:
-  - gcc
-  - clang
+language: cpp
 
-addons:
-  apt:
-    packages:
-      - g++-7
-    sources:
-      - ubuntu-toolchain-r-test
+matrix:
+  include:
+    - os: linux
+      env: CXX=g++-5 BUILD_TYPE=Debug
+      addons: &gcc5
+        apt:
+          packages:
+            - g++-5
+          sources:
+            - ubuntu-toolchain-r-test
 
-before_script:
-  - cmake CMakeLists.txt
+    - os: linux
+      env: CXX=g++-5 BUILD_TYPE=Release
+      addons: *gcc5
+
+
+    - os: linux
+      env: CXX=g++-7 BUILD_TYPE=Debug
+      addons: &gcc7
+        apt:
+          packages:
+            - g++-7
+          sources:
+            - ubuntu-toolchain-r-test
+
+    - os: linux
+      env: CXX=g++-7 BUILD_TYPE=Release
+      addons: *gcc7
+
+    - os: osx
+      env: CXX=clang++ BUILD_TYPE=Release
+
+    - os: osx
+      env: CXX=clang++ BUILD_TYPE=Debug
+
+script:
+  - cmake CMakeLists.txt -DCMAKE_BUILD_TYPE=${BUILD_TYPE}
   - make common_interproc_test -j2
   - make common_utils_test -j2
   - make common_string_test -j2
   - make kktest_extension_core_matchers_test -j2
-
-script:
   - ./build/tests/common_interproc_test
   - ./build/tests/common_interproc_test -b
   - ./build/tests/common_string_test
