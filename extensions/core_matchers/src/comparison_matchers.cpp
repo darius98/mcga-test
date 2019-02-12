@@ -80,28 +80,99 @@ void EqualityMatcher<string>::describeMismatch(Description* description,
     description->appendRawString("'\n\t" + String(numSpaces, ' ') + "^");
 }
 
-EqualityMatcher<string> isEqualTo(const char obj[]) {
-    return EqualityMatcher<string>(string(obj));
+NonEqualityMatcher<string>::NonEqualityMatcher(string _target):
+        target(move(_target)) {}
+
+bool NonEqualityMatcher<string>::matches(const string& obj) {
+    return obj != target;
 }
 
-NonEqualityMatcher<string> isNotEqualTo(const char obj[]) {
-    return NonEqualityMatcher<string>(string(obj));
+bool NonEqualityMatcher<string>::matches(const char* obj) {
+    return string(obj) != target;
 }
 
-IsLessThanMatcher<string> isLessThan(const char obj[]) {
-    return IsLessThanMatcher<string>(string(obj));
+void NonEqualityMatcher<string>::describe(Description* description) {
+    (*description) << "not '" << target << "'";
 }
 
-IsLessThanEqualMatcher<string> isLessThanEqual(const char obj[]) {
-    return IsLessThanEqualMatcher<string>(string(obj));
+void NonEqualityMatcher<string>::describeMismatch(Description* description, const string&) {
+    (*description) << "'" << target << "'";
 }
 
-IsGreaterThanMatcher<string> isGreaterThan(const char obj[]) {
-    return IsGreaterThanMatcher<string>(string(obj));
+IsLessThanMatcher<string>::IsLessThanMatcher(string _target):
+        target(move(_target)) {}
+
+bool IsLessThanMatcher<string>::matches(const string& obj) {
+    return obj < target;
 }
 
-IsGreaterThanEqualMatcher<string> isGreaterThanEqual(const char obj[]) {
-    return IsGreaterThanEqualMatcher<string>(string(obj));
+bool IsLessThanMatcher<string>::matches(const char* obj) {
+    return string(obj) < target;
+}
+
+void IsLessThanMatcher<string>::describe(Description* description) {
+    (*description) << "< '" << target << "'";
+}
+
+void IsLessThanMatcher<string>::describeMismatch(Description* description, const string&) {
+    (*description) << ">= '" << target << "'";
+}
+
+IsLessThanEqualMatcher<string>::IsLessThanEqualMatcher(string _target):
+        target(move(_target)) {}
+
+bool IsLessThanEqualMatcher<string>::matches(const string& obj) {
+    return obj <= target;
+}
+
+bool IsLessThanEqualMatcher<string>::matches(const char* obj) {
+    return string(obj) <= target;
+}
+
+void IsLessThanEqualMatcher<string>::describe(Description* description) {
+    (*description) << "<= '" << target << "'";
+}
+
+void IsLessThanEqualMatcher<string>::describeMismatch(Description* description, const string&) {
+    (*description) << "> '" << target << "'";
+}
+
+IsGreaterThanMatcher<string>::IsGreaterThanMatcher(string _target):
+        target(move(_target)) {}
+
+bool IsGreaterThanMatcher<string>::matches(const string& obj) {
+    return obj > target;
+}
+
+bool IsGreaterThanMatcher<string>::matches(const char* obj) {
+    return string(obj) > target;
+}
+
+void IsGreaterThanMatcher<string>::describe(Description* description) {
+    (*description) << "> '" << target << "'";
+}
+
+void IsGreaterThanMatcher<string>::describeMismatch(Description* description, const string& obj) {
+    (*description) << "<= '" << target << "'";
+}
+
+IsGreaterThanEqualMatcher<string>::IsGreaterThanEqualMatcher(string _target):
+        target(move(_target)) {}
+
+bool IsGreaterThanEqualMatcher<string>::matches(const string& obj) {
+    return obj >= target;
+}
+
+bool IsGreaterThanEqualMatcher<string>::matches(const char* obj) {
+    return string(obj) >= target;
+}
+
+void IsGreaterThanEqualMatcher<string>::describe(Description* description) {
+    (*description) << ">= '" << target << "'";
+}
+
+void IsGreaterThanEqualMatcher<string>::describeMismatch(Description* description, const string&) {
+    (*description) << "< '" << target << "'";
 }
 
 }

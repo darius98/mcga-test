@@ -27,23 +27,6 @@ class EqualityMatcher: public Matcher {
     T target;
 };
 
-template<>
-class EqualityMatcher<std::string>: public Matcher {
- public:
-    explicit EqualityMatcher(std::string _target);
-
-    bool matches(const std::string& obj);
-
-    bool matches(const char* obj);
-
-    void describe(Description* description);
-
-    void describeMismatch(Description* description, const std::string& obj);
-
- private:
-    std::string target;
-};
-
 template<class T>
 class NonEqualityMatcher: public Matcher {
  public:
@@ -59,7 +42,7 @@ class NonEqualityMatcher: public Matcher {
     }
 
     template<class O>
-    void describeMismatch(Description* description, const O& obj) {
+    void describeMismatch(Description* description, const O&) {
         (*description) << "'" << target << "'";
     }
 
@@ -82,7 +65,7 @@ class IsLessThanMatcher: public Matcher {
     }
 
     template<class O>
-    void describeMismatch(Description* description, const O& obj) {
+    void describeMismatch(Description* description, const O&) {
         (*description) << ">= '" << target << "'";
     }
 
@@ -105,7 +88,7 @@ class IsLessThanEqualMatcher: public Matcher {
     }
 
     template<class O>
-    void describeMismatch(Description* description, const O& obj) {
+    void describeMismatch(Description* description, const O&) {
         (*description) << "> '" << target << "'";
     }
 
@@ -128,7 +111,7 @@ class IsGreaterThanMatcher: public Matcher {
     }
 
     template<class O>
-    void describeMismatch(Description* description, const O& obj) {
+    void describeMismatch(Description* description, const O&) {
         (*description) << "<= '" << target << "'";
     }
 
@@ -151,7 +134,7 @@ class IsGreaterThanEqualMatcher: public Matcher {
     }
 
     template<class O>
-    void describeMismatch(Description* description, const O& obj) {
+    void describeMismatch(Description* description, const O&) {
         (*description) << "< '" << target << "'";
     }
 
@@ -184,13 +167,6 @@ class IdentityMatcher: public Matcher {
  private:
     const void* address;
 };
-
-EqualityMatcher<std::string> isEqualTo(const char obj[]);
-NonEqualityMatcher<std::string> isNotEqualTo(const char obj[]);
-IsLessThanMatcher<std::string> isLessThan(const char obj[]);
-IsLessThanEqualMatcher<std::string> isLessThanEqual(const char obj[]);
-IsGreaterThanMatcher<std::string> isGreaterThan(const char obj[]);
-IsGreaterThanEqualMatcher<std::string> isGreaterThanEqual(const char obj[]);
 
 template<class T>
 EqualityMatcher<T> isEqualTo(const T& object) {
@@ -229,5 +205,7 @@ IdentityMatcher isIdenticalTo(const T& object) {
 
 }
 }
+
+#include "comparison_matchers_string_spec.hpp"
 
 #endif
