@@ -32,6 +32,7 @@ add_subdirectory(common/utils)
 add_subdirectory(core)
 
 add_subdirectory(extensions/core_matchers)
+add_subdirectory(extensions/death)
 add_subdirectory(extensions/feedback)
 add_subdirectory(extensions/test_runner)
 
@@ -43,6 +44,7 @@ target_link_libraries(kktest kktest_interface
         common_utils_time
         kktest_impl
         kktest_extension_core_matchers
+        kktest_extension_death
         kktest_extension_feedback)
 install(TARGETS kktest LIBRARY DESTINATION lib)
 

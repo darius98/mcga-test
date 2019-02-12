@@ -103,6 +103,7 @@ template<
                 >::type
         >
 void __describeMismatch(M& matcher, Description* description, const T& object) {
+    (*description) << "\tWhich is ";
     matcher.describeMismatch(description, object);
 }
 
@@ -115,10 +116,7 @@ template<
                     && !DescribeMismatchMethodExists<M, T>::value
                 >::type
         >
-void __describeMismatch(M& matcher, Description* description, const T& object) {
-    (*description) << "not ";
-    matcher.describe(description);
-}
+void __describeMismatch(M&, Description*, const T&) {}
 
 
 template<
@@ -165,7 +163,9 @@ void expect(const T& object, M matcher) {
     core_matchers::Description description;
     description << "Expected ";
     matcher.describe(&description);
-    description << "\n\tGot      '" << object << "'\n\tWhich is ";
+    description << "\n\tGot      '";
+    core_matchers::detail::__describeObject(matcher, &description, object);
+    description << "'\n";
     core_matchers::detail::__describeMismatch(matcher, &description, object);
     fail("Expectation failed:\n\t" + description.toString());
 }
