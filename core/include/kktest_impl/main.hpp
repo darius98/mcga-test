@@ -8,8 +8,8 @@
 namespace kktest {
 
 struct InternalArgs {
-    cppli::Flag boxedFlag;
-    cppli::NumericArgument<int> maxParallelTestsArgument;
+    cppli::Flag smoothFlag;
+    cppli::NumericArgument<std::size_t> maxParallelTestsArgument;
 };
 
 InternalArgs registerInternalFlags(cppli::Parser& parser,

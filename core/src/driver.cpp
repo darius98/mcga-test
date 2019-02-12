@@ -16,11 +16,11 @@ Driver* Driver::getInstance() {
     return instance;
 }
 
-Driver* Driver::init(const Hooks& hooks, bool boxed, int numBoxes) {
+Driver* Driver::init(const Hooks& hooks, bool smooth, size_t numBoxes) {
     if (instance != nullptr) {
         throw Bug("Driver: init() called a twice.");
     }
-    return new Driver(hooks, boxed, numBoxes);
+    return new Driver(hooks, smooth, numBoxes);
 }
 
 int Driver::destroy() {
@@ -57,15 +57,15 @@ void Driver::afterTestCase() {
     groupStack = {};
 }
 
-Driver::Driver(Hooks hooks, bool boxed, int numBoxes): hooks(move(hooks)) {
+Driver::Driver(Hooks hooks, bool smooth, size_t numBoxes): hooks(move(hooks)) {
     instance = this;
     auto onTestFinishedCallback = [this](Test* test) {
         afterTest(test);
     };
-    if (boxed) {
-        executor = new BoxExecutor(onTestFinishedCallback, (size_t)numBoxes);
-    } else {
+    if (smooth) {
         executor = new Executor(onTestFinishedCallback);
+    } else {
+        executor = new BoxExecutor(onTestFinishedCallback, numBoxes);
     }
     hooks.runHooks<Hooks::AFTER_INIT>();
 }

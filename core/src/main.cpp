@@ -23,16 +23,17 @@ InternalArgs registerInternalFlags(Parser& parser, const string& versionString) 
             string(kkTestSignatureHex) + "\n");
 
     InternalArgs args;
-    args.boxedFlag = parser.addFlag(
-        FlagSpec("boxed")
-        .setDescription("Run each test in an isolated process (boxed)")
-        .setShortName("b"));
+    args.smoothFlag = parser.addFlag(
+        FlagSpec("smooth")
+        .setDescription("Run all tests within the same process"
+                        " (useful for step-by-step debugging).")
+        .setShortName("s"));
     args.maxParallelTestsArgument = parser.addNumericArgument(
-        NumericArgumentSpec<int>("max-parallel-tests")
+        NumericArgumentSpec<size_t>("max-parallel-tests")
         .setDescription("Maximum number of tests to execute in parallel "
                         "(processes to spawn) when running boxed")
-        .setDefaultValue(1)
-        .setImplicitValue(1));
+        .setDefaultValue(1u)
+        .setImplicitValue(1u));
     return args;
 }
 
@@ -42,14 +43,10 @@ int main(const vector<Extension*>& extensions, InternalArgs args) {
         extension->init(&apiImpl);
     }
 
-    int maxParallelTests = args.maxParallelTestsArgument.get();
-    if (maxParallelTests < 1) {
-        maxParallelTests = 1;
-    }
-
-    Driver* driver = Driver::init(apiImpl.getHooks(),
-                                  args.boxedFlag.get(),
-                                  maxParallelTests);
+    Driver* driver = Driver::init(
+        apiImpl.getHooks(),
+        args.smoothFlag.get(),
+        max(args.maxParallelTestsArgument.get(), 1ul));
     int ret = 1;
     try {
         for (const auto& testCase : TestCaseRegistry::all()) {

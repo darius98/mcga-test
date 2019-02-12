@@ -18,9 +18,9 @@ class Driver {
  public:
     static Driver* getInstance();
 
-    static Driver* init(const Hooks& hooks, bool boxed, int numBoxes);
+    static Driver* init(const Hooks& hooks, bool smooth, std::size_t numBoxes);
 
-    Driver(Hooks hooks, bool boxed, int numBoxes);
+    Driver(Hooks hooks, bool smooth, std::size_t numBoxes);
 
     ~Driver();
 

@@ -44,7 +44,6 @@ void TestExecutionCycle::start() {
     testProcess = Subprocess::open(testPath, {
         testPath,
         "--quiet",
-        "--boxed",
         "--pipe-to=" + pipeName,
         "--max-parallel-tests=" + to_string(maxParallelTests)
     });
