@@ -50,14 +50,4 @@ matrix:
 
 script:
   - export CXX=${COMPILER}
-  - cmake CMakeLists.txt -DCMAKE_BUILD_TYPE=${BUILD_TYPE}
-  - make common_interproc_test -j2
-  - make common_utils_test -j2
-  - make common_string_test -j2
-  - make kktest_extension_core_matchers_test -j2
-  - make kktest_extension_death_test -j2
-  - ./build/tests/common_interproc_test
-  - ./build/tests/common_string_test
-  - ./build/tests/common_utils_test
-  - ./build/tests/kktest_extension_core_matchers_test
-  - ./build/tests/kktest_extension_death_test
+  - ./test.sh
