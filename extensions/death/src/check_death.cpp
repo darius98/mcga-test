@@ -21,7 +21,6 @@ DeathStatus checkDeath(const function<void()>& func) {
                            proc.getSignal(),
                            proc.getOutput());
     }
-    fail("Expected process to exit, did not exit.");
     return DeathStatus(-1, 0, "");
 }
 
