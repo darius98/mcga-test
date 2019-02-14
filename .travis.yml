@@ -2,76 +2,27 @@ language: cpp
 
 matrix:
   include:
-    # GCC on OSX
-    - os: osx
-      osx_image: xcode8
-      env: INSTALL_GCC="brew install gcc5" COMPILER=g++-5 BUILD_TYPE=Debug
-
-    - os: osx
-      osx_image: xcode8
-      env: INSTALL_GCC="brew install gcc5" COMPILER=g++-5 BUILD_TYPE=Release
-
-    - os: osx
-      osx_image: xcode8
-      env: INSTALL_GCC="brew install gcc6" COMPILER=g++-6 BUILD_TYPE=Debug
-
-    - os: osx
-      osx_image: xcode8
-      env: INSTALL_GCC="brew install gcc6" COMPILER=g++-6 BUILD_TYPE=Release
-
-    - os: osx
-      osx_image: xcode8
-      env: INSTALL_GCC="brew install gcc7" COMPILER=g++-7 BUILD_TYPE=Debug
-
-    - os: osx
-      osx_image: xcode8
-      env: INSTALL_GCC="brew install gcc7" COMPILER=g++-7 BUILD_TYPE=Release
-
     # CLang on OSX
     - os: osx
-      osx_image: xcode6.4
-      env: INSTALL_GCC="echo 'nogcc'" COMPILER=clang++ BUILD_TYPE=Debug
-
-    - os: osx
-      osx_image: xcode6.4
-      env: INSTALL_GCC="echo 'nogcc'" COMPILER=clang++ BUILD_TYPE=Release
-
-    - os: osx
       osx_image: xcode7.3
-      env: INSTALL_GCC="echo 'nogcc'" COMPILER=clang++ BUILD_TYPE=Debug
-
-    - os: osx
-      osx_image: xcode7.3
-      env: INSTALL_GCC="echo 'nogcc'" COMPILER=clang++ BUILD_TYPE=Release
+      env: COMPILER=clang++
 
     - os: osx
       osx_image: xcode8
-      env: INSTALL_GCC="echo 'nogcc'" COMPILER=clang++ BUILD_TYPE=Debug
-
-    - os: osx
-      osx_image: xcode8
-      env: INSTALL_GCC="echo 'nogcc'" COMPILER=clang++ BUILD_TYPE=Release
+      env: COMPILER=clang++
 
     - os: osx
       osx_image: xcode9.4
-      env: INSTALL_GCC="echo 'nogcc'" COMPILER=clang++ BUILD_TYPE=Debug
-
-    - os: osx
-      osx_image: xcode9.4
-      env: INSTALL_GCC="echo 'nogcc'" COMPILER=clang++ BUILD_TYPE=Release
+      env: COMPILER=clang++
 
     - os: osx
       osx_image: xcode10.1
-      env: INSTALL_GCC="echo 'nogcc'" COMPILER=clang++ BUILD_TYPE=Debug
-
-    - os: osx
-      osx_image: xcode10.1
-      env: INSTALL_GCC="echo 'nogcc'" COMPILER=clang++ BUILD_TYPE=Release
+      env: COMPILER=clang++
 
     # GCC on Linux
     - os: linux
-      env: COMPILER=g++-5 BUILD_TYPE=Debug
-      addons: &gcc5
+      env: COMPILER=g++-5
+      addons:
         apt:
           packages:
             - g++-5
@@ -79,12 +30,8 @@ matrix:
             - ubuntu-toolchain-r-test
 
     - os: linux
-      env: INSTALL_GCC="echo 'gcc ok'" COMPILER=g++-5 BUILD_TYPE=Release
-      addons: *gcc5
-
-    - os: linux
-      env: INSTALL_GCC="echo 'gcc ok'" COMPILER=g++-6 BUILD_TYPE=Debug
-      addons: &gcc6
+      env: COMPILER=g++-6
+      addons:
         apt:
           packages:
             - g++-6
@@ -92,12 +39,8 @@ matrix:
             - ubuntu-toolchain-r-test
 
     - os: linux
-      env: INSTALL_GCC="echo 'gcc ok'" COMPILER=g++-6 BUILD_TYPE=Release
-      addons: *gcc6
-
-    - os: linux
-      env: INSTALL_GCC="echo 'gcc ok'" COMPILER=g++-7 BUILD_TYPE=Debug
-      addons: &gcc7
+      env: COMPILER=g++-7
+      addons:
         apt:
           packages:
             - g++-7
@@ -105,26 +48,18 @@ matrix:
             - ubuntu-toolchain-r-test
 
     - os: linux
-      env: INSTALL_GCC="echo 'gcc ok'" COMPILER=g++-7 BUILD_TYPE=Release
-      addons: *gcc7
-
-    - os: linux
-      env: INSTALL_GCC="echo 'gcc ok'" COMPILER=g++-8 BUILD_TYPE=Debug
-      addons: &gcc8
+      env: COMPILER=g++-8
+      addons:
         apt:
           packages:
             - g++-8
           sources:
             - ubuntu-toolchain-r-test
 
-    - os: linux
-      env: INSTALL_GCC="echo 'gcc ok'" COMPILER=g++-8 BUILD_TYPE=Release
-      addons: *gcc8
-
     # CLang on Linux
     - os: linux
-      env: INSTALL_GCC="echo 'gcc ok'" COMPILER=clang++-3.6 BUILD_TYPE=Debug
-      addons: &clang36
+      env: COMPILER=clang++-3.6
+      addons:
         apt:
           sources:
             - ubuntu-toolchain-r-test
@@ -133,40 +68,8 @@ matrix:
             - clang-3.6
 
     - os: linux
-      env: INSTALL_GCC="echo 'gcc ok'" COMPILER=clang++-3.6 BUILD_TYPE=Release
-      addons: *clang36
-
-    - os: linux
-      env: INSTALL_GCC="echo 'gcc ok'" COMPILER=clang++-3.7 BUILD_TYPE=Debug
-      addons: &clang37
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-            - llvm-toolchain-precise-3.7
-          packages:
-            - clang-3.7
-
-    - os: linux
-      env: INSTALL_GCC="echo 'gcc ok'" COMPILER=clang++-3.7 BUILD_TYPE=Release
-      addons: *clang37
-
-    - os: linux
-      env: INSTALL_GCC="echo 'gcc ok'" COMPILER=clang++-3.8 BUILD_TYPE=Debug
-      addons: &clang38
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-            - llvm-toolchain-precise-3.8
-          packages:
-            - clang-3.8
-
-    - os: linux
-      env: INSTALL_GCC="echo 'gcc ok'" COMPILER=clang++-3.8 BUILD_TYPE=Release
-      addons: *clang38
-
-    - os: linux
-      env: INSTALL_GCC="echo 'gcc ok'" COMPILER=clang++-3.9 BUILD_TYPE=Debug
-      addons: &clang39
+      env: COMPILER=clang++-3.9
+      addons:
         apt:
           sources:
             - ubuntu-toolchain-r-test
@@ -175,12 +78,8 @@ matrix:
             - clang-3.9
 
     - os: linux
-      env: INSTALL_GCC="echo 'gcc ok'" COMPILER=clang++-3.9 BUILD_TYPE=Release
-      addons: *clang39
-
-    - os: linux
-      env: INSTALL_GCC="echo 'gcc ok'" COMPILER=clang++-4.0 BUILD_TYPE=Debug
-      addons: &clang40
+      env: COMPILER=clang++-4.0
+      addons:
         apt:
           sources:
             - ubuntu-toolchain-r-test
@@ -189,12 +88,8 @@ matrix:
             - clang-4.0
 
     - os: linux
-      env: INSTALL_GCC="echo 'gcc ok'" COMPILER=clang++-4.0 BUILD_TYPE=Release
-      addons: *clang40
-
-    - os: linux
-      env: INSTALL_GCC="echo 'gcc ok'" COMPILER=clang++-5.0 BUILD_TYPE=Debug
-      addons: &clang50
+      env: COMPILER=clang++-5.0
+      addons:
         apt:
           sources:
             - ubuntu-toolchain-r-test
@@ -202,12 +97,7 @@ matrix:
           packages:
             - clang-5.0
 
-    - os: linux
-      env: INSTALL_GCC="echo 'gcc ok'" COMPILER=clang++-5.0 BUILD_TYPE=Release
-      addons: *clang50
-
 before_install:
-  - eval "${INSTALL_GCC}" # For OSX.
   - DEPS_DIR="${TRAVIS_BUILD_DIR}/deps"
   - mkdir ${DEPS_DIR} && cd ${DEPS_DIR}
   - travis_retry wget --no-check-certificate https://cmake.org/files/v3.12/cmake-3.12.4-Linux-x86_64.tar.gz
@@ -219,4 +109,5 @@ before_install:
 
 script:
   - export CXX=${COMPILER}
+  - export BUILD_TYPE=Release
   - ./test.sh
