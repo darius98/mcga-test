@@ -21,7 +21,7 @@ DeathStatus checkDeath(const function<void()>& func) {
                            proc.getSignal(),
                            proc.getOutput());
     }
-    return DeathStatus(-1, 0, "");
+    return DeathStatus(-1, 0, proc.getOutput());
 }
 
 }

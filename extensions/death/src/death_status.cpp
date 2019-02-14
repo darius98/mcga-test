@@ -8,7 +8,7 @@ namespace death {
 DeathStatus::DeathStatus() = default;
 
 bool DeathStatus::exitedOrKilled() const {
-    return exitCode >= 0;
+    return exitCode >= 0 || killedBySignal();
 }
 
 bool DeathStatus::exited() const {

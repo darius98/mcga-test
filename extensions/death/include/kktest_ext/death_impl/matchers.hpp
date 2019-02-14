@@ -10,6 +10,61 @@ namespace kktest {
 namespace death {
 
 namespace detail {
+class ExitsMatcher;
+class HasExitedMatcher;
+template<class T> class HasExitedWithCodeMatcher;
+template<class T> class HasOutputMatcher;
+}
+
+extern detail::ExitsMatcher exits;
+
+extern detail::HasExitedMatcher hasExited;
+
+extern detail::HasExitedWithCodeMatcher<
+        core_matchers::detail::EqualityMatcher<int>> hasExitedWithCodeZero;
+
+extern detail::HasExitedWithCodeMatcher<
+        core_matchers::detail::NonEqualityMatcher<int>
+       > hasExitedWithNonZeroCode;
+
+template<class T,
+         class=typename std::enable_if<
+                   std::is_base_of<core_matchers::Matcher, T>::value
+               >::type>
+detail::HasExitedWithCodeMatcher<T> hasExitedWithCode(const T& exitCodeMatcher){
+    return detail::HasExitedWithCodeMatcher<T>(exitCodeMatcher);
+}
+
+template<class T,
+         class=typename std::enable_if<
+                   !std::is_base_of<core_matchers::Matcher, T>::value
+               >::type>
+detail::HasExitedWithCodeMatcher<core_matchers::detail::EqualityMatcher<T>>
+        hasExitedWithCode(const T& exitCode) {
+    return detail::HasExitedWithCodeMatcher
+            <core_matchers::detail::EqualityMatcher<T>>(
+                    core_matchers::isEqualTo(exitCode));
+}
+
+template<class T,
+         class=typename std::enable_if<
+                   std::is_base_of<core_matchers::Matcher, T>::value
+               >::type>
+detail::HasOutputMatcher<T> hasOutput(const T& outputMatcher) {
+    return detail::HasOutputMatcher<T>(outputMatcher);
+}
+
+template<class T,
+         class=typename std::enable_if<
+                   !std::is_base_of<core_matchers::Matcher, T>::value
+               >::type>
+detail::HasOutputMatcher<core_matchers::detail::EqualityMatcher<T>>
+        hasOutput(const T& output) {
+    return detail::HasOutputMatcher<core_matchers::detail::EqualityMatcher<T>>(
+        core_matchers::isEqualTo(output));
+}
+
+namespace detail {
 
 void describeStatus(core_matchers::Description* description,
                     const DeathStatus& status);
@@ -302,55 +357,6 @@ class HasOutputMatcher: public core_matchers::Matcher {
 };
 
 }
-
-extern detail::ExitsMatcher exits;
-
-extern detail::HasExitedMatcher hasExited;
-
-extern detail::HasExitedWithCodeMatcher<
-        core_matchers::detail::EqualityMatcher<int>> hasExitedWithCodeZero;
-
-extern detail::HasExitedWithCodeMatcher<
-        core_matchers::detail::NonEqualityMatcher<int>
-       > hasExitedWithNonZeroCode;
-
-template<class T,
-         class=typename std::enable_if<
-                   std::is_base_of<core_matchers::Matcher, T>::value
-               >::type>
-detail::HasExitedWithCodeMatcher<T> hasExitedWithCode(const T& exitCodeMatcher){
-    return detail::HasExitedWithCodeMatcher<T>(exitCodeMatcher);
-}
-
-template<class T,
-         class=typename std::enable_if<
-                   !std::is_base_of<core_matchers::Matcher, T>::value
-               >::type>
-detail::HasExitedWithCodeMatcher<core_matchers::detail::EqualityMatcher<T>>
-        hasExitedWithCode(const T& exitCode) {
-    return detail::HasExitedWithCodeMatcher
-            <core_matchers::detail::EqualityMatcher<T>>(
-                    core_matchers::isEqualTo(exitCode));
-}
-
-template<class T,
-         class=typename std::enable_if<
-                   std::is_base_of<core_matchers::Matcher, T>::value
-               >::type>
-detail::HasOutputMatcher<T> hasOutput(const T& outputMatcher) {
-    return detail::HasOutputMatcher<T>(outputMatcher);
-}
-
-template<class T,
-         class=typename std::enable_if<
-                   !std::is_base_of<core_matchers::Matcher, T>::value
-               >::type>
-detail::HasOutputMatcher<core_matchers::detail::EqualityMatcher<T>>
-        hasOutput(const T& output) {
-    return detail::HasOutputMatcher<core_matchers::detail::EqualityMatcher<T>>(
-        core_matchers::isEqualTo(output));
-}
-
 }
 }
 

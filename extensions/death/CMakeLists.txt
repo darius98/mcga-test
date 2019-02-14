@@ -9,5 +9,6 @@ target_link_libraries(kktest_extension_death PUBLIC kktest_interface kktest_exte
 install(DIRECTORY include DESTINATION .)
 
 add_kktest(kktest_extension_death_test
-    tests/concepts.cpp
+        tests/check_death_test.cpp
+        tests/matchers_test.cpp
 )
