@@ -129,9 +129,9 @@ class AndMatcher: public Matcher {
     template<class T>
     void describeMismatch(Description* description, const T& obj) {
         if (m1Matches) {
-            detail::__describeMismatch(m2, description, obj);
+            m2.describeMismatch(description, obj);
         } else {
-            detail::__describeMismatch(m1, description, obj);
+            m1.describeMismatch(description, obj);
         }
     }
 
@@ -168,9 +168,9 @@ class OrMatcher: public Matcher {
 
     template<class T>
     void describeMismatch(Description* description, const T& obj) {
-        detail::__describeMismatch(m1, description, obj);
+        m1.describeMismatch(description, obj);
         (*description) << " and ";
-        detail::__describeMismatch(m2, description, obj);
+        m1.describeMismatch(description, obj);
     }
 
  private:

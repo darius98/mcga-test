@@ -70,6 +70,11 @@ void IsSubstringMatcher::describe(Description* description) {
     (*description) << "a substring of '" << container << "'";
 }
 
+void IsSubstringMatcher::describeMismatch(Description* description,
+                                          const string&) {
+    (*description) << "not a substring";
+}
+
 }
 }
 }

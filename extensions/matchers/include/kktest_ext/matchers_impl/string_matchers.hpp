@@ -53,6 +53,8 @@ class IsSubstringMatcher: public Matcher {
 
     void describe(Description* description);
 
+    void describeMismatch(Description* description, const std::string& object);
+
  private:
     std::string container;
 };

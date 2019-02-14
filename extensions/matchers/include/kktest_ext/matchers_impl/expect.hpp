@@ -21,9 +21,9 @@ void expect(const T& object, M matcher) {
     description << "Expected ";
     matcher.describe(&description);
     description << "\n\tGot      '";
-    matchers::detail::__describeObject(matcher, &description, object);
+    description << object;
     description << "'\n";
-    matchers::detail::__describeMismatch(matcher, &description, object);
+    matcher.describeMismatch(&description, object);
     fail("Expectation failed:\n\t" + description.toString());
 }
 

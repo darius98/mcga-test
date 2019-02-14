@@ -53,12 +53,17 @@ class EqualityMatcher: public Matcher {
     explicit EqualityMatcher(const T& _target): target(_target) {}
 
     template<class O>
-    bool matches(const O& object) {
-        return object == target;
+    bool matches(const O& obj) {
+        return obj == target;
     }
 
     void describe(Description* description) {
         (*description) << "'" << target << "'";
+    }
+
+    template<class O>
+    void describeMismatch(Description* description, const O&) {
+        (*description) << "not '" << target << "'";
     }
 
  private:

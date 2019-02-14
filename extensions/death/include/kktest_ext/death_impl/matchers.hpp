@@ -106,9 +106,7 @@ class ExitsWithCodeAndOutputMatcher: public matchers::Matcher {
         } else {
             (*description) << "the program's end with valid return code,"
                               " but output is ";
-            matchers::detail::__describeMismatch(outputMatcher,
-                                                      description,
-                                                      status.getOutput());
+            outputMatcher.describeMismatch(description, status.getOutput());
         }
     }
 
@@ -198,9 +196,7 @@ class ExitsWithOutputMatcher: public matchers::Matcher {
 
     void describeMismatch(matchers::Description* description,
                           const std::function<void()>& func) {
-        matchers::detail::__describeMismatch(outputMatcher,
-                                                  description,
-                                                  status.getOutput());
+        outputMatcher.describeMismatch(description, status.getOutput());
     }
 
     template<class T,
@@ -346,9 +342,7 @@ class HasOutputMatcher: public matchers::Matcher {
 
     void describeMismatch(matchers::Description* description,
                           const DeathStatus& status) {
-        matchers::detail::__describeMismatch(outputMatcher,
-                                                  description,
-                                                  status.getOutput());
+        outputMatcher.describeMismatch(description, status.getOutput());
     }
 
  private:

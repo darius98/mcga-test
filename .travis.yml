@@ -77,35 +77,18 @@ matrix:
           packages:
             - clang-3.9
 
-    - os: linux
-      env: COMPILER=clang++-4.0
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-            - llvm-toolchain-precise-4.0
-          packages:
-            - clang-4.0
-
-    - os: linux
-      env: COMPILER=clang++-5.0
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-            - llvm-toolchain-precise-5.0
-          packages:
-            - clang-5.0
-
 before_install:
-  - DEPS_DIR="${TRAVIS_BUILD_DIR}/deps"
-  - mkdir ${DEPS_DIR} && cd ${DEPS_DIR}
-  - travis_retry wget --no-check-certificate https://cmake.org/files/v3.12/cmake-3.12.4-Linux-x86_64.tar.gz
-  - tar -xvf cmake-3.12.4-Linux-x86_64.tar.gz > /dev/null
-  - mv cmake-3.12.4-Linux-x86_64 cmake-install
-  - PATH=${DEPS_DIR}/cmake-install:${DEPS_DIR}/cmake-install/bin:$PATH
-  - cd ${TRAVIS_BUILD_DIR}
-  - cmake --version
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]];
+    then
+      DEPS_DIR="${TRAVIS_BUILD_DIR}/deps";
+      mkdir ${DEPS_DIR} && cd ${DEPS_DIR};
+      travis_retry wget --no-check-certificate https://cmake.org/files/v3.12/cmake-3.12.4-Linux-x86_64.tar.gz;
+      tar -xvf cmake-3.12.4-Linux-x86_64.tar.gz > /dev/null;
+      mv cmake-3.12.4-Linux-x86_64 cmake-install;
+      PATH=${DEPS_DIR}/cmake-install:${DEPS_DIR}/cmake-install/bin:$PATH;
+      cd ${TRAVIS_BUILD_DIR};
+      cmake --version;
+    fi
 
 script:
   - export CXX=${COMPILER}

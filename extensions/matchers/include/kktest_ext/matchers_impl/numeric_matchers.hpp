@@ -33,6 +33,11 @@ class IsPositiveMatcher: public Matcher {
     }
 
     void describe(Description* description);
+
+    template<class T>
+    void describeMismatch(Description* description, const T&) {
+        (*description) << "non-positive";
+    }
 };
 
 class IsNegativeMatcher: public Matcher {
@@ -43,6 +48,11 @@ class IsNegativeMatcher: public Matcher {
     }
 
     void describe(Description* description);
+
+    template<class T>
+    void describeMismatch(Description* description, const T&) {
+        (*description) << "non-negative";
+    }
 };
 
 class IsEvenMatcher: public Matcher {
@@ -53,6 +63,11 @@ class IsEvenMatcher: public Matcher {
     }
 
     void describe(Description* description);
+
+    template<class T>
+    void describeMismatch(Description* description, const T&) {
+        (*description) << "odd";
+    }
 };
 
 class IsOddMatcher: public Matcher {
@@ -63,6 +78,11 @@ class IsOddMatcher: public Matcher {
     }
 
     void describe(Description* description);
+
+    template<class T>
+    void describeMismatch(Description* description, const T&) {
+        (*description) << "even";
+    }
 };
 
 class IsZeroMatcher: public Matcher {
@@ -73,6 +93,11 @@ class IsZeroMatcher: public Matcher {
     }
 
     void describe(Description* description);
+
+    template<class T>
+    void describeMismatch(Description* description, const T&) {
+        (*description) << "non-zero";
+    }
 };
 
 template<class T>
