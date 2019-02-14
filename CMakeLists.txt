@@ -35,7 +35,6 @@ add_subdirectory(core)
 add_subdirectory(extensions/core_matchers)
 add_subdirectory(extensions/death)
 add_subdirectory(extensions/feedback)
-add_subdirectory(extensions/test_runner)
 
 add_library(kktest SHARED entry/entry_point.cpp)
 target_link_libraries(kktest kktest_interface
