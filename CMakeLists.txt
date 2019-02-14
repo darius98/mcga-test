@@ -30,7 +30,7 @@ add_subdirectory(common/interproc)
 add_subdirectory(common/utils)
 
 add_subdirectory(core)
-add_subdirectory(extensions/core_matchers)
+add_subdirectory(extensions/matchers)
 add_subdirectory(extensions/death)
 add_subdirectory(extensions/feedback)
 

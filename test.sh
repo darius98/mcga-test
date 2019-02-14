@@ -27,5 +27,5 @@ function run_tests {
 run_tests common_interproc \
           common_utils \
           common_string \
-          kktest_extension_core_matchers \
+          kktest_extension_matchers \
           kktest_extension_death

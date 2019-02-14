@@ -1,8 +1,8 @@
 #ifndef KKTEST_EXTENSIONS_DEATH_KKTEST_EXT_DEATH_IMPL_MATCHERS_HPP_
 #define KKTEST_EXTENSIONS_DEATH_KKTEST_EXT_DEATH_IMPL_MATCHERS_HPP_
 
-#include <kktest_ext/core_matchers_impl/comparison_matchers.hpp>
-#include <kktest_ext/core_matchers_impl/matcher.hpp>
+#include <kktest_ext/matchers_impl/comparison_matchers.hpp>
+#include <kktest_ext/matchers_impl/matcher.hpp>
 #include <kktest_ext/death_impl/check_death.hpp>
 #include <kktest_ext/death_impl/death_status.hpp>
 
@@ -21,15 +21,14 @@ extern detail::ExitsMatcher exits;
 extern detail::HasExitedMatcher hasExited;
 
 extern detail::HasExitedWithCodeMatcher<
-        core_matchers::detail::EqualityMatcher<int>> hasExitedWithCodeZero;
+        matchers::detail::EqualityMatcher<int>> hasExitedWithCodeZero;
 
 extern detail::HasExitedWithCodeMatcher<
-        core_matchers::detail::NonEqualityMatcher<int>
-       > hasExitedWithNonZeroCode;
+        matchers::detail::NonEqualityMatcher<int>> hasExitedWithNonZeroCode;
 
 template<class T,
          class=typename std::enable_if<
-                   std::is_base_of<core_matchers::Matcher, T>::value
+                   std::is_base_of<matchers::Matcher, T>::value
                >::type>
 detail::HasExitedWithCodeMatcher<T> hasExitedWithCode(const T& exitCodeMatcher){
     return detail::HasExitedWithCodeMatcher<T>(exitCodeMatcher);
@@ -37,18 +36,18 @@ detail::HasExitedWithCodeMatcher<T> hasExitedWithCode(const T& exitCodeMatcher){
 
 template<class T,
          class=typename std::enable_if<
-                   !std::is_base_of<core_matchers::Matcher, T>::value
+                   !std::is_base_of<matchers::Matcher, T>::value
                >::type>
-detail::HasExitedWithCodeMatcher<core_matchers::detail::EqualityMatcher<T>>
+detail::HasExitedWithCodeMatcher<matchers::detail::EqualityMatcher<T>>
         hasExitedWithCode(const T& exitCode) {
     return detail::HasExitedWithCodeMatcher
-            <core_matchers::detail::EqualityMatcher<T>>(
-                    core_matchers::isEqualTo(exitCode));
+            <matchers::detail::EqualityMatcher<T>>(
+                    matchers::isEqualTo(exitCode));
 }
 
 template<class T,
          class=typename std::enable_if<
-                   std::is_base_of<core_matchers::Matcher, T>::value
+                   std::is_base_of<matchers::Matcher, T>::value
                >::type>
 detail::HasOutputMatcher<T> hasOutput(const T& outputMatcher) {
     return detail::HasOutputMatcher<T>(outputMatcher);
@@ -56,25 +55,25 @@ detail::HasOutputMatcher<T> hasOutput(const T& outputMatcher) {
 
 template<class T,
          class=typename std::enable_if<
-                   !std::is_base_of<core_matchers::Matcher, T>::value
+                   !std::is_base_of<matchers::Matcher, T>::value
                >::type>
-detail::HasOutputMatcher<core_matchers::detail::EqualityMatcher<T>>
+detail::HasOutputMatcher<matchers::detail::EqualityMatcher<T>>
         hasOutput(const T& output) {
-    return detail::HasOutputMatcher<core_matchers::detail::EqualityMatcher<T>>(
-        core_matchers::isEqualTo(output));
+    return detail::HasOutputMatcher<matchers::detail::EqualityMatcher<T>>(
+        matchers::isEqualTo(output));
 }
 
 namespace detail {
 
-void describeStatus(core_matchers::Description* description,
+void describeStatus(matchers::Description* description,
                     const DeathStatus& status);
 
 template<class CM, class OM>
-class ExitsWithCodeAndOutputMatcher: public core_matchers::Matcher {
-    static_assert(std::is_base_of<core_matchers::Matcher, CM>::value,
+class ExitsWithCodeAndOutputMatcher: public matchers::Matcher {
+    static_assert(std::is_base_of<matchers::Matcher, CM>::value,
                   "ExitsWithCodeAndOutputMatcher only supports matchers as "
                   "template arguments.");
-    static_assert(std::is_base_of<core_matchers::Matcher, OM>::value,
+    static_assert(std::is_base_of<matchers::Matcher, OM>::value,
                   "ExitsWithCodeAndOutputMatcher only supports matchers as "
                   "template arguments.");
  public:
@@ -88,26 +87,26 @@ class ExitsWithCodeAndOutputMatcher: public core_matchers::Matcher {
         return codeMatcherMatched && outputMatcher.matches(status.getOutput());
     }
 
-    void describe(core_matchers::Description* description) {
+    void describe(matchers::Description* description) {
         (*description) << "the program's end with code that is ";
         codeMatcher.describe(description);
         (*description) << " and where the final output is ";
         outputMatcher.describe(description);
     }
 
-    void describeObject(core_matchers::Description* description,
+    void describeObject(matchers::Description* description,
                         const std::function<void()>& func) {
         (*description) << status;
     }
 
-    void describeMismatch(core_matchers::Description* description,
+    void describeMismatch(matchers::Description* description,
                           const std::function<void()>& func) {
         if (!codeMatcherMatched) {
             describeStatus(description, status);
         } else {
             (*description) << "the program's end with valid return code,"
                               " but output is ";
-            core_matchers::detail::__describeMismatch(outputMatcher,
+            matchers::detail::__describeMismatch(outputMatcher,
                                                       description,
                                                       status.getOutput());
         }
@@ -121,8 +120,8 @@ class ExitsWithCodeAndOutputMatcher: public core_matchers::Matcher {
 };
 
 template<class M>
-class ExitsWithCodeMatcher: public core_matchers::Matcher {
-    static_assert(std::is_base_of<core_matchers::Matcher, M>::value,
+class ExitsWithCodeMatcher: public matchers::Matcher {
+    static_assert(std::is_base_of<matchers::Matcher, M>::value,
                   "ExitsWithCodeMatcher only supports matchers as template "
                   "arguments.");
  public:
@@ -134,24 +133,24 @@ class ExitsWithCodeMatcher: public core_matchers::Matcher {
         return codeMatcher.matches(status.getExitCode());
     }
 
-    void describe(core_matchers::Description* description) {
+    void describe(matchers::Description* description) {
         (*description) << "the program's end with code that is ";
         codeMatcher.describe(description);
     }
 
-    void describeObject(core_matchers::Description* description,
+    void describeObject(matchers::Description* description,
                         const std::function<void()>& func) {
         (*description) << status;
     }
 
-    void describeMismatch(core_matchers::Description* description,
+    void describeMismatch(matchers::Description* description,
                           const std::function<void()>& func) {
         describeStatus(description, status);
     }
 
     template<class T,
              class=typename std::enable_if<
-                       std::is_base_of<core_matchers::Matcher, T>::value
+                       std::is_base_of<matchers::Matcher, T>::value
                    >::type>
     ExitsWithCodeAndOutputMatcher<M, T> withOutput(const T& outputMatcher) {
         return ExitsWithCodeAndOutputMatcher<M, T>(codeMatcher, outputMatcher);
@@ -159,13 +158,13 @@ class ExitsWithCodeMatcher: public core_matchers::Matcher {
 
     template<class T,
              class=typename std::enable_if<
-                       !std::is_base_of<core_matchers::Matcher, T>::value
+                       !std::is_base_of<matchers::Matcher, T>::value
                    >::type>
-    ExitsWithCodeAndOutputMatcher<M, core_matchers::detail::EqualityMatcher<T>>
+    ExitsWithCodeAndOutputMatcher<M, matchers::detail::EqualityMatcher<T>>
             withOutput(const T& output) {
         return ExitsWithCodeAndOutputMatcher
-                <M, core_matchers::detail::EqualityMatcher<T>>(codeMatcher,
-                        core_matchers::isEqualTo(output));
+                <M, matchers::detail::EqualityMatcher<T>>(codeMatcher,
+                        matchers::isEqualTo(output));
     }
 
  private:
@@ -174,8 +173,8 @@ class ExitsWithCodeMatcher: public core_matchers::Matcher {
 };
 
 template<class M>
-class ExitsWithOutputMatcher: public core_matchers::Matcher {
-    static_assert(std::is_base_of<core_matchers::Matcher, M>::value,
+class ExitsWithOutputMatcher: public matchers::Matcher {
+    static_assert(std::is_base_of<matchers::Matcher, M>::value,
                   "ExitsWithCodeMatcher only supports matchers as template "
                   "arguments.");
  public:
@@ -187,26 +186,26 @@ class ExitsWithOutputMatcher: public core_matchers::Matcher {
         return outputMatcher.matches(status.getOutput());
     }
 
-    void describe(core_matchers::Description* description) {
+    void describe(matchers::Description* description) {
         (*description) << "the program's end, where the final output is ";
         outputMatcher.describe(description);
     }
 
-    void describeObject(core_matchers::Description* description,
+    void describeObject(matchers::Description* description,
                         const std::function<void()>& func) {
         (*description) << status;
     }
 
-    void describeMismatch(core_matchers::Description* description,
+    void describeMismatch(matchers::Description* description,
                           const std::function<void()>& func) {
-        core_matchers::detail::__describeMismatch(outputMatcher,
+        matchers::detail::__describeMismatch(outputMatcher,
                                                   description,
                                                   status.getOutput());
     }
 
     template<class T,
              class=typename std::enable_if<
-                       std::is_base_of<core_matchers::Matcher, T>::value
+                       std::is_base_of<matchers::Matcher, T>::value
                    >::type>
     ExitsWithCodeAndOutputMatcher<T, M> withCode(const T& codeMatcher) {
         return ExitsWithCodeAndOutputMatcher<T, M>(codeMatcher, outputMatcher);
@@ -214,14 +213,14 @@ class ExitsWithOutputMatcher: public core_matchers::Matcher {
 
     template<class T,
              class=typename std::enable_if<
-                       !std::is_base_of<core_matchers::Matcher, T>::value
+                       !std::is_base_of<matchers::Matcher, T>::value
                    >::type>
     ExitsWithCodeAndOutputMatcher
-            <core_matchers::detail::EqualityMatcher<T>, M> withCode(
+            <matchers::detail::EqualityMatcher<T>, M> withCode(
                     const T& code) {
         return ExitsWithCodeAndOutputMatcher
-                <core_matchers::detail::EqualityMatcher<T>, M>(
-                        core_matchers::isEqualTo(code), outputMatcher);
+                <matchers::detail::EqualityMatcher<T>, M>(
+                        matchers::isEqualTo(code), outputMatcher);
     }
 
  private:
@@ -229,23 +228,23 @@ class ExitsWithOutputMatcher: public core_matchers::Matcher {
     DeathStatus status;
 };
 
-class ExitsMatcher: public core_matchers::Matcher {
+class ExitsMatcher: public matchers::Matcher {
  public:
     ExitsMatcher();
 
     bool matches(const std::function<void()>& func);
 
-    void describe(core_matchers::Description* description);
+    void describe(matchers::Description* description);
 
-    void describeObject(core_matchers::Description* description,
+    void describeObject(matchers::Description* description,
                         const std::function<void()>& func);
 
-    void describeMismatch(core_matchers::Description* description,
+    void describeMismatch(matchers::Description* description,
                           const std::function<void()>& func);
 
     template<class T,
              class=typename std::enable_if<
-                       std::is_base_of<core_matchers::Matcher, T>::value
+                       std::is_base_of<matchers::Matcher, T>::value
                    >::type>
     ExitsWithCodeMatcher<T> withCode(const T& codeMatcher) {
         return ExitsWithCodeMatcher<T>(codeMatcher);
@@ -253,17 +252,17 @@ class ExitsMatcher: public core_matchers::Matcher {
 
     template<class T,
              class=typename std::enable_if<
-                       !std::is_base_of<core_matchers::Matcher, T>::value
+                       !std::is_base_of<matchers::Matcher, T>::value
                    >::type>
     ExitsWithCodeMatcher<
-            core_matchers::detail::EqualityMatcher<T>> withCode(const T& code) {
-        return ExitsWithCodeMatcher<core_matchers::detail::EqualityMatcher<T>>(
-                core_matchers::isEqualTo(code));
+            matchers::detail::EqualityMatcher<T>> withCode(const T& code) {
+        return ExitsWithCodeMatcher<matchers::detail::EqualityMatcher<T>>(
+                matchers::isEqualTo(code));
     }
 
     template<class T,
              class=typename std::enable_if<
-                       std::is_base_of<core_matchers::Matcher, T>::value
+                       std::is_base_of<matchers::Matcher, T>::value
                    >::type>
     ExitsWithOutputMatcher<T> withOutput(const T& outputMatcher) {
         return ExitsWithOutputMatcher<T>(outputMatcher);
@@ -271,37 +270,37 @@ class ExitsMatcher: public core_matchers::Matcher {
 
     template<class T,
              class=typename std::enable_if<
-                       !std::is_base_of<core_matchers::Matcher, T>::value
+                       !std::is_base_of<matchers::Matcher, T>::value
                    >::type>
     ExitsWithOutputMatcher<
-            core_matchers::detail::EqualityMatcher<T>
+            matchers::detail::EqualityMatcher<T>
             > withOutput(const T& output) {
         return ExitsWithOutputMatcher
-                <core_matchers::detail::EqualityMatcher<T>>(
-                        core_matchers::isEqualTo(output));
+                <matchers::detail::EqualityMatcher<T>>(
+                        matchers::isEqualTo(output));
     }
 
-    ExitsWithCodeMatcher<core_matchers::detail::EqualityMatcher<int>> zero;
-    ExitsWithCodeMatcher<core_matchers::detail::NonEqualityMatcher<int>>
+    ExitsWithCodeMatcher<matchers::detail::EqualityMatcher<int>> zero;
+    ExitsWithCodeMatcher<matchers::detail::NonEqualityMatcher<int>>
             nonZero;
 
  private:
     DeathStatus status;
 };
 
-class HasExitedMatcher: public core_matchers::Matcher {
+class HasExitedMatcher: public matchers::Matcher {
  public:
     bool matches(const DeathStatus& status);
 
-    void describe(core_matchers::Description* description);
+    void describe(matchers::Description* description);
 
-    void describeMismatch(core_matchers::Description* description,
+    void describeMismatch(matchers::Description* description,
                           const DeathStatus& status);
 };
 
 template<class M>
-class HasExitedWithCodeMatcher: public core_matchers::Matcher {
-    static_assert(std::is_base_of<core_matchers::Matcher, M>::value,
+class HasExitedWithCodeMatcher: public matchers::Matcher {
+    static_assert(std::is_base_of<matchers::Matcher, M>::value,
                   "HasExitedWithCodeMatcher only supports matchers as template "
                   "arguments.");
  public:
@@ -312,12 +311,12 @@ class HasExitedWithCodeMatcher: public core_matchers::Matcher {
         return status.exited() && exitCodeMatcher.matches(status.getExitCode());
     }
 
-    void describe(core_matchers::Description* description) {
+    void describe(matchers::Description* description) {
         (*description) << "the program's end with code that is ";
         exitCodeMatcher.describe(description);
     }
 
-    void describeMismatch(core_matchers::Description* description,
+    void describeMismatch(matchers::Description* description,
                           const DeathStatus& status) {
         describeStatus(description, status);
     }
@@ -327,8 +326,8 @@ class HasExitedWithCodeMatcher: public core_matchers::Matcher {
 };
 
 template<class M>
-class HasOutputMatcher: public core_matchers::Matcher {
-    static_assert(std::is_base_of<core_matchers::Matcher, M>::value,
+class HasOutputMatcher: public matchers::Matcher {
+    static_assert(std::is_base_of<matchers::Matcher, M>::value,
                   "HasOutputMatcher only supports matchers as template "
                   "arguments.");
 
@@ -340,14 +339,14 @@ class HasOutputMatcher: public core_matchers::Matcher {
         return outputMatcher.matches(status.getOutput());
     }
 
-    void describe(core_matchers::Description* description) {
+    void describe(matchers::Description* description) {
         (*description) << "the program's end, where the final output is ";
         outputMatcher.describe(description);
     }
 
-    void describeMismatch(core_matchers::Description* description,
+    void describeMismatch(matchers::Description* description,
                           const DeathStatus& status) {
-        core_matchers::detail::__describeMismatch(outputMatcher,
+        matchers::detail::__describeMismatch(outputMatcher,
                                                   description,
                                                   status.getOutput());
     }

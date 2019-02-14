@@ -1,10 +1,10 @@
 #include <kktest.hpp>
-#include <kktest_ext/core_matchers.hpp>
+#include <kktest_ext/matchers.hpp>
 
 #include <kktest_common/time.hpp>
 
 using namespace kktest;
-using namespace kktest::core_matchers;
+using namespace kktest::matchers;
 using namespace kktest::utils;
 
 void kkTestCase(UtilsTime) {

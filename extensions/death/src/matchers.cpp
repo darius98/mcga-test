@@ -1,6 +1,6 @@
 #include <kktest_ext/death_impl/matchers.hpp>
 
-using namespace kktest::core_matchers;
+using namespace kktest::matchers;
 using namespace std;
 
 namespace kktest {
@@ -60,10 +60,10 @@ detail::ExitsMatcher exits;
 
 detail::HasExitedMatcher hasExited;
 
-detail::HasExitedWithCodeMatcher<core_matchers::detail::EqualityMatcher<int>>
+detail::HasExitedWithCodeMatcher<matchers::detail::EqualityMatcher<int>>
         hasExitedWithCodeZero(isEqualTo(0));
 
-detail::HasExitedWithCodeMatcher<core_matchers::detail::NonEqualityMatcher<int>>
+detail::HasExitedWithCodeMatcher<matchers::detail::NonEqualityMatcher<int>>
         hasExitedWithNonZeroCode(isNotEqualTo(0));
 
 }
