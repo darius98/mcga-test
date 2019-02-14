@@ -7,7 +7,6 @@ add_definitions(-DKKTEST_USE_ABI_DEMANGLE)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
 set(CMAKE_POSITION_INDEPENDENT_CODE TRUE)
-set(CMAKE_INSTALL_PREFIX /usr/local/)
 
 set(TESTS_PATH "${CMAKE_CURRENT_SOURCE_DIR}/build/tests")
 
@@ -31,22 +30,11 @@ add_subdirectory(common/interproc)
 add_subdirectory(common/utils)
 
 add_subdirectory(core)
-
 add_subdirectory(extensions/core_matchers)
 add_subdirectory(extensions/death)
 add_subdirectory(extensions/feedback)
 
-add_library(kktest SHARED entry/entry_point.cpp)
-target_link_libraries(kktest kktest_interface
-        cppli
-        common_interproc
-        common_string
-        common_utils_time
-        kktest_impl
-        kktest_extension_core_matchers
-        kktest_extension_death
-        kktest_extension_feedback)
-install(TARGETS kktest LIBRARY DESTINATION lib)
-
 add_subdirectory(third_party/cppli)
 add_subdirectory(third_party/termcolor)
+
+add_subdirectory(entry)
