@@ -1,4 +1,4 @@
-add_library(kktest_extension_death
+add_library(kktest_extension_death OBJECT
     src/check_death.cpp
     src/death_status.cpp
     src/matchers.cpp

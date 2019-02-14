@@ -1,4 +1,4 @@
-add_library(kktest_extension_feedback
+add_library(kktest_extension_feedback OBJECT
     src/ext.cpp
     src/test_logger.cpp
 )

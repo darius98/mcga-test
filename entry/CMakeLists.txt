@@ -1,4 +1,10 @@
-add_library(kktest SHARED entry_point.cpp)
+add_library(kktest SHARED
+    entry_point.cpp
+    $<TARGET_OBJECTS:kktest_core>
+    $<TARGET_OBJECTS:kktest_extension_matchers>
+    $<TARGET_OBJECTS:kktest_extension_death>
+    $<TARGET_OBJECTS:kktest_extension_feedback>
+)
 target_link_libraries(kktest
     PUBLIC kktest_core
     PUBLIC kktest_extension_matchers
