@@ -17,15 +17,15 @@ function fail_run {
     exit 1;
 }
 
-function test {
+function run_tests {
     for var in "$@"
     do
-        ./tests/$var"_test" || fail_run $var;
+        ./tests/${var}"_test" || fail_run ${var};
     done
 }
 
-test common_interproc \
-     common_utils \
-     common_string \
-     kktest_extension_core_matchers \
-     kktest_extension_death
+run_tests common_interproc \
+          common_utils \
+          common_string \
+          kktest_extension_core_matchers \
+          kktest_extension_death
