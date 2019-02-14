@@ -89,6 +89,11 @@ before_install:
       cd ${TRAVIS_BUILD_DIR};
       cmake --version;
     fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]];
+    then
+      brew install cmake;
+      cmake --version;
+    fi
 
 script:
   - export CXX=${COMPILER}
