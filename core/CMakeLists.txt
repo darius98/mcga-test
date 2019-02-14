@@ -1,8 +1,4 @@
-add_library(kktest_interface INTERFACE)
-target_include_directories(kktest_interface INTERFACE include)
-target_link_libraries(kktest_interface INTERFACE common_interproc common_string common_utils_time cppli)
-
-add_library(kktest_impl
+add_library(kktest_core
     src/box_executor.cpp
     src/definers.cpp
     src/driver.cpp
@@ -15,7 +11,13 @@ add_library(kktest_impl
     src/test_case_registry.cpp
     src/test_container.cpp
 )
-target_compile_options(kktest_impl PRIVATE -Wall -Wextra -pedantic)
-target_link_libraries(kktest_impl PUBLIC kktest_interface)
+target_compile_options(kktest_core PRIVATE -Wall -Wextra -pedantic)
+target_include_directories(kktest_core PUBLIC include)
+target_link_libraries(kktest_core
+    PUBLIC common_interproc
+    PUBLIC common_string
+    PUBLIC common_utils_time
+    PUBLIC cppli
+)
 
 install(DIRECTORY include DESTINATION .)

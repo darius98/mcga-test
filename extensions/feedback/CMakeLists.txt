@@ -3,6 +3,6 @@ add_library(kktest_extension_feedback
     src/test_logger.cpp
 )
 target_include_directories(kktest_extension_feedback PUBLIC include)
-target_link_libraries(kktest_extension_feedback PUBLIC kktest_interface PRIVATE termcolor)
+target_link_libraries(kktest_extension_feedback PUBLIC kktest_core PRIVATE termcolor)
 
 install(DIRECTORY include DESTINATION .)
