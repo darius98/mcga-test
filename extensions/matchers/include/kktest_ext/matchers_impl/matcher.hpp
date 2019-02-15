@@ -20,12 +20,6 @@ class KKTEST_API Description {
         return *this;
     }
 
-    template<class T>
-    Description& appendType() {
-        detail::Streamer<T>::sendType(stream);
-        return *this;
-    }
-
     Description& appendRawString(const String& str);
 
     String toString() const;

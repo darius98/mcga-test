@@ -52,8 +52,7 @@ class ThrowsSpecificMatcher: public Matcher {
     }
 
     void describe(Description* description) {
-        (*description) << "a function that throws ";
-        description->appendType<E>();
+        (*description) << "a function that throws " << typeid(E).name();
     }
 
     void describeMismatch(Description* description,
