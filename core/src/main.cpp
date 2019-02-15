@@ -1,5 +1,4 @@
 #include <kktest_impl/main.hpp>
-#include <kktest_impl/signature.hpp>
 #include "driver.hpp"
 #include "extension_api_impl.hpp"
 #include "test_case_registry.hpp"
@@ -16,11 +15,6 @@ InternalArgs registerInternalFlags(Parser& parser, const string& versionString) 
             .setDescription("Display program version."),
             "KKTest generated test-case.\n"
             "KKTest version: " + versionString +  "\n");
-    parser.addTerminalFlag(
-            FlagSpec("get-signature")
-            .setDescription("Display the KKTest 32-byte "
-                            "signature in hexadecimal format"),
-            string(kkTestSignatureHex) + "\n");
 
     InternalArgs args;
     args.smoothFlag = parser.addFlag(

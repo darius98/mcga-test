@@ -27,9 +27,7 @@ struct KKTEST_API GroupConfig {
 
 }
 
-#define testConfig(...) \
-            ([&] {kktest::TestConfig _; __VA_ARGS__; return _; }())
-#define groupConfig(...) \
-            ([&] {kktest::GroupConfig _; __VA_ARGS__; return _; }())
+#define testConfig(...) ([&] {kktest::TestConfig _; __VA_ARGS__; return _;}())
+#define groupConfig(...) ([&] {kktest::GroupConfig _; __VA_ARGS__; return _;}())
 
 #endif

@@ -9,9 +9,9 @@ namespace kktest {
 
 class KKTEST_API TestCaseDefiner {
  public:
-    TestCaseDefiner(void (*testCase)(),
-                    const char* name,
-                    const unsigned char* signature) noexcept;
+    using TestCase = void (*)();
+
+    TestCaseDefiner(TestCase testCase, const char* name) noexcept;
 };
 
 KKTEST_API void test(const TestConfig& config, Executable func);

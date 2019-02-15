@@ -3,7 +3,6 @@
 #include <iostream>
 
 #include <kktest_impl/definers.hpp>
-#include <kktest_impl/signature.hpp>
 #include "driver.hpp"
 #include "test_case_registry.hpp"
 
@@ -11,15 +10,7 @@ using namespace std;
 
 namespace kktest {
 
-TestCaseDefiner::TestCaseDefiner(void (*testCase)(),
-                                 const char* name,
-                                 const unsigned char* signature) noexcept {
-    if (memcmp(signature, kkTestSignature, kkTestSigSize) != 0) {
-        cout << "Invalid signature passed to TestCaseDefiner. If you didn't do "
-                "anything weird when defining test cases, then this is a bug, "
-                "please report.\n";
-        exit(1);
-    }
+TestCaseDefiner::TestCaseDefiner(TestCase testCase, const char* name) noexcept {
     TestCaseRegistry::add(testCase, name);
 }
 
