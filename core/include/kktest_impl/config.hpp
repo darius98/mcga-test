@@ -1,19 +1,28 @@
 #ifndef KKTEST_CORE_KKTEST_IMPL_CONFIG_HPP_
 #define KKTEST_CORE_KKTEST_IMPL_CONFIG_HPP_
 
-#include <kktest_common/string.hpp>
+#include <string>
+
 #include <kktest_impl/export.hpp>
 
 namespace kktest {
 
 struct KKTEST_API TestConfig {
-    String description = "-";
+    std::string description = "-";
     bool optional = false;
     double timeTicksLimit = 1.0;
+
+    TestConfig();
+    TestConfig(std::string _description); // NOLINT(google-explicit-constructor)
+    TestConfig(const char* _description); // NOLINT(google-explicit-constructor)
 };
 
 struct KKTEST_API GroupConfig {
-    String description = "-";
+    std::string description = "-";
+
+    GroupConfig();
+    GroupConfig(std::string _description);// NOLINT(google-explicit-constructor)
+    GroupConfig(const char* _description);// NOLINT(google-explicit-constructor)
 };
 
 }

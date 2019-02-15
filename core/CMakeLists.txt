@@ -1,5 +1,6 @@
 add_library(kktest_core OBJECT
     src/box_executor.cpp
+    src/config.cpp
     src/definers.cpp
     src/driver.cpp
     src/errors.cpp

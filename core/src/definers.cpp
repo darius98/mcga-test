@@ -23,7 +23,7 @@ TestCaseDefiner::TestCaseDefiner(void (*testCase)(),
     TestCaseRegistry::add(testCase, name);
 }
 
-void test(String description, Executable func) {
+void test(const string& description, Executable func) {
     test(testConfig(_.description = description), func);
 }
 
@@ -31,7 +31,7 @@ void test(const TestConfig& config, Executable func) {
     Driver::getInstance()->addTest(config, func);
 }
 
-void group(String description, Executable func) {
+void group(const string& description, Executable func) {
     group(groupConfig(_.description = description), func);
 }
 
@@ -47,25 +47,13 @@ void tearDown(Executable func) {
     Driver::getInstance()->addTearDown(func);
 }
 
-void expect(bool exprResult, const String& failMessage) {
-    if (!exprResult) {
-        fail(failMessage);
-    }
-}
-
-void expect(bool exprResult, const char* failMessage) {
-    if (!exprResult) {
-        fail(failMessage);
-    }
-}
-
 void expect(bool exprResult, const string& failMessage) {
     if (!exprResult) {
         fail(failMessage);
     }
 }
 
-void fail(const String& message) {
+void fail(const string& message) {
     if (message.empty()) {
         throw ExpectationFailed("kktest::fail: Test failed.");
     } else {
