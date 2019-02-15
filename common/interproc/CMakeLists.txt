@@ -9,7 +9,6 @@ endif ()
 add_library(common_interproc ${interproc_src})
 target_link_libraries(common_interproc PUBLIC common_string)
 target_include_directories(common_interproc PUBLIC include)
-install(DIRECTORY include DESTINATION .)
 
 add_kktest(common_interproc_test
     tests/message_test.cpp
