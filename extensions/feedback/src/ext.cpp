@@ -1,6 +1,5 @@
 #include <iostream>
 
-#include <kktest_extension_api.hpp>
 #include <kktest_ext/feedback_impl/ext.hpp>
 #include <kktest_ext/feedback_impl/pipe_message_type.hpp>
 

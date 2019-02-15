@@ -1,7 +1,7 @@
 #ifndef KKTEST_CORE_EXTENSION_API_IMPL_HPP_
 #define KKTEST_CORE_EXTENSION_API_IMPL_HPP_
 
-#include <kktest_impl/extension_api.hpp>
+#include <extension_api/extension_api.hpp>
 #include "hooks.hpp"
 
 namespace kktest {

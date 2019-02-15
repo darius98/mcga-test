@@ -1,9 +1,9 @@
 #ifndef KKTEST_CORE_TEST_HPP_
 #define KKTEST_CORE_TEST_HPP_
 
+#include <extension_api/info.hpp>
 #include <kktest_common/interproc.hpp>
 #include <kktest_impl/config.hpp>
-#include <kktest_impl/info.hpp>
 
 namespace kktest {
 
