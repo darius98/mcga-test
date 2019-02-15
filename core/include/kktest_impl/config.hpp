@@ -2,16 +2,17 @@
 #define KKTEST_CORE_KKTEST_IMPL_CONFIG_HPP_
 
 #include <kktest_common/string.hpp>
+#include <kktest_impl/export.hpp>
 
 namespace kktest {
 
-struct TestConfig {
+struct KKTEST_API TestConfig {
     String description = "-";
     bool optional = false;
     double timeTicksLimit = 1.0;
 };
 
-struct GroupConfig {
+struct KKTEST_API GroupConfig {
     String description = "-";
 };
 

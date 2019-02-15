@@ -9,27 +9,27 @@
 namespace kktest {
 namespace matchers {
 
-extern detail::CharInStringMatcher isLetter;
+extern KKTEST_API detail::CharInStringMatcher isLetter;
 
-extern detail::CharInStringMatcher isDigit;
+extern KKTEST_API detail::CharInStringMatcher isDigit;
 
-extern detail::CharInStringMatcher isLowercaseLetter;
+extern KKTEST_API detail::CharInStringMatcher isLowercaseLetter;
 
-extern detail::CharInStringMatcher isUppercaseLetter;
+extern KKTEST_API detail::CharInStringMatcher isUppercaseLetter;
 
-extern detail::CharInStringMatcher isBinaryDigit;
+extern KKTEST_API detail::CharInStringMatcher isBinaryDigit;
 
-extern detail::CharInStringMatcher isOctDigit;
+extern KKTEST_API detail::CharInStringMatcher isOctDigit;
 
-extern detail::CharInStringMatcher isHexDigit;
+extern KKTEST_API detail::CharInStringMatcher isHexDigit;
 
-extern detail::CharInStringMatcher isWhitespace;
+extern KKTEST_API detail::CharInStringMatcher isWhitespace;
 
-detail::IsSubstringMatcher isSubstringOf(const std::string& s);
+KKTEST_API detail::IsSubstringMatcher isSubstringOf(const std::string& s);
 
 namespace detail {
 
-class CharInStringMatcher: public Matcher {
+class KKTEST_API CharInStringMatcher: public Matcher {
  public:
     explicit CharInStringMatcher(const char* _container,
                                  const char* _expectation = nullptr) noexcept;
@@ -45,7 +45,7 @@ class CharInStringMatcher: public Matcher {
     const char* expectation;
 };
 
-class IsSubstringMatcher: public Matcher {
+class KKTEST_API IsSubstringMatcher: public Matcher {
  public:
     explicit IsSubstringMatcher(std::string _container);
 

@@ -10,7 +10,7 @@
 namespace kktest {
 namespace matchers {
 
-extern detail::ThrowsAnythingMatcher throws;
+extern KKTEST_API detail::ThrowsAnythingMatcher throws;
 
 template<class E>
 detail::ThrowsSpecificMatcher<E> throwsA() {
@@ -24,7 +24,7 @@ std::function<void()> wrapFunc(const F& func, const Args... args) {
 
 namespace detail {
 
-class ThrowsAnythingMatcher: public Matcher {
+class KKTEST_API ThrowsAnythingMatcher: public Matcher {
  public:
     bool matches(const std::function<void()>& func);
 

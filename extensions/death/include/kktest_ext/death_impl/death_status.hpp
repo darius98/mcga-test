@@ -5,11 +5,12 @@
 
 #include <kktest_common/string.hpp>
 #include <kktest_impl/executable.hpp>
+#include <kktest_impl/export.hpp>
 
 namespace kktest {
 namespace death {
 
-class DeathStatus {
+class KKTEST_API DeathStatus {
  public:
     DeathStatus();
 

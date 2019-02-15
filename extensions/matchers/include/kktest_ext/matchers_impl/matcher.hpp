@@ -9,7 +9,7 @@
 namespace kktest {
 namespace matchers {
 
-class Description {
+class KKTEST_API Description {
  public:
     Description();
     Description(const Description& other);
@@ -34,7 +34,7 @@ class Description {
     std::stringstream stream;
 };
 
-class Matcher {
+class KKTEST_API Matcher {
     // template<class T>
     // virtual bool matches(const T& object) = 0;
 

@@ -6,7 +6,7 @@
 namespace kktest {
 namespace death {
 
-DeathStatus checkDeath(const std::function<void()>& func);
+KKTEST_API DeathStatus checkDeath(const std::function<void()>& func);
 
 }
 }

@@ -4,35 +4,36 @@
 #include <kktest_common/string.hpp>
 #include <kktest_impl/config.hpp>
 #include <kktest_impl/executable.hpp>
+#include <kktest_impl/export.hpp>
 
 namespace kktest {
 
-class TestCaseDefiner {
+class KKTEST_API TestCaseDefiner {
  public:
     TestCaseDefiner(void (*testCase)(),
                     const char* name,
                     const unsigned char* signature) noexcept;
 };
 
-void test(const TestConfig& config, Executable func);
+KKTEST_API void test(const TestConfig& config, Executable func);
 
-void test(String description, Executable func);
+KKTEST_API void test(String description, Executable func);
 
-void group(const GroupConfig& config, Executable func);
+KKTEST_API void group(const GroupConfig& config, Executable func);
 
-void group(String description, Executable func);
+KKTEST_API void group(String description, Executable func);
 
-void setUp(Executable func);
+KKTEST_API void setUp(Executable func);
 
-void tearDown(Executable func);
+KKTEST_API void tearDown(Executable func);
 
-void fail(const String& message = "");
+KKTEST_API void fail(const String& message = "");
 
-void expect(bool exprResult, const String& failMessage = "");
+KKTEST_API void expect(bool exprResult, const String& failMessage = "");
 
-void expect(bool exprResult, const char* failMessage);
+KKTEST_API void expect(bool exprResult, const char* failMessage);
 
-void expect(bool exprResult, const std::string& failMessage);
+KKTEST_API void expect(bool exprResult, const std::string& failMessage);
 
 }
 

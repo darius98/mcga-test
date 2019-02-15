@@ -7,9 +7,9 @@
 namespace kktest {
 namespace matchers {
 
-extern detail::IsEmptyMatcher isEmpty;
+extern KKTEST_API detail::IsEmptyMatcher isEmpty;
 
-extern detail::IsNotEmptyMatcher isNotEmpty;
+extern KKTEST_API detail::IsNotEmptyMatcher isNotEmpty;
 
 template<
     class T,
@@ -67,7 +67,7 @@ class IsEmptyMatcher: public Matcher {
         return object.empty();
     }
 
-    void describe(Description* description);
+    KKTEST_API void describe(Description* description);
 
     template<class T>
     void describeMismatch(Description* description, const T&) {
@@ -82,7 +82,7 @@ class IsNotEmptyMatcher: public Matcher {
         return !object.empty();
     }
 
-    void describe(Description* description);
+    KKTEST_API void describe(Description* description);
 
     template<class T>
     void describeMismatch(Description* description, const T&) {

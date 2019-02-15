@@ -16,14 +16,14 @@ template<class T> class HasExitedWithCodeMatcher;
 template<class T> class HasOutputMatcher;
 }
 
-extern detail::ExitsMatcher exits;
+extern KKTEST_API detail::ExitsMatcher exits;
 
-extern detail::HasExitedMatcher hasExited;
+extern KKTEST_API detail::HasExitedMatcher hasExited;
 
-extern detail::HasExitedWithCodeMatcher<
+extern KKTEST_API detail::HasExitedWithCodeMatcher<
         matchers::detail::EqualityMatcher<int>> hasExitedWithCodeZero;
 
-extern detail::HasExitedWithCodeMatcher<
+extern KKTEST_API detail::HasExitedWithCodeMatcher<
         matchers::detail::NonEqualityMatcher<int>> hasExitedWithNonZeroCode;
 
 template<class T,
@@ -65,7 +65,7 @@ detail::HasOutputMatcher<matchers::detail::EqualityMatcher<T>>
 
 namespace detail {
 
-void describeStatus(matchers::Description* description,
+void KKTEST_API describeStatus(matchers::Description* description,
                     const DeathStatus& status);
 
 template<class CM, class OM>
@@ -224,7 +224,7 @@ class ExitsWithOutputMatcher: public matchers::Matcher {
     DeathStatus status;
 };
 
-class ExitsMatcher: public matchers::Matcher {
+class KKTEST_API ExitsMatcher: public matchers::Matcher {
  public:
     ExitsMatcher();
 
@@ -284,7 +284,7 @@ class ExitsMatcher: public matchers::Matcher {
     DeathStatus status;
 };
 
-class HasExitedMatcher: public matchers::Matcher {
+class KKTEST_API HasExitedMatcher: public matchers::Matcher {
  public:
     bool matches(const DeathStatus& status);
 
