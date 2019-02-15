@@ -1,9 +1,9 @@
 #ifndef KKTEST_EXT_FEEDBACK_IMPL_EXT_HPP_
 #define KKTEST_EXT_FEEDBACK_IMPL_EXT_HPP_
 
-#include <extension_api/extension_api.hpp>
 #include <kktest_common/interproc.hpp>
 #include <kktest_ext/feedback_impl/test_logger.hpp>
+#include <kktest_impl/extension_api.hpp>
 
 namespace kktest {
 namespace feedback {

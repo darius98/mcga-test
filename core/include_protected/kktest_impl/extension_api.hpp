@@ -6,7 +6,7 @@
 
 #include <cppli.hpp>
 
-#include <extension_api/info.hpp>
+#include <kktest_impl/info.hpp>
 
 namespace kktest {
 
