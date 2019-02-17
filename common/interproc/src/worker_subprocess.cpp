@@ -5,9 +5,6 @@ using namespace std;
 namespace kktest {
 namespace interproc {
 
-WorkerSubprocess::UnexpectedSubprocessEnd::UnexpectedSubprocessEnd(
-        const string& message): runtime_error(message) {}
-
 WorkerSubprocess::WorkerSubprocess(double timeLimitMs, Work run):
         stopwatch(timeLimitMs) {
     auto pipe = createAnonymousPipe();
@@ -86,36 +83,30 @@ void WorkerSubprocess::wait() {
     }
 }
 
-bool WorkerSubprocess::poll() {
+WorkerSubprocess::PollStatus WorkerSubprocess::poll() {
     if (!isFinished()) {
         if (!stopwatch.isElapsed()) {
-            return false;
+            return NO_EXIT;
         }
         auto killStatus = kill();
         if (killStatus == Subprocess::ALREADY_DEAD) {
             // The child might have finished during a context switch.
             // In this case, return false so we can retry waiting it later.
-            return false;
+            return NO_EXIT;
         }
-        onUnexpectedExit("Execution timed out.");
+        return TIMEOUT;
     }
     switch (getFinishStatus()) {
         case Subprocess::FinishStatus::UNKNOWN:
-            onUnexpectedExit("Unknown error occurred.");
+            return UNKNOWN_ERROR_EXIT;
         case Subprocess::FinishStatus::SIGNALED:
-            onUnexpectedExit("Killed by signal " + to_string(getSignal()));
+            return SIGNAL_EXIT;
         case Subprocess::FinishStatus::NON_ZERO_EXIT:
-            onUnexpectedExit("Exit code " + to_string(getReturnCode()) + ".");
+            return NON_ZERO_EXIT;
         case Subprocess::FinishStatus::ZERO_EXIT:
-            break;
-        default:
-            onUnexpectedExit("Unknown error occurred.");
+            return ZERO_EXIT;
     }
-    return true;
-}
-
-void WorkerSubprocess::onUnexpectedExit(const string &errorMessage) {
-    throw UnexpectedSubprocessEnd(errorMessage);
+    return UNKNOWN_ERROR_EXIT;
 }
 
 }

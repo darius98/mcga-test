@@ -57,34 +57,58 @@ void BoxExecutor::ensureFreeContainers(size_t numContainers) {
         bool progress = false;
         auto it = openContainers.begin();
         while (it != openContainers.end()) {
+            auto pollStatus = it->process->poll();
             bool finished = true;
-            bool hasError = false;
+            bool failed = true;
             Message message;
-            try {
-                finished = it->process->poll();
-                if (finished) {
+            string error;
+            switch (pollStatus) {
+                case WorkerSubprocess::NO_EXIT: {
+                    finished = false;
+                    break;
+                }
+                case WorkerSubprocess::ZERO_EXIT: {
+                    failed = false;
                     message = it->process->getNextMessage(32);
                     if (message.isInvalid()) {
-                        throw WorkerSubprocess::UnexpectedSubprocessEnd(
-                                "Unexpected 0-code exit.");
+                        failed = true;
+                        error = "Unexpected 0-code exit.";
                     }
+                    break;
                 }
-            } catch(const WorkerSubprocess::UnexpectedSubprocessEnd& err) {
-                it->test->setExecuted(TestExecutionInfo::fromError(err.what()));
-                onTestFinishedCallback(it->test);
-                hasError = true;
+                case WorkerSubprocess::NON_ZERO_EXIT: {
+                    error = "Test exited with code "
+                            + to_string(it->process->getReturnCode())
+                            + ".";
+                    break;
+                }
+                case WorkerSubprocess::SIGNAL_EXIT: {
+                    error = "Test killed by signal "
+                            + to_string(it->process->getSignal())
+                            + ".";
+                    break;
+                }
+                case WorkerSubprocess::TIMEOUT: {
+                    error = "Test execution timed out.";
+                    break;
+                }
+                case WorkerSubprocess::UNKNOWN_ERROR_EXIT: {
+                    error = "Test exited with unknown error.";
+                    break;
+                }
             }
-            if (finished && !hasError) {
-                auto executionInfo = TestExecutionInfo::fromMessage(message);
-                it->test->setExecuted(executionInfo);
-                onTestFinishedCallback(it->test);
+            if (!finished) {
+                ++ it;
+                continue;
             }
-            if (finished) {
-                it = openContainers.erase(it);
-                progress = true;
+            if (failed) {
+                it->test->setExecuted(TestExecutionInfo::fromError(error));
             } else {
-                ++it;
+                it->test->setExecuted(TestExecutionInfo::fromMessage(message));
             }
+            onTestFinishedCallback(it->test);
+            it = openContainers.erase(it);
+            progress = true;
         }
         if (!progress) {
             sleepForMs(5);

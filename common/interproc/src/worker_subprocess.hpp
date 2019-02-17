@@ -11,9 +11,14 @@ class WorkerSubprocess: public Subprocess {
  public:
     typedef const std::function<void(PipeWriter*)>& Work;
 
-    class UnexpectedSubprocessEnd: public std::runtime_error {
-     public:
-        explicit UnexpectedSubprocessEnd(const std::string& message);
+    // TODO(darius98): Merge this with Subprocess::FinishStatus.
+    enum PollStatus {
+        NO_EXIT,
+        ZERO_EXIT,
+        NON_ZERO_EXIT,
+        TIMEOUT,
+        SIGNAL_EXIT,
+        UNKNOWN_ERROR_EXIT
     };
 
     WorkerSubprocess(double timeLimitMs, Work run);
@@ -42,13 +47,9 @@ class WorkerSubprocess: public Subprocess {
 
     std::string getOutput();
 
-    // Raises UnexpectedSubprocessEnd if the subprocess finished, but was
-    // not expected to.
-    bool poll();
+    PollStatus poll();
 
  private:
-    void onUnexpectedExit(const std::string &errorMessage);
-
     std::string output;
     Subprocess* subprocess;
     PipeReader* pipeReader;
