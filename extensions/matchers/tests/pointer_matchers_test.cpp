@@ -1,5 +1,6 @@
 #include <kktest.hpp>
-#include <kktest_ext/matchers_impl/pointer_matchers.hpp>
+
+#include "extensions/matchers/include/kktest_ext/matchers_impl/pointer_matchers.hpp"
 
 using namespace kktest;
 using namespace kktest::matchers;

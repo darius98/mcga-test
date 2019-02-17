@@ -1,9 +1,9 @@
-#ifndef KKTEST_CORE_KKTEST_IMPL_MAIN_HPP_
-#define KKTEST_CORE_KKTEST_IMPL_MAIN_HPP_
+#ifndef KKTEST_CORE_SRC_MAIN_HPP_
+#define KKTEST_CORE_SRC_MAIN_HPP_
 
 #include <vector>
 
-#include <kktest_impl/extension_api.hpp>
+#include "core/src/extension_api.hpp"
 
 namespace kktest {
 

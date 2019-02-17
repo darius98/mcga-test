@@ -3,8 +3,8 @@
 #include <kktest.hpp>
 #include <kktest_ext/matchers.hpp>
 
-#include <kktest_common/interproc_impl/message.hpp>
-#include <kktest_common/string.hpp>
+#include "common/interproc/src/message.hpp"
+#include "common/string/src/string.hpp"
 
 using namespace kktest;
 using namespace kktest::matchers;

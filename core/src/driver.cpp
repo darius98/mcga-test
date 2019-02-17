@@ -1,7 +1,8 @@
-#include <kktest_impl/config.hpp>
-#include "box_executor.hpp"
-#include "driver.hpp"
-#include "test_case_registry.hpp"
+#include "core/src/driver.hpp"
+
+#include "core/include/kktest_impl/config.hpp"
+#include "core/src/box_executor.hpp"
+#include "core/src/test_case_registry.hpp"
 
 using namespace std;
 

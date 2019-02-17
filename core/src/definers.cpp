@@ -1,10 +1,11 @@
+#include "core/include/kktest_impl/definers.hpp"
+
 #include <cstring>
 
 #include <iostream>
 
-#include <kktest_impl/definers.hpp>
-#include "driver.hpp"
-#include "test_case_registry.hpp"
+#include "core/src/driver.hpp"
+#include "core/src/test_case_registry.hpp"
 
 using namespace std;
 
@@ -14,16 +15,8 @@ TestCaseDefiner::TestCaseDefiner(TestCase testCase, const char* name) noexcept {
     TestCaseRegistry::add(testCase, name);
 }
 
-void test(const string& description, Executable func) {
-    test(testConfig(_.description = description), func);
-}
-
 void test(const TestConfig& config, Executable func) {
     Driver::getInstance()->addTest(config, func);
-}
-
-void group(const string& description, Executable func) {
-    group(groupConfig(_.description = description), func);
 }
 
 void group(const GroupConfig& config, Executable func) {

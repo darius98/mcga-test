@@ -1,9 +1,9 @@
-#ifndef KKTEST_CORE_TEST_CONTAINER_HPP_
-#define KKTEST_CORE_TEST_CONTAINER_HPP_
+#ifndef KKTEST_CORE_SRC_TEST_CONTAINER_HPP_
+#define KKTEST_CORE_SRC_TEST_CONTAINER_HPP_
 
-#include <kktest_common/interproc.hpp>
-#include <kktest_common/string.hpp>
-#include <kktest_common/time.hpp>
+#include "common/interproc/src/subprocess.hpp"
+#include "common/string/src/string.hpp"
+#include "common/utils/src/time.hpp"
 
 namespace kktest {
 

@@ -1,9 +1,7 @@
-#ifndef KKTEST_EXTENSIONS_MATCHERS_KKTEST_EXT_MATCHERS_IMPL_MATCHER_HPP_
-#define KKTEST_EXTENSIONS_MATCHERS_KKTEST_EXT_MATCHERS_IMPL_MATCHER_HPP_
+#ifndef KKTEST_EXTENSIONS_MATCHERS_INCLUDE_KKTEST_EXT_MATCHERS_IMPL_MATCHER_HPP_
+#define KKTEST_EXTENSIONS_MATCHERS_INCLUDE_KKTEST_EXT_MATCHERS_IMPL_MATCHER_HPP_
 
-#include <kktest_common/string.hpp>
-#include <kktest_impl/definers.hpp>
-#include <kktest_impl/executable.hpp>
+#include <kktest_impl/export.hpp>
 #include <kktest_ext/matchers_impl/detail/streamer.hpp>
 
 namespace kktest {
@@ -15,14 +13,14 @@ class KKTEST_API Description {
     Description(const Description& other);
 
     template<class T>
-    Description& operator<<(T obj) {
+    Description& operator<<(const T& obj) {
         detail::Streamer<T>::send(stream, obj);
         return *this;
     }
 
-    Description& appendRawString(const String& str);
+    Description& appendRawString(const std::string& str);
 
-    String toString() const;
+    std::string toString() const;
 
  private:
     std::stringstream stream;

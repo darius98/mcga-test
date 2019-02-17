@@ -1,5 +1,6 @@
-#include "errors.hpp"
-#include "group.hpp"
+#include "core/src/group.hpp"
+
+#include "core/src/errors.hpp"
 
 namespace kktest {
 

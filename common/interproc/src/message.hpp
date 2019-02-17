@@ -1,9 +1,9 @@
-#ifndef KKTEST_COMMON_INTERPROC_IMPL_MESSAGE_HPP_
-#define KKTEST_COMMON_INTERPROC_IMPL_MESSAGE_HPP_
+#ifndef KKTEST_COMMON_INTERPROC_SRC_MESSAGE_HPP_
+#define KKTEST_COMMON_INTERPROC_SRC_MESSAGE_HPP_
 
 #include <functional>
 
-#include <kktest_common/string.hpp>
+#include "common/string/src/string.hpp"
 
 namespace kktest {
 namespace interproc {

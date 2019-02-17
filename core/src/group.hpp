@@ -1,10 +1,10 @@
-#ifndef KKTEST_CORE_GROUP_HPP_
-#define KKTEST_CORE_GROUP_HPP_
+#ifndef KKTEST_CORE_SRC_GROUP_HPP_
+#define KKTEST_CORE_SRC_GROUP_HPP_
 
-#include <kktest_common/string.hpp>
-#include <kktest_impl/executable.hpp>
-#include <kktest_impl/info.hpp>
-#include "test.hpp"
+#include "common/string/src/string.hpp"
+#include "core/include/kktest_impl/executable.hpp"
+#include "core/src/info.hpp"
+#include "core/src/test.hpp"
 
 namespace kktest {
 

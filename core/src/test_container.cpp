@@ -1,5 +1,6 @@
-#include "test_container.hpp"
-#include "test.hpp"
+#include "core/src/test_container.hpp"
+
+#include "core/src/test.hpp"
 
 using namespace kktest::interproc;
 using namespace std;

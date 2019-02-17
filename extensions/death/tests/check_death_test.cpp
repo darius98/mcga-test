@@ -3,7 +3,7 @@
 #include <kktest.hpp>
 #include <kktest_ext/matchers.hpp>
 
-#include <kktest_ext/death_impl/check_death.hpp>
+#include "extensions/death/include/kktest_ext/death_impl/check_death.hpp"
 
 using namespace kktest;
 using namespace kktest::matchers;

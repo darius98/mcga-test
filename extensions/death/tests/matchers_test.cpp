@@ -2,7 +2,8 @@
 
 #include <kktest.hpp>
 #include <kktest_ext/matchers.hpp>
-#include <kktest_ext/death.hpp>
+
+#include "extensions/death/include/kktest_ext/death_impl/matchers.hpp"
 
 using namespace kktest;
 using namespace kktest::matchers;

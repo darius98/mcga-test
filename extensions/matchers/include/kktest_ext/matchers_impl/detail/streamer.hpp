@@ -1,5 +1,5 @@
-#ifndef KKTEST_EXTENSIONS_MATCHERS_KKTEST_EXT_MATCHERS_IMPL_DETAIL_STREAMER_HPP_
-#define KKTEST_EXTENSIONS_MATCHERS_KKTEST_EXT_MATCHERS_IMPL_DETAIL_STREAMER_HPP_
+#ifndef KKTEST_EXTENSIONS_MATCHERS_INCLUDE_KKTEST_EXT_MATCHERS_IMPL_DETAIL_STREAMER_HPP_
+#define KKTEST_EXTENSIONS_MATCHERS_INCLUDE_KKTEST_EXT_MATCHERS_IMPL_DETAIL_STREAMER_HPP_
 
 #include <deque>
 #include <functional>
@@ -13,8 +13,6 @@
 #include <unordered_set>
 #include <utility>
 #include <vector>
-
-#include <kktest_common/string.hpp>
 
 namespace kktest {
 namespace matchers {
@@ -124,17 +122,17 @@ class Streamer<std::string,
     static void send(std::stringstream& s, std::string obj) {
         // TODO(darius98): This should be somewhere else (in utils maybe?)
         size_t pos = 0;
-        while ((pos = obj.find('\n', pos)) != String::npos) {
+        while ((pos = obj.find('\n', pos)) != std::string::npos) {
             obj.replace(pos, 1, "\\n");
             pos += 2;
         }
         pos = 0;
-        while ((pos = obj.find('\t', pos)) != String::npos) {
+        while ((pos = obj.find('\t', pos)) != std::string::npos) {
             obj.replace(pos, 1, "\\t");
             pos += 2;
         }
         pos = 0;
-        while ((pos = obj.find('\r', pos)) != String::npos) {
+        while ((pos = obj.find('\r', pos)) != std::string::npos) {
             obj.replace(pos, 1, "\\r");
             pos += 2;
         }

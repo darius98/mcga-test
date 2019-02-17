@@ -1,10 +1,10 @@
-#ifndef KKTEST_CORE_BOX_EXECUTOR_HPP_
-#define KKTEST_CORE_BOX_EXECUTOR_HPP_
+#ifndef KKTEST_CORE_SRC_BOX_EXECUTOR_HPP_
+#define KKTEST_CORE_SRC_BOX_EXECUTOR_HPP_
 
 #include <set>
 
-#include "executor.hpp"
-#include "test_container.hpp"
+#include "core/src/executor.hpp"
+#include "core/src/test_container.hpp"
 
 namespace kktest {
 

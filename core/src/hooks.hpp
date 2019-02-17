@@ -1,9 +1,9 @@
-#ifndef KKTEST_CORE_HOOKS_HPP_
-#define KKTEST_CORE_HOOKS_HPP_
+#ifndef KKTEST_CORE_SRC_HOOKS_HPP_
+#define KKTEST_CORE_SRC_HOOKS_HPP_
 
 #include <tuple>
 
-#include <kktest_impl/extension_api.hpp>
+#include "core/src/extension_api.hpp"
 
 namespace kktest {
 

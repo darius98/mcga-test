@@ -1,7 +1,7 @@
+#include "common/utils/src/time.hpp"
+
 #include <chrono>
 #include <thread>
-
-#include <kktest_common/time.hpp>
 
 using namespace std::chrono;
 using namespace std::this_thread;
@@ -20,7 +20,7 @@ double msSince(timespec pastMoment) {
             + (now.tv_nsec - pastMoment.tv_nsec) * 0.000001;
 }
 
-}  // namespace
+}
 
 namespace kktest {
 namespace utils {

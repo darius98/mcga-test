@@ -1,6 +1,6 @@
-#include <kktest_common/interproc.hpp>
-#include <kktest_impl/definers.hpp>
-#include <kktest_ext/death_impl/check_death.hpp>
+#include "extensions/death/include/kktest_ext/death_impl/check_death.hpp"
+
+#include "common/interproc/src/subprocess.hpp"
 
 using namespace kktest::interproc;
 using namespace std;

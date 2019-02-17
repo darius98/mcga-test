@@ -1,7 +1,8 @@
+#include "extensions/feedback/src/ext.hpp"
+
 #include <iostream>
 
-#include <kktest_ext/feedback_impl/ext.hpp>
-#include <kktest_ext/feedback_impl/pipe_message_type.hpp>
+#include "extensions/feedback/src/pipe_message_type.hpp"
 
 using namespace cppli;
 using namespace kktest::interproc;

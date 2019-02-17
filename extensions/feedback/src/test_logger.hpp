@@ -1,12 +1,12 @@
-#ifndef KKTEST_EXT_FEEDBACK_IMPL_TEST_LOGGER_HPP_
-#define KKTEST_EXT_FEEDBACK_IMPL_TEST_LOGGER_HPP_
+#ifndef KKTEST_EXTENSIONS_FEEDBACK_SRC_TEST_LOGGER_HPP_
+#define KKTEST_EXTENSIONS_FEEDBACK_SRC_TEST_LOGGER_HPP_
 
 #include <map>
 #include <ostream>
 #include <set>
 #include <utility>
 
-#include <kktest_impl/info.hpp>
+#include "core/src/info.hpp"
 
 namespace kktest {
 namespace feedback {

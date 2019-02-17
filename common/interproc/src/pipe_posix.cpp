@@ -1,3 +1,5 @@
+#include "common/interproc/src/pipe.hpp"
+
 #include <fcntl.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -5,8 +7,6 @@
 #include <cerrno>
 #include <cstdlib>
 #include <cstring>
-
-#include <kktest_common/interproc_impl/pipe.hpp>
 
 using namespace std;
 

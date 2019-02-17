@@ -1,7 +1,7 @@
-#ifndef KKTEST_CORE_KKTEST_IMPL_INFO_HPP_
-#define KKTEST_CORE_KKTEST_IMPL_INFO_HPP_
+#ifndef KKTEST_CORE_SRC_INFO_HPP_
+#define KKTEST_CORE_SRC_INFO_HPP_
 
-#include <kktest_common/string.hpp>
+#include "common/string/src/string.hpp"
 
 namespace kktest {
 

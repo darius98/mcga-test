@@ -1,6 +1,7 @@
-#include "errors.hpp"
-#include "group.hpp"
-#include "test.hpp"
+#include "core/src/test.hpp"
+
+#include "core/src/errors.hpp"
+#include "core/src/group.hpp"
 
 using namespace kktest::interproc;
 

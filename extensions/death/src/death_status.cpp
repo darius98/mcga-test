@@ -1,4 +1,4 @@
-#include <kktest_ext/death_impl/death_status.hpp>
+#include "extensions/death/include/kktest_ext/death_impl/death_status.hpp"
 
 using namespace std;
 
@@ -28,10 +28,10 @@ int DeathStatus::getSignal() const {
 }
 
 string DeathStatus::getOutput() const {
-    return output.str();
+    return output;
 }
 
-DeathStatus::DeathStatus(int _exitCode, int _signal, String _output):
+DeathStatus::DeathStatus(int _exitCode, int _signal, string _output):
         exitCode(_exitCode), signal(_signal), output(move(_output)) {}
 
 ostream& operator<<(ostream& out, const DeathStatus& status) {

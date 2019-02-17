@@ -1,8 +1,8 @@
+#include "common/string/src/string.hpp"
+
 #include <cstring>
 
 #include <algorithm>
-
-#include <kktest_common/string.hpp>
 
 using std::string;
 using std::transform;

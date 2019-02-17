@@ -1,9 +1,9 @@
-#ifndef KKTEST_EXT_FEEDBACK_IMPL_EXT_HPP_
-#define KKTEST_EXT_FEEDBACK_IMPL_EXT_HPP_
+#ifndef KKTEST_EXTENSIONS_FEEDBACK_SRC_EXT_HPP_
+#define KKTEST_EXTENSIONS_FEEDBACK_SRC_EXT_HPP_
 
-#include <kktest_common/interproc.hpp>
-#include <kktest_ext/feedback_impl/test_logger.hpp>
-#include <kktest_impl/extension_api.hpp>
+#include "common/interproc/src/pipe.hpp"
+#include "core/src/extension_api.hpp"
+#include "extensions/feedback/src/test_logger.hpp"
 
 namespace kktest {
 namespace feedback {

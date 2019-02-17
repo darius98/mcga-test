@@ -1,7 +1,7 @@
 #include <kktest.hpp>
 #include <kktest_ext/matchers.hpp>
 
-#include <kktest_common/time.hpp>
+#include "common/utils/src/time.hpp"
 
 using namespace kktest;
 using namespace kktest::matchers;

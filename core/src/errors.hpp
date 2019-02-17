@@ -1,9 +1,9 @@
-#ifndef KKTEST_CORE_ERRORS_HPP_
-#define KKTEST_CORE_ERRORS_HPP_
+#ifndef KKTEST_CORE_SRC_ERRORS_HPP_
+#define KKTEST_CORE_SRC_ERRORS_HPP_
 
 #include <stdexcept>
 
-#include <kktest_common/string.hpp>
+#include "common/string/src/string.hpp"
 
 namespace kktest {
 

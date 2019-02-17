@@ -1,5 +1,5 @@
-#ifndef KKTEST_CORE_KKTEST_IMPL_DEFINERS_HPP_
-#define KKTEST_CORE_KKTEST_IMPL_DEFINERS_HPP_
+#ifndef KKTEST_CORE_INCLUDE_KKTEST_IMPL_DEFINERS_HPP_
+#define KKTEST_CORE_INCLUDE_KKTEST_IMPL_DEFINERS_HPP_
 
 #include <kktest_impl/config.hpp>
 #include <kktest_impl/executable.hpp>

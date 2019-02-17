@@ -1,7 +1,8 @@
-#include <kktest_impl/main.hpp>
-#include "driver.hpp"
-#include "extension_api_impl.hpp"
-#include "test_case_registry.hpp"
+#include "core/src/main.hpp"
+
+#include "core/src/driver.hpp"
+#include "core/src/extension_api_impl.hpp"
+#include "core/src/test_case_registry.hpp"
 
 using namespace cppli;
 using namespace std;

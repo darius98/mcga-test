@@ -1,4 +1,4 @@
-#include <kktest_common/interproc_impl/pipe.hpp>
+#include "common/interproc/src/pipe.hpp"
 
 using namespace std;
 

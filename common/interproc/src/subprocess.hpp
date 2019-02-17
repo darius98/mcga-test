@@ -1,11 +1,11 @@
-#ifndef KKTEST_COMMON_INTERPROC_IMPL_SUBPROCESS_HPP_
-#define KKTEST_COMMON_INTERPROC_IMPL_SUBPROCESS_HPP_
+#ifndef KKTEST_COMMON_INTERPROC_SRC_SUBPROCESS_HPP_
+#define KKTEST_COMMON_INTERPROC_SRC_SUBPROCESS_HPP_
 
 #include <functional>
 #include <vector>
 
-#include <kktest_common/interproc_impl/message.hpp>
-#include <kktest_common/interproc_impl/pipe.hpp>
+#include "common/interproc/src/message.hpp"
+#include "common/interproc/src/pipe.hpp"
 
 namespace kktest {
 namespace interproc {

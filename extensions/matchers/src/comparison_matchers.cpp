@@ -1,4 +1,4 @@
-#include <kktest_ext/matchers_impl/comparison_matchers.hpp>
+#include "extensions/matchers/include/kktest_ext/matchers_impl/comparison_matchers.hpp"
 
 using namespace std;
 
@@ -78,7 +78,7 @@ void EqualityMatcher<string>::describeMismatch(Description* description,
     (*description) << extractRelevantSection(target, mismatchIndex);
     description->appendRawString("'\n\t     Got: '");
     (*description) << extractRelevantSection(obj, mismatchIndex);
-    description->appendRawString("'\n\t" + String(numSpaces, ' ') + "^");
+    description->appendRawString("'\n\t" + string(numSpaces, ' ') + "^");
 }
 
 NonEqualityMatcher<string>::NonEqualityMatcher(string _target):

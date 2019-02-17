@@ -1,16 +1,16 @@
-#ifndef KKTEST_CORE_DRIVER_HPP_
-#define KKTEST_CORE_DRIVER_HPP_
+#ifndef KKTEST_CORE_SRC_DRIVER_HPP_
+#define KKTEST_CORE_SRC_DRIVER_HPP_
 
 #include <functional>
 #include <map>
 #include <set>
 #include <vector>
 
-#include "errors.hpp"
-#include "executor.hpp"
-#include "group.hpp"
-#include "hooks.hpp"
-#include "test.hpp"
+#include "core/src/errors.hpp"
+#include "core/src/executor.hpp"
+#include "core/src/group.hpp"
+#include "core/src/hooks.hpp"
+#include "core/src/test.hpp"
 
 namespace kktest {
 

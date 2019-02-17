@@ -1,5 +1,5 @@
-#ifndef KKTEST_COMMON_STRING_HPP_
-#define KKTEST_COMMON_STRING_HPP_
+#ifndef KKTEST_COMMON_STRING_SRC_STRING_HPP_
+#define KKTEST_COMMON_STRING_SRC_STRING_HPP_
 
 #include <string>
 
@@ -9,8 +9,8 @@ class String: public std::string {
  public:
     String();
     String(std::string::size_type sz, char ch);
-    String(const std::string& s);
-    String(const char* s);
+    String(const std::string& s); // NOLINT(google-explicit-constructor)
+    String(const char* s); // NOLINT(google-explicit-constructor)
 
     String toUpper() const;
     String toLower() const;

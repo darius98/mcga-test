@@ -1,12 +1,12 @@
-#ifndef KKTEST_CORE_KKTEST_IMPL_EXTENSION_API_HPP_
-#define KKTEST_CORE_KKTEST_IMPL_EXTENSION_API_HPP_
+#ifndef KKTEST_CORE_SRC_EXTENSION_API_HPP_
+#define KKTEST_CORE_SRC_EXTENSION_API_HPP_
 
 #include <functional>
 #include <stdexcept>
 
 #include <cppli.hpp>
 
-#include <kktest_impl/info.hpp>
+#include "core/src/info.hpp"
 
 namespace kktest {
 

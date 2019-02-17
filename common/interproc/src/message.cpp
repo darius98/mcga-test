@@ -1,7 +1,7 @@
+#include "common/interproc/src/message.hpp"
+
 #include <cstdlib>
 #include <cstring>
-
-#include <kktest_common/interproc_impl/message.hpp>
 
 using namespace std;
 

@@ -1,9 +1,9 @@
+#include "core/src/test_case_registry.hpp"
+
 #include <cstdlib>
 #include <cstring>
 
 #include <utility>
-
-#include "test_case_registry.hpp"
 
 using namespace std;
 

@@ -1,10 +1,10 @@
-#ifndef KKTEST_CORE_TEST_CASE_REGISTRY_HPP_
-#define KKTEST_CORE_TEST_CASE_REGISTRY_HPP_
+#ifndef KKTEST_CORE_SRC_TEST_CASE_REGISTRY_HPP_
+#define KKTEST_CORE_SRC_TEST_CASE_REGISTRY_HPP_
 
 #include <utility>
 #include <vector>
 
-#include <kktest_common/string.hpp>
+#include "common/string/src/string.hpp"
 
 namespace kktest {
 

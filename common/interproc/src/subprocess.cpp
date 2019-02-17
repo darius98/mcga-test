@@ -1,4 +1,4 @@
-#include <kktest_common/interproc_impl/subprocess.hpp>
+#include "common/interproc/src/subprocess.hpp"
 
 using namespace std;
 

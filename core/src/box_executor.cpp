@@ -1,7 +1,8 @@
-#include <kktest_common/interproc.hpp>
+#include "core/src/box_executor.hpp"
 
-#include "box_executor.hpp"
-#include "errors.hpp"
+#include "common/interproc/src/pipe.hpp"
+#include "common/utils/src/time.hpp"
+#include "core/src/errors.hpp"
 
 using namespace kktest::interproc;
 using namespace kktest::utils;

@@ -1,8 +1,8 @@
 #include <kktest.hpp>
 #include <kktest_ext/matchers.hpp>
 
-#include <kktest_common/interproc_impl/pipe.hpp>
-#include <kktest_common/string.hpp>
+#include "common/interproc/src/pipe.hpp"
+#include "common/string/src/string.hpp"
 
 using namespace kktest;
 using namespace kktest::matchers;

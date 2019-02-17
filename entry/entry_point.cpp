@@ -1,8 +1,9 @@
 #define VERSION "1.0.0"
 
-#include <kktest_ext/feedback.hpp>
-#include <kktest_impl/export.hpp>
-#include <kktest_impl/main.hpp>
+#include "core/include/kktest_impl/export.hpp"
+#include "core/src/main.hpp"
+
+#include "extensions/feedback/src/ext.hpp"
 
 using namespace kktest;
 using namespace cppli;
