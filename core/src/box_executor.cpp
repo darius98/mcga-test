@@ -17,7 +17,7 @@ BoxExecutor::BoxExecutor(const OnTestFinishedCallback& onTestFinishedCallback,
 
 void BoxExecutor::execute(Test* test, Executable func) {
     ensureFreeContainers(1);
-    openContainers.insert(new TestContainer(
+    openContainers.insert(new TimedWorkerSubprocess(
         test->getConfig().timeTicksLimit * getTimeTickLengthMs() + 100.0,
         bind(&BoxExecutor::runContained, this, test, func, placeholders::_1),
         bind(&BoxExecutor::onContainerMessage, this, test, placeholders::_1)));
@@ -33,9 +33,18 @@ void BoxExecutor::runContained(Test* test, Executable func, PipeWriter* pipe) {
     }
 }
 
-void BoxExecutor::onContainerMessage(Test* test, const Message& message) {
-    test->setExecuted(TestExecutionInfo::fromMessage(message));
-    onTestFinishedCallback(test);
+void BoxExecutor::onContainerMessage(Test* test, Message& message) {
+    TimedWorkerSubprocess::ResultType t;
+    message >> t;
+    if (t == TimedWorkerSubprocess::ERROR) {
+        string errorMessage;
+        message >> errorMessage;
+        test->setExecuted(TestExecutionInfo::fromError(errorMessage));
+    } else {
+        auto executionInfo = TestExecutionInfo::fromMessage(message);
+        test->setExecuted(executionInfo);
+        onTestFinishedCallback(test);
+    }
 }
 
 void BoxExecutor::finalize() {

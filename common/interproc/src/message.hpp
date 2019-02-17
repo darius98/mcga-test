@@ -36,7 +36,7 @@ class Message {
     bool isInvalid() const;
 
     template<class T>
-    const Message& operator>>(T& obj) const {
+    Message& operator>>(T& obj) {
         obj = *static_cast<T*>(
                 static_cast<void*>(
                         static_cast<std::uint8_t*>(payload) + readHead));
@@ -51,7 +51,7 @@ class Message {
 
     void copyContent(const Message& other);
 
-    mutable std::size_t readHead = sizeof(std::size_t);
+    std::size_t readHead = sizeof(std::size_t);
     void* payload;
 
     // helper internal classes
@@ -107,10 +107,13 @@ class Message {
 };
 
 template<>
-const Message& Message::operator>>(std::string& obj) const;
+Message& Message::operator>>(std::string& obj);
 
 template<>
 Message::BytesConsumer& Message::BytesConsumer::add(const std::string& obj);
+
+template<>
+Message::BytesConsumer& Message::BytesConsumer::add(const Message& obj);
 
 }
 }

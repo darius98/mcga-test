@@ -12,17 +12,26 @@ namespace kktest {
 class Group;
 
 struct TestExecutionInfo {
-    enum MessageStatus { FINISHED_SUCCESSFULLY, CONFIGURATION_ERROR };
+    enum MessageStatus: std::uint8_t {
+        FINISHED_SUCCESSFULLY = 0,
+        CONFIGURATION_ERROR = 1
+    };
+
+    static TestExecutionInfo fromError(const std::string& errorMessage);
+
+    static TestExecutionInfo fromMessage(interproc::Message& message);
+
+    TestExecutionInfo();
+
+    TestExecutionInfo(double _executionTimeTicks,
+                      bool _passed,
+                      std::string _failureMessage);
+
+    interproc::Message toMessage() const;
 
     double executionTimeTicks = -1.0;
     bool passed = true;
     std::string failureMessage = "";
-
-    static interproc::Message toErrorMessage(const std::string& errorMessage);
-
-    static TestExecutionInfo fromMessage(const interproc::Message& message);
-
-    interproc::Message toMessage() const;
 };
 
 class Test {

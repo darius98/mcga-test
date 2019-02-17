@@ -3,8 +3,8 @@
 
 #include <set>
 
+#include "common/interproc/src/timed_worker_subprocess.hpp"
 #include "core/src/executor.hpp"
-#include "core/src/test_container.hpp"
 
 namespace kktest {
 
@@ -20,12 +20,12 @@ class BoxExecutor: public Executor {
 
     void runContained(Test* test, Executable func, interproc::PipeWriter* pipe);
 
-    void onContainerMessage(Test* test, const interproc::Message& message);
+    void onContainerMessage(Test* test, interproc::Message& message);
 
     void ensureFreeContainers(std::size_t numContainers);
 
     std::size_t maxNumContainers;
-    std::set<TestContainer*> openContainers;
+    std::set<interproc::TimedWorkerSubprocess*> openContainers;
 };
 
 }

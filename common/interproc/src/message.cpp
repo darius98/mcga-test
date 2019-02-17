@@ -88,7 +88,7 @@ bool Message::isInvalid() const {
 }
 
 template<>
-const Message& Message::operator>>(string& obj) const {
+Message& Message::operator>>(string& obj) {
     decltype(obj.size()) size;
     (*this) >> size;
     obj.assign(static_cast<char*>(payload) + readHead,
@@ -101,6 +101,13 @@ template<>
 Message::BytesConsumer& Message::BytesConsumer::add(const string& obj) {
     add(obj.size());
     addBytes(obj.c_str(), obj.size());
+    return *this;
+}
+
+template<>
+Message::BytesConsumer& Message::BytesConsumer::add(const Message& obj) {
+    auto contentSize = *static_cast<size_t*>(obj.payload);
+    addBytes(static_cast<uint8_t*>(obj.payload) + sizeof(size_t), contentSize);
     return *this;
 }
 

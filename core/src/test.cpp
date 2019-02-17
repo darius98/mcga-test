@@ -8,6 +8,19 @@ using namespace std;
 
 namespace kktest {
 
+TestExecutionInfo TestExecutionInfo::fromError(const string& errorMessage) {
+    return TestExecutionInfo(-1.0, false, errorMessage);
+}
+
+TestExecutionInfo::TestExecutionInfo() = default;
+
+TestExecutionInfo::TestExecutionInfo(double _executionTimeTicks,
+                                     bool _passed,
+                                     string _failureMessage):
+        executionTimeTicks(_executionTimeTicks),
+        passed(_passed),
+        failureMessage(move(_failureMessage)) {}
+
 interproc::Message TestExecutionInfo::toMessage() const {
     return Message::build(
             FINISHED_SUCCESSFULLY,
@@ -16,11 +29,7 @@ interproc::Message TestExecutionInfo::toMessage() const {
             failureMessage);
 }
 
-Message TestExecutionInfo::toErrorMessage(const string& errorMessage) {
-    return Message::build(FINISHED_SUCCESSFULLY, -1.0, false, errorMessage);
-}
-
-TestExecutionInfo TestExecutionInfo::fromMessage(const Message& message) {
+TestExecutionInfo TestExecutionInfo::fromMessage(Message& message) {
     TestExecutionInfo info{};
     MessageStatus status;
     message >> status;
