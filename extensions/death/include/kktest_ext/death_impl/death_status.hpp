@@ -33,7 +33,8 @@ class KKTEST_API DeathStatus {
     int signal;
     std::string output;
 
-friend DeathStatus checkDeath(const std::function<void()>& func);
+friend DeathStatus checkDeath(const std::function<void()>& func,
+                              double timeTicksLimit);
 friend std::ostream& operator<<(std::ostream& out, const DeathStatus& status);
 };
 

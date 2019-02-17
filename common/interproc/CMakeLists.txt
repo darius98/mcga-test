@@ -2,7 +2,7 @@ list(APPEND interproc_src
     src/message.cpp
     src/pipe.cpp
     src/subprocess.cpp
-    src/timed_worker_subprocess.cpp
+    src/worker_subprocess.cpp
 )
 if (UNIX OR APPLE)
     list(APPEND interproc_src

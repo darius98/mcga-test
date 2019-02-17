@@ -3,7 +3,7 @@
 
 #include <set>
 
-#include "common/interproc/src/timed_worker_subprocess.hpp"
+#include "common/interproc/src/worker_subprocess.hpp"
 #include "core/src/executor.hpp"
 
 namespace kktest {
@@ -25,7 +25,7 @@ class BoxExecutor: public Executor {
     void ensureFreeContainers(std::size_t numContainers);
 
     std::size_t maxNumContainers;
-    std::set<interproc::TimedWorkerSubprocess*> openContainers;
+    std::set<interproc::WorkerSubprocess*> openContainers;
 };
 
 }

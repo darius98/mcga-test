@@ -9,25 +9,24 @@ using namespace std;
 namespace kktest {
 
 Executor::Executor(OnTestFinishedCallback _onTestFinishedCallback):
-        onTestFinishedCallback(move(_onTestFinishedCallback)),
-        timeTickLengthMs(computeTimeTickLengthFromHardware()) {}
+        onTestFinishedCallback(move(_onTestFinishedCallback)) {}
 
 Executor::~Executor() = default;
 
-double Executor::computeTimeTickLengthFromHardware() {
-    // TODO(darius98): Don't hard-code this, estimate it based on how much a
-    // series of computations takes.
-    return 1000.0;
+double Executor::getTimeTickLengthMs() {
+    static double timeTickLengthMs = -1.0;
+    if (timeTickLengthMs == -1.0) {
+        // TODO(darius98): Don't hard-code this, estimate it based on how much a
+        // series of computations takes.
+        timeTickLengthMs = 1000.0;
+    }
+    return timeTickLengthMs;
 }
 
 void Executor::checkIsInactive(const string& methodName) const {
     if (state == ACTIVE) {
         throw ConfigurationError(methodName + " called in invalid context.");
     }
-}
-
-double Executor::getTimeTickLengthMs() const {
-    return timeTickLengthMs;
 }
 
 void Executor::finalize() {}
@@ -56,7 +55,7 @@ TestExecutionInfo Executor::run(Test* test, Executable func) {
     double executionTimeMs = t.getMsElapsed();
     state = INACTIVE;
     TestExecutionInfo result;
-    result.executionTimeTicks = executionTimeMs / timeTickLengthMs;
+    result.executionTimeTicks = executionTimeMs / getTimeTickLengthMs();
     result.passed = !failed;
     result.failureMessage = failureMessage;
     return result;

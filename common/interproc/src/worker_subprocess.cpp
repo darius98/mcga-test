@@ -1,0 +1,135 @@
+#include "common/interproc/src/worker_subprocess.hpp"
+
+using namespace std;
+
+namespace kktest {
+namespace interproc {
+
+WorkerSubprocess::WorkerSubprocess(double timeLimitMs,
+                                   Work run,
+                                   Callback _callback):
+        stopwatch(timeLimitMs),
+        callback(move(_callback)) {
+    auto pipe = createAnonymousPipe();
+    auto stdoutPipe = createAnonymousPipe();
+    subprocess = Subprocess::fork([&stdoutPipe, &pipe, &run]() {
+        delete pipe.first;
+        delete stdoutPipe.first;
+        redirectStdoutToPipe(stdoutPipe.second);
+        run(pipe.second);
+        delete pipe.second;
+        delete stdoutPipe.second;
+    });
+    pipeReader = pipe.first;
+    stdoutReader = stdoutPipe.first;
+
+    delete pipe.second;
+    delete stdoutPipe.second;
+}
+
+WorkerSubprocess::WorkerSubprocess(WorkerSubprocess&& other) noexcept:
+        output(move(other.output)),
+        subprocess(other.subprocess),
+        pipeReader(other.pipeReader),
+        stdoutReader(other.stdoutReader),
+        stopwatch(other.stopwatch),
+        callback(move(other.callback)) {
+    other.subprocess = nullptr;
+    other.pipeReader = nullptr;
+    other.stdoutReader = nullptr;
+}
+
+WorkerSubprocess::~WorkerSubprocess() {
+    delete subprocess;
+    delete pipeReader;
+    delete stdoutReader;
+}
+
+Message WorkerSubprocess::getNextMessage(int maxConsecutiveFailedReadAttempts) {
+    return pipeReader->getNextMessage(maxConsecutiveFailedReadAttempts);
+}
+
+bool WorkerSubprocess::isFinished() {
+    auto newBytes = stdoutReader->getBytes();
+    for (uint8_t byte : newBytes) {
+        output += static_cast<char>(byte);
+    }
+    return subprocess->isFinished();
+}
+
+Subprocess::KillResult WorkerSubprocess::kill() {
+    return subprocess->kill();
+}
+
+bool WorkerSubprocess::isExited() {
+    return subprocess->isExited();
+}
+
+int WorkerSubprocess::getReturnCode() {
+    return subprocess->getReturnCode();
+}
+
+bool WorkerSubprocess::isSignaled() {
+    return subprocess->isSignaled();
+}
+
+int WorkerSubprocess::getSignal() {
+    return subprocess->getSignal();
+}
+
+string WorkerSubprocess::getOutput() {
+    return output;
+}
+
+void WorkerSubprocess::wait() {
+    subprocess->wait();
+    auto newBytes = stdoutReader->getBytes();
+    for (uint8_t byte : newBytes) {
+        output += static_cast<char>(byte);
+    }
+}
+
+bool WorkerSubprocess::poll() {
+    if (!isFinished()) {
+        if (!stopwatch.isElapsed()) {
+            return false;
+        }
+        auto killStatus = kill();
+        if (killStatus == Subprocess::ALREADY_DEAD) {
+            // The child might have finished during a context switch.
+            // In this case, return false so we can retry waiting it later.
+            return false;
+        }
+        return finishWithError("Execution timed out.");
+    }
+    switch (getFinishStatus()) {
+        case Subprocess::FinishStatus::UNKNOWN:
+            return finishWithError("Unknown error occurred.");
+        case Subprocess::FinishStatus::SIGNALED:
+            return finishWithError("Killed by signal "
+                                   + to_string(getSignal()));
+        case Subprocess::FinishStatus::NON_ZERO_EXIT:
+            return finishWithError("Exit code "
+                                   + to_string(getReturnCode()) + ".");
+        case Subprocess::FinishStatus::ZERO_EXIT: {
+            Message message = getNextMessage();
+            if (message.isInvalid()) {
+                return finishWithError("Unexpected 0-code exit.");
+            }
+            auto successMessage = Message::build(SUCCESS, message);
+            callback(successMessage);
+            return true;
+        }
+        default:
+            return finishWithError("Unknown error occurred.");
+    }
+}
+
+bool WorkerSubprocess::finishWithError(const string& errorMessage) {
+    auto message = Message::build(ERROR, errorMessage);
+    callback(message);
+    return true;
+}
+
+}
+}

@@ -42,47 +42,6 @@ class Subprocess {
     FinishStatus getFinishStatus();
 };
 
-class WorkerSubprocess: public Subprocess {
- public:
-    typedef const std::function<void(PipeWriter*)>& Work;
-
-    static WorkerSubprocess open(Work work);
-
-    WorkerSubprocess(WorkerSubprocess&& other) noexcept;
-
-    WorkerSubprocess(const WorkerSubprocess& other) = delete;
-
-    ~WorkerSubprocess() override;
-
-    Message getNextMessage(int maxConsecutiveFailedReadAttempts = -1);
-
-    bool isFinished() override;
-
-    KillResult kill() override;
-
-    bool isExited() override;
-
-    int getReturnCode() override;
-
-    bool isSignaled() override;
-
-    int getSignal() override;
-
-    void wait() override;
-
-    std::string getOutput();
-
- private:
-    WorkerSubprocess(Subprocess* _subprocess,
-                     PipeReader* _pipeReader,
-                     PipeReader* _stdoutReader);
-
-    std::string output;
-    Subprocess* subprocess;
-    PipeReader* pipeReader;
-    PipeReader* stdoutReader;
-};
-
 }
 }
 

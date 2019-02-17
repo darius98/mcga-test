@@ -12,9 +12,9 @@ class Executor {
     enum State { INACTIVE, ACTIVE };
     typedef const std::function<void(const std::string&)>& SetFailure;
 
-    static double computeTimeTickLengthFromHardware();
-
  public:
+    static double getTimeTickLengthMs();
+
     typedef std::function<void(Test*)> OnTestFinishedCallback;
 
     explicit Executor(OnTestFinishedCallback _onTestFinishedCallback);
@@ -22,8 +22,6 @@ class Executor {
     virtual ~Executor();
 
     void checkIsInactive(const std::string& methodName) const;
-
-    double getTimeTickLengthMs() const;
 
     virtual void execute(Test* test, Executable func);
 
@@ -42,7 +40,6 @@ class Executor {
     void runTest(Executable func, SetFailure setFailure);
 
     State state = State::INACTIVE;
-    double timeTickLengthMs;
 };
 
 }
