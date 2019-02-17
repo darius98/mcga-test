@@ -107,19 +107,5 @@ Subprocess* Subprocess::fork(const function<void()>& func) {
     return new LinuxSubprocessHandler(forkPid);
 }
 
-Subprocess* Subprocess::open(char* executable, char* argv[]) {
-    pid_t forkPid = ::fork();
-    if (forkPid < 0) {
-        perror("fork");
-        exit(errno);
-    }
-    if (forkPid == 0) {  // child process
-        execve(executable, argv, nullptr);
-        perror("execve");
-        exit(errno);
-    }
-    return new LinuxSubprocessHandler(forkPid);
-}
-
 }
 }

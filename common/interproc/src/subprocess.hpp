@@ -18,11 +18,6 @@ class Subprocess {
 
     static Subprocess* fork(const std::function<void()>& func);
 
-    static Subprocess* open(char* executable, char* argv[]);
-
-    static Subprocess* open(const std::string& executable,
-                            const std::vector<std::string>& argv);
-
     virtual ~Subprocess() = default;
 
     virtual bool isFinished() = 0;
