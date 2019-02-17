@@ -130,7 +130,6 @@ void kkTestCase(InterprocMessage) {
                sizeof(int));
         Message message = Message::read(buffer, bufferSize);
         expect(message.isInvalid(), isFalse);
-        expect(message.getSize(), isEqualTo(sizeof(size_t) + sizeof(int)));
         int actualContent;
         message >> actualContent;
         expect(actualContent, isEqualTo(messageContent));

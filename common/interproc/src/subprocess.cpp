@@ -51,7 +51,7 @@ Message WorkerSubprocess::getNextMessage(int maxConsecutiveFailedReadAttempts) {
 }
 
 bool WorkerSubprocess::isFinished() {
-    auto newBytes = stdoutReader->getBytes(32);
+    auto newBytes = stdoutReader->getBytes();
     for (uint8_t byte : newBytes) {
         output += static_cast<char>(byte);
     }
@@ -84,7 +84,7 @@ string WorkerSubprocess::getOutput() {
 
 void WorkerSubprocess::wait() {
     subprocess->wait();
-    auto newBytes = stdoutReader->getBytes(32);
+    auto newBytes = stdoutReader->getBytes();
     for (uint8_t byte : newBytes) {
         output += static_cast<char>(byte);
     }
@@ -92,12 +92,11 @@ void WorkerSubprocess::wait() {
 
 WorkerSubprocess WorkerSubprocess::open(Work work) {
     auto pipe = createAnonymousPipe();
-    pair<PipeReader*, PipeWriter*> stdoutPipe{nullptr, nullptr};
-    stdoutPipe = createAnonymousPipe();
+    auto stdoutPipe = createAnonymousPipe();
     auto worker = Subprocess::fork([&stdoutPipe, &pipe, &work]() {
         delete pipe.first;
         delete stdoutPipe.first;
-        stdoutPipe.second->redirectStdout();
+        redirectStdoutToPipe(stdoutPipe.second);
         work(pipe.second);
         delete pipe.second;
         delete stdoutPipe.second;

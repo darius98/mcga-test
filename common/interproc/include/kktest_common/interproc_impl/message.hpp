@@ -34,8 +34,6 @@ class Message {
 
     bool operator==(const Message& other) const;
 
-    std::size_t getSize() const;
-
     bool isInvalid() const;
 
     template<class T>
@@ -49,6 +47,8 @@ class Message {
 
  private:
     explicit Message(void* _payload) noexcept;
+
+    std::size_t getSize() const;
 
     void copyContent(const Message& other);
 

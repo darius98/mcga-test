@@ -1,9 +1,10 @@
 list(APPEND interproc_src
     src/message.cpp
+    src/pipe.cpp
     src/subprocess.cpp
 )
-if (UNIX)
-    list(APPEND interproc_src src/unix/pipe.cpp src/unix/subprocess.cpp)
+if (LINUX OR APPLE)
+    list(APPEND interproc_src src/posix/pipe.cpp src/posix/subprocess.cpp)
 endif ()
 
 add_library(common_interproc ${interproc_src})

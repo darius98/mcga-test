@@ -127,7 +127,7 @@ class LinuxPipeReader: public PipeReader {
                 static_cast<uint8_t*>(buffer) + bufferReadHead,
                 bufferSize - bufferReadHead);
         if (!message.isInvalid()) {
-            bufferReadHead += message.getSize();
+            bufferReadHead += getMessageSize(message);
         }
         return message;
     }
@@ -146,37 +146,12 @@ class LinuxPipeWriter: public PipeWriter {
         outputFD(_outputFD) {}
 
     ~LinuxPipeWriter() override {
-        close();
-    }
-
-    void redirectStdout() override {
-        int ret = dup2(outputFD, STDOUT_FILENO);
-        if (ret < 0) {
-            // TODO(darius98): Handle errors better than just exiting!
-            perror("close");
-            exit(errno);
-        }
-        ret = ::close(outputFD);
-        if (ret < 0) {
-            // TODO(darius98): Handle errors better than just exiting!
-            perror("close");
-            exit(errno);
-        }
-        outputFD = STDOUT_FILENO;
-    }
-
- private:
-    void close() {
-        if (closed) {
-            return;
-        }
         int ret = ::close(outputFD);
         if (ret < 0) {
             // TODO(darius98): Handle errors better than just exiting!
             perror("close");
             exit(errno);
         }
-        closed = true;
     }
 
     void sendBytes(void* bytes, size_t numBytes) override {
@@ -194,9 +169,25 @@ class LinuxPipeWriter: public PipeWriter {
         }
     }
 
-    bool closed = false;
     int outputFD;
 };
+
+void redirectStdoutToPipe(PipeWriter* pipeWriter) {
+    auto linuxPipeWriter = dynamic_cast<LinuxPipeWriter*>(pipeWriter);
+    int ret = dup2(linuxPipeWriter->outputFD, STDOUT_FILENO);
+    if (ret < 0) {
+        // TODO(darius98): Handle errors better than just exiting!
+        perror("close");
+        exit(errno);
+    }
+    ret = ::close(linuxPipeWriter->outputFD);
+    if (ret < 0) {
+        // TODO(darius98): Handle errors better than just exiting!
+        perror("close");
+        exit(errno);
+    }
+    linuxPipeWriter->outputFD = STDOUT_FILENO;
+}
 
 pair<PipeReader*, PipeWriter*> createAnonymousPipe() {
     int fd[2];
