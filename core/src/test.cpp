@@ -64,14 +64,14 @@ Group* Test::getGroup() const {
 }
 
 TestInfo Test::getTestInfo() const {
-    return TestInfo{
+    return TestInfo(
         parentGroup->getIndex(),
         index,
         config.optional,
         config.description,
         executionInfo.passed,
         executionInfo.failureMessage
-    };
+    );
 }
 
 }

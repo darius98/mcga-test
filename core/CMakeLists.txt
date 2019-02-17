@@ -5,8 +5,9 @@ add_library(kktest_core OBJECT
     src/driver.cpp
     src/errors.cpp
     src/executor.cpp
-    src/extension_api_impl.cpp
+    src/extension_api.cpp
     src/group.cpp
+    src/info.cpp
     src/main.cpp
     src/test.cpp
     src/test_case_registry.cpp

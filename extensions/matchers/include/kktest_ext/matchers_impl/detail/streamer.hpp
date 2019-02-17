@@ -21,7 +21,7 @@ namespace detail {
 template<class S, class = void>
 class Streamer {
  public:
-    static void send(std::stringstream& stream, S obj) {
+    static void send(std::stringstream& stream, const S& obj) {
         format(stream, obj);
     }
 
@@ -63,7 +63,7 @@ class Streamer {
     }
 
     template<class I, class T>
-    static void formatList(std::stringstream& s, T obj,
+    static void formatList(std::stringstream& s, const T& obj,
                            char start = '[',
                            char finish = ']') {
         s << start;
@@ -97,7 +97,7 @@ class Streamer {
      * In case all else fails.
      */
     template<class T>
-    static void format(std::stringstream& s, T) {
+    static void format(std::stringstream& s, const T&) {
         s << "[UNPRINTABLE OBJECT]";
     }
 };
@@ -107,7 +107,11 @@ template<class...> using void_t = void;
 template<class S>
 class Streamer<S, void_t<decltype(std::cout << std::declval<S>())>> {
  public:
-    static void send(std::stringstream& s, S obj) {
+    static void send(std::stringstream& s, const S& obj) {
+        s << obj;
+    }
+
+    static void send(std::stringstream& s, const S* obj) {
         s << obj;
     }
 };
@@ -119,24 +123,25 @@ class Streamer<std::string,
                       >
                 > {
  public:
-    static void send(std::stringstream& s, std::string obj) {
+    static void send(std::stringstream& s, const std::string& obj) {
         // TODO(darius98): This should be somewhere else (in utils maybe?)
-        size_t pos = 0;
+        std::string objCopy = obj;
+        std::size_t pos = 0;
         while ((pos = obj.find('\n', pos)) != std::string::npos) {
-            obj.replace(pos, 1, "\\n");
+            objCopy.replace(pos, 1, "\\n");
             pos += 2;
         }
         pos = 0;
         while ((pos = obj.find('\t', pos)) != std::string::npos) {
-            obj.replace(pos, 1, "\\t");
+            objCopy.replace(pos, 1, "\\t");
             pos += 2;
         }
         pos = 0;
         while ((pos = obj.find('\r', pos)) != std::string::npos) {
-            obj.replace(pos, 1, "\\r");
+            objCopy.replace(pos, 1, "\\r");
             pos += 2;
         }
-        s << obj;
+        s << objCopy;
     }
 };
 

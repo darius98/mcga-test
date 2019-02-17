@@ -18,6 +18,12 @@ class KKTEST_API Description {
         return *this;
     }
 
+    template<class T>
+    Description& operator<<(const T* obj) {
+        detail::Streamer<T>::send(stream, obj);
+        return *this;
+    }
+
     Description& appendRawString(const std::string& str);
 
     std::string toString() const;

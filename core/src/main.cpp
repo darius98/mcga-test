@@ -1,7 +1,7 @@
 #include "core/src/main.hpp"
 
 #include "core/src/driver.hpp"
-#include "core/src/extension_api_impl.hpp"
+#include "core/src/extension_api.hpp"
 #include "core/src/test_case_registry.hpp"
 
 using namespace cppli;
@@ -33,13 +33,13 @@ InternalArgs registerInternalFlags(Parser& parser, const string& versionString) 
 }
 
 int main(const vector<Extension*>& extensions, InternalArgs args) {
-    ExtensionApiImpl apiImpl;
+    ExtensionApi api;
     for (Extension* extension : extensions) {
-        extension->init(&apiImpl);
+        extension->init(&api);
     }
 
     Driver* driver = Driver::init(
-        apiImpl.getHooks(),
+        api.getHooks(),
         args.smoothFlag.get(),
         max(args.maxParallelTestsArgument.get(), 1ul));
     int ret = 1;

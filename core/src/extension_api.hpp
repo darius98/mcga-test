@@ -6,27 +6,25 @@
 
 #include <cppli.hpp>
 
+#include "core/src/hooks.hpp"
 #include "core/src/info.hpp"
 
 namespace kktest {
 
 class ExtensionApi {
  public:
-    typedef std::function<void(const TestInfo&)> TestHook;
-    typedef std::function<void(const GroupInfo&)> GroupHook;
-    typedef std::function<void()> AfterInitHook;
-    typedef std::function<void()> BeforeDestroyHook;
-    typedef std::function<void(const std::exception&)> BeforeForceDestroyHook;
+    void beforeTest(const Hooks::TestHook& hook);
+    void afterTest(const Hooks::TestHook& hook);
+    void beforeGroup(const Hooks::GroupHook& hook);
+    void afterGroup(const Hooks::GroupHook& hook);
+    void afterInit(const Hooks::AfterInitHook& hook);
+    void beforeDestroy(const Hooks::BeforeDestroyHook& hook);
+    void beforeForceDestroy(const Hooks::BeforeForceDestroyHook& hook);
 
-    virtual ~ExtensionApi() = default;
+    const Hooks& getHooks() const;
 
-    virtual void beforeTest(const TestHook& hook) = 0;
-    virtual void afterTest(const TestHook& hook) = 0;
-    virtual void beforeGroup(const GroupHook& hook) = 0;
-    virtual void afterGroup(const GroupHook& hook) = 0;
-    virtual void afterInit(const AfterInitHook& hook) = 0;
-    virtual void beforeDestroy(const BeforeDestroyHook& hook) = 0;
-    virtual void beforeForceDestroy(const BeforeForceDestroyHook& hook) = 0;
+ private:
+    Hooks hooks;
 };
 
 class Extension {

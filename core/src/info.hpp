@@ -6,26 +6,32 @@
 namespace kktest {
 
 struct TestInfo {
-    int groupIndex;
-    int index;
-    bool optional;
-    String description;
-    bool passed;
-    String failureMessage;
+    int groupIndex = -1;
+    int index = -1;
+    bool optional = false;
+    String description = "-";
+    bool passed = true;
+    String failureMessage = "";
 
-    inline bool operator<(const TestInfo& other) const {
-        return index < other.index;
-    }
+    TestInfo(int _groupIndex,
+             int _index,
+             bool _optional,
+             String _description,
+             bool _passed,
+             String _failureMessage);
+
+    bool operator<(const TestInfo& other) const;
 };
 
 struct GroupInfo {
-    int parentGroupIndex;
-    int index;
-    String description;
+    int parentGroupIndex = -1;
+    int index = -1;
+    String description = "";
 
-    inline bool operator<(const GroupInfo& other) const {
-        return index < other.index;
-    }
+    GroupInfo();
+    GroupInfo(int _parentGroupIndex, int _index, String _description);
+
+    bool operator<(const GroupInfo& other) const;
 };
 
 }

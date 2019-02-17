@@ -3,12 +3,18 @@
 
 #include <tuple>
 
-#include "core/src/extension_api.hpp"
+#include "core/src/info.hpp"
 
 namespace kktest {
 
 class Hooks {
  public:
+    typedef std::function<void(const TestInfo&)> TestHook;
+    typedef std::function<void(const GroupInfo&)> GroupHook;
+    typedef std::function<void()> AfterInitHook;
+    typedef std::function<void()> BeforeDestroyHook;
+    typedef std::function<void(const std::exception&)> BeforeForceDestroyHook;
+
     enum Type {
         AFTER_INIT = 0,
         BEFORE_GROUP = 1,
@@ -25,7 +31,7 @@ class Hooks {
     }
 
     template<Type t, class... Args>
-    void runHooks(const Args... args) {
+    void runHooks(const Args&... args) {
         for (const auto& hook : std::get<t>(hooks)) {
             hook(args...);
         }
@@ -33,13 +39,13 @@ class Hooks {
 
  private:
     std::tuple<
-        std::vector<ExtensionApi::AfterInitHook>,
-        std::vector<ExtensionApi::GroupHook>,
-        std::vector<ExtensionApi::GroupHook>,
-        std::vector<ExtensionApi::TestHook>,
-        std::vector<ExtensionApi::TestHook>,
-        std::vector<ExtensionApi::BeforeDestroyHook>,
-        std::vector<ExtensionApi::BeforeForceDestroyHook>
+        std::vector<AfterInitHook>,
+        std::vector<GroupHook>,
+        std::vector<GroupHook>,
+        std::vector<TestHook>,
+        std::vector<TestHook>,
+        std::vector<BeforeDestroyHook>,
+        std::vector<BeforeForceDestroyHook>
     > hooks;
 };
 
