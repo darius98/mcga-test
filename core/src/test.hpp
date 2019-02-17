@@ -1,6 +1,8 @@
 #ifndef KKTEST_CORE_SRC_TEST_HPP_
 #define KKTEST_CORE_SRC_TEST_HPP_
 
+#include <string>
+
 #include "common/interproc/src/message.hpp"
 #include "core/include/kktest_impl/config.hpp"
 #include "core/src/info.hpp"
@@ -14,9 +16,9 @@ struct TestExecutionInfo {
 
     double executionTimeTicks = -1.0;
     bool passed = true;
-    String failureMessage = "";
+    std::string failureMessage = "";
 
-    static interproc::Message toErrorMessage(const String& errorMessage);
+    static interproc::Message toErrorMessage(const std::string& errorMessage);
 
     static TestExecutionInfo fromMessage(const interproc::Message& message);
 

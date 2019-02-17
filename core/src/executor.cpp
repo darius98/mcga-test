@@ -20,7 +20,7 @@ double Executor::computeTimeTickLengthFromHardware() {
     return 1000.0;
 }
 
-void Executor::checkIsInactive(const String& methodName) const {
+void Executor::checkIsInactive(const string& methodName) const {
     if (state == ACTIVE) {
         throw ConfigurationError(methodName + " called in invalid context.");
     }
@@ -40,9 +40,9 @@ void Executor::execute(Test* test, Executable func) {
 
 TestExecutionInfo Executor::run(Test* test, Executable func) {
     state = ACTIVE;
-    String failureMessage;
+    string failureMessage;
     bool failed = false;
-    auto setFailure = [&failureMessage, &failed](const String& value) {
+    auto setFailure = [&failureMessage, &failed](const string& value) {
         if (!failed) {
             failed = true;
             failureMessage = value;
@@ -91,7 +91,7 @@ void Executor::runTest(Executable func, SetFailure setFailure) {
     } catch(const ExpectationFailed& failure) {
         setFailure(failure.what());
     } catch(const exception& e) {
-        setFailure("An exception was thrown during test: " + String(e.what()));
+        setFailure("An exception was thrown during test: " + string(e.what()));
     } catch(...) {
         setFailure("A non-exception object was thrown during test");
     }

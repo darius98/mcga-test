@@ -2,9 +2,8 @@
 #define KKTEST_CORE_SRC_TEST_CASE_REGISTRY_HPP_
 
 #include <utility>
+#include <string>
 #include <vector>
-
-#include "common/string/src/string.hpp"
 
 namespace kktest {
 
@@ -14,12 +13,12 @@ class TestCaseRegistry {
 
     static void add(TestCase testCase, const char* name);
 
-    static std::vector<std::pair<TestCase, String>> all();
+    static std::vector<std::pair<TestCase, std::string>> all();
 
     static void clean();
 
  private:
-    static std::vector<std::pair<TestCase, String>>* testCases;
+    static std::vector<std::pair<TestCase, std::string>>* testCases;
 };
 
 }

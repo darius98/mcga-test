@@ -2,7 +2,6 @@
 #include <kktest_ext/matchers.hpp>
 
 #include "common/interproc/src/pipe.hpp"
-#include "common/string/src/string.hpp"
 
 using namespace kktest;
 using namespace kktest::matchers;

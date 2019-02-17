@@ -19,7 +19,7 @@ class FeedbackExtension: public Extension {
  private:
     void initLogging(ExtensionApi* api);
 
-    void initPipe(ExtensionApi* api, const String& pipeName);
+    void initPipe(ExtensionApi* api, const std::string& pipeName);
 
     TestLogger* logger = nullptr;
     interproc::PipeWriter* pipe = nullptr;

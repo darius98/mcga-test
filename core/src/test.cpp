@@ -4,6 +4,7 @@
 #include "core/src/group.hpp"
 
 using namespace kktest::interproc;
+using namespace std;
 
 namespace kktest {
 
@@ -15,7 +16,7 @@ interproc::Message TestExecutionInfo::toMessage() const {
             failureMessage);
 }
 
-Message TestExecutionInfo::toErrorMessage(const String& errorMessage) {
+Message TestExecutionInfo::toErrorMessage(const string& errorMessage) {
     return Message::build(FINISHED_SUCCESSFULLY, -1.0, false, errorMessage);
 }
 
@@ -24,7 +25,7 @@ TestExecutionInfo TestExecutionInfo::fromMessage(const Message& message) {
     MessageStatus status;
     message >> status;
     if (status == CONFIGURATION_ERROR) {
-        String errorMessage;
+        string errorMessage;
         message >> errorMessage;
         throw ConfigurationError(errorMessage);
     }

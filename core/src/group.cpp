@@ -2,12 +2,14 @@
 
 #include "core/src/errors.hpp"
 
+using namespace std;
+
 namespace kktest {
 
 Group::Group(const GroupConfig& _config, Group* _parentGroup, int _index):
         config(_config), parentGroup(_parentGroup), index(_index) {}
 
-String Group::getDescription() const {
+string Group::getDescription() const {
     return config.description;
 }
 

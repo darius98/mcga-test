@@ -2,7 +2,6 @@
 #define KKTEST_CORE_SRC_TEST_CONTAINER_HPP_
 
 #include "common/interproc/src/subprocess.hpp"
-#include "common/string/src/string.hpp"
 #include "common/utils/src/time.hpp"
 
 namespace kktest {

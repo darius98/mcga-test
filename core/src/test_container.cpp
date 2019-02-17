@@ -15,7 +15,7 @@ TestContainer::TestContainer(double timeLimitMs,
         callback(move(_callback)) {}
 
 bool TestContainer::poll() {
-    auto finishWithError = [this](const String& errorMessage) {
+    auto finishWithError = [this](const string& errorMessage) {
         callback(TestExecutionInfo::toErrorMessage(errorMessage));
     };
 

@@ -4,11 +4,11 @@
 #include <kktest_ext/matchers.hpp>
 
 #include "common/interproc/src/message.hpp"
-#include "common/string/src/string.hpp"
 
 using namespace kktest;
 using namespace kktest::matchers;
 using namespace kktest::interproc;
+using namespace std;
 
 void kkTestCase(InterprocMessage) {
     test("Building & reading a message from 3 ints", [] {
@@ -40,14 +40,14 @@ void kkTestCase(InterprocMessage) {
     });
 
     test("Building & reading a message containing strings", [] {
-        String s = "abc";
+        string s = "abc";
         int r = 5;
-        String t = "def";
+        string t = "def";
         auto message = Message::build(s, r, t);
         expect(message.isInvalid(), isFalse);
-        String a;
+        string a;
         int b;
-        String c;
+        string c;
         message >> a >> b >> c;
         expect(a, isEqualTo(s));
         expect(b, isEqualTo(r));
@@ -66,14 +66,14 @@ void kkTestCase(InterprocMessage) {
     test("Copying", [] {
         int a = 2;
         int b = 4;
-        String s = "abc";
+        string s = "abc";
         auto message = Message::build(a, b, s);
 
         expect(message.isInvalid(), isFalse);
 
         int x;
         int y;
-        String t;
+        string t;
         message >> x >> y >> t;
         expect(x, isEqualTo(a));
         expect(y, isEqualTo(b));
@@ -83,7 +83,7 @@ void kkTestCase(InterprocMessage) {
         expect(messageCopy.isInvalid(), isFalse);
         int x2;
         int y2;
-        String t2;
+        string t2;
         messageCopy >> x2 >> y2 >> t2;
         expect(x2, isEqualTo(a));
         expect(y2, isEqualTo(b));
@@ -93,7 +93,7 @@ void kkTestCase(InterprocMessage) {
         expect(messageCopy.isInvalid(), isFalse);
         int x3;
         int y3;
-        String t3;
+        string t3;
         messageCopy >> x3 >> y3 >> t3;
         expect(x3, isEqualTo(a));
         expect(y3, isEqualTo(b));

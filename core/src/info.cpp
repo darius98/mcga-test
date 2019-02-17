@@ -4,12 +4,14 @@ using namespace std;
 
 namespace kktest {
 
+TestInfo::TestInfo() = default;
+
 TestInfo::TestInfo(int _groupIndex,
                    int _index,
                    bool _optional,
-                   String _description,
+                   string _description,
                    bool _passed,
-                   String _failureMessage):
+                   string _failureMessage):
         groupIndex(_groupIndex),
         index(_index),
         optional(_optional),
@@ -23,7 +25,7 @@ bool TestInfo::operator<(const TestInfo& other) const {
 
 GroupInfo::GroupInfo() = default;
 
-GroupInfo::GroupInfo(int _parentGroupIndex, int _index, String _description):
+GroupInfo::GroupInfo(int _parentGroupIndex, int _index, string _description):
         parentGroupIndex(_parentGroupIndex),
         index(_index),
         description(move(_description)) {}

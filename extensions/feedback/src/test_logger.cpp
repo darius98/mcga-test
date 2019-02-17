@@ -12,11 +12,11 @@ TestLogger::TestLogger(ostream& _stream, bool _maintainTestIndexOrder):
         maintainTestIndexOrder(_maintainTestIndexOrder) {}
 
 void TestLogger::addGroupInfo(const GroupInfo& groupInfo,
-                              const String& testCaseName) {
+                              const string& testCaseName) {
     allGroupsInfo[{testCaseName, groupInfo.index}] = groupInfo;
 }
 
-void TestLogger::logTest(const TestInfo& testInfo, const String& testCaseName) {
+void TestLogger::logTest(const TestInfo& testInfo, const string& testCaseName) {
     testsQueue.insert({testInfo, testCaseName});
     passedTests += testInfo.passed;
     failedTests += !testInfo.passed;
@@ -73,8 +73,8 @@ void TestLogger::logFinalInformation(bool logNumTests) {
     stream << "\n";
 }
 
-void TestLogger::logFatalError(const String& errorMessage,
-                               const String& testCaseName) {
+void TestLogger::logFatalError(const string& errorMessage,
+                               const string& testCaseName) {
     testCasesFatallyExited += 1;
     stream << "\nA fatal "
            << termcolor::red
@@ -87,14 +87,14 @@ void TestLogger::logFatalError(const String& errorMessage,
     stream << ": " << errorMessage << "\n";
 }
 
-String TestLogger::getRecursiveGroupDescription(int groupId,
-                                                const String& testCaseName) {
+string TestLogger::getRecursiveGroupDescription(int groupId,
+                                                const string& testCaseName) {
     auto groupInfoIterator = allGroupsInfo.find({testCaseName, groupId});
     if (groupInfoIterator == allGroupsInfo.end()) {
         return "";
     }
     GroupInfo groupInfo = groupInfoIterator->second;
-    String recursive = getRecursiveGroupDescription(groupInfo.parentGroupIndex,
+    string recursive = getRecursiveGroupDescription(groupInfo.parentGroupIndex,
                                                     testCaseName);
     if (groupInfo.index == 0 && groupInfo.description.empty()) {
         return recursive;
@@ -103,7 +103,7 @@ String TestLogger::getRecursiveGroupDescription(int groupId,
 }
 
 void TestLogger::printTestMessage(const TestInfo& testInfo,
-                                  const String& testCaseName) {
+                                  const string& testCaseName) {
     stream << "[";
     if (testInfo.passed) {
         stream << termcolor::green << "P" << termcolor::reset;
@@ -111,7 +111,7 @@ void TestLogger::printTestMessage(const TestInfo& testInfo,
         stream << termcolor::red << "F" << termcolor::reset;
     }
     stream << "] ";
-    String groupDescription = getRecursiveGroupDescription(testInfo.groupIndex,
+    string groupDescription = getRecursiveGroupDescription(testInfo.groupIndex,
                                                            testCaseName);
     stream << termcolor::grey
            << groupDescription
@@ -121,8 +121,8 @@ void TestLogger::printTestMessage(const TestInfo& testInfo,
         stream << "\n\t";
         // TODO(darius98): This should be somewhere else (in utils maybe?)
         size_t pos = 0;
-        String failureMessage = testInfo.failureMessage;
-        while ((pos = failureMessage.find('\n', pos)) != String::npos) {
+        string failureMessage = testInfo.failureMessage;
+        while ((pos = failureMessage.find('\n', pos)) != string::npos) {
             failureMessage.replace(pos, 1, "\n\t");
             pos += 2;
         }

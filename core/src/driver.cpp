@@ -39,7 +39,7 @@ void Driver::forceDestroy(const ConfigurationError& error) {
     delete this;
 }
 
-void Driver::beforeTestCase(const String& name) {
+void Driver::beforeTestCase(const string& name) {
     if (globalScope != nullptr) {
         throw Bug("Driver: beforeTestCase() called twice in a row.");
     }

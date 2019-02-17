@@ -20,8 +20,8 @@ class Subprocess {
 
     static Subprocess* open(char* executable, char* argv[]);
 
-    static Subprocess* open(const String& executable,
-                            const std::vector<String>& argv);
+    static Subprocess* open(const std::string& executable,
+                            const std::vector<std::string>& argv);
 
     virtual ~Subprocess() = default;
 

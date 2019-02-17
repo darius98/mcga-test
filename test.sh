@@ -6,7 +6,7 @@ rm -rf build/auto_test || { echo 'removing previous build directory failed' ; ex
 mkdir -p build/auto_test || { echo 'making build directory failed' ; exit 1; }
 cd build/auto_test || { echo 'moving to build directory failed' ; exit 1; }
 cmake ../.. -DCMAKE_BUILD_TYPE=${BUILD_TYPE} || { echo 'CMake generation failed' ; exit 1; }
-make -j2 || { echo 'Building tests failed.'; exit 1; }
+make -j4 || { echo 'Building tests failed.'; exit 1; }
 
 function fail_build {
     echo building $1 failed.;
@@ -27,6 +27,5 @@ function run_tests {
 
 run_tests common_interproc \
           common_utils \
-          common_string \
           kktest_extension_matchers \
           kktest_extension_death

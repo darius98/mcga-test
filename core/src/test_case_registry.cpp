@@ -1,24 +1,19 @@
 #include "core/src/test_case_registry.hpp"
 
-#include <cstdlib>
-#include <cstring>
-
-#include <utility>
-
 using namespace std;
 
 namespace kktest {
 
-vector<pair<TestCaseRegistry::TestCase, String>>* TestCaseRegistry::testCases;
+vector<pair<TestCaseRegistry::TestCase, string>>* TestCaseRegistry::testCases;
 
 void TestCaseRegistry::add(TestCase testCase, const char* name) {
     if (testCases == nullptr) {
-        testCases = new vector<pair<TestCase, String>>();
+        testCases = new vector<pair<TestCase, string>>();
     }
     testCases->emplace_back(testCase, name);
 }
 
-auto TestCaseRegistry::all() -> vector<pair<TestCase, String>> {
+vector<pair<TestCaseRegistry::TestCase, string>> TestCaseRegistry::all() {
     if (testCases == nullptr) {
         return {};
     }

@@ -2,6 +2,7 @@
 #define KKTEST_COMMON_INTERPROC_SRC_PIPE_HPP_
 
 #include <utility>
+#include <string>
 #include <vector>
 
 #include "common/interproc/src/message.hpp"
@@ -46,13 +47,13 @@ void redirectStdoutToPipe(PipeWriter* writer);
 
 std::pair<PipeReader*, PipeWriter*> createAnonymousPipe();
 
-void createNamedPipe(const String& pipeName);
+void createNamedPipe(const std::string& pipeName);
 
-void destroyNamedPipe(const String& pipeName);
+void destroyNamedPipe(const std::string& pipeName);
 
-PipeReader* openNamedPipeForReading(const String& pipeName);
+PipeReader* openNamedPipeForReading(const std::string& pipeName);
 
-PipeWriter* openNamedPipeForWriting(const String& pipeName);
+PipeWriter* openNamedPipeForWriting(const std::string& pipeName);
 
 }
 }

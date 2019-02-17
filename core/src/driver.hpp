@@ -4,6 +4,7 @@
 #include <functional>
 #include <map>
 #include <set>
+#include <string>
 #include <vector>
 
 #include "core/src/errors.hpp"
@@ -28,7 +29,7 @@ class Driver {
 
     void forceDestroy(const ConfigurationError& error);
 
-    void beforeTestCase(const String& testCaseName);
+    void beforeTestCase(const std::string& testCaseName);
 
     void afterTestCase();
 

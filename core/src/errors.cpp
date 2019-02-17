@@ -6,12 +6,10 @@ using namespace std;
 
 namespace kktest {
 
-ConfigurationError::ConfigurationError(const String& str):
-        runtime_error(string(str)) {}
+ConfigurationError::ConfigurationError(const string& str): runtime_error(str) {}
 
-Bug::Bug(const String& str): runtime_error(string(str)) {}
+Bug::Bug(const string& str): runtime_error(str) {}
 
-ExpectationFailed::ExpectationFailed(const String& str):
-        runtime_error(string(str)) {}
+ExpectationFailed::ExpectationFailed(const string& str): runtime_error(str) {}
 
 }

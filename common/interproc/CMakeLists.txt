@@ -11,8 +11,9 @@ if (LINUX OR APPLE)
 endif ()
 
 add_library(common_interproc ${interproc_src})
-target_link_libraries(common_interproc PUBLIC common_string)
+target_link_libraries(common_interproc PUBLIC common_utils)
 
 add_kktest(common_interproc_test
     tests/message_test.cpp
-    tests/pipe_test.cpp)
+    tests/pipe_test.cpp
+)

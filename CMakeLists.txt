@@ -25,7 +25,6 @@ endfunction()
 
 include_directories(.)
 
-add_subdirectory(common/string)
 add_subdirectory(common/interproc)
 add_subdirectory(common/utils)
 

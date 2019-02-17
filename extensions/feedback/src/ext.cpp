@@ -58,7 +58,7 @@ void FeedbackExtension::initLogging(ExtensionApi* api) {
     });
 }
 
-void FeedbackExtension::initPipe(ExtensionApi* api, const String& pipeName) {
+void FeedbackExtension::initPipe(ExtensionApi* api, const string& pipeName) {
     pipe = openNamedPipeForWriting(pipeName);
 
     api->beforeGroup([this](const GroupInfo& groupInfo) {
@@ -85,7 +85,7 @@ void FeedbackExtension::initPipe(ExtensionApi* api, const String& pipeName) {
     });
 
     api->beforeForceDestroy([this](const exception& error) {
-        pipe->sendMessage(PipeMessageType::ERROR, String(error.what()));
+        pipe->sendMessage(PipeMessageType::ERROR, string(error.what()));
     });
 }
 

@@ -54,10 +54,10 @@ int main(const vector<Extension*>& extensions, InternalArgs args) {
         driver->forceDestroy(error);
     } catch(const ExpectationFailed& error) {
         driver->forceDestroy(ConfigurationError(
-                String("Expectation failed in global scope: ") + error.what()));
+                string("Expectation failed in global scope: ") + error.what()));
     } catch(const exception& error) {
         driver->forceDestroy(ConfigurationError(
-                String("Exception thrown in global scope: ") + error.what()));
+                string("Exception thrown in global scope: ") + error.what()));
     } catch(...) {
         driver->forceDestroy(ConfigurationError(
                 "Non-exception object thrown in global scope."));

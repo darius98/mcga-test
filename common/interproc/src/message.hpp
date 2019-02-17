@@ -2,8 +2,7 @@
 #define KKTEST_COMMON_INTERPROC_SRC_MESSAGE_HPP_
 
 #include <functional>
-
-#include "common/string/src/string.hpp"
+#include <string>
 
 namespace kktest {
 namespace interproc {
@@ -108,10 +107,10 @@ class Message {
 };
 
 template<>
-const Message& Message::operator>>(String& obj) const;
+const Message& Message::operator>>(std::string& obj) const;
 
 template<>
-Message::BytesConsumer& Message::BytesConsumer::add(const String& obj);
+Message::BytesConsumer& Message::BytesConsumer::add(const std::string& obj);
 
 }
 }

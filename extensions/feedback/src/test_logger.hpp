@@ -17,20 +17,22 @@ class TestLogger {
                         bool _maintainTestIndexOrder = true);
 
     void addGroupInfo(const GroupInfo& groupInfo,
-                      const String& testCaseName = "");
+                      const std::string& testCaseName = "");
 
-    void logTest(const TestInfo& testInfo, const String& testCaseName = "");
+    void logTest(const TestInfo& testInfo,
+                 const std::string& testCaseName = "");
 
-    void logFatalError(const String& errorMessage,
-                       const String& testCaseName = "");
+    void logFatalError(const std::string& errorMessage,
+                       const std::string& testCaseName = "");
 
     void logFinalInformation(bool logNumTests = false);
 
  private:
-    String getRecursiveGroupDescription(int groupId,
-                                        const String& testCaseName);
+    std::string getRecursiveGroupDescription(int groupId,
+                                             const std::string& testCaseName);
 
-    void printTestMessage(const TestInfo& testInfo, const String& testCaseName);
+    void printTestMessage(const TestInfo& testInfo,
+                          const std::string& testCaseName);
 
     std::ostream& stream;
 
@@ -41,9 +43,9 @@ class TestLogger {
     int failedTests = 0;
     int failedOptionalTests = 0;
     int testsLogged = 0;
-    std::set<std::pair<TestInfo, String>> testsQueue;
+    std::set<std::pair<TestInfo, std::string>> testsQueue;
 
-    std::map<std::pair<String, int>, GroupInfo> allGroupsInfo;
+    std::map<std::pair<std::string, int>, GroupInfo> allGroupsInfo;
 };
 
 }

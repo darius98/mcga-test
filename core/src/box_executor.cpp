@@ -29,7 +29,7 @@ void BoxExecutor::runContained(Test* test, Executable func, PipeWriter* pipe) {
         pipe->sendMessage(executionInfo.toMessage());
     } catch(const ConfigurationError& error) {
         pipe->sendMessage(TestExecutionInfo::CONFIGURATION_ERROR,
-                          String(error.what()));
+                          string(error.what()));
     }
 }
 
