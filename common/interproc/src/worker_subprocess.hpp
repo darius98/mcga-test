@@ -11,16 +11,6 @@ class WorkerSubprocess: public Subprocess {
  public:
     typedef const std::function<void(PipeWriter*)>& Work;
 
-    // TODO(darius98): Merge this with Subprocess::FinishStatus.
-    enum PollStatus {
-        NO_EXIT,
-        ZERO_EXIT,
-        NON_ZERO_EXIT,
-        TIMEOUT,
-        SIGNAL_EXIT,
-        UNKNOWN_ERROR_EXIT
-    };
-
     WorkerSubprocess(double timeLimitMs, Work run);
 
     WorkerSubprocess(WorkerSubprocess&& other) noexcept;
@@ -47,7 +37,7 @@ class WorkerSubprocess: public Subprocess {
 
     std::string getOutput();
 
-    PollStatus poll();
+    FinishStatus getFinishStatus() override;
 
  private:
     std::string output;

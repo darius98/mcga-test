@@ -57,12 +57,11 @@ void BoxExecutor::ensureFreeContainers(size_t numContainers) {
         bool progress = false;
         auto it = openContainers.begin();
         while (it != openContainers.end()) {
-            auto pollStatus = it->process->poll();
             bool finished = true;
             bool failed = true;
             Message message;
             string error;
-            switch (pollStatus) {
+            switch (it->process->getFinishStatus()) {
                 case WorkerSubprocess::NO_EXIT: {
                     finished = false;
                     break;
@@ -90,10 +89,6 @@ void BoxExecutor::ensureFreeContainers(size_t numContainers) {
                 }
                 case WorkerSubprocess::TIMEOUT: {
                     error = "Test execution timed out.";
-                    break;
-                }
-                case WorkerSubprocess::UNKNOWN_ERROR_EXIT: {
-                    error = "Test exited with unknown error.";
                     break;
                 }
             }

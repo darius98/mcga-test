@@ -83,7 +83,7 @@ void WorkerSubprocess::wait() {
     }
 }
 
-WorkerSubprocess::PollStatus WorkerSubprocess::poll() {
+WorkerSubprocess::FinishStatus WorkerSubprocess::getFinishStatus() {
     if (!isFinished()) {
         if (!stopwatch.isElapsed()) {
             return NO_EXIT;
@@ -96,17 +96,7 @@ WorkerSubprocess::PollStatus WorkerSubprocess::poll() {
         }
         return TIMEOUT;
     }
-    switch (getFinishStatus()) {
-        case Subprocess::FinishStatus::UNKNOWN:
-            return UNKNOWN_ERROR_EXIT;
-        case Subprocess::FinishStatus::SIGNALED:
-            return SIGNAL_EXIT;
-        case Subprocess::FinishStatus::NON_ZERO_EXIT:
-            return NON_ZERO_EXIT;
-        case Subprocess::FinishStatus::ZERO_EXIT:
-            return ZERO_EXIT;
-    }
-    return UNKNOWN_ERROR_EXIT;
+    return Subprocess::getFinishStatus();
 }
 
 }

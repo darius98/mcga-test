@@ -4,13 +4,16 @@ namespace kktest {
 namespace interproc {
 
 Subprocess::FinishStatus Subprocess::getFinishStatus() {
+    if (!isExited() && !isSignaled()) {
+        return NO_EXIT;
+    }
     if (isSignaled()) {
-        return SIGNALED;
+        return SIGNAL_EXIT;
     }
-    if (!isExited()) {
-        return UNKNOWN;
+    if (getReturnCode() != 0) {
+        return NON_ZERO_EXIT;
     }
-    return getReturnCode() == 0 ? ZERO_EXIT : NON_ZERO_EXIT;
+    return ZERO_EXIT;
 }
 
 }

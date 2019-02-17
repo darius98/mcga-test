@@ -12,9 +12,18 @@ namespace interproc {
 
 class Subprocess {
  public:
-    enum FinishStatus { ZERO_EXIT, NON_ZERO_EXIT, SIGNALED, UNKNOWN };
+    enum FinishStatus {
+        NO_EXIT,
+        ZERO_EXIT,
+        NON_ZERO_EXIT,
+        TIMEOUT,
+        SIGNAL_EXIT,
+    };
 
-    enum KillResult { KILLED, ALREADY_DEAD };
+    enum KillResult {
+        KILLED,
+        ALREADY_DEAD
+    };
 
     static Subprocess* fork(const std::function<void()>& func);
 
@@ -34,7 +43,7 @@ class Subprocess {
 
     virtual void wait() = 0;
 
-    FinishStatus getFinishStatus();
+    virtual FinishStatus getFinishStatus();
 };
 
 }
