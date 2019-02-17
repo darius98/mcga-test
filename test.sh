@@ -29,3 +29,4 @@ run_tests common_interproc \
           common_utils \
           kktest_extension_matchers \
           kktest_extension_death
+echo "All tests passed."

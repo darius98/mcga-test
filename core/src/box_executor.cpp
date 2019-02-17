@@ -10,6 +10,22 @@ using namespace std;
 
 namespace kktest {
 
+BoxedTest::BoxedTest(Test* _test, interproc::WorkerSubprocess* _process):
+        test(_test), process(_process) {}
+
+BoxedTest::BoxedTest(kktest::BoxedTest&& other) noexcept:
+        test(other.test), process(other.process) {
+    other.process = nullptr;
+}
+
+BoxedTest::~BoxedTest() {
+    delete process;
+}
+
+bool BoxedTest::operator<(const BoxedTest& other) const {
+    return test < other.test;
+}
+
 BoxExecutor::BoxExecutor(const OnTestFinishedCallback& onTestFinishedCallback,
                          size_t _maxNumContainers):
         Executor(onTestFinishedCallback),
@@ -17,10 +33,9 @@ BoxExecutor::BoxExecutor(const OnTestFinishedCallback& onTestFinishedCallback,
 
 void BoxExecutor::execute(Test* test, Executable func) {
     ensureFreeContainers(1);
-    openContainers.insert(new WorkerSubprocess(
+    openContainers.insert(BoxedTest(test, new WorkerSubprocess(
         test->getConfig().timeTicksLimit * getTimeTickLengthMs() + 100.0,
-        bind(&BoxExecutor::runContained, this, test, func, placeholders::_1),
-        bind(&BoxExecutor::onContainerMessage, this, test, placeholders::_1)));
+        bind(&BoxExecutor::runContained, this, test, func, placeholders::_1))));
 }
 
 void BoxExecutor::runContained(Test* test, Executable func, PipeWriter* pipe) {
@@ -33,20 +48,6 @@ void BoxExecutor::runContained(Test* test, Executable func, PipeWriter* pipe) {
     }
 }
 
-void BoxExecutor::onContainerMessage(Test* test, Message& message) {
-    WorkerSubprocess::ResultType t;
-    message >> t;
-    if (t == WorkerSubprocess::ERROR) {
-        string errorMessage;
-        message >> errorMessage;
-        test->setExecuted(TestExecutionInfo::fromError(errorMessage));
-    } else {
-        auto executionInfo = TestExecutionInfo::fromMessage(message);
-        test->setExecuted(executionInfo);
-        onTestFinishedCallback(test);
-    }
-}
-
 void BoxExecutor::finalize() {
     ensureFreeContainers(maxNumContainers);
 }
@@ -56,13 +57,34 @@ void BoxExecutor::ensureFreeContainers(size_t numContainers) {
         bool progress = false;
         auto it = openContainers.begin();
         while (it != openContainers.end()) {
-            if ((*it)->poll()) {
-                delete *it;
+            bool finished = true;
+            bool hasError = false;
+            Message message;
+            try {
+                finished = it->process->poll();
+                if (finished) {
+                    message = it->process->getNextMessage(32);
+                    if (message.isInvalid()) {
+                        throw WorkerSubprocess::UnexpectedSubprocessEnd(
+                                "Unexpected 0-code exit.");
+                    }
+                }
+            } catch(const WorkerSubprocess::UnexpectedSubprocessEnd& err) {
+                it->test->setExecuted(TestExecutionInfo::fromError(err.what()));
+                onTestFinishedCallback(it->test);
+                hasError = true;
+            }
+            if (finished && !hasError) {
+                auto executionInfo = TestExecutionInfo::fromMessage(message);
+                it->test->setExecuted(executionInfo);
+                onTestFinishedCallback(it->test);
+            }
+            if (finished) {
                 it = openContainers.erase(it);
                 progress = true;
-                continue;
+            } else {
+                ++it;
             }
-            ++it;
         }
         if (!progress) {
             sleepForMs(5);

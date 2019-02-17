@@ -11,14 +11,12 @@ class WorkerSubprocess: public Subprocess {
  public:
     typedef const std::function<void(PipeWriter*)>& Work;
 
-    typedef std::function<void(Message&)> Callback;
-
-    enum ResultType: std::uint8_t {
-        ERROR = 0,
-        SUCCESS = 1
+    class UnexpectedSubprocessEnd: public std::runtime_error {
+     public:
+        explicit UnexpectedSubprocessEnd(const std::string& message);
     };
 
-    WorkerSubprocess(double timeLimitMs, Work run, Callback _callback);
+    WorkerSubprocess(double timeLimitMs, Work run);
 
     WorkerSubprocess(WorkerSubprocess&& other) noexcept;
 
@@ -44,21 +42,18 @@ class WorkerSubprocess: public Subprocess {
 
     std::string getOutput();
 
-    // TODO(darius98): This method should really not call a callback,
-    //            ...  consuming the next message.
+    // Raises UnexpectedSubprocessEnd if the subprocess finished, but was
+    // not expected to.
     bool poll();
 
  private:
-    bool finishWithError(const std::string& errorMessage);
+    void onUnexpectedExit(const std::string &errorMessage);
 
     std::string output;
     Subprocess* subprocess;
     PipeReader* pipeReader;
     PipeReader* stdoutReader;
     utils::ProcessStopwatch stopwatch;
-
-    // TODO(darius98): Investigate if this can be removed. If so, remove it.
-    Callback callback;
 };
 
 }

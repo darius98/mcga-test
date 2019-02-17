@@ -5,11 +5,11 @@ using namespace std;
 namespace kktest {
 namespace interproc {
 
-WorkerSubprocess::WorkerSubprocess(double timeLimitMs,
-                                   Work run,
-                                   Callback _callback):
-        stopwatch(timeLimitMs),
-        callback(move(_callback)) {
+WorkerSubprocess::UnexpectedSubprocessEnd::UnexpectedSubprocessEnd(
+        const string& message): runtime_error(message) {}
+
+WorkerSubprocess::WorkerSubprocess(double timeLimitMs, Work run):
+        stopwatch(timeLimitMs) {
     auto pipe = createAnonymousPipe();
     auto stdoutPipe = createAnonymousPipe();
     subprocess = Subprocess::fork([&stdoutPipe, &pipe, &run]() {
@@ -32,8 +32,7 @@ WorkerSubprocess::WorkerSubprocess(WorkerSubprocess&& other) noexcept:
         subprocess(other.subprocess),
         pipeReader(other.pipeReader),
         stdoutReader(other.stdoutReader),
-        stopwatch(other.stopwatch),
-        callback(move(other.callback)) {
+        stopwatch(other.stopwatch) {
     other.subprocess = nullptr;
     other.pipeReader = nullptr;
     other.stdoutReader = nullptr;
@@ -51,9 +50,7 @@ Message WorkerSubprocess::getNextMessage(int maxConsecutiveFailedReadAttempts) {
 
 bool WorkerSubprocess::isFinished() {
     auto newBytes = stdoutReader->getBytes();
-    for (uint8_t byte : newBytes) {
-        output += static_cast<char>(byte);
-    }
+    output += string(newBytes.begin(), newBytes.end());
     return subprocess->isFinished();
 }
 
@@ -100,35 +97,25 @@ bool WorkerSubprocess::poll() {
             // In this case, return false so we can retry waiting it later.
             return false;
         }
-        return finishWithError("Execution timed out.");
+        onUnexpectedExit("Execution timed out.");
     }
     switch (getFinishStatus()) {
         case Subprocess::FinishStatus::UNKNOWN:
-            return finishWithError("Unknown error occurred.");
+            onUnexpectedExit("Unknown error occurred.");
         case Subprocess::FinishStatus::SIGNALED:
-            return finishWithError("Killed by signal "
-                                   + to_string(getSignal()));
+            onUnexpectedExit("Killed by signal " + to_string(getSignal()));
         case Subprocess::FinishStatus::NON_ZERO_EXIT:
-            return finishWithError("Exit code "
-                                   + to_string(getReturnCode()) + ".");
-        case Subprocess::FinishStatus::ZERO_EXIT: {
-            Message message = getNextMessage();
-            if (message.isInvalid()) {
-                return finishWithError("Unexpected 0-code exit.");
-            }
-            auto successMessage = Message::build(SUCCESS, message);
-            callback(successMessage);
-            return true;
-        }
+            onUnexpectedExit("Exit code " + to_string(getReturnCode()) + ".");
+        case Subprocess::FinishStatus::ZERO_EXIT:
+            break;
         default:
-            return finishWithError("Unknown error occurred.");
+            onUnexpectedExit("Unknown error occurred.");
     }
+    return true;
 }
 
-bool WorkerSubprocess::finishWithError(const string& errorMessage) {
-    auto message = Message::build(ERROR, errorMessage);
-    callback(message);
-    return true;
+void WorkerSubprocess::onUnexpectedExit(const string &errorMessage) {
+    throw UnexpectedSubprocessEnd(errorMessage);
 }
 
 }

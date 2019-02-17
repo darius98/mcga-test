@@ -8,6 +8,19 @@
 
 namespace kktest {
 
+struct BoxedTest {
+    Test* test;
+    interproc::WorkerSubprocess* process;
+
+    BoxedTest(Test* _test, interproc::WorkerSubprocess* _process);
+    BoxedTest(BoxedTest&& other) noexcept;
+    BoxedTest(const BoxedTest& other) = delete;
+
+    ~BoxedTest();
+
+    bool operator<(const BoxedTest& other) const;
+};
+
 class BoxExecutor: public Executor {
  public:
     BoxExecutor(const OnTestFinishedCallback& onTestFinishedCallback,
@@ -20,12 +33,10 @@ class BoxExecutor: public Executor {
 
     void runContained(Test* test, Executable func, interproc::PipeWriter* pipe);
 
-    void onContainerMessage(Test* test, interproc::Message& message);
-
     void ensureFreeContainers(std::size_t numContainers);
 
     std::size_t maxNumContainers;
-    std::set<interproc::WorkerSubprocess*> openContainers;
+    std::set<BoxedTest> openContainers;
 };
 
 }

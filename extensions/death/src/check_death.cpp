@@ -15,8 +15,7 @@ DeathStatus checkDeath(const function<void()>& func, double timeTicksLimit) {
         [func](PipeWriter* writer) {
             func();
             writer->sendMessage(1);
-        },
-        nullptr);
+        });
 
     proc.wait();
     if (proc.getNextMessage(32).isInvalid()) {
