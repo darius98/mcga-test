@@ -32,9 +32,9 @@ class Driver {
 
     void afterTestCase();
 
-    void addGroup(const GroupConfig& config, Executable func);
+    void addGroup(GroupConfig&& config, Executable func);
 
-    void addTest(const TestConfig& config, Executable func);
+    void addTest(TestConfig&& config, Executable func);
 
     void addSetUp(Executable func);
 

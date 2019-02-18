@@ -22,9 +22,9 @@ Driver* Driver::init(const Hooks& hooks, bool smooth, size_t numBoxes) {
     if (instance != nullptr) {
         throw Bug("Driver: init() called a twice.");
     }
-    auto driver = new Driver(hooks, smooth, numBoxes);
-    driver->hooks.runHooks<Hooks::AFTER_INIT>();
-    return driver;
+    instance = new Driver(hooks, smooth, numBoxes);
+    instance->hooks.runHooks<Hooks::AFTER_INIT>();
+    return instance;
 }
 
 int Driver::destroy() {
@@ -65,13 +65,13 @@ Driver::Driver(Hooks hooks, bool smooth, size_t numBoxes):
         hooks(move(hooks)),
         executor(smooth
              ? new    Executor(bind(&Driver::afterTest, this, _1))
-             : new BoxExecutor(bind(&Driver::afterTest, this, _1), numBoxes)) {
-    instance = this;
-}
+             : new BoxExecutor(bind(&Driver::afterTest, this, _1), numBoxes)) {}
 
-void Driver::addGroup(const GroupConfig& config, Executable func) {
+void Driver::addGroup(GroupConfig&& config, Executable func) {
     executor->checkIsInactive("group");
-    auto group = new Group(config, groupStack.back(), ++currentGroupIndex);
+    auto group = new Group(move(config),
+                           groupStack.back(),
+                           ++ currentGroupIndex);
     groupStack.push_back(group);
 
     beforeGroup(group);
@@ -96,10 +96,10 @@ void Driver::addGroup(const GroupConfig& config, Executable func) {
     groupStack.pop_back();
 }
 
-void Driver::addTest(const TestConfig& config, Executable func) {
+void Driver::addTest(TestConfig&& config, Executable func) {
     executor->checkIsInactive("test");
     Group* parentGroup = groupStack.back();
-    Test test(config, parentGroup, ++currentTestIndex);
+    Test test(move(config), parentGroup, ++ currentTestIndex);
     markTestStarted(parentGroup);
     beforeTest(test);
     executor->execute(move(test), func);

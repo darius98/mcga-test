@@ -6,8 +6,8 @@ using namespace std;
 
 namespace kktest {
 
-Group::Group(const GroupConfig& _config, Group* _parentGroup, int _index):
-        config(_config), parentGroup(_parentGroup), index(_index) {}
+Group::Group(GroupConfig&& _config, Group* _parentGroup, int _index):
+        config(move(_config)), parentGroup(_parentGroup), index(_index) {}
 
 string Group::getDescription() const {
     return config.description;

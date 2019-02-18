@@ -15,12 +15,12 @@ TestCaseDefiner::TestCaseDefiner(TestCase testCase, const char* name) noexcept {
     TestCaseRegistry::add(testCase, name);
 }
 
-void test(const TestConfig& config, Executable func) {
-    Driver::getInstance()->addTest(config, func);
+void test(TestConfig&& config, Executable func) {
+    Driver::getInstance()->addTest(move(config), func);
 }
 
-void group(const GroupConfig& config, Executable func) {
-    Driver::getInstance()->addGroup(config, func);
+void group(GroupConfig&& config, Executable func) {
+    Driver::getInstance()->addGroup(move(config), func);
 }
 
 void setUp(Executable func) {

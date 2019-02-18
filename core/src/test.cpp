@@ -6,8 +6,8 @@ using namespace std;
 
 namespace kktest {
 
-Test::Test(const TestConfig& _config, Group* _group, int _index):
-        config(_config), group(_group), index(_index) {}
+Test::Test(TestConfig&& _config, Group* _group, int _index):
+        config(move(_config)), group(_group), index(_index) {}
 Test::Test(const Test& other) = default;
 Test::Test(Test&& other) noexcept = default;
 

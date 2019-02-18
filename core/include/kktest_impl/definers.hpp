@@ -14,9 +14,9 @@ class KKTEST_API TestCaseDefiner {
     TestCaseDefiner(TestCase testCase, const char* name) noexcept;
 };
 
-KKTEST_API void test(const TestConfig& config, Executable func);
+KKTEST_API void test(TestConfig&& config, Executable func);
 
-KKTEST_API void group(const GroupConfig& config, Executable func);
+KKTEST_API void group(GroupConfig&& config, Executable func);
 
 KKTEST_API void setUp(Executable func);
 

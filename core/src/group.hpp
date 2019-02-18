@@ -8,7 +8,7 @@ namespace kktest {
 
 class Group {
  public:
-    Group(const GroupConfig& _config, Group* _parentGroup, int _index);
+    Group(GroupConfig&& _config, Group* _parentGroup, int _index);
 
     std::string getDescription() const;
 

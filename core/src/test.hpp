@@ -10,7 +10,7 @@ namespace kktest {
 
 class Test {
  public:
-    Test(const TestConfig& _config, Group* _group, int _index);
+    Test(TestConfig&& _config, Group* _group, int _index);
     Test(Test&& other) noexcept;
 
     // TODO(darius98): Explicitly delete this constructor!
