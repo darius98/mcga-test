@@ -60,7 +60,8 @@ void Driver::afterTestCase() {
 
 Driver::Driver(Hooks hooks, bool smooth, size_t numBoxes): hooks(move(hooks)) {
     instance = this;
-    auto onTestFinishedCallback = [this](Test* test) {
+    auto onTestFinishedCallback = [this](Test* test, TestExecutionInfo info) {
+        test->setExecuted(info);
         afterTest(test);
     };
     if (smooth) {

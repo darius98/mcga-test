@@ -23,7 +23,7 @@ struct BoxedTest {
 
 class BoxExecutor: public Executor {
  public:
-    BoxExecutor(const OnTestFinishedCallback& onTestFinishedCallback,
+    BoxExecutor(const OnTestFinished& onTestFinished,
                 std::size_t _maxNumContainers);
 
     void finalize() override;
@@ -34,6 +34,8 @@ class BoxExecutor: public Executor {
     void runContained(Test* test, Executable func, interproc::PipeWriter* pipe);
 
     void ensureFreeContainers(std::size_t numContainers);
+
+    bool tryCloseContainer(std::set<BoxedTest>::iterator boxedTest);
 
     std::size_t maxNumContainers;
     std::set<BoxedTest> openContainers;

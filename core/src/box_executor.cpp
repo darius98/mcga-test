@@ -26,9 +26,9 @@ bool BoxedTest::operator<(const BoxedTest& other) const {
     return test < other.test;
 }
 
-BoxExecutor::BoxExecutor(const OnTestFinishedCallback& onTestFinishedCallback,
+BoxExecutor::BoxExecutor(const OnTestFinished& onTestFinished,
                          size_t _maxNumContainers):
-        Executor(onTestFinishedCallback),
+        Executor(onTestFinished),
         maxNumContainers(_maxNumContainers) {}
 
 void BoxExecutor::execute(Test* test, Executable func) {
@@ -55,60 +55,63 @@ void BoxExecutor::finalize() {
 void BoxExecutor::ensureFreeContainers(size_t numContainers) {
     while (openContainers.size() > maxNumContainers - numContainers) {
         bool progress = false;
-        auto it = openContainers.begin();
-        while (it != openContainers.end()) {
-            bool finished = true;
-            bool failed = true;
-            Message message;
-            string error;
-            switch (it->process->getFinishStatus()) {
-                case WorkerSubprocess::NO_EXIT: {
-                    finished = false;
-                    break;
-                }
-                case WorkerSubprocess::ZERO_EXIT: {
-                    failed = false;
-                    message = it->process->getNextMessage(32);
-                    if (message.isInvalid()) {
-                        failed = true;
-                        error = "Unexpected 0-code exit.";
-                    }
-                    break;
-                }
-                case WorkerSubprocess::NON_ZERO_EXIT: {
-                    error = "Test exited with code "
-                            + to_string(it->process->getReturnCode())
-                            + ".";
-                    break;
-                }
-                case WorkerSubprocess::SIGNAL_EXIT: {
-                    error = "Test killed by signal "
-                            + to_string(it->process->getSignal())
-                            + ".";
-                    break;
-                }
-                case WorkerSubprocess::TIMEOUT: {
-                    error = "Test execution timed out.";
-                    break;
-                }
-            }
-            if (!finished) {
-                ++ it;
-                continue;
-            }
-            if (failed) {
-                it->test->setExecuted(TestExecutionInfo::fromError(error));
+        for (auto it = openContainers.begin(); it != openContainers.end(); ) {
+            if (tryCloseContainer(it)) {
+                it = openContainers.erase(it);
+                progress = true;
             } else {
-                it->test->setExecuted(TestExecutionInfo::fromMessage(message));
+                ++ it;
             }
-            onTestFinishedCallback(it->test);
-            it = openContainers.erase(it);
-            progress = true;
         }
         if (!progress) {
             sleepForDuration(Duration::fromMs(5));
         }
     }
+}
+
+bool BoxExecutor::tryCloseContainer(set<BoxedTest>::iterator boxedTest) {
+    bool finished = true;
+    bool failed = true;
+    Message message;
+    string error;
+    auto process = boxedTest->process;
+    switch (process->getFinishStatus()) {
+        case WorkerSubprocess::NO_EXIT: {
+            finished = false;
+            break;
+        }
+        case WorkerSubprocess::ZERO_EXIT: {
+            failed = false;
+            message = process->getNextMessage(32);
+            if (message.isInvalid()) {
+                failed = true;
+                error = "Unexpected 0-code exit.";
+            }
+            break;
+        }
+        case WorkerSubprocess::NON_ZERO_EXIT: {
+            error = "Test exited with code "
+                    + to_string(process->getReturnCode()) + ".";
+            break;
+        }
+        case WorkerSubprocess::SIGNAL_EXIT: {
+            error = "Test killed by signal "
+                    + to_string(process->getSignal()) + ".";
+            break;
+        }
+        case WorkerSubprocess::TIMEOUT: {
+            error = "Test execution timed out.";
+            break;
+        }
+    }
+    if (!finished) {
+        return false;
+    }
+    TestExecutionInfo executionInfo = failed
+            ? TestExecutionInfo::fromError(error)
+            : TestExecutionInfo::fromMessage(message);
+    onTestFinishedCallback(boxedTest->test, executionInfo);
+    return true;
 }
 
 }

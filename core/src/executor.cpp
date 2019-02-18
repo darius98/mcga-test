@@ -8,7 +8,7 @@ using namespace std;
 
 namespace kktest {
 
-Executor::Executor(OnTestFinishedCallback _onTestFinishedCallback):
+Executor::Executor(OnTestFinished _onTestFinishedCallback):
         onTestFinishedCallback(move(_onTestFinishedCallback)) {}
 
 Executor::~Executor() = default;
@@ -33,8 +33,7 @@ void Executor::finalize() {}
 
 void Executor::execute(Test* test, Executable func) {
     auto executionInfo = run(test, func);
-    test->setExecuted(executionInfo);
-    onTestFinishedCallback(test);
+    onTestFinishedCallback(test, executionInfo);
 }
 
 TestExecutionInfo Executor::run(Test* test, Executable func) {

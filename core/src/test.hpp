@@ -48,9 +48,9 @@ class Test {
 
     Group* getGroup() const;
 
+ private:
     void setExecuted(const TestExecutionInfo& _executionInfo);
 
- private:
     TestConfig config;
 
     Group* parentGroup;
@@ -58,6 +58,8 @@ class Test {
 
     bool executed = false;
     TestExecutionInfo executionInfo;
+
+friend class Driver;
 };
 
 }
