@@ -1,6 +1,7 @@
 #ifndef KKTEST_CORE_SRC_TEST_HPP_
 #define KKTEST_CORE_SRC_TEST_HPP_
 
+#include <memory>
 #include <string>
 
 #include "common/interproc/src/message.hpp"
@@ -11,27 +12,25 @@ namespace kktest {
 
 class Group;
 
-struct TestExecutionInfo {
+class ExecutionInfo {
+ public:
     enum MessageStatus: std::uint8_t {
         FINISHED_SUCCESSFULLY = 0,
         CONFIGURATION_ERROR = 1
     };
 
-    static TestExecutionInfo fromError(const std::string& errorMessage);
-
-    static TestExecutionInfo fromMessage(interproc::Message& message);
-
-    TestExecutionInfo();
-
-    TestExecutionInfo(double _executionTimeTicks,
-                      bool _passed,
-                      std::string _failureMessage);
+    explicit ExecutionInfo(const std::string& errorMessage);
+    explicit ExecutionInfo(interproc::Message& message);
+    ExecutionInfo(double _timeTicks, bool _passed, std::string _failure);
 
     interproc::Message toMessage() const;
 
-    double executionTimeTicks = -1.0;
-    bool passed = true;
-    std::string failureMessage = "";
+ private:
+    double timeTicks;
+    bool passed;
+    std::string failure;
+
+friend class Test;
 };
 
 class Test {
@@ -49,15 +48,12 @@ class Test {
     Group* getGroup() const;
 
  private:
-    void setExecuted(const TestExecutionInfo& _executionInfo);
+    void setExecuted(const ExecutionInfo& info);
 
     TestConfig config;
-
     Group* parentGroup;
     int index;
-
-    bool executed = false;
-    TestExecutionInfo executionInfo;
+    std::unique_ptr<ExecutionInfo> executionInfo = nullptr;
 
 friend class Driver;
 };

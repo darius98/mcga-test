@@ -14,7 +14,7 @@ class Executor {
     typedef const std::function<void(const std::string&)>& SetFailure;
 
  public:
-    typedef std::function<void(Test*, TestExecutionInfo)> OnTestFinished;
+    typedef std::function<void(Test*, ExecutionInfo)> OnTestFinished;
 
     static double getTimeTickLengthMs();
 
@@ -29,7 +29,7 @@ class Executor {
     virtual void finalize();
 
  protected:
-    TestExecutionInfo run(Test* test, Executable func);
+    ExecutionInfo run(Test* test, Executable func);
 
  private:
     void runSetUpsRecursively(Group* group, SetFailure setFailure);

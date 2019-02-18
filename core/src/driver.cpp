@@ -5,6 +5,7 @@
 #include "core/src/test_case_registry.hpp"
 
 using namespace std;
+using namespace std::placeholders;
 
 namespace kktest {
 
@@ -60,14 +61,11 @@ void Driver::afterTestCase() {
 
 Driver::Driver(Hooks hooks, bool smooth, size_t numBoxes): hooks(move(hooks)) {
     instance = this;
-    auto onTestFinishedCallback = [this](Test* test, TestExecutionInfo info) {
-        test->setExecuted(info);
-        afterTest(test);
-    };
+    auto onTestFinished = bind(&Driver::afterTest, this, _1, _2);
     if (smooth) {
-        executor = new Executor(onTestFinishedCallback);
+        executor = new Executor(onTestFinished);
     } else {
-        executor = new BoxExecutor(onTestFinishedCallback, numBoxes);
+        executor = new BoxExecutor(onTestFinished, numBoxes);
     }
     hooks.runHooks<Hooks::AFTER_INIT>();
 }
@@ -126,7 +124,8 @@ void Driver::beforeTest(Test* test) {
     hooks.runHooks<Hooks::BEFORE_TEST>(test->getTestInfo());
 }
 
-void Driver::afterTest(Test* test) {
+void Driver::afterTest(Test* test, ExecutionInfo executionInfo) {
+    test->setExecuted(executionInfo);
     if (!test->getConfig().optional) {
         failedAnyNonOptionalTest |= test->isFailed();
     }

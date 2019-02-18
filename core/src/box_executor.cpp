@@ -7,6 +7,7 @@
 using namespace kktest::interproc;
 using namespace kktest::utils;
 using namespace std;
+using namespace std::placeholders;
 
 namespace kktest {
 
@@ -35,7 +36,7 @@ void BoxExecutor::execute(Test* test, Executable func) {
     ensureFreeContainers(1);
     openContainers.insert(BoxedTest(test, new WorkerSubprocess(
         test->getConfig().timeTicksLimit * getTimeTickLengthMs() + 100.0,
-        bind(&BoxExecutor::runContained, this, test, func, placeholders::_1))));
+        bind(&BoxExecutor::runContained, this, test, func, _1))));
 }
 
 void BoxExecutor::runContained(Test* test, Executable func, PipeWriter* pipe) {
@@ -43,7 +44,7 @@ void BoxExecutor::runContained(Test* test, Executable func, PipeWriter* pipe) {
         auto executionInfo = run(test, func);
         pipe->sendMessage(executionInfo.toMessage());
     } catch(const ConfigurationError& error) {
-        pipe->sendMessage(TestExecutionInfo::CONFIGURATION_ERROR,
+        pipe->sendMessage(ExecutionInfo::CONFIGURATION_ERROR,
                           string(error.what()));
     }
 }
@@ -71,7 +72,7 @@ void BoxExecutor::ensureFreeContainers(size_t numContainers) {
 
 bool BoxExecutor::tryCloseContainer(set<BoxedTest>::iterator boxedTest) {
     bool finished = true;
-    bool failed = true;
+    bool passed = false;
     Message message;
     string error;
     auto process = boxedTest->process;
@@ -81,10 +82,10 @@ bool BoxExecutor::tryCloseContainer(set<BoxedTest>::iterator boxedTest) {
             break;
         }
         case WorkerSubprocess::ZERO_EXIT: {
-            failed = false;
+            passed = true;
             message = process->getNextMessage(32);
             if (message.isInvalid()) {
-                failed = true;
+                passed = false;
                 error = "Unexpected 0-code exit.";
             }
             break;
@@ -107,10 +108,8 @@ bool BoxExecutor::tryCloseContainer(set<BoxedTest>::iterator boxedTest) {
     if (!finished) {
         return false;
     }
-    TestExecutionInfo executionInfo = failed
-            ? TestExecutionInfo::fromError(error)
-            : TestExecutionInfo::fromMessage(message);
-    onTestFinishedCallback(boxedTest->test, executionInfo);
+    auto info = passed ? ExecutionInfo(message) : ExecutionInfo(error);
+    onTestFinishedCallback(boxedTest->test, info);
     return true;
 }
 

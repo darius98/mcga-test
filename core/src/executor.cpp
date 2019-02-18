@@ -36,7 +36,7 @@ void Executor::execute(Test* test, Executable func) {
     onTestFinishedCallback(test, executionInfo);
 }
 
-TestExecutionInfo Executor::run(Test* test, Executable func) {
+ExecutionInfo Executor::run(Test* test, Executable func) {
     state = ACTIVE;
     string failureMessage;
     bool failed = false;
@@ -53,11 +53,10 @@ TestExecutionInfo Executor::run(Test* test, Executable func) {
     runTearDownsRecursively(group, setFailure);
     double executionMs = 1.0 * t.elapsed().totalNs() / Duration::kMilliToNano;
     state = INACTIVE;
-    TestExecutionInfo result;
-    result.executionTimeTicks = executionMs / getTimeTickLengthMs();
-    result.passed = !failed;
-    result.failureMessage = failureMessage;
-    return result;
+    return ExecutionInfo(
+        /*timeTicks=*/executionMs / getTimeTickLengthMs(),
+        /*passed=*/!failed,
+        /*failure=*/failureMessage);
 }
 
 void Executor::runSetUpsRecursively(Group* group, SetFailure setFailure) {

@@ -8,29 +8,10 @@ using namespace std;
 
 namespace kktest {
 
-TestExecutionInfo TestExecutionInfo::fromError(const string& errorMessage) {
-    return TestExecutionInfo(-1.0, false, errorMessage);
-}
+ExecutionInfo::ExecutionInfo(const string& errorMessage):
+        timeTicks(-1.0), passed(false), failure(errorMessage) {}
 
-TestExecutionInfo::TestExecutionInfo() = default;
-
-TestExecutionInfo::TestExecutionInfo(double _executionTimeTicks,
-                                     bool _passed,
-                                     string _failureMessage):
-        executionTimeTicks(_executionTimeTicks),
-        passed(_passed),
-        failureMessage(move(_failureMessage)) {}
-
-interproc::Message TestExecutionInfo::toMessage() const {
-    return Message::build(
-            FINISHED_SUCCESSFULLY,
-            executionTimeTicks,
-            passed,
-            failureMessage);
-}
-
-TestExecutionInfo TestExecutionInfo::fromMessage(Message& message) {
-    TestExecutionInfo info{};
+ExecutionInfo::ExecutionInfo(Message& message) {
     MessageStatus status;
     message >> status;
     if (status == CONFIGURATION_ERROR) {
@@ -38,22 +19,27 @@ TestExecutionInfo TestExecutionInfo::fromMessage(Message& message) {
         message >> errorMessage;
         throw ConfigurationError(errorMessage);
     }
-    message >> info.executionTimeTicks >> info.passed >> info.failureMessage;
-    return info;
+    message >> timeTicks >> passed >> failure;
+}
+
+ExecutionInfo::ExecutionInfo(double _timeTicks, bool _passed, string _failure):
+        timeTicks(_timeTicks), passed(_passed), failure(move(_failure)) {}
+
+Message ExecutionInfo::toMessage() const {
+    return Message::build(FINISHED_SUCCESSFULLY, timeTicks, passed, failure);
 }
 
 Test::Test(const TestConfig& _config, Group* _parentGroup, int _index):
         config(_config), parentGroup(_parentGroup), index(_index) {}
 
-void Test::setExecuted(const TestExecutionInfo& _executionInfo) {
+void Test::setExecuted(const ExecutionInfo& info) {
     if (isExecuted()) {
         throw Bug("Test::setExecuted called twice on the same test.");
     }
-    executed = true;
-    executionInfo = _executionInfo;
-    if (executionInfo.executionTimeTicks > config.timeTicksLimit) {
-        executionInfo.passed = false;
-        executionInfo.failureMessage = "Execution timed out.";
+    executionInfo = unique_ptr<ExecutionInfo>(new ExecutionInfo(info));
+    if (executionInfo->timeTicks > config.timeTicksLimit) {
+        executionInfo->passed = false;
+        executionInfo->failure = "Execution timed out.";
     }
 }
 
@@ -62,11 +48,11 @@ const TestConfig& Test::getConfig() const {
 }
 
 bool Test::isExecuted() const {
-    return executed;
+    return executionInfo != nullptr;
 }
 
 bool Test::isFailed() const {
-    return isExecuted() && !executionInfo.passed;
+    return isExecuted() && !executionInfo->passed;
 }
 
 Group* Test::getGroup() const {
@@ -74,14 +60,12 @@ Group* Test::getGroup() const {
 }
 
 TestInfo Test::getTestInfo() const {
-    return TestInfo(
-        parentGroup->getIndex(),
-        index,
-        config.optional,
-        config.description,
-        executionInfo.passed,
-        executionInfo.failureMessage
-    );
+    return TestInfo(parentGroup->getIndex(),
+                    index,
+                    config.optional,
+                    config.description,
+                    executionInfo == nullptr ? false : executionInfo->passed,
+                    executionInfo == nullptr ? "" : executionInfo->failure);
 }
 
 }
