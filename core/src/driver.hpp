@@ -3,6 +3,7 @@
 
 #include <functional>
 #include <map>
+#include <memory>
 #include <set>
 #include <string>
 #include <vector>
@@ -22,8 +23,6 @@ class Driver {
     static Driver* init(const Hooks& hooks, bool smooth, std::size_t numBoxes);
 
     Driver(Hooks hooks, bool smooth, std::size_t numBoxes);
-
-    ~Driver();
 
     int destroy();
 
@@ -58,7 +57,7 @@ class Driver {
     std::map<Group*, int> testsInExecution;
     std::set<Group*> groupsPendingFinish;
 
-    Executor* executor = nullptr;
+    std::unique_ptr<Executor> executor;
     Group* globalScope = nullptr;
     std::vector<Group*> groupStack = {};
     int currentTestIndex = 0;

@@ -9,10 +9,7 @@ using namespace std;
 namespace kktest {
 
 TestRun::TestRun(Test&& test, string failure):
-        test(move(test)),
-        timeTicks(-1.0),
-        passed(false),
-        failure(move(failure)) {}
+    test(move(test)), timeTicks(-1.0), passed(false), failure(move(failure)) {}
 
 TestRun::TestRun(Test&& test, Message& message): test(move(test)) {
     MessageStatus status;
@@ -31,8 +28,12 @@ TestRun::TestRun(Test&& test, double timeTicks, bool passed, string failure):
         passed(passed),
         failure(move(failure)) {}
 
-const Test& TestRun::getTest() const {
-    return test;
+Group* TestRun::getGroup() const {
+    return test.getGroup();
+}
+
+int TestRun::getGroupIndex() const {
+    return test.getGroup()->getIndex();
 }
 
 string TestRun::getTestDescription() const {

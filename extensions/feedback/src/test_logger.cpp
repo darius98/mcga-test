@@ -68,8 +68,7 @@ void TestLogger::printTestMessage(const TestRun& testRun) {
         stream << termcolor::red << "F" << termcolor::reset;
     }
     stream << "] ";
-    string groupDescription = getRecursiveGroupDescription(
-            testRun.getTest().getGroup());
+    string groupDescription = getRecursiveGroupDescription(testRun.getGroup());
     stream << termcolor::grey
            << groupDescription
            << termcolor::reset

@@ -22,7 +22,9 @@ Driver* Driver::init(const Hooks& hooks, bool smooth, size_t numBoxes) {
     if (instance != nullptr) {
         throw Bug("Driver: init() called a twice.");
     }
-    return new Driver(hooks, smooth, numBoxes);
+    auto driver = new Driver(hooks, smooth, numBoxes);
+    driver->hooks.runHooks<Hooks::AFTER_INIT>();
+    return driver;
 }
 
 int Driver::destroy() {
@@ -59,19 +61,12 @@ void Driver::afterTestCase() {
     groupStack = {};
 }
 
-Driver::Driver(Hooks hooks, bool smooth, size_t numBoxes): hooks(move(hooks)) {
+Driver::Driver(Hooks hooks, bool smooth, size_t numBoxes):
+        hooks(move(hooks)),
+        executor(smooth
+             ? new    Executor(bind(&Driver::afterTest, this, _1))
+             : new BoxExecutor(bind(&Driver::afterTest, this, _1), numBoxes)) {
     instance = this;
-    auto onTestFinished = bind(&Driver::afterTest, this, _1);
-    if (smooth) {
-        executor = new Executor(onTestFinished);
-    } else {
-        executor = new BoxExecutor(onTestFinished, numBoxes);
-    }
-    hooks.runHooks<Hooks::AFTER_INIT>();
-}
-
-Driver::~Driver() {
-    delete executor;
 }
 
 void Driver::addGroup(const GroupConfig& config, Executable func) {
@@ -125,12 +120,11 @@ void Driver::beforeTest(const Test& test) {
 }
 
 void Driver::afterTest(const TestRun& testRun) {
-    const auto& test = testRun.getTest();
-    if (!test.isOptional()) {
+    if (!testRun.isTestOptional()) {
         failedAnyNonOptionalTest |= !testRun.isPassed();
     }
     hooks.runHooks<Hooks::AFTER_TEST>(testRun);
-    markTestFinished(test.getGroup());
+    markTestFinished(testRun.getGroup());
 }
 
 void Driver::beforeGroup(Group* group) {

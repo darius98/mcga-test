@@ -71,7 +71,7 @@ void FeedbackExtension::initPipe(ExtensionApi* api, const string& pipeName) {
 
     api->afterTest([this](const TestRun& testRun) {
         pipe->sendMessage(PipeMessageType::TEST,
-                          testRun.getTest().getGroup()->getIndex(),
+                          testRun.getGroupIndex(),
                           testRun.getTestIndex(),
                           testRun.isTestOptional(),
                           testRun.getTestDescription(),

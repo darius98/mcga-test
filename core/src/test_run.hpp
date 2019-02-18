@@ -21,7 +21,9 @@ class TestRun {
     TestRun(Test&& test, interproc::Message& message);
     TestRun(Test&& test, double timeTicks, bool passed, std::string failure);
 
-    const Test& getTest() const;
+    Group* getGroup() const;
+
+    int getGroupIndex() const;
 
     std::string getTestDescription() const;
 
