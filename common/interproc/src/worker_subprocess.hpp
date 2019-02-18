@@ -2,7 +2,7 @@
 #define KKTEST_COMMON_INTERPROC_SRC_WORKER_SUBPROCESS_HPP_
 
 #include "common/interproc/src/subprocess.hpp"
-#include "common/utils/src/time.hpp"
+#include "common/utils/src/process_time.hpp"
 
 namespace kktest {
 namespace interproc {

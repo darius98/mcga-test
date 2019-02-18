@@ -2,7 +2,6 @@
 #define KKTEST_COMMON_INTERPROC_SRC_SUBPROCESS_HPP_
 
 #include <functional>
-#include <vector>
 
 #include "common/interproc/src/message.hpp"
 #include "common/interproc/src/pipe.hpp"

@@ -1,12 +1,13 @@
 #include "common/interproc/src/worker_subprocess.hpp"
 
+using namespace kktest::utils;
 using namespace std;
 
 namespace kktest {
 namespace interproc {
 
 WorkerSubprocess::WorkerSubprocess(double timeLimitMs, Work run):
-        stopwatch(timeLimitMs) {
+        stopwatch(Duration::milliseconds(timeLimitMs)) {
     auto pipe = createAnonymousPipe();
     auto stdoutPipe = createAnonymousPipe();
     subprocess = Subprocess::fork([&stdoutPipe, &pipe, &run]() {
@@ -29,7 +30,7 @@ WorkerSubprocess::WorkerSubprocess(WorkerSubprocess&& other) noexcept:
         subprocess(other.subprocess),
         pipeReader(other.pipeReader),
         stdoutReader(other.stdoutReader),
-        stopwatch(other.stopwatch) {
+        stopwatch(move(other.stopwatch)) {
     other.subprocess = nullptr;
     other.pipeReader = nullptr;
     other.stdoutReader = nullptr;

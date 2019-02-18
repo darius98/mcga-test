@@ -1,7 +1,7 @@
 #include "core/src/box_executor.hpp"
 
 #include "common/interproc/src/pipe.hpp"
-#include "common/utils/src/time.hpp"
+#include "common/utils/src/process_time.hpp"
 #include "core/src/errors.hpp"
 
 using namespace kktest::interproc;
@@ -106,7 +106,7 @@ void BoxExecutor::ensureFreeContainers(size_t numContainers) {
             progress = true;
         }
         if (!progress) {
-            sleepForMs(5);
+            sleepForDuration(Duration::milliseconds(5));
         }
     }
 }

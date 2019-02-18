@@ -1,7 +1,14 @@
-add_library(common_utils
-    src/time.cpp
+list(APPEND common_utils_src
+    src/process_time.cpp
 )
+if (UNIX OR APPLE)
+    list(APPEND common_utils_src
+        src/process_time_posix.cpp
+    )
+endif ()
+
+add_library(common_utils ${common_utils_src})
 
 add_kktest(common_utils_test
-    tests/time_test.cpp
+    tests/process_time_test.cpp
 )

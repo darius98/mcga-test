@@ -1,6 +1,6 @@
 #include "core/src/executor.hpp"
 
-#include "common/utils/src/time.hpp"
+#include "common/utils/src/process_time.hpp"
 #include "core/src/errors.hpp"
 
 using namespace kktest::utils;
@@ -52,10 +52,10 @@ TestExecutionInfo Executor::run(Test* test, Executable func) {
     runSetUpsRecursively(group, setFailure);
     runTest(func, setFailure);
     runTearDownsRecursively(group, setFailure);
-    double executionTimeMs = t.getMsElapsed();
+    double executionMs = 1.0 * t.elapsed().totalNs() / Duration::kMilliToNano;
     state = INACTIVE;
     TestExecutionInfo result;
-    result.executionTimeTicks = executionTimeMs / getTimeTickLengthMs();
+    result.executionTimeTicks = executionMs / getTimeTickLengthMs();
     result.passed = !failed;
     result.failureMessage = failureMessage;
     return result;
