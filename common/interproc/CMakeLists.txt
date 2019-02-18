@@ -1,4 +1,5 @@
 list(APPEND interproc_src
+    src/errors.cpp
     src/message.cpp
     src/pipe.cpp
     src/subprocess.cpp

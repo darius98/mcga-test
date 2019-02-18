@@ -8,6 +8,8 @@
 #include <cstdlib>
 #include <cstring>
 
+#include "common/interproc/src/errors.hpp"
+
 using namespace std;
 
 namespace kktest {
@@ -23,7 +25,7 @@ class LinuxPipeReader: public PipeReader {
         bufferCapacity(128) {}
 
     ~LinuxPipeReader() override {
-        close();
+        close(inputFD);
         free(buffer);
     }
 
@@ -77,9 +79,7 @@ class LinuxPipeReader: public PipeReader {
             if (errno == EWOULDBLOCK || errno == EAGAIN) {
                 return false;
             }
-            // TODO(darius98): Handle errors better than just exiting!
-            perror("read");
-            exit(errno);
+            throw InterprocError(strerror(errno));
         }
         if (numBytesRead == 0) {
             return false;
@@ -90,19 +90,6 @@ class LinuxPipeReader: public PipeReader {
                static_cast<size_t>(numBytesRead));
         bufferSize += numBytesRead;
         return true;
-    }
-
-    void close() {
-        if (closed) {
-            return;
-        }
-        int ret = ::close(inputFD);
-        if (ret < 0) {
-            // TODO(darius98): Handle errors better than just exiting!
-            perror("close");
-            exit(errno);
-        }
-        closed = true;
     }
 
     void resizeBufferToFit(std::size_t extraBytes) {
@@ -132,7 +119,6 @@ class LinuxPipeReader: public PipeReader {
         return message;
     }
 
-    bool closed = false;
     int inputFD;
     void* buffer;
     size_t bufferReadHead;
@@ -146,12 +132,7 @@ class LinuxPipeWriter: public PipeWriter {
         outputFD(_outputFD) {}
 
     ~LinuxPipeWriter() override {
-        int ret = ::close(outputFD);
-        if (ret < 0) {
-            // TODO(darius98): Handle errors better than just exiting!
-            perror("close");
-            exit(errno);
-        }
+        close(outputFD);
     }
 
     void sendBytes(void* bytes, size_t numBytes) override {
@@ -161,9 +142,7 @@ class LinuxPipeWriter: public PipeWriter {
             size_t remaining = numBytes - written;
             ssize_t currentWriteBlockSize = write(outputFD, target, remaining);
             if (currentWriteBlockSize < 0) {
-                // TODO(darius98): Handle errors better than just exiting!
-                perror("write");
-                exit(errno);
+                throw InterprocError(strerror(errno));
             }
             written += currentWriteBlockSize;
         }
@@ -176,15 +155,11 @@ void redirectStdoutToPipe(PipeWriter* pipeWriter) {
     auto linuxPipeWriter = dynamic_cast<LinuxPipeWriter*>(pipeWriter);
     int ret = dup2(linuxPipeWriter->outputFD, STDOUT_FILENO);
     if (ret < 0) {
-        // TODO(darius98): Handle errors better than just exiting!
-        perror("close");
-        exit(errno);
+        throw InterprocError(strerror(errno));
     }
     ret = ::close(linuxPipeWriter->outputFD);
     if (ret < 0) {
-        // TODO(darius98): Handle errors better than just exiting!
-        perror("close");
-        exit(errno);
+        throw InterprocError(strerror(errno));
     }
     linuxPipeWriter->outputFD = STDOUT_FILENO;
 }
@@ -192,38 +167,35 @@ void redirectStdoutToPipe(PipeWriter* pipeWriter) {
 pair<PipeReader*, PipeWriter*> createAnonymousPipe() {
     int fd[2];
     if (pipe(fd) < 0) {
-        // TODO(darius98): Handle errors better than just exiting!
-        perror("pipe");
-        exit(errno);
+        throw InterprocError(strerror(errno));
     }
-    fcntl(fd[0], F_SETFL, O_NONBLOCK);
-    fcntl(fd[1], F_SETFL, O_NONBLOCK);
+    if (fcntl(fd[0], F_SETFL, O_NONBLOCK) < 0) {
+        throw InterprocError(strerror(errno));
+    }
+    if (fcntl(fd[1], F_SETFL, O_NONBLOCK) < 0) {
+        throw InterprocError(strerror(errno));
+    }
     return {new LinuxPipeReader(fd[0]), new LinuxPipeWriter(fd[1])};
 }
 
 void createNamedPipe(const string& pipeName) {
     int pipeCreateStatus = mkfifo(pipeName.c_str(), 0666);
     if (pipeCreateStatus < 0) {
-        // TODO(darius98): Handle errors better than just exiting!
-        perror("mkfifo");
-        exit(errno);
+        throw InterprocError(strerror(errno));
     }
 }
 
 void destroyNamedPipe(const string& pipeName) {
     int removeStat = remove(pipeName.c_str());
     if (removeStat < 0) {
-        perror("remove pipe");
-        exit(errno);
+        throw InterprocError(strerror(errno));
     }
 }
 
 PipeReader* openNamedPipeForReading(const string& pipeName) {
     int pipeFD = open(pipeName.c_str(), O_RDONLY | O_NONBLOCK);
     if (pipeFD < 0) {
-        // TODO(darius98): Handle errors better than just exiting!
-        perror("open");
-        exit(errno);
+        throw InterprocError(strerror(errno));
     }
     return new LinuxPipeReader(pipeFD);
 }
@@ -231,9 +203,7 @@ PipeReader* openNamedPipeForReading(const string& pipeName) {
 PipeWriter* openNamedPipeForWriting(const string& pipeName) {
     int pipeFD = open(pipeName.c_str(), O_WRONLY | O_NONBLOCK);
     if (pipeFD < 0) {
-        // TODO(darius98): Handle errors better than just exiting!
-        perror("open");
-        exit(errno);
+        throw InterprocError(strerror(errno));
     }
     return new LinuxPipeWriter(pipeFD);
 }

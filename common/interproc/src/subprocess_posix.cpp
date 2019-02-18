@@ -7,6 +7,9 @@
 #include <cerrno>
 #include <csignal>
 #include <cstdlib>
+#include <cstring>
+
+#include "common/interproc/src/errors.hpp"
 
 using namespace std;
 
@@ -25,8 +28,7 @@ class LinuxSubprocessHandler: public Subprocess {
         int wStatus;
         int ret = waitpid(pid, &wStatus, WNOHANG);
         if (ret < 0) {
-            perror("waitpid");
-            exit(errno);
+            throw InterprocError(strerror(errno));
         }
         if (ret == 0) {
             return false;
@@ -42,8 +44,7 @@ class LinuxSubprocessHandler: public Subprocess {
             if (errno == ESRCH) {
                 return ALREADY_DEAD;
             }
-            perror("kill");
-            exit(errno);
+            throw InterprocError(strerror(errno));
         }
         return KILLED;
     }
@@ -77,8 +78,7 @@ class LinuxSubprocessHandler: public Subprocess {
         int wStatus;
         int ret = waitpid(pid, &wStatus, 0);
         if (ret < 0) {
-            perror("waitpid");
-            exit(errno);
+            throw InterprocError(strerror(errno));
         }
         if (ret == 0) {
             return;
@@ -97,8 +97,7 @@ class LinuxSubprocessHandler: public Subprocess {
 Subprocess* Subprocess::fork(const function<void()>& func) {
     pid_t forkPid = ::fork();
     if (forkPid < 0) {
-        perror("fork");
-        exit(errno);
+        throw InterprocError(strerror(errno));
     }
     if (forkPid == 0) {  // child process
         func();
