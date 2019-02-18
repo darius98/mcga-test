@@ -15,11 +15,19 @@ class TestRun {
         CONFIGURATION_ERROR = 1
     };
 
-    explicit TestRun(Test* _test, std::string _failure);
-    explicit TestRun(Test* _test, interproc::Message& message);
-    TestRun(Test* _test, double _timeTicks, bool _passed, std::string _failure);
+    // When we create a test run, we no longer need the test.
+    // So we always move it.
+    TestRun(Test&& test, std::string failure);
+    TestRun(Test&& test, interproc::Message& message);
+    TestRun(Test&& test, double timeTicks, bool passed, std::string failure);
 
-    Test* getTest() const;
+    const Test& getTest() const;
+
+    std::string getTestDescription() const;
+
+    int getTestIndex() const;
+
+    bool isTestOptional() const;
 
     bool isPassed() const;
 
@@ -28,7 +36,7 @@ class TestRun {
     interproc::Message toMessage() const;
 
  private:
-    Test* test;
+    Test test;
     double timeTicks;
     bool passed;
     std::string failure;

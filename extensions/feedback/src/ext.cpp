@@ -46,7 +46,7 @@ void FeedbackExtension::destroy() {
 void FeedbackExtension::initLogging(ExtensionApi* api) {
     logger = new TestLogger(cout);
 
-    api->afterTest([this](TestRun testRun) {
+    api->afterTest([this](const TestRun& testRun) {
         logger->logTest(testRun);
     });
 
@@ -69,12 +69,12 @@ void FeedbackExtension::initPipe(ExtensionApi* api, const string& pipeName) {
                           group->getDescription());
     });
 
-    api->afterTest([this](TestRun testRun) {
+    api->afterTest([this](const TestRun& testRun) {
         pipe->sendMessage(PipeMessageType::TEST,
-                          testRun.getTest()->getGroup()->getIndex(),
-                          testRun.getTest()->getIndex(),
-                          testRun.getTest()->isOptional(),
-                          testRun.getTest()->getDescription(),
+                          testRun.getTest().getGroup()->getIndex(),
+                          testRun.getTestIndex(),
+                          testRun.isTestOptional(),
+                          testRun.getTestDescription(),
                           testRun.isPassed(),
                           testRun.getFailure());
     });

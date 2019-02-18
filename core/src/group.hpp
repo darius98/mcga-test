@@ -2,7 +2,7 @@
 #define KKTEST_CORE_SRC_GROUP_HPP_
 
 #include "core/include/kktest_impl/executable.hpp"
-#include "core/src/test.hpp"
+#include "core/include/kktest_impl/config.hpp"
 
 namespace kktest {
 

@@ -8,10 +8,13 @@ using namespace std;
 
 namespace kktest {
 
-TestRun::TestRun(Test* _test, string _failure):
-        test(_test), timeTicks(-1.0), passed(false), failure(move(_failure)) {}
+TestRun::TestRun(Test&& test, string failure):
+        test(move(test)),
+        timeTicks(-1.0),
+        passed(false),
+        failure(move(failure)) {}
 
-TestRun::TestRun(Test* _test, Message& message): test(_test) {
+TestRun::TestRun(Test&& test, Message& message): test(move(test)) {
     MessageStatus status;
     message >> status;
     if (status == CONFIGURATION_ERROR) {
@@ -22,14 +25,26 @@ TestRun::TestRun(Test* _test, Message& message): test(_test) {
     message >> timeTicks >> passed >> failure;
 }
 
-TestRun::TestRun(Test* _test, double _timeTicks, bool _passed, string _failure):
-        test(_test),
-        timeTicks(_timeTicks),
-        passed(_passed),
-        failure(move(_failure)) {}
+TestRun::TestRun(Test&& test, double timeTicks, bool passed, string failure):
+        test(move(test)),
+        timeTicks(timeTicks),
+        passed(passed),
+        failure(move(failure)) {}
 
-Test* TestRun::getTest() const {
+const Test& TestRun::getTest() const {
     return test;
+}
+
+string TestRun::getTestDescription() const {
+    return test.getDescription();
+}
+
+int TestRun::getTestIndex() const {
+    return test.getIndex();
+}
+
+bool TestRun::isTestOptional() const {
+    return test.isOptional();
 }
 
 bool TestRun::isPassed() const {

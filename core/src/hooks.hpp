@@ -11,8 +11,8 @@ namespace kktest {
 
 class Hooks {
  public:
-    typedef std::function<void(TestPtr)> BeforeTestHook;
-    typedef std::function<void(TestRun)> AfterTestHook;
+    typedef std::function<void(const Test&)> BeforeTestHook;
+    typedef std::function<void(const TestRun&)> AfterTestHook;
     typedef std::function<void(GroupPtr)> BeforeGroupHook;
     typedef std::function<void(GroupPtr)> AfterGroupHook;
     typedef std::function<void()> AfterInitHook;

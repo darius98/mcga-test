@@ -42,14 +42,14 @@ class Driver {
     void addTearDown(Executable func);
 
  private:
-    void afterTest(TestRun executionInfo);
-    void beforeTest(Test* test);
+    void beforeTest(const Test& test);
+    void afterTest(const TestRun& testRun);
     void beforeGroup(Group* group);
     void afterGroup(Group* group);
 
-    void markTestFinished(Group* group);
     void markTestStarted(Group* group);
     void markAllTestsStarted(Group* group);
+    void markTestFinished(Group* test);
 
     static Driver* instance;
 

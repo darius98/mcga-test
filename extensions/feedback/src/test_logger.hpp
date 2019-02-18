@@ -16,22 +16,19 @@ class TestLogger {
  public:
     explicit TestLogger(std::ostream& _stream);
 
-    void logTest(TestRun testRun, const std::string& testCaseName = "");
+    void logTest(const TestRun& testRun);
 
-    void logFatalError(const std::string& errorMessage,
-                       const std::string& testCaseName = "");
+    void logFatalError(const std::string& errorMessage);
 
-    void logFinalInformation(bool logNumTests = false);
+    void logFinalInformation();
 
  private:
     std::string getRecursiveGroupDescription(GroupPtr group);
 
-    void printTestMessage(TestRun testRun, const std::string& testCaseName);
+    void printTestMessage(const TestRun& testRun);
 
     std::ostream& stream;
 
-    int testCasesReceived = 0;
-    int testCasesFatallyExited = 0;
     int passedTests = 0;
     int failedTests = 0;
     int failedOptionalTests = 0;

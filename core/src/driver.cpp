@@ -104,10 +104,10 @@ void Driver::addGroup(const GroupConfig& config, Executable func) {
 void Driver::addTest(const TestConfig& config, Executable func) {
     executor->checkIsInactive("test");
     Group* parentGroup = groupStack.back();
-    auto test = new Test(config, parentGroup, ++currentTestIndex);
+    Test test(config, parentGroup, ++currentTestIndex);
     markTestStarted(parentGroup);
     beforeTest(test);
-    executor->execute(test, func);
+    executor->execute(move(test), func);
 }
 
 void Driver::addSetUp(Executable func) {
@@ -120,19 +120,17 @@ void Driver::addTearDown(Executable func) {
     groupStack.back()->addTearDown(func);
 }
 
-void Driver::beforeTest(Test* test) {
+void Driver::beforeTest(const Test& test) {
     hooks.runHooks<Hooks::BEFORE_TEST>(test);
 }
 
-void Driver::afterTest(TestRun testRun) {
-    auto test = testRun.getTest();
-    if (!test->getConfig().optional) {
+void Driver::afterTest(const TestRun& testRun) {
+    const auto& test = testRun.getTest();
+    if (!test.isOptional()) {
         failedAnyNonOptionalTest |= !testRun.isPassed();
     }
-    Group* group = test->getGroup();
     hooks.runHooks<Hooks::AFTER_TEST>(testRun);
-    delete test;
-    markTestFinished(group);
+    markTestFinished(test.getGroup());
 }
 
 void Driver::beforeGroup(Group* group) {
@@ -153,6 +151,13 @@ void Driver::markTestStarted(Group* group) {
     }
 }
 
+void Driver::markAllTestsStarted(Group* group) {
+    groupsPendingFinish.insert(group);
+    if (groupsPendingFinish.count(group) && testsInExecution[group] == 0) {
+        afterGroup(group);
+    }
+}
+
 void Driver::markTestFinished(Group* group) {
     while (group != nullptr) {
         testsInExecution[group] -= 1;
@@ -161,13 +166,6 @@ void Driver::markTestFinished(Group* group) {
             afterGroup(group);
         }
         group = parentGroup;
-    }
-}
-
-void Driver::markAllTestsStarted(Group* group) {
-    groupsPendingFinish.insert(group);
-    if (groupsPendingFinish.count(group) && testsInExecution[group] == 0) {
-        afterGroup(group);
     }
 }
 

@@ -31,12 +31,12 @@ void Executor::checkIsInactive(const string& methodName) const {
 
 void Executor::finalize() {}
 
-void Executor::execute(Test* test, Executable func) {
-    auto executionInfo = run(test, func);
-    onTestFinishedCallback(executionInfo);
+void Executor::execute(Test&& test, Executable func) {
+    auto testRun = run(move(test), func);
+    onTestFinishedCallback(testRun);
 }
 
-TestRun Executor::run(Test* test, Executable func) {
+TestRun Executor::run(Test&& test, Executable func) {
     state = ACTIVE;
     double timeTicks;
     bool passed = true;
@@ -48,17 +48,17 @@ TestRun Executor::run(Test* test, Executable func) {
         }
     };
     ProcessTimer t;
-    Group* group = test->getGroup();
+    GroupPtr group = test.getGroup();
     runSetUpsRecursively(group, setFailure);
     runTest(func, setFailure);
     runTearDownsRecursively(group, setFailure);
     timeTicks = (1.0 * t.elapsed().totalNs() / Duration::kMilliToNano)
                 / getTimeTickLengthMs();
     state = INACTIVE;
-    return TestRun(test, timeTicks, passed, failure);
+    return TestRun(move(test), timeTicks, passed, failure);
 }
 
-void Executor::runSetUpsRecursively(Group* group, SetFailure setFailure) {
+void Executor::runSetUpsRecursively(GroupPtr group, SetFailure setFailure) {
     if (group == nullptr) {
         return;
     }
@@ -93,7 +93,7 @@ void Executor::runTest(Executable func, SetFailure setFailure) {
     }
 }
 
-void Executor::runTearDownsRecursively(Group* group, SetFailure setFailure) {
+void Executor::runTearDownsRecursively(GroupPtr group, SetFailure setFailure) {
     if (group == nullptr) {
         return;
     }

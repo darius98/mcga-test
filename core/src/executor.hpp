@@ -15,7 +15,7 @@ class Executor {
     typedef const std::function<void(const std::string&)>& SetFailure;
 
  public:
-    typedef std::function<void(TestRun)> OnTestFinished;
+    typedef std::function<void(const TestRun&)> OnTestFinished;
 
     static double getTimeTickLengthMs();
 
@@ -25,17 +25,17 @@ class Executor {
 
     void checkIsInactive(const std::string& methodName) const;
 
-    virtual void execute(Test* test, Executable func);
+    virtual void execute(Test&& test, Executable func);
 
     virtual void finalize();
 
  protected:
-    TestRun run(Test* test, Executable func);
+    TestRun run(Test&& test, Executable func);
 
  private:
-    void runSetUpsRecursively(Group* group, SetFailure setFailure);
+    void runSetUpsRecursively(GroupPtr group, SetFailure setFailure);
 
-    void runTearDownsRecursively(Group* group, SetFailure setFailure);
+    void runTearDownsRecursively(GroupPtr group, SetFailure setFailure);
 
     void runTest(Executable func, SetFailure setFailure);
 

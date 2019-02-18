@@ -11,12 +11,21 @@ using namespace std::placeholders;
 
 namespace kktest {
 
-BoxedTest::BoxedTest(Test* _test, WorkerSubprocess* _process):
-        test(_test), process(_process) {}
+BoxedTest::BoxedTest(Test&& _test, WorkerSubprocess* _process):
+        test(move(_test)), process(_process) {}
 
 BoxedTest::BoxedTest(BoxedTest&& other) noexcept:
-        test(other.test), process(other.process) {
+        test(move(other.test)), process(other.process) {
     other.process = nullptr;
+}
+
+BoxedTest& BoxedTest::operator=(BoxedTest&& other) noexcept {
+    if (this != &other) {
+        test = move(other.test);
+        process = other.process;
+        other.process = nullptr;
+    }
+    return *this;
 }
 
 BoxedTest::~BoxedTest() {
@@ -24,7 +33,7 @@ BoxedTest::~BoxedTest() {
 }
 
 bool BoxedTest::operator<(const BoxedTest& other) const {
-    return test < other.test;
+    return test.getIndex() < other.test.getIndex();
 }
 
 BoxExecutor::BoxExecutor(const OnTestFinished& onTestFinished,
@@ -32,17 +41,18 @@ BoxExecutor::BoxExecutor(const OnTestFinished& onTestFinished,
         Executor(onTestFinished),
         maxNumContainers(_maxNumContainers) {}
 
-void BoxExecutor::execute(Test* test, Executable func) {
+void BoxExecutor::execute(Test&& test, Executable func) {
     ensureFreeContainers(1);
-    openContainers.insert(BoxedTest(test, new WorkerSubprocess(
-        test->getConfig().timeTicksLimit * getTimeTickLengthMs() + 100.0,
-        bind(&BoxExecutor::runContained, this, test, func, _1))));
+    double timeLimit = test.getTimeTicksLimit() * getTimeTickLengthMs() + 100.0;
+    openContainers.emplace_back(move(test), new WorkerSubprocess(
+        timeLimit,
+        bind(&BoxExecutor::runContained, this, test, func, _1)));
 }
 
-void BoxExecutor::runContained(Test* test, Executable func, PipeWriter* pipe) {
+void BoxExecutor::runContained(Test test, Executable func, PipeWriter* pipe) {
     try {
-        auto executionInfo = run(test, func);
-        pipe->sendMessage(executionInfo.toMessage());
+        auto testRun = run(move(test), func);
+        pipe->sendMessage(testRun.toMessage());
     } catch(const ConfigurationError& error) {
         pipe->sendMessage(TestRun::CONFIGURATION_ERROR, string(error.what()));
     }
@@ -69,7 +79,7 @@ void BoxExecutor::ensureFreeContainers(size_t numContainers) {
     }
 }
 
-bool BoxExecutor::tryCloseContainer(set<BoxedTest>::iterator boxedTest) {
+bool BoxExecutor::tryCloseContainer(vector<BoxedTest>::iterator boxedTest) {
     bool finished = true;
     bool passed = false;
     Message message;
@@ -107,10 +117,10 @@ bool BoxExecutor::tryCloseContainer(set<BoxedTest>::iterator boxedTest) {
     if (!finished) {
         return false;
     }
-    auto info = passed
-            ? TestRun(boxedTest->test, message)
-            : TestRun(boxedTest->test, error);
-    onTestFinishedCallback(info);
+    auto testRun = passed
+            ? TestRun(move(boxedTest->test), message)
+            : TestRun(move(boxedTest->test), error);
+    onTestFinishedCallback(testRun);
     return true;
 }
 

@@ -9,40 +9,17 @@ namespace feedback {
 
 TestLogger::TestLogger(ostream& _stream): stream(_stream) {}
 
-void TestLogger::logTest(TestRun testRun, const string& testCaseName) {
+void TestLogger::logTest(const TestRun& testRun) {
     passedTests += testRun.isPassed();
     failedTests += !testRun.isPassed();
 
-    failedOptionalTests +=
-            (!testRun.isPassed() && testRun.getTest()->isOptional());
-    testCasesReceived += (testRun.getTest()->getIndex() == 1);
-    printTestMessage(testRun, testCaseName);
+    failedOptionalTests += (!testRun.isPassed() && testRun.isTestOptional());
+    printTestMessage(testRun);
     testsLogged += 1;
 }
 
-void TestLogger::logFinalInformation(bool logNumTests) {
-    stream << "\n";
-    if (logNumTests) {
-        if (testCasesFatallyExited != 0) {
-            stream << termcolor::red
-                   << "Warning: some test cases closed unexpectedly!"
-                   << termcolor::reset
-                   << "\n\n"
-                   << "Test cases found: "
-                   << testCasesReceived
-                   << "\n"
-                   << "Test cases executed successfully: "
-                   << testCasesReceived - testCasesFatallyExited
-                   << "\n"
-                   << "Test cases executed with fatal errors: "
-                   << termcolor::red
-                   << testCasesFatallyExited
-                   << termcolor::reset
-                   << "\n";
-        }
-        stream << "Total tests executed: " << passedTests + failedTests << "\n";
-    }
-    stream << "Tests passed: "
+void TestLogger::logFinalInformation() {
+    stream << "\nTests passed: "
            << termcolor::green
            << passedTests
            << termcolor::reset
@@ -62,18 +39,14 @@ void TestLogger::logFinalInformation(bool logNumTests) {
     stream << "\n";
 }
 
-void TestLogger::logFatalError(const string& errorMessage,
-                               const string& testCaseName) {
-    testCasesFatallyExited += 1;
+void TestLogger::logFatalError(const string& errorMessage) {
     stream << "\nA fatal "
            << termcolor::red
            << "error"
            << termcolor::reset
-           << " occurred during execution";
-    if (!testCaseName.empty()) {
-        stream << " of test case " << testCaseName;
-    }
-    stream << ": " << errorMessage << "\n";
+           << " occurred during execution: "
+           << errorMessage
+           << "\n";
 }
 
 string TestLogger::getRecursiveGroupDescription(GroupPtr group) {
@@ -87,7 +60,7 @@ string TestLogger::getRecursiveGroupDescription(GroupPtr group) {
     return recursive + group->getDescription() + "::";
 }
 
-void TestLogger::printTestMessage(TestRun testRun, const string& testCaseName) {
+void TestLogger::printTestMessage(const TestRun& testRun) {
     stream << "[";
     if (testRun.isPassed()) {
         stream << termcolor::green << "P" << termcolor::reset;
@@ -96,11 +69,11 @@ void TestLogger::printTestMessage(TestRun testRun, const string& testCaseName) {
     }
     stream << "] ";
     string groupDescription = getRecursiveGroupDescription(
-            testRun.getTest()->getGroup());
+            testRun.getTest().getGroup());
     stream << termcolor::grey
            << groupDescription
            << termcolor::reset
-           << testRun.getTest()->getDescription();
+           << testRun.getTestDescription();
     if (!testRun.isPassed()) {
         stream << "\n\t";
         // TODO(darius98): This should be somewhere else (in utils maybe?)

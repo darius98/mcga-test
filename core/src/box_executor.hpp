@@ -1,7 +1,7 @@
 #ifndef KKTEST_CORE_SRC_BOX_EXECUTOR_HPP_
 #define KKTEST_CORE_SRC_BOX_EXECUTOR_HPP_
 
-#include <set>
+#include <vector>
 
 #include "common/interproc/src/worker_subprocess.hpp"
 #include "core/src/executor.hpp"
@@ -9,12 +9,14 @@
 namespace kktest {
 
 struct BoxedTest {
-    Test* test;
+    Test test;
     interproc::WorkerSubprocess* process;
 
-    BoxedTest(Test* _test, interproc::WorkerSubprocess* _process);
+    BoxedTest(Test&& _test, interproc::WorkerSubprocess* _process);
     BoxedTest(BoxedTest&& other) noexcept;
     BoxedTest(const BoxedTest& other) = delete;
+
+    BoxedTest& operator=(BoxedTest&& other) noexcept;
 
     ~BoxedTest();
 
@@ -29,16 +31,16 @@ class BoxExecutor: public Executor {
     void finalize() override;
 
  private:
-    void execute(Test* test, Executable func) override;
+    void execute(Test&& test, Executable func) override;
 
-    void runContained(Test* test, Executable func, interproc::PipeWriter* pipe);
+    void runContained(Test test, Executable func, interproc::PipeWriter* pipe);
 
     void ensureFreeContainers(std::size_t numContainers);
 
-    bool tryCloseContainer(std::set<BoxedTest>::iterator boxedTest);
+    bool tryCloseContainer(std::vector<BoxedTest>::iterator boxedTest);
 
     std::size_t maxNumContainers;
-    std::set<BoxedTest> openContainers;
+    std::vector<BoxedTest> openContainers;
 };
 
 }

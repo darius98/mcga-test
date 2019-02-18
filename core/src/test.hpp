@@ -4,22 +4,29 @@
 #include <memory>
 #include <string>
 
-#include "common/interproc/src/message.hpp"
-#include "core/include/kktest_impl/config.hpp"
+#include "core/src/group.hpp"
 
 namespace kktest {
 
-class Group;
-
 class Test {
  public:
-    Test(const TestConfig& _config, Group* _parentGroup, int _index);
+    Test(const TestConfig& _config, Group* _group, int _index);
+    Test(Test&& other) noexcept;
 
-    const TestConfig& getConfig() const;
+    // TODO(darius98): Explicitly delete this constructor!
+    //  A test should never have to be copied, only passed around.
+    //  ...
+    //  Currently, it is needed for the BoxedExecutor, since we need a copy
+    //  to send to the test process and one to keep.
+    Test(const Test& other);
+
+    Test& operator=(Test&& other) noexcept;
 
     std::string getDescription() const;
 
     bool isOptional() const;
+
+    double getTimeTicksLimit() const;
 
     Group* getGroup() const;
 
@@ -27,13 +34,9 @@ class Test {
 
  private:
     TestConfig config;
-    Group* parentGroup;
+    Group* group;
     int index;
-
-friend class Driver;
 };
-
-typedef const Test*const TestPtr;
 
 }
 
