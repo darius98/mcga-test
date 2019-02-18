@@ -49,7 +49,7 @@ int main(const vector<Extension*>& extensions, InternalArgs args) {
             testCase.first();
             driver->afterTestCase();
         }
-        ret = driver->destroy();
+        ret = driver->clean();
     } catch(const ConfigurationError& error) {
         driver->forceDestroy(error);
     } catch(const ExpectationFailed& error) {
@@ -66,6 +66,7 @@ int main(const vector<Extension*>& extensions, InternalArgs args) {
     for (Extension* extension : extensions) {
         extension->destroy();
     }
+    delete driver;
     return ret;
 }
 

@@ -38,13 +38,8 @@ void FeedbackExtension::init(ExtensionApi* api) {
     }
 }
 
-void FeedbackExtension::destroy() {
-    delete logger;
-    delete pipe;
-}
-
 void FeedbackExtension::initLogging(ExtensionApi* api) {
-    logger = new TestLogger(cout);
+    logger = unique_ptr<TestLogger>(new TestLogger(cout));
 
     api->afterTest([this](const TestRun& testRun) {
         logger->logTest(testRun);
@@ -60,7 +55,7 @@ void FeedbackExtension::initLogging(ExtensionApi* api) {
 }
 
 void FeedbackExtension::initPipe(ExtensionApi* api, const string& pipeName) {
-    pipe = openNamedPipeForWriting(pipeName);
+    pipe = unique_ptr<PipeWriter>(openNamedPipeForWriting(pipeName));
 
     api->beforeGroup([this](GroupPtr group) {
         pipe->sendMessage(PipeMessageType::GROUP,

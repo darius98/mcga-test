@@ -3,7 +3,6 @@
 
 #include <functional>
 #include <map>
-#include <memory>
 #include <set>
 #include <string>
 #include <vector>
@@ -24,7 +23,7 @@ class Driver {
 
     Driver(Hooks hooks, bool smooth, std::size_t numBoxes);
 
-    int destroy();
+    int clean();
 
     void forceDestroy(const ConfigurationError& error);
 
@@ -58,7 +57,6 @@ class Driver {
     std::set<Group*> groupsPendingFinish;
 
     std::unique_ptr<Executor> executor;
-    Group* globalScope = nullptr;
     std::vector<Group*> groupStack = {};
     int currentTestIndex = 0;
     int currentGroupIndex = 0;

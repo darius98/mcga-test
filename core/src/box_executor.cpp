@@ -15,25 +15,17 @@ BoxedTest::BoxedTest(Test&& _test, WorkerSubprocess* _process):
         test(move(_test)), process(_process) {}
 
 BoxedTest::BoxedTest(BoxedTest&& other) noexcept:
-        test(move(other.test)), process(other.process) {
+        test(move(other.test)), process(move(other.process)) {
     other.process = nullptr;
 }
 
 BoxedTest& BoxedTest::operator=(BoxedTest&& other) noexcept {
     if (this != &other) {
         test = move(other.test);
-        process = other.process;
-        other.process = nullptr;
+        process = move(other.process);
+        other.process.reset();
     }
     return *this;
-}
-
-BoxedTest::~BoxedTest() {
-    delete process;
-}
-
-bool BoxedTest::operator<(const BoxedTest& other) const {
-    return test.getIndex() < other.test.getIndex();
 }
 
 BoxExecutor::BoxExecutor(const OnTestFinished& onTestFinished,
@@ -84,7 +76,7 @@ bool BoxExecutor::tryCloseContainer(vector<BoxedTest>::iterator boxedTest) {
     bool passed = false;
     Message message;
     string error;
-    auto process = boxedTest->process;
+    auto process = boxedTest->process.get();
     switch (process->getFinishStatus()) {
         case WorkerSubprocess::NO_EXIT: {
             finished = false;

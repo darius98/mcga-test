@@ -14,15 +14,13 @@ class FeedbackExtension: public Extension {
 
     void init(ExtensionApi* api) override;
 
-    void destroy() override;
-
  private:
     void initLogging(ExtensionApi* api);
 
     void initPipe(ExtensionApi* api, const std::string& pipeName);
 
-    TestLogger* logger = nullptr;
-    interproc::PipeWriter* pipe = nullptr;
+    std::unique_ptr<TestLogger> logger = nullptr;
+    std::unique_ptr<interproc::PipeWriter> pipe = nullptr;
 
     cppli::Flag quietFlag;
     cppli::Argument pipeNameArgument;

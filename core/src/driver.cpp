@@ -27,38 +27,25 @@ Driver* Driver::init(const Hooks& hooks, bool smooth, size_t numBoxes) {
     return instance;
 }
 
-int Driver::destroy() {
-    executor->finalize();
+int Driver::clean() {
     hooks.runHooks<Hooks::BEFORE_DESTROY>();
-    int status = failedAnyNonOptionalTest ? 1 : 0;
     TestCaseRegistry::clean();
-    delete this;
-    return status;
+    return failedAnyNonOptionalTest ? 1 : 0;
 }
 
 void Driver::forceDestroy(const ConfigurationError& error) {
     hooks.runHooks<Hooks::BEFORE_FORCE_DESTROY>(error);
     TestCaseRegistry::clean();
-    delete this;
 }
 
 void Driver::beforeTestCase(const string& name) {
-    if (globalScope != nullptr) {
-        throw Bug("Driver: beforeTestCase() called twice in a row.");
-    }
-    globalScope = new Group(name, nullptr, 0);
-    groupStack = {globalScope};
-    beforeGroup(globalScope);
+    groupStack = {new Group(name, nullptr, 0)};
+    beforeGroup(groupStack.back());
 }
 
 void Driver::afterTestCase() {
-    if (globalScope == nullptr) {
-        throw Bug("Driver: afterTestCase() called twice in a row.");
-    }
     executor->finalize();
-    afterGroup(globalScope);
-    globalScope = nullptr;
-    groupStack = {};
+    afterGroup(groupStack.back());
 }
 
 Driver::Driver(Hooks hooks, bool smooth, size_t numBoxes):
