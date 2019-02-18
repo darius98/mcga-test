@@ -1,9 +1,11 @@
 #include "extensions/death/include/kktest_ext/death_impl/check_death.hpp"
 
 #include "common/interproc/src/worker_subprocess.hpp"
+#include "common/utils/src/process_time.hpp"
 #include "core/src/executor.hpp"
 
 using namespace kktest::interproc;
+using namespace kktest::utils;
 using namespace std;
 
 namespace kktest {
@@ -17,7 +19,9 @@ DeathStatus checkDeath(const function<void()>& func, double timeTicksLimit) {
             writer->sendMessage(1);
         });
 
-    proc.wait();
+    while (!proc.isFinished()) {
+        sleepForDuration(Duration::fromMs(5));
+    }
     if (proc.getNextMessage(32).isInvalid()) {
         // The exit was ok.
         return DeathStatus(proc.getReturnCode(),

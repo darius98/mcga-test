@@ -71,22 +71,6 @@ class LinuxSubprocessHandler: public Subprocess {
         return -1;
     }
 
-    void wait() override {
-        if (killed || finished) {
-            return;
-        }
-        int wStatus;
-        int ret = waitpid(pid, &wStatus, 0);
-        if (ret < 0) {
-            throw InterprocError(strerror(errno));
-        }
-        if (ret == 0) {
-            return;
-        }
-        finished = true;
-        lastWaitStatus = wStatus;
-    }
-
  private:
     pid_t pid;
     bool killed = false;

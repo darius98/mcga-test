@@ -33,8 +33,6 @@ class WorkerSubprocess: public Subprocess {
 
     int getSignal() override;
 
-    void wait() override;
-
     std::string getOutput();
 
     FinishStatus getFinishStatus() override;

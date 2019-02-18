@@ -40,8 +40,6 @@ class Subprocess {
 
     virtual int getSignal() = 0;
 
-    virtual void wait() = 0;
-
     virtual FinishStatus getFinishStatus();
 };
 

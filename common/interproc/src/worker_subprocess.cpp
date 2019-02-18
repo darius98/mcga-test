@@ -76,14 +76,6 @@ string WorkerSubprocess::getOutput() {
     return output;
 }
 
-void WorkerSubprocess::wait() {
-    subprocess->wait();
-    auto newBytes = stdoutReader->getBytes();
-    for (uint8_t byte : newBytes) {
-        output += static_cast<char>(byte);
-    }
-}
-
 WorkerSubprocess::FinishStatus WorkerSubprocess::getFinishStatus() {
     if (!isFinished()) {
         if (!stopwatch.isElapsed()) {
