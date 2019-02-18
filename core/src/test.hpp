@@ -6,7 +6,6 @@
 
 #include "common/interproc/src/message.hpp"
 #include "core/include/kktest_impl/config.hpp"
-#include "core/src/info.hpp"
 
 namespace kktest {
 
@@ -18,11 +17,13 @@ class Test {
 
     const TestConfig& getConfig() const;
 
+    std::string getDescription() const;
+
+    bool isOptional() const;
+
     Group* getGroup() const;
 
     int getIndex() const;
-
-    TestInfo toTestInfo() const;
 
  private:
     TestConfig config;
@@ -31,6 +32,8 @@ class Test {
 
 friend class Driver;
 };
+
+typedef const Test*const TestPtr;
 
 }
 

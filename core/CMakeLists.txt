@@ -7,7 +7,6 @@ add_library(kktest_core OBJECT
     src/executor.cpp
     src/extension_api.cpp
     src/group.cpp
-    src/info.cpp
     src/main.cpp
     src/test.cpp
     src/test_case_registry.cpp

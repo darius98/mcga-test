@@ -36,13 +36,8 @@ bool TestRun::isPassed() const {
     return passed;
 }
 
-TestInfo TestRun::toTestInfo() const {
-    return TestInfo(test->getGroup()->getIndex(),
-                    test->getIndex(),
-                    test->getConfig().optional,
-                    test->getConfig().description,
-                    passed,
-                    failure);
+string TestRun::getFailure() const {
+    return failure;
 }
 
 Message TestRun::toMessage() const {

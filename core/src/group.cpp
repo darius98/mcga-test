@@ -51,9 +51,4 @@ Group* Group::getParentGroup() const {
     return parentGroup;
 }
 
-GroupInfo Group::getGroupInfo() const {
-    int parentGroupIndex = parentGroup == nullptr ? -1 : parentGroup->index;
-    return GroupInfo{parentGroupIndex, index, config.description};
-}
-
 }

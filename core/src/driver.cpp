@@ -121,7 +121,7 @@ void Driver::addTearDown(Executable func) {
 }
 
 void Driver::beforeTest(Test* test) {
-    hooks.runHooks<Hooks::BEFORE_TEST>(test->toTestInfo());
+    hooks.runHooks<Hooks::BEFORE_TEST>(test);
 }
 
 void Driver::afterTest(TestRun testRun) {
@@ -130,17 +130,17 @@ void Driver::afterTest(TestRun testRun) {
         failedAnyNonOptionalTest |= !testRun.isPassed();
     }
     Group* group = test->getGroup();
-    hooks.runHooks<Hooks::AFTER_TEST>(testRun.toTestInfo());
+    hooks.runHooks<Hooks::AFTER_TEST>(testRun);
     delete test;
     markTestFinished(group);
 }
 
 void Driver::beforeGroup(Group* group) {
-    hooks.runHooks<Hooks::BEFORE_GROUP>(group->getGroupInfo());
+    hooks.runHooks<Hooks::BEFORE_GROUP>(group);
 }
 
 void Driver::afterGroup(Group* group) {
-    hooks.runHooks<Hooks::AFTER_GROUP>(group->getGroupInfo());
+    hooks.runHooks<Hooks::AFTER_GROUP>(group);
     delete group;
     testsInExecution.erase(group);
     groupsPendingFinish.erase(group);

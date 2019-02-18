@@ -3,14 +3,18 @@
 
 #include <tuple>
 
-#include "core/src/info.hpp"
+#include "core/src/group.hpp"
+#include "core/src/test.hpp"
+#include "core/src/test_run.hpp"
 
 namespace kktest {
 
 class Hooks {
  public:
-    typedef std::function<void(const TestInfo&)> TestHook;
-    typedef std::function<void(const GroupInfo&)> GroupHook;
+    typedef std::function<void(TestPtr)> BeforeTestHook;
+    typedef std::function<void(TestRun)> AfterTestHook;
+    typedef std::function<void(GroupPtr)> BeforeGroupHook;
+    typedef std::function<void(GroupPtr)> AfterGroupHook;
     typedef std::function<void()> AfterInitHook;
     typedef std::function<void()> BeforeDestroyHook;
     typedef std::function<void(const std::exception&)> BeforeForceDestroyHook;
@@ -40,10 +44,10 @@ class Hooks {
  private:
     std::tuple<
         std::vector<AfterInitHook>,
-        std::vector<GroupHook>,
-        std::vector<GroupHook>,
-        std::vector<TestHook>,
-        std::vector<TestHook>,
+        std::vector<BeforeGroupHook>,
+        std::vector<AfterGroupHook>,
+        std::vector<BeforeTestHook>,
+        std::vector<AfterTestHook>,
         std::vector<BeforeDestroyHook>,
         std::vector<BeforeForceDestroyHook>
     > hooks;

@@ -14,21 +14,20 @@ const TestConfig& Test::getConfig() const {
     return config;
 }
 
+string Test::getDescription() const {
+    return config.description;
+}
+
+bool Test::isOptional() const {
+    return config.optional;
+}
+
 Group* Test::getGroup() const {
     return parentGroup;
 }
 
 int Test::getIndex() const {
     return index;
-}
-
-TestInfo Test::toTestInfo() const {
-    return TestInfo(parentGroup->getIndex(),
-                    index,
-                    config.optional,
-                    config.description,
-                    false,
-                    "");
 }
 
 }

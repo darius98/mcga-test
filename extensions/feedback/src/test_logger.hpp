@@ -6,21 +6,17 @@
 #include <set>
 #include <utility>
 
-#include "core/src/info.hpp"
+#include "core/src/group.hpp"
+#include "core/src/test_run.hpp"
 
 namespace kktest {
 namespace feedback {
 
 class TestLogger {
  public:
-    explicit TestLogger(std::ostream& _stream,
-                        bool _maintainTestIndexOrder = true);
+    explicit TestLogger(std::ostream& _stream);
 
-    void addGroupInfo(const GroupInfo& groupInfo,
-                      const std::string& testCaseName = "");
-
-    void logTest(const TestInfo& testInfo,
-                 const std::string& testCaseName = "");
+    void logTest(TestRun testRun, const std::string& testCaseName = "");
 
     void logFatalError(const std::string& errorMessage,
                        const std::string& testCaseName = "");
@@ -28,24 +24,18 @@ class TestLogger {
     void logFinalInformation(bool logNumTests = false);
 
  private:
-    std::string getRecursiveGroupDescription(int groupId,
-                                             const std::string& testCaseName);
+    std::string getRecursiveGroupDescription(GroupPtr group);
 
-    void printTestMessage(const TestInfo& testInfo,
-                          const std::string& testCaseName);
+    void printTestMessage(TestRun testRun, const std::string& testCaseName);
 
     std::ostream& stream;
 
-    bool maintainTestIndexOrder;
     int testCasesReceived = 0;
     int testCasesFatallyExited = 0;
     int passedTests = 0;
     int failedTests = 0;
     int failedOptionalTests = 0;
     int testsLogged = 0;
-    std::set<std::pair<TestInfo, std::string>> testsQueue;
-
-    std::map<std::pair<std::string, int>, GroupInfo> allGroupsInfo;
 };
 
 }

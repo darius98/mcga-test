@@ -4,19 +4,19 @@ using namespace cppli;
 
 namespace kktest {
 
-void ExtensionApi::beforeTest(const Hooks::TestHook& hook) {
+void ExtensionApi::beforeTest(const Hooks::BeforeTestHook& hook) {
     hooks.addHook<Hooks::BEFORE_TEST>(hook);
 }
 
-void ExtensionApi::afterTest(const Hooks::TestHook& hook) {
+void ExtensionApi::afterTest(const Hooks::AfterTestHook& hook) {
     hooks.addHook<Hooks::AFTER_TEST>(hook);
 }
 
-void ExtensionApi::beforeGroup(const Hooks::GroupHook& hook) {
+void ExtensionApi::beforeGroup(const Hooks::BeforeGroupHook& hook) {
     hooks.addHook<Hooks::BEFORE_GROUP>(hook);
 }
 
-void ExtensionApi::afterGroup(const Hooks::GroupHook& hook) {
+void ExtensionApi::afterGroup(const Hooks::AfterGroupHook& hook) {
     hooks.addHook<Hooks::AFTER_GROUP>(hook);
 }
 

@@ -4,7 +4,6 @@
 #include <string>
 
 #include "common/interproc/src/message.hpp"
-#include "core/src/info.hpp"
 #include "core/src/test.hpp"
 
 namespace kktest {
@@ -24,7 +23,7 @@ class TestRun {
 
     bool isPassed() const;
 
-    TestInfo toTestInfo() const;
+    std::string getFailure() const;
 
     interproc::Message toMessage() const;
 

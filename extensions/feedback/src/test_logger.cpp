@@ -7,28 +7,17 @@ using namespace std;
 namespace kktest {
 namespace feedback {
 
-TestLogger::TestLogger(ostream& _stream, bool _maintainTestIndexOrder):
-        stream(_stream),
-        maintainTestIndexOrder(_maintainTestIndexOrder) {}
+TestLogger::TestLogger(ostream& _stream): stream(_stream) {}
 
-void TestLogger::addGroupInfo(const GroupInfo& groupInfo,
-                              const string& testCaseName) {
-    allGroupsInfo[{testCaseName, groupInfo.index}] = groupInfo;
-}
+void TestLogger::logTest(TestRun testRun, const string& testCaseName) {
+    passedTests += testRun.isPassed();
+    failedTests += !testRun.isPassed();
 
-void TestLogger::logTest(const TestInfo& testInfo, const string& testCaseName) {
-    testsQueue.insert({testInfo, testCaseName});
-    passedTests += testInfo.passed;
-    failedTests += !testInfo.passed;
-    failedOptionalTests += !testInfo.passed && testInfo.optional;
-    testCasesReceived += (testInfo.index == 1);
-    while (!testsQueue.empty() &&
-                (testsQueue.begin()->first.index == testsLogged + 1 ||
-                 !maintainTestIndexOrder)) {
-        printTestMessage(testsQueue.begin()->first, testsQueue.begin()->second);
-        testsQueue.erase(testsQueue.begin());
-        testsLogged += 1;
-    }
+    failedOptionalTests +=
+            (!testRun.isPassed() && testRun.getTest()->isOptional());
+    testCasesReceived += (testRun.getTest()->getIndex() == 1);
+    printTestMessage(testRun, testCaseName);
+    testsLogged += 1;
 }
 
 void TestLogger::logFinalInformation(bool logNumTests) {
@@ -87,46 +76,41 @@ void TestLogger::logFatalError(const string& errorMessage,
     stream << ": " << errorMessage << "\n";
 }
 
-string TestLogger::getRecursiveGroupDescription(int groupId,
-                                                const string& testCaseName) {
-    auto groupInfoIterator = allGroupsInfo.find({testCaseName, groupId});
-    if (groupInfoIterator == allGroupsInfo.end()) {
+string TestLogger::getRecursiveGroupDescription(GroupPtr group) {
+    if (group == nullptr) {
         return "";
     }
-    GroupInfo groupInfo = groupInfoIterator->second;
-    string recursive = getRecursiveGroupDescription(groupInfo.parentGroupIndex,
-                                                    testCaseName);
-    if (groupInfo.index == 0 && groupInfo.description.empty()) {
+    string recursive = getRecursiveGroupDescription(group->getParentGroup());
+    if (group->getIndex() == 0 && group->getDescription().empty()) {
         return recursive;
     }
-    return recursive + groupInfo.description + "::";
+    return recursive + group->getDescription() + "::";
 }
 
-void TestLogger::printTestMessage(const TestInfo& testInfo,
-                                  const string& testCaseName) {
+void TestLogger::printTestMessage(TestRun testRun, const string& testCaseName) {
     stream << "[";
-    if (testInfo.passed) {
+    if (testRun.isPassed()) {
         stream << termcolor::green << "P" << termcolor::reset;
     } else {
         stream << termcolor::red << "F" << termcolor::reset;
     }
     stream << "] ";
-    string groupDescription = getRecursiveGroupDescription(testInfo.groupIndex,
-                                                           testCaseName);
+    string groupDescription = getRecursiveGroupDescription(
+            testRun.getTest()->getGroup());
     stream << termcolor::grey
            << groupDescription
            << termcolor::reset
-           << testInfo.description;
-    if (!testInfo.passed) {
+           << testRun.getTest()->getDescription();
+    if (!testRun.isPassed()) {
         stream << "\n\t";
         // TODO(darius98): This should be somewhere else (in utils maybe?)
         size_t pos = 0;
-        string failureMessage = testInfo.failureMessage;
-        while ((pos = failureMessage.find('\n', pos)) != string::npos) {
-            failureMessage.replace(pos, 1, "\n\t");
+        string failure = testRun.getFailure();
+        while ((pos = failure.find('\n', pos)) != string::npos) {
+            failure.replace(pos, 1, "\n\t");
             pos += 2;
         }
-        stream << termcolor::red << failureMessage << termcolor::reset;
+        stream << termcolor::red << failure << termcolor::reset;
     }
     stream << "\n";
 }

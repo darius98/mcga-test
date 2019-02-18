@@ -7,16 +7,15 @@
 #include <cppli.hpp>
 
 #include "core/src/hooks.hpp"
-#include "core/src/info.hpp"
 
 namespace kktest {
 
 class ExtensionApi {
  public:
-    void beforeTest(const Hooks::TestHook& hook);
-    void afterTest(const Hooks::TestHook& hook);
-    void beforeGroup(const Hooks::GroupHook& hook);
-    void afterGroup(const Hooks::GroupHook& hook);
+    void beforeTest(const Hooks::BeforeTestHook& hook);
+    void afterTest(const Hooks::AfterTestHook& hook);
+    void beforeGroup(const Hooks::BeforeGroupHook& hook);
+    void afterGroup(const Hooks::AfterGroupHook& hook);
     void afterInit(const Hooks::AfterInitHook& hook);
     void beforeDestroy(const Hooks::BeforeDestroyHook& hook);
     void beforeForceDestroy(const Hooks::BeforeForceDestroyHook& hook);

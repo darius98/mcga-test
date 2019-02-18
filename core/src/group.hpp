@@ -2,7 +2,6 @@
 #define KKTEST_CORE_SRC_GROUP_HPP_
 
 #include "core/include/kktest_impl/executable.hpp"
-#include "core/src/info.hpp"
 #include "core/src/test.hpp"
 
 namespace kktest {
@@ -14,8 +13,6 @@ class Group {
     std::string getDescription() const;
 
     int getIndex() const;
-
-    GroupInfo getGroupInfo() const;
 
     Group* getParentGroup() const;
 
@@ -36,6 +33,8 @@ class Group {
     CopyableExecutable setUpFunc;
     CopyableExecutable tearDownFunc;
 };
+
+typedef const Group*const GroupPtr;
 
 }
 

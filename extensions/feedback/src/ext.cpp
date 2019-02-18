@@ -46,12 +46,8 @@ void FeedbackExtension::destroy() {
 void FeedbackExtension::initLogging(ExtensionApi* api) {
     logger = new TestLogger(cout);
 
-    api->beforeGroup([this](const GroupInfo& groupInfo) {
-        logger->addGroupInfo(groupInfo);
-    });
-
-    api->afterTest([this](const TestInfo& testInfo) {
-        logger->logTest(testInfo);
+    api->afterTest([this](TestRun testRun) {
+        logger->logTest(testRun);
     });
 
     api->beforeDestroy([this]() {
@@ -66,23 +62,21 @@ void FeedbackExtension::initLogging(ExtensionApi* api) {
 void FeedbackExtension::initPipe(ExtensionApi* api, const string& pipeName) {
     pipe = openNamedPipeForWriting(pipeName);
 
-    api->beforeGroup([this](const GroupInfo& groupInfo) {
-        pipe->sendMessage(
-                PipeMessageType::GROUP,
-                groupInfo.parentGroupIndex,
-                groupInfo.index,
-                groupInfo.description);
+    api->beforeGroup([this](GroupPtr group) {
+        pipe->sendMessage(PipeMessageType::GROUP,
+                          group->getParentGroup()->getIndex(),
+                          group->getIndex(),
+                          group->getDescription());
     });
 
-    api->afterTest([this](const TestInfo& testInfo) {
-        pipe->sendMessage(
-                PipeMessageType::TEST,
-                testInfo.groupIndex,
-                testInfo.index,
-                testInfo.optional,
-                testInfo.description,
-                testInfo.passed,
-                testInfo.failureMessage);
+    api->afterTest([this](TestRun testRun) {
+        pipe->sendMessage(PipeMessageType::TEST,
+                          testRun.getTest()->getGroup()->getIndex(),
+                          testRun.getTest()->getIndex(),
+                          testRun.getTest()->isOptional(),
+                          testRun.getTest()->getDescription(),
+                          testRun.isPassed(),
+                          testRun.getFailure());
     });
 
     api->beforeDestroy([this]() {
