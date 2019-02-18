@@ -43,7 +43,7 @@ void Driver::beforeTestCase(const string& name) {
     if (globalScope != nullptr) {
         throw Bug("Driver: beforeTestCase() called twice in a row.");
     }
-    globalScope = new Group(groupConfig(_.description = name), nullptr, 0);
+    globalScope = new Group(name, nullptr, 0);
     groupStack = {globalScope};
     beforeGroup(globalScope);
 }

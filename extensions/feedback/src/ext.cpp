@@ -2,14 +2,19 @@
 
 #include <iostream>
 
-#include "extensions/feedback/src/pipe_message_type.hpp"
-
 using namespace cppli;
 using namespace kktest::interproc;
 using namespace std;
 
 namespace kktest {
 namespace feedback {
+
+enum PipeMessageType : uint8_t {
+    TEST,
+    GROUP,
+    DONE,
+    ERROR
+};
 
 void FeedbackExtension::registerCommandLineArgs(Parser& parser) {
     quietFlag = parser.addFlag(

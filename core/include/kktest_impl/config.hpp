@@ -15,6 +15,10 @@ struct KKTEST_API TestConfig {
     TestConfig();
     TestConfig(std::string _description); // NOLINT(google-explicit-constructor)
     TestConfig(const char* _description); // NOLINT(google-explicit-constructor)
+
+    TestConfig& setDescription(const std::string& _description);
+    TestConfig& setOptional(bool _optional);
+    TestConfig& setTimeTicksLimit(double _timeTicksLimit);
 };
 
 struct KKTEST_API GroupConfig {
@@ -23,11 +27,10 @@ struct KKTEST_API GroupConfig {
     GroupConfig();
     GroupConfig(std::string _description);// NOLINT(google-explicit-constructor)
     GroupConfig(const char* _description);// NOLINT(google-explicit-constructor)
+
+    GroupConfig& setDescription(const std::string& _description);
 };
 
 }
-
-#define testConfig(...) ([&] {kktest::TestConfig _; __VA_ARGS__; return _;}())
-#define groupConfig(...) ([&] {kktest::GroupConfig _; __VA_ARGS__; return _;}())
 
 #endif

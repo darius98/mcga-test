@@ -10,10 +10,10 @@ using namespace std;
 
 namespace kktest {
 
-BoxedTest::BoxedTest(Test* _test, interproc::WorkerSubprocess* _process):
+BoxedTest::BoxedTest(Test* _test, WorkerSubprocess* _process):
         test(_test), process(_process) {}
 
-BoxedTest::BoxedTest(kktest::BoxedTest&& other) noexcept:
+BoxedTest::BoxedTest(BoxedTest&& other) noexcept:
         test(other.test), process(other.process) {
     other.process = nullptr;
 }
