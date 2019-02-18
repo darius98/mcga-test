@@ -106,7 +106,7 @@ void BoxExecutor::ensureFreeContainers(size_t numContainers) {
             progress = true;
         }
         if (!progress) {
-            sleepForDuration(Duration::milliseconds(5));
+            sleepForDuration(Duration::fromMs(5));
         }
     }
 }

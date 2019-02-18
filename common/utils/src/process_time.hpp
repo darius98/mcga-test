@@ -10,13 +10,12 @@ class Duration {
     static constexpr int kMilliToNano = 1000000;
     static constexpr int kSecondsToNano = kSecondsToMilli * kMilliToNano;
 
-    static Duration seconds(double seconds);
-    static Duration milliseconds(double milliseconds);
-    static Duration nanoseconds(long long nanoseconds);
+    static Duration fromMs(double ms);
 
     Duration();
-    Duration(int _nSeconds, long long _nNanoseconds);
     Duration(const Duration& other);
+    Duration(Duration&& other) noexcept;
+    Duration(int _nSeconds, long long _nNanoseconds);
 
     Duration operator+(const Duration& other) const;
     Duration operator-(const Duration& other) const;
@@ -24,15 +23,17 @@ class Duration {
     bool operator<(const Duration& other) const;
     bool operator==(const Duration& other) const;
 
-    long long totalNs() const;
-
     int getSeconds() const;
 
     long long getNanoseconds() const;
 
+    long long totalNs() const;
+
  private:
-    int nSeconds;
-    long long nNanoseconds;
+    void normalize();
+
+    int nSeconds = 0;
+    long long nNanoseconds = 0;
 };
 
 typedef Duration ProcessTimestamp;

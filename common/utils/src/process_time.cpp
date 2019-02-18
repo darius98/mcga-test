@@ -7,62 +7,33 @@ using namespace std;
 namespace kktest {
 namespace utils {
 
-Duration Duration::seconds(double seconds) {
-    return Duration(
-        static_cast<int>(floor(seconds)),
-        static_cast<long long>((seconds - floor(seconds)) * kSecondsToNano));
-}
-
-Duration Duration::milliseconds(double milliseconds) {
-    return Duration(
-        static_cast<int>(floor(milliseconds / kSecondsToMilli)),
+Duration Duration::fromMs(double ms) {
+    return {
+        static_cast<int>(floor(ms / kSecondsToMilli)),
         static_cast<long long>(
-            (milliseconds
-             - floor(milliseconds / kSecondsToMilli) * kSecondsToMilli
-             ) * kMilliToNano));
+            (ms - floor(ms / kSecondsToMilli) * kSecondsToMilli) * kMilliToNano)
+    };
 }
 
-Duration Duration::nanoseconds(long long nanoseconds) {
-    return Duration(
-        static_cast<int>(nanoseconds / kSecondsToNano),
-        static_cast<int>(
-            nanoseconds
-            - static_cast<int>(nanoseconds / kSecondsToNano) * kSecondsToNano));
-}
-
-Duration::Duration(): nSeconds(0), nNanoseconds(0) {}
-
+Duration::Duration() = default;
+Duration::Duration(const Duration& other) = default;
+Duration::Duration(Duration&& other) noexcept = default;
 Duration::Duration(int _nSeconds, long long _nNanoseconds):
         nSeconds(_nSeconds), nNanoseconds(_nNanoseconds) {
-    if (nNanoseconds >= kSecondsToNano || nNanoseconds <= -kSecondsToNano) {
-        nSeconds += nNanoseconds / kSecondsToNano;
-        nNanoseconds %= kSecondsToNano;
-    }
-    if (nNanoseconds < 0) {
-        nNanoseconds += kSecondsToNano;
-        nSeconds -= 1;
-    }
+    normalize();
 }
-
-Duration::Duration(const Duration& other) = default;
 
 Duration Duration::operator+(const Duration& other) const {
     Duration result(nSeconds + other.nSeconds,
                     nNanoseconds + other.nNanoseconds);
-    if (result.nNanoseconds >= kSecondsToNano) {
-        result.nSeconds += 1;
-        result.nNanoseconds -= 1;
-    }
+    result.normalize();
     return result;
 }
 
 Duration Duration::operator-(const Duration& other) const {
     Duration result(nSeconds - other.nSeconds,
                     nNanoseconds - other.nNanoseconds);
-    if (result.nNanoseconds < 0) {
-        result.nNanoseconds += kSecondsToNano;
-        result.nSeconds -= 1;
-    }
+    result.normalize();
     return result;
 }
 
@@ -85,6 +56,17 @@ int Duration::getSeconds() const {
 
 long long Duration::getNanoseconds() const {
     return nNanoseconds;
+}
+
+void Duration::normalize() {
+    if (nNanoseconds >= kSecondsToNano || nNanoseconds <= -kSecondsToNano) {
+        nSeconds += nNanoseconds / kSecondsToNano;
+        nNanoseconds %= kSecondsToNano;
+    }
+    if (nNanoseconds < 0) {
+        nNanoseconds += kSecondsToNano;
+        nSeconds -= 1;
+    }
 }
 
 ProcessStopwatch::ProcessStopwatch(Duration duration):

@@ -7,7 +7,7 @@ namespace kktest {
 namespace interproc {
 
 WorkerSubprocess::WorkerSubprocess(double timeLimitMs, Work run):
-        stopwatch(Duration::milliseconds(timeLimitMs)) {
+        stopwatch(Duration::fromMs(timeLimitMs)) {
     auto pipe = createAnonymousPipe();
     auto stdoutPipe = createAnonymousPipe();
     subprocess = Subprocess::fork([&stdoutPipe, &pipe, &run]() {
