@@ -4,6 +4,7 @@
 #include "core/include/kktest_impl/executable.hpp"
 #include "core/src/group.hpp"
 #include "core/src/test.hpp"
+#include "core/src/test_run.hpp"
 
 namespace kktest {
 
@@ -14,7 +15,7 @@ class Executor {
     typedef const std::function<void(const std::string&)>& SetFailure;
 
  public:
-    typedef std::function<void(Test*, ExecutionInfo)> OnTestFinished;
+    typedef std::function<void(TestRun)> OnTestFinished;
 
     static double getTimeTickLengthMs();
 
@@ -29,7 +30,7 @@ class Executor {
     virtual void finalize();
 
  protected:
-    ExecutionInfo run(Test* test, Executable func);
+    TestRun run(Test* test, Executable func);
 
  private:
     void runSetUpsRecursively(Group* group, SetFailure setFailure);

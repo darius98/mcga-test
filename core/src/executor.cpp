@@ -33,17 +33,18 @@ void Executor::finalize() {}
 
 void Executor::execute(Test* test, Executable func) {
     auto executionInfo = run(test, func);
-    onTestFinishedCallback(test, executionInfo);
+    onTestFinishedCallback(executionInfo);
 }
 
-ExecutionInfo Executor::run(Test* test, Executable func) {
+TestRun Executor::run(Test* test, Executable func) {
     state = ACTIVE;
-    string failureMessage;
-    bool failed = false;
-    auto setFailure = [&failureMessage, &failed](const string& value) {
-        if (!failed) {
-            failed = true;
-            failureMessage = value;
+    double timeTicks;
+    bool passed = true;
+    string failure;
+    auto setFailure = [&passed, &failure](const string& value) {
+        if (passed) {
+            passed = false;
+            failure = value;
         }
     };
     ProcessTimer t;
@@ -51,12 +52,10 @@ ExecutionInfo Executor::run(Test* test, Executable func) {
     runSetUpsRecursively(group, setFailure);
     runTest(func, setFailure);
     runTearDownsRecursively(group, setFailure);
-    double executionMs = 1.0 * t.elapsed().totalNs() / Duration::kMilliToNano;
+    timeTicks = (1.0 * t.elapsed().totalNs() / Duration::kMilliToNano)
+                / getTimeTickLengthMs();
     state = INACTIVE;
-    return ExecutionInfo(
-        /*timeTicks=*/executionMs / getTimeTickLengthMs(),
-        /*passed=*/!failed,
-        /*failure=*/failureMessage);
+    return TestRun(test, timeTicks, passed, failure);
 }
 
 void Executor::runSetUpsRecursively(Group* group, SetFailure setFailure) {

@@ -5,6 +5,8 @@
 
 namespace kktest {
 
+// TODO: These are deprecated.
+
 struct TestInfo {
     int groupIndex = -1;
     int index = -1;

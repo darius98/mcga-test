@@ -42,7 +42,7 @@ class Driver {
     void addTearDown(Executable func);
 
  private:
-    void afterTest(Test* test, ExecutionInfo executionInfo);
+    void afterTest(TestRun executionInfo);
     void beforeTest(Test* test);
     void beforeGroup(Group* group);
     void afterGroup(Group* group);

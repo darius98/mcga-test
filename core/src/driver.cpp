@@ -61,7 +61,7 @@ void Driver::afterTestCase() {
 
 Driver::Driver(Hooks hooks, bool smooth, size_t numBoxes): hooks(move(hooks)) {
     instance = this;
-    auto onTestFinished = bind(&Driver::afterTest, this, _1, _2);
+    auto onTestFinished = bind(&Driver::afterTest, this, _1);
     if (smooth) {
         executor = new Executor(onTestFinished);
     } else {
@@ -121,16 +121,16 @@ void Driver::addTearDown(Executable func) {
 }
 
 void Driver::beforeTest(Test* test) {
-    hooks.runHooks<Hooks::BEFORE_TEST>(test->getTestInfo());
+    hooks.runHooks<Hooks::BEFORE_TEST>(test->toTestInfo());
 }
 
-void Driver::afterTest(Test* test, ExecutionInfo executionInfo) {
-    test->setExecuted(executionInfo);
+void Driver::afterTest(TestRun testRun) {
+    auto test = testRun.getTest();
     if (!test->getConfig().optional) {
-        failedAnyNonOptionalTest |= test->isFailed();
+        failedAnyNonOptionalTest |= !testRun.isPassed();
     }
     Group* group = test->getGroup();
-    hooks.runHooks<Hooks::AFTER_TEST>(test->getTestInfo());
+    hooks.runHooks<Hooks::AFTER_TEST>(testRun.toTestInfo());
     delete test;
     markTestFinished(group);
 }

@@ -12,48 +12,22 @@ namespace kktest {
 
 class Group;
 
-class ExecutionInfo {
- public:
-    enum MessageStatus: std::uint8_t {
-        FINISHED_SUCCESSFULLY = 0,
-        CONFIGURATION_ERROR = 1
-    };
-
-    explicit ExecutionInfo(const std::string& errorMessage);
-    explicit ExecutionInfo(interproc::Message& message);
-    ExecutionInfo(double _timeTicks, bool _passed, std::string _failure);
-
-    interproc::Message toMessage() const;
-
- private:
-    double timeTicks;
-    bool passed;
-    std::string failure;
-
-friend class Test;
-};
-
 class Test {
  public:
     Test(const TestConfig& _config, Group* _parentGroup, int _index);
 
     const TestConfig& getConfig() const;
 
-    bool isExecuted() const;
-
-    bool isFailed() const;
-
-    TestInfo getTestInfo() const;
-
     Group* getGroup() const;
 
- private:
-    void setExecuted(const ExecutionInfo& info);
+    int getIndex() const;
 
+    TestInfo toTestInfo() const;
+
+ private:
     TestConfig config;
     Group* parentGroup;
     int index;
-    std::unique_ptr<ExecutionInfo> executionInfo = nullptr;
 
 friend class Driver;
 };

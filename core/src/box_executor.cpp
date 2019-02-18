@@ -44,8 +44,7 @@ void BoxExecutor::runContained(Test* test, Executable func, PipeWriter* pipe) {
         auto executionInfo = run(test, func);
         pipe->sendMessage(executionInfo.toMessage());
     } catch(const ConfigurationError& error) {
-        pipe->sendMessage(ExecutionInfo::CONFIGURATION_ERROR,
-                          string(error.what()));
+        pipe->sendMessage(TestRun::CONFIGURATION_ERROR, string(error.what()));
     }
 }
 
@@ -108,8 +107,10 @@ bool BoxExecutor::tryCloseContainer(set<BoxedTest>::iterator boxedTest) {
     if (!finished) {
         return false;
     }
-    auto info = passed ? ExecutionInfo(message) : ExecutionInfo(error);
-    onTestFinishedCallback(boxedTest->test, info);
+    auto info = passed
+            ? TestRun(boxedTest->test, message)
+            : TestRun(boxedTest->test, error);
+    onTestFinishedCallback(info);
     return true;
 }
 
