@@ -1,9 +1,5 @@
 #include "core/include/kktest.hpp"
 
-#include <cstring>
-
-#include <iostream>
-
 #include "core/src/driver.hpp"
 #include "core/src/export.hpp"
 #include "core/src/test_case_registry.hpp"
@@ -19,6 +15,18 @@ KKTEST_EXPORT TestConfig::TestConfig(string _description):
 
 KKTEST_EXPORT TestConfig::TestConfig(const char* _description):
         description(_description) {}
+
+KKTEST_EXPORT string TestConfig::getDescription() const {
+    return description;
+}
+
+KKTEST_EXPORT bool TestConfig::isOptional() const {
+    return optional;
+}
+
+KKTEST_EXPORT double TestConfig::getTimeTicksLimit() const {
+    return timeTicksLimit;
+}
 
 KKTEST_EXPORT TestConfig& TestConfig::setDescription(string _description) {
     description = move(_description);
