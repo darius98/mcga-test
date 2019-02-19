@@ -9,11 +9,6 @@
 namespace kktest {
 
 class Executor {
- private:
-    enum State { INACTIVE, ACTIVE };
-
-    typedef const std::function<void(const std::string&)>& SetFailure;
-
  public:
     typedef std::function<void(const TestRun&)> OnTestFinished;
 
@@ -30,20 +25,20 @@ class Executor {
     virtual void finalize();
 
  protected:
-    TestRun run(Test&& test, Executable func);
+    ExecutionInfo run(GroupPtr group, Executable func);
 
  private:
-    void runSetUpsRecursively(GroupPtr group, SetFailure setFailure);
+    void runSetUps(GroupPtr group, ExecutionInfo* executionInfo);
 
-    void runTearDownsRecursively(GroupPtr group, SetFailure setFailure);
+    void runTest(Executable func, ExecutionInfo* executionInfo);
 
-    void runTest(Executable func, SetFailure setFailure);
+    void runTearDowns(GroupPtr group, ExecutionInfo* executionInfo);
 
  protected:
     OnTestFinished onTestFinishedCallback;
 
  private:
-    State state = State::INACTIVE;
+    enum { ACTIVE, INACTIVE } state = INACTIVE;
 };
 
 }

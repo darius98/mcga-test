@@ -54,11 +54,11 @@ KKTEST_EXPORT TestCaseDefiner::TestCaseDefiner(void (*testCase)(),
     TestCaseRegistry::add(testCase, name);
 }
 
-KKTEST_EXPORT void test(TestConfig&& config, Executable func) {
+KKTEST_EXPORT void test(TestConfig config, Executable func) {
     Driver::getInstance()->addTest(move(config), func);
 }
 
-KKTEST_EXPORT void group(GroupConfig&& config, Executable func) {
+KKTEST_EXPORT void group(GroupConfig config, Executable func) {
     Driver::getInstance()->addGroup(move(config), func);
 }
 

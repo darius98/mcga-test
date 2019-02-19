@@ -8,9 +8,8 @@ namespace kktest {
 
 Test::Test(TestConfig&& _config, Group* _group, int _index):
         config(move(_config)), group(_group), index(_index) {}
-Test::Test(const Test& other) = default;
-Test::Test(Test&& other) noexcept = default;
 
+Test::Test(Test&& other) noexcept = default;
 Test& Test::operator=(Test&& other) noexcept = default;
 
 string Test::getDescription() const {

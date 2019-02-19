@@ -34,9 +34,9 @@ struct TestCaseDefiner {
     TestCaseDefiner(void (*testCase)(), const char* name);
 };
 
-void test(TestConfig&& config, const std::function<void()>& func);
+void test(TestConfig config, const std::function<void()>& func);
 
-void group(GroupConfig&& config, const std::function<void()>& func);
+void group(GroupConfig config, const std::function<void()>& func);
 
 void setUp(const std::function<void()>& func);
 

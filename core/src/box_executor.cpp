@@ -9,44 +9,52 @@ using namespace kktest::utils;
 using namespace std;
 using namespace std::placeholders;
 
+namespace {
+
+enum MessageStatus: uint8_t {
+    SUCCESS = 0,
+    CONFIGURATION_ERROR = 1
+};
+
+}
+
 namespace kktest {
 
 BoxedTest::BoxedTest(Test&& _test, WorkerSubprocess* _process):
         test(move(_test)), process(_process) {}
 
 BoxedTest::BoxedTest(BoxedTest&& other) noexcept:
-        test(move(other.test)), process(move(other.process)) {
-    other.process = nullptr;
-}
+        test(move(other.test)), process(move(other.process)) {}
 
 BoxedTest& BoxedTest::operator=(BoxedTest&& other) noexcept {
     if (this != &other) {
         test = move(other.test);
         process = move(other.process);
-        other.process.reset();
     }
     return *this;
 }
 
 BoxExecutor::BoxExecutor(const OnTestFinished& onTestFinished,
                          size_t _maxNumContainers):
-        Executor(onTestFinished),
-        maxNumContainers(_maxNumContainers) {}
+        Executor(onTestFinished), maxNumContainers(_maxNumContainers) {}
 
 void BoxExecutor::execute(Test&& test, Executable func) {
     ensureFreeContainers(1);
     double timeLimit = test.getTimeTicksLimit() * getTimeTickLengthMs() + 100.0;
+    GroupPtr group = test.getGroup();
     openContainers.emplace_back(move(test), new WorkerSubprocess(
         timeLimit,
-        bind(&BoxExecutor::runContained, this, test, func, _1)));
+        bind(&BoxExecutor::runContained, this, group, func, _1)));
 }
 
-void BoxExecutor::runContained(Test test, Executable func, PipeWriter* pipe) {
+void BoxExecutor::runContained(GroupPtr group,
+                               Executable func,
+                               PipeWriter* pipe) {
     try {
-        auto testRun = run(move(test), func);
-        pipe->sendMessage(testRun.toMessage());
+        ExecutionInfo info = run(group, func);
+        pipe->sendMessage(SUCCESS, info.timeTicks, info.passed, info.failure);
     } catch(const ConfigurationError& error) {
-        pipe->sendMessage(TestRun::CONFIGURATION_ERROR, string(error.what()));
+        pipe->sendMessage(CONFIGURATION_ERROR, string(error.what()));
     }
 }
 
@@ -109,10 +117,20 @@ bool BoxExecutor::tryCloseContainer(vector<BoxedTest>::iterator boxedTest) {
     if (!finished) {
         return false;
     }
-    auto testRun = passed
-            ? TestRun(move(boxedTest->test), message)
-            : TestRun(move(boxedTest->test), error);
-    onTestFinishedCallback(testRun);
+    if (!passed) {
+        onTestFinishedCallback(TestRun(move(boxedTest->test), error));
+        return true;
+    }
+    MessageStatus status;
+    message >> status;
+    if (status == CONFIGURATION_ERROR) {
+        string errorMessage;
+        message >> errorMessage;
+        throw ConfigurationError(errorMessage);
+    }
+    ExecutionInfo info;
+    message >> info.timeTicks >> info.passed >> info.failure;
+    onTestFinishedCallback(TestRun(move(boxedTest->test), move(info)));
     return true;
 }
 

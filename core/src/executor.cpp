@@ -32,68 +32,61 @@ void Executor::checkIsInactive(const string& methodName) const {
 void Executor::finalize() {}
 
 void Executor::execute(Test&& test, Executable func) {
-    auto testRun = run(move(test), func);
-    onTestFinishedCallback(testRun);
+    ExecutionInfo info = run(test.getGroup(), func);
+    onTestFinishedCallback(TestRun(move(test), move(info)));
 }
 
-TestRun Executor::run(Test&& test, Executable func) {
+ExecutionInfo Executor::run(GroupPtr group, Executable func) {
     state = ACTIVE;
-    double timeTicks;
-    bool passed = true;
-    string failure;
-    auto setFailure = [&passed, &failure](const string& value) {
-        if (passed) {
-            passed = false;
-            failure = value;
-        }
-    };
+    ExecutionInfo info;
+    info.passed = true;
     ProcessTimer t;
-    GroupPtr group = test.getGroup();
-    runSetUpsRecursively(group, setFailure);
-    runTest(func, setFailure);
-    runTearDownsRecursively(group, setFailure);
-    timeTicks = (1.0 * t.elapsed().totalNs() / Duration::kMilliToNano)
-                / getTimeTickLengthMs();
+    runSetUps(group, &info);
+    runTest(func, &info);
+    runTearDowns(group, &info);
+    info.timeTicks = (1.0 * t.elapsed().totalNs() / Duration::kMilliToNano)
+                      / getTimeTickLengthMs();
     state = INACTIVE;
-    return TestRun(move(test), timeTicks, passed, failure);
+    return info;
 }
 
-void Executor::runSetUpsRecursively(GroupPtr group, SetFailure setFailure) {
+void Executor::runSetUps(GroupPtr group, ExecutionInfo* executionInfo) {
     if (group == nullptr) {
         return;
     }
 
-    runSetUpsRecursively(group->getParentGroup(), setFailure);
+    runSetUps(group->getParentGroup(), executionInfo);
     try {
         group->setUp();
     } catch(const ConfigurationError& e) {
         throw e;
     } catch(const ExpectationFailed& failure) {
-        setFailure(failure.what());
+        executionInfo->fail(failure.what());
     } catch(const exception& e) {
-        setFailure("Exception thrown in setUp of group \""
-                   + group->getDescription() + "\": " + e.what());
+        executionInfo->fail("Exception thrown in setUp of group \""
+                            + group->getDescription() + "\": " + e.what());
     } catch(...) {
-        setFailure("Non-exception thrown in setUp of group \""
-                   + group->getDescription() + "\".");
+        executionInfo->fail("Non-exception thrown in setUp of group \""
+                            + group->getDescription() + "\".");
     }
 }
 
-void Executor::runTest(Executable func, SetFailure setFailure) {
+void Executor::runTest(Executable func, ExecutionInfo* executionInfo) {
     try {
         func();
     } catch(const ConfigurationError& e) {
         throw e;
     } catch(const ExpectationFailed& failure) {
-        setFailure(failure.what());
+        executionInfo->fail(failure.what());
     } catch(const exception& e) {
-        setFailure("An exception was thrown during test: " + string(e.what()));
+        executionInfo->fail("An exception was thrown during test: "
+                            + string(e.what()));
     } catch(...) {
-        setFailure("A non-exception object was thrown during test");
+        executionInfo->fail("A non-exception object was thrown during test");
     }
 }
 
-void Executor::runTearDownsRecursively(GroupPtr group, SetFailure setFailure) {
+void Executor::runTearDowns(GroupPtr group, ExecutionInfo* executionInfo) {
     if (group == nullptr) {
         return;
     }
@@ -103,15 +96,15 @@ void Executor::runTearDownsRecursively(GroupPtr group, SetFailure setFailure) {
     } catch(const ConfigurationError& e) {
         throw e;
     } catch(const ExpectationFailed& failure) {
-        setFailure(failure.what());
+        executionInfo->fail(failure.what());
     } catch(const exception& e) {
-        setFailure("Exception thrown in tearDown of group \"" +
-                   group->getDescription() + "\": " + e.what());
+        executionInfo->fail("Exception thrown in tearDown of group \"" +
+                            group->getDescription() + "\": " + e.what());
     } catch(...) {
-        setFailure("Non-exception thrown in tearDown of group \"" +
-                   group->getDescription() + "\".");
+        executionInfo->fail("Non-exception thrown in tearDown of group \"" +
+                            group->getDescription() + "\".");
     }
-    runTearDownsRecursively(group->getParentGroup(), setFailure);
+    runTearDowns(group->getParentGroup(), executionInfo);
 }
 
 }

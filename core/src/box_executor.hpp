@@ -28,7 +28,9 @@ class BoxExecutor: public Executor {
  private:
     void execute(Test&& test, Executable func) override;
 
-    void runContained(Test test, Executable func, interproc::PipeWriter* pipe);
+    void runContained(GroupPtr group,
+                      Executable func,
+                      interproc::PipeWriter* pipe);
 
     void ensureFreeContainers(std::size_t numContainers);
 

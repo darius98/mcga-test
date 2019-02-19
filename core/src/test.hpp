@@ -11,16 +11,12 @@ namespace kktest {
 class Test {
  public:
     Test(TestConfig&& _config, Group* _group, int _index);
+
     Test(Test&& other) noexcept;
-
-    // TODO(darius98): Explicitly delete this constructor!
-    //  A test should never have to be copied, only passed around.
-    //  ...
-    //  Currently, it is needed for the BoxedExecutor, since we need a copy
-    //  to send to the test process and one to keep.
-    Test(const Test& other);
-
     Test& operator=(Test&& other) noexcept;
+
+    Test(const Test& other) = delete;
+    Test& operator=(const Test& other) = delete;
 
     std::string getDescription() const;
 
