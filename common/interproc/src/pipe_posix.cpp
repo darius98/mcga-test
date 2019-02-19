@@ -92,7 +92,7 @@ class LinuxPipeReader: public PipeReader {
         return true;
     }
 
-    void resizeBufferToFit(std::size_t extraBytes) {
+    void resizeBufferToFit(size_t extraBytes) {
         if (bufferCapacity < bufferSize + extraBytes && bufferReadHead > 0) {
             memcpy(buffer,
                    static_cast<uint8_t*>(buffer) + bufferReadHead,

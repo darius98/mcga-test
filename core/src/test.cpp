@@ -6,10 +6,10 @@ using namespace std;
 
 namespace kktest {
 
-Test::Test(TestConfig&& _config, Group* _group, int _index):
-        TestConfig(move(_config)), group(_group), index(_index) {}
+Test::Test(TestConfig&& _config, GroupPtr _group, int _index):
+        TestConfig(move(_config)), group(move(_group)), index(_index) {}
 
-std::string Test::getDescription() const {
+string Test::getDescription() const {
     return description;
 }
 
@@ -21,7 +21,7 @@ double Test::getTimeTicksLimit() const {
     return timeTicksLimit;
 }
 
-Group* Test::getGroup() const {
+GroupPtr Test::getGroup() const {
     return group;
 }
 

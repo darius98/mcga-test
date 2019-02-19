@@ -39,8 +39,9 @@ void Driver::forceDestroy(const ConfigurationError& error) {
 }
 
 void Driver::beforeTestCase(const string& name) {
-    groupStack = {new Group(name, nullptr, 0)};
-    beforeGroup(groupStack.back());
+    auto globalScope = make_shared<Group>(name, nullptr, 0);
+    groupStack = {globalScope};
+    beforeGroup(globalScope);
 }
 
 void Driver::afterTestCase() {
@@ -56,7 +57,9 @@ Driver::Driver(Hooks hooks, bool smooth, size_t numBoxes):
 
 void Driver::addGroup(GroupConfig&& config, Executable func) {
     executor->checkIsInactive("group");
-    auto group = new Group(move(config), groupStack.back(), ++ groupIndex);
+    auto group = make_shared<Group>(move(config),
+                                    groupStack.back(),
+                                    ++ groupIndex);
     groupStack.push_back(group);
 
     beforeGroup(group);
@@ -83,7 +86,7 @@ void Driver::addGroup(GroupConfig&& config, Executable func) {
 
 void Driver::addTest(TestConfig&& config, Executable func) {
     executor->checkIsInactive("test");
-    Group* parentGroup = groupStack.back();
+    GroupPtr parentGroup = groupStack.back();
     Test test(move(config), parentGroup, ++ currentTestIndex);
     markTestStarted(parentGroup);
     beforeTest(test);
@@ -110,35 +113,34 @@ void Driver::afterTest(const ExecutedTest& test) {
     markTestFinished(test.getGroup());
 }
 
-void Driver::beforeGroup(Group* group) {
+void Driver::beforeGroup(GroupPtr group) {
     hooks.runHooks<Hooks::BEFORE_GROUP>(group);
 }
 
-void Driver::afterGroup(Group* group) {
+void Driver::afterGroup(GroupPtr group) {
     hooks.runHooks<Hooks::AFTER_GROUP>(group);
     testsInExecution.erase(group);
     groupsPendingFinish.erase(group);
-    delete group;
 }
 
-void Driver::markTestStarted(Group* group) {
+void Driver::markTestStarted(GroupPtr group) {
     while (group != nullptr) {
         testsInExecution[group] += 1;
         group = group->getParentGroup();
     }
 }
 
-void Driver::markAllTestsStarted(Group* group) {
+void Driver::markAllTestsStarted(GroupPtr group) {
     groupsPendingFinish.insert(group);
     if (groupsPendingFinish.count(group) && testsInExecution[group] == 0) {
         afterGroup(group);
     }
 }
 
-void Driver::markTestFinished(Group* group) {
+void Driver::markTestFinished(GroupPtr group) {
     while (group != nullptr) {
         testsInExecution[group] -= 1;
-        Group* parentGroup = group->getParentGroup();
+        GroupPtr parentGroup = group->getParentGroup();
         if (groupsPendingFinish.count(group) && testsInExecution[group] == 0) {
             afterGroup(group);
         }

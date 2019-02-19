@@ -8,7 +8,7 @@ namespace kktest {
 
 class Test : private TestConfig {
  public:
-    Test(TestConfig&& _config, Group* _group, int _index);
+    Test(TestConfig&& _config, GroupPtr _group, int _index);
 
     Test(Test&& other) noexcept = default;
     Test& operator=(Test&& other) noexcept = default;
@@ -22,12 +22,12 @@ class Test : private TestConfig {
 
     double getTimeTicksLimit() const;
 
-    Group* getGroup() const;
+    GroupPtr getGroup() const;
 
     int getIndex() const;
 
  private:
-    Group* group;
+    GroupPtr group;
     int index;
 };
 

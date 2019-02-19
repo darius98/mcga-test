@@ -42,22 +42,22 @@ class Driver {
  private:
     void beforeTest(const Test& test);
     void afterTest(const ExecutedTest& test);
-    void beforeGroup(Group* group);
-    void afterGroup(Group* group);
+    void beforeGroup(GroupPtr group);
+    void afterGroup(GroupPtr group);
 
-    void markTestStarted(Group* group);
-    void markAllTestsStarted(Group* group);
-    void markTestFinished(Group* test);
+    void markTestStarted(GroupPtr group);
+    void markAllTestsStarted(GroupPtr group);
+    void markTestFinished(GroupPtr test);
 
     static Driver* instance;
 
     Hooks hooks;
 
-    std::map<Group*, int> testsInExecution;
-    std::set<Group*> groupsPendingFinish;
+    std::map<GroupPtr, int> testsInExecution;
+    std::set<GroupPtr> groupsPendingFinish;
 
     std::unique_ptr<Executor> executor;
-    std::vector<Group*> groupStack = {};
+    std::vector<GroupPtr> groupStack = {};
     int currentTestIndex = 0;
     int groupIndex = 0;
 

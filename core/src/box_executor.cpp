@@ -78,22 +78,21 @@ void BoxExecutor::ensureEmptyBoxes(size_t requiredEmpty) {
 }
 
 bool BoxExecutor::tryCloseBox(vector<BoxedTest>::iterator boxedTest) {
-    bool finished = true;
     bool passed = false;
     Message message;
     string error;
     auto process = boxedTest->process.get();
     switch (process->getFinishStatus()) {
         case WorkerSubprocess::NO_EXIT: {
-            finished = false;
-            break;
+            return false;
         }
         case WorkerSubprocess::ZERO_EXIT: {
-            passed = true;
             message = process->getNextMessage(32);
             if (message.isInvalid()) {
                 passed = false;
                 error = "Unexpected 0-code exit.";
+            } else {
+                passed = true;
             }
             break;
         }
@@ -110,9 +109,6 @@ bool BoxExecutor::tryCloseBox(vector<BoxedTest>::iterator boxedTest) {
             error = "Test execution timed out.";
             break;
         }
-    }
-    if (!finished) {
-        return false;
     }
     if (!passed) {
         onTestFinished(ExecutedTest(move(boxedTest->test), move(error)));
