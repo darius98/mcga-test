@@ -8,8 +8,8 @@ using namespace std;
 
 namespace kktest {
 
-Executor::Executor(OnTestFinished _onTestFinishedCallback):
-        onTestFinishedCallback(move(_onTestFinishedCallback)) {}
+Executor::Executor(OnTestFinished _onTestFinished):
+        onTestFinished(move(_onTestFinished)) {}
 
 Executor::~Executor() = default;
 
@@ -17,7 +17,7 @@ double Executor::getTimeTickLengthMs() {
     static double timeTickLengthMs = -1.0;
     if (timeTickLengthMs == -1.0) {
         // TODO(darius98): Don't hard-code this, estimate it based on how much a
-        // series of computations takes.
+        //  series of computations takes.
         timeTickLengthMs = 1000.0;
     }
     return timeTickLengthMs;
@@ -33,7 +33,7 @@ void Executor::finalize() {}
 
 void Executor::execute(Test&& test, Executable func) {
     ExecutedTest::Info info = run(test.getGroup(), func);
-    onTestFinishedCallback(ExecutedTest(move(test), move(info)));
+    onTestFinished(ExecutedTest(move(test), move(info)));
 }
 
 ExecutedTest::Info Executor::run(GroupPtr group, Executable func) {
@@ -44,8 +44,8 @@ ExecutedTest::Info Executor::run(GroupPtr group, Executable func) {
     runSetUps(group, &info);
     runTest(func, &info);
     runTearDowns(group, &info);
-    info.timeTicks = (1.0 * t.elapsed().totalNs() / Duration::kMilliToNano)
-                      / getTimeTickLengthMs();
+    double elapsedMs = 1.0 * t.elapsed().totalNs() / Duration::kMilliToNano;
+    info.timeTicks = elapsedMs / getTimeTickLengthMs();
     state = INACTIVE;
     return info;
 }

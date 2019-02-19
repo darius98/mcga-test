@@ -6,7 +6,7 @@
 
 namespace kktest {
 
-class Group {
+class Group : private GroupConfig {
  public:
     Group(GroupConfig&& _config, Group* _parentGroup, int _index);
 
@@ -25,8 +25,6 @@ class Group {
     void tearDown() const;
 
  private:
-    GroupConfig config;
-
     Group* parentGroup;
     int index;
 

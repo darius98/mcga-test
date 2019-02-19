@@ -12,8 +12,7 @@ struct InternalArgs {
     cppli::NumericArgument<std::size_t> maxParallelTestsArgument;
 };
 
-InternalArgs registerInternalFlags(cppli::Parser& parser,
-                                   const std::string& versionString);
+InternalArgs registerInternalFlags(cppli::Parser& parser, std::string version);
 
 int main(const std::vector<Extension*>& extensions, InternalArgs internalFlags);
 

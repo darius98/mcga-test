@@ -59,7 +59,7 @@ class Driver {
     std::unique_ptr<Executor> executor;
     std::vector<Group*> groupStack = {};
     int currentTestIndex = 0;
-    int currentGroupIndex = 0;
+    int groupIndex = 0;
 
     bool failedAnyNonOptionalTest = false;
 };

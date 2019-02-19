@@ -56,9 +56,7 @@ Driver::Driver(Hooks hooks, bool smooth, size_t numBoxes):
 
 void Driver::addGroup(GroupConfig&& config, Executable func) {
     executor->checkIsInactive("group");
-    auto group = new Group(move(config),
-                           groupStack.back(),
-                           ++ currentGroupIndex);
+    auto group = new Group(move(config), groupStack.back(), ++ groupIndex);
     groupStack.push_back(group);
 
     beforeGroup(group);
@@ -107,9 +105,7 @@ void Driver::beforeTest(const Test& test) {
 }
 
 void Driver::afterTest(const ExecutedTest& test) {
-    if (!test.isOptional()) {
-        failedAnyNonOptionalTest |= !test.isPassed();
-    }
+    failedAnyNonOptionalTest |= (!test.isOptional() && !test.isPassed());
     hooks.runHooks<Hooks::AFTER_TEST>(test);
     markTestFinished(test.getGroup());
 }
@@ -120,9 +116,9 @@ void Driver::beforeGroup(Group* group) {
 
 void Driver::afterGroup(Group* group) {
     hooks.runHooks<Hooks::AFTER_GROUP>(group);
-    delete group;
     testsInExecution.erase(group);
     groupsPendingFinish.erase(group);
+    delete group;
 }
 
 void Driver::markTestStarted(Group* group) {

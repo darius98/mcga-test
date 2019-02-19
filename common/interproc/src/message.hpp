@@ -44,6 +44,13 @@ class Message {
         return *this;
     }
 
+    template<class T>
+    T read() {
+        T obj;
+        (*this) >> obj;
+        return obj;
+    }
+
  private:
     explicit Message(void* _payload) noexcept;
 

@@ -9,13 +9,12 @@ using namespace std;
 
 namespace kktest {
 
-InternalArgs registerInternalFlags(Parser& parser, const string& versionString) {
+InternalArgs registerInternalFlags(Parser& parser, string version) {
     parser.addTerminalFlag(
             FlagSpec("version")
-            .setShortName("v")
-            .setDescription("Display program version."),
-            "KKTest generated test-case.\n"
-            "KKTest version: " + versionString +  "\n");
+                    .setShortName("v")
+                    .setDescription("Display program version."),
+            "KKTest generated test-case.\nKKTest version: " + version +  "\n");
 
     InternalArgs args;
     args.smoothFlag = parser.addFlag(
@@ -38,10 +37,11 @@ int main(const vector<Extension*>& extensions, InternalArgs args) {
         extension->init(&api);
     }
 
-    Driver* driver = Driver::init(
-        api.getHooks(),
-        args.smoothFlag.get(),
-        max(args.maxParallelTestsArgument.get(), 1ul));
+    bool smooth = args.smoothFlag.get();
+    size_t numBoxes = max(args.maxParallelTestsArgument.get(), 1ul);
+
+    Driver* driver = Driver::init(api.getHooks(), smooth, numBoxes);
+
     int ret = 1;
     try {
         for (const auto& testCase : TestCaseRegistry::all()) {
@@ -66,7 +66,9 @@ int main(const vector<Extension*>& extensions, InternalArgs args) {
     for (Extension* extension : extensions) {
         extension->destroy();
     }
+
     delete driver;
+
     return ret;
 }
 

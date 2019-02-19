@@ -5,18 +5,15 @@
 
 namespace kktest {
 
-class ConfigurationError: public std::runtime_error {
- public:
+struct ConfigurationError : std::runtime_error {
     explicit ConfigurationError(const std::string& str);
 };
 
-class Bug: public std::runtime_error {
- public:
+struct Bug : std::runtime_error {
     explicit Bug(const std::string& str);
 };
 
-class ExpectationFailed: public std::runtime_error {
- public:
+struct ExpectationFailed : std::runtime_error {
     explicit ExpectationFailed(const std::string& str);
 };
 

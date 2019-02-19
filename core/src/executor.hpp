@@ -13,7 +13,7 @@ class Executor {
 
     static double getTimeTickLengthMs();
 
-    explicit Executor(OnTestFinished _onTestFinishedCallback);
+    explicit Executor(OnTestFinished _onTestFinished);
 
     virtual ~Executor();
 
@@ -34,7 +34,7 @@ class Executor {
     void runTearDowns(GroupPtr group, ExecutedTest::Info* executionInfo);
 
  protected:
-    OnTestFinished onTestFinishedCallback;
+    OnTestFinished onTestFinished;
 
  private:
     enum { ACTIVE, INACTIVE } state = INACTIVE;

@@ -34,22 +34,19 @@ BoxedTest& BoxedTest::operator=(BoxedTest&& other) noexcept {
     return *this;
 }
 
-BoxExecutor::BoxExecutor(const OnTestFinished& onTestFinished,
-                         size_t _maxNumContainers):
-        Executor(onTestFinished), maxNumContainers(_maxNumContainers) {}
+BoxExecutor::BoxExecutor(OnTestFinished onTestFinished, size_t _numBoxes):
+        Executor(move(onTestFinished)), numBoxes(_numBoxes) {}
 
 void BoxExecutor::execute(Test&& test, Executable func) {
-    ensureFreeContainers(1);
+    ensureEmptyBoxes(1);
     double timeLimit = test.getTimeTicksLimit() * getTimeTickLengthMs() + 100.0;
     GroupPtr group = test.getGroup();
-    openContainers.emplace_back(move(test), new WorkerSubprocess(
-        timeLimit,
-        bind(&BoxExecutor::runContained, this, group, func, _1)));
+    auto process = new WorkerSubprocess(
+            timeLimit, bind(&BoxExecutor::runBoxed, this, group, func, _1));
+    activeBoxes.emplace_back(move(test), process);
 }
 
-void BoxExecutor::runContained(GroupPtr group,
-                               Executable func,
-                               PipeWriter* pipe) {
+void BoxExecutor::runBoxed(GroupPtr group, Executable func, PipeWriter* pipe) {
     try {
         ExecutedTest::Info info = run(group, func);
         pipe->sendMessage(SUCCESS, info.timeTicks, info.passed, info.failure);
@@ -59,15 +56,16 @@ void BoxExecutor::runContained(GroupPtr group,
 }
 
 void BoxExecutor::finalize() {
-    ensureFreeContainers(maxNumContainers);
+    ensureEmptyBoxes(numBoxes);
 }
 
-void BoxExecutor::ensureFreeContainers(size_t numContainers) {
-    while (openContainers.size() > maxNumContainers - numContainers) {
+void BoxExecutor::ensureEmptyBoxes(size_t requiredEmpty) {
+    size_t maxActive = numBoxes - requiredEmpty;
+    while (activeBoxes.size() > maxActive) {
         bool progress = false;
-        for (auto it = openContainers.begin(); it != openContainers.end(); ) {
-            if (tryCloseContainer(it)) {
-                it = openContainers.erase(it);
+        for (auto it = activeBoxes.begin(); it != activeBoxes.end(); ) {
+            if (tryCloseBox(it)) {
+                it = activeBoxes.erase(it);
                 progress = true;
             } else {
                 ++ it;
@@ -79,7 +77,7 @@ void BoxExecutor::ensureFreeContainers(size_t numContainers) {
     }
 }
 
-bool BoxExecutor::tryCloseContainer(vector<BoxedTest>::iterator boxedTest) {
+bool BoxExecutor::tryCloseBox(vector<BoxedTest>::iterator boxedTest) {
     bool finished = true;
     bool passed = false;
     Message message;
@@ -105,8 +103,7 @@ bool BoxExecutor::tryCloseContainer(vector<BoxedTest>::iterator boxedTest) {
             break;
         }
         case WorkerSubprocess::SIGNAL_EXIT: {
-            error = "Test killed by signal "
-                    + to_string(process->getSignal()) + ".";
+            error = "Test killed by signal " + to_string(process->getSignal());
             break;
         }
         case WorkerSubprocess::TIMEOUT: {
@@ -118,19 +115,16 @@ bool BoxExecutor::tryCloseContainer(vector<BoxedTest>::iterator boxedTest) {
         return false;
     }
     if (!passed) {
-        onTestFinishedCallback(ExecutedTest(move(boxedTest->test), error));
+        onTestFinished(ExecutedTest(move(boxedTest->test), move(error)));
         return true;
     }
-    MessageStatus status;
-    message >> status;
-    if (status == CONFIGURATION_ERROR) {
-        string errorMessage;
-        message >> errorMessage;
-        throw ConfigurationError(errorMessage);
+    if (message.read<MessageStatus>() == CONFIGURATION_ERROR) {
+        // Read the error message and throw it.
+        throw ConfigurationError(message.read<string>());
     }
     ExecutedTest::Info info;
     message >> info.timeTicks >> info.passed >> info.failure;
-    onTestFinishedCallback(ExecutedTest(move(boxedTest->test), move(info)));
+    onTestFinished(ExecutedTest(move(boxedTest->test), move(info)));
     return true;
 }
 

@@ -10,6 +10,7 @@ ConfigurationError::ConfigurationError(const string& str): runtime_error(str) {}
 
 Bug::Bug(const string& str): runtime_error(str) {}
 
-ExpectationFailed::ExpectationFailed(const string& str): runtime_error(str) {}
+ExpectationFailed::ExpectationFailed(const string& str):
+        runtime_error(str.empty() ? "Expectation failed." : str) {}
 
 }

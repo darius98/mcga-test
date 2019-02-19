@@ -20,24 +20,21 @@ struct BoxedTest {
 
 class BoxExecutor: public Executor {
  public:
-    BoxExecutor(const OnTestFinished& onTestFinished,
-                std::size_t _maxNumContainers);
+    BoxExecutor(OnTestFinished onTestFinished, std::size_t _numBoxes);
 
     void finalize() override;
 
  private:
     void execute(Test&& test, Executable func) override;
 
-    void runContained(GroupPtr group,
-                      Executable func,
-                      interproc::PipeWriter* pipe);
+    void runBoxed(GroupPtr group, Executable func, interproc::PipeWriter* pipe);
 
-    void ensureFreeContainers(std::size_t numContainers);
+    void ensureEmptyBoxes(std::size_t numContainers);
 
-    bool tryCloseContainer(std::vector<BoxedTest>::iterator boxedTest);
+    bool tryCloseBox(std::vector<BoxedTest>::iterator boxedTest);
 
-    std::size_t maxNumContainers;
-    std::vector<BoxedTest> openContainers;
+    std::size_t numBoxes;
+    std::vector<BoxedTest> activeBoxes;
 };
 
 }

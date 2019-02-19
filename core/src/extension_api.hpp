@@ -12,13 +12,13 @@ namespace kktest {
 
 class ExtensionApi {
  public:
-    void beforeTest(const Hooks::BeforeTestHook& hook);
-    void afterTest(const Hooks::AfterTestHook& hook);
-    void beforeGroup(const Hooks::BeforeGroupHook& hook);
-    void afterGroup(const Hooks::AfterGroupHook& hook);
-    void afterInit(const Hooks::AfterInitHook& hook);
-    void beforeDestroy(const Hooks::BeforeDestroyHook& hook);
-    void beforeForceDestroy(const Hooks::BeforeForceDestroyHook& hook);
+    void beforeTest(const Hooks::BeforeTest& hook);
+    void afterTest(const Hooks::AfterTest& hook);
+    void beforeGroup(const Hooks::BeforeGroup& hook);
+    void afterGroup(const Hooks::AfterGroup& hook);
+    void afterInit(const Hooks::AfterInit& hook);
+    void beforeDestroy(const Hooks::BeforeDestroy& hook);
+    void beforeForceDestroy(const Hooks::BeforeForceDestroy& hook);
 
     const Hooks& getHooks() const;
 
@@ -28,7 +28,7 @@ class ExtensionApi {
 
 class Extension {
  public:
-    virtual ~Extension();
+    virtual ~Extension() = default;
 
     virtual void registerCommandLineArgs(cppli::Parser& parser);
 

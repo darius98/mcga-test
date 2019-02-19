@@ -10,13 +10,13 @@ namespace kktest {
 
 class Hooks {
  public:
-    typedef std::function<void(const Test&)> BeforeTestHook;
-    typedef std::function<void(const ExecutedTest&)> AfterTestHook;
-    typedef std::function<void(GroupPtr)> BeforeGroupHook;
-    typedef std::function<void(GroupPtr)> AfterGroupHook;
-    typedef std::function<void()> AfterInitHook;
-    typedef std::function<void()> BeforeDestroyHook;
-    typedef std::function<void(const std::exception&)> BeforeForceDestroyHook;
+    typedef std::function<void(const Test&)> BeforeTest;
+    typedef std::function<void(const ExecutedTest&)> AfterTest;
+    typedef std::function<void(GroupPtr)> BeforeGroup;
+    typedef std::function<void(GroupPtr)> AfterGroup;
+    typedef std::function<void()> AfterInit;
+    typedef std::function<void()> BeforeDestroy;
+    typedef std::function<void(const std::exception&)> BeforeForceDestroy;
 
     enum Type {
         AFTER_INIT = 0,
@@ -42,13 +42,13 @@ class Hooks {
 
  private:
     std::tuple<
-        std::vector<AfterInitHook>,
-        std::vector<BeforeGroupHook>,
-        std::vector<AfterGroupHook>,
-        std::vector<BeforeTestHook>,
-        std::vector<AfterTestHook>,
-        std::vector<BeforeDestroyHook>,
-        std::vector<BeforeForceDestroyHook>
+        std::vector<AfterInit>,
+        std::vector<BeforeGroup>,
+        std::vector<AfterGroup>,
+        std::vector<BeforeTest>,
+        std::vector<AfterTest>,
+        std::vector<BeforeDestroy>,
+        std::vector<BeforeForceDestroy>
     > hooks;
 };
 

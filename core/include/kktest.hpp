@@ -6,32 +6,24 @@
 
 namespace kktest {
 
-class TestConfig {
- public:
-    TestConfig();
+struct TestConfig {
+    std::string description = "-";
+    bool optional = false;
+    double timeTicksLimit = 1.0;
+
+    TestConfig() = default;
     TestConfig(std::string _description); // NOLINT(google-explicit-constructor)
     TestConfig(const char* _description); // NOLINT(google-explicit-constructor)
 
     TestConfig& setDescription(std::string _description);
     TestConfig& setOptional(bool _optional);
     TestConfig& setTimeTicksLimit(double _timeTicksLimit);
-
-    std::string getDescription() const;
-
-    bool isOptional() const;
-
-    double getTimeTicksLimit() const;
-
- private:
-    std::string description = "-";
-    bool optional = false;
-    double timeTicksLimit = 1.0;
 };
 
 struct GroupConfig {
     std::string description = "-";
 
-    GroupConfig();
+    GroupConfig() = default;
     GroupConfig(std::string _description);// NOLINT(google-explicit-constructor)
     GroupConfig(const char* _description);// NOLINT(google-explicit-constructor)
 
