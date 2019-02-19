@@ -1,35 +1,39 @@
 #include "extensions/matchers/include/kktest_ext/matchers_impl/truth_matchers.hpp"
 
+#include "core/src/export.hpp"
+
 namespace kktest {
 namespace matchers {
 
-detail::IsTrueMatcher isTrue;
+KKTEST_EXPORT detail::IsTrueMatcher isTrue;
 
-detail::IsFalseMatcher isFalse;
+KKTEST_EXPORT detail::IsFalseMatcher isFalse;
 
 namespace detail {
 
-bool IsTrueMatcher::matches(const bool& object) {
+KKTEST_EXPORT bool IsTrueMatcher::matches(const bool& object) {
     return object;
 }
 
-void IsTrueMatcher::describe(Description* description) {
+KKTEST_EXPORT void IsTrueMatcher::describe(Description* description) {
     (*description) << "true";
 }
 
-void IsTrueMatcher::describeMismatch(Description* description, const bool&) {
+KKTEST_EXPORT void IsTrueMatcher::describeMismatch(Description* description,
+                                                   const bool&) {
     (*description) << "false";
 }
 
-bool IsFalseMatcher::matches(const bool& object) {
+KKTEST_EXPORT bool IsFalseMatcher::matches(const bool& object) {
     return !object;
 }
 
-void IsFalseMatcher::describe(Description* description) {
+KKTEST_EXPORT void IsFalseMatcher::describe(Description* description) {
     (*description) << "false";
 }
 
-void IsFalseMatcher::describeMismatch(Description* description, const bool&) {
+KKTEST_EXPORT void IsFalseMatcher::describeMismatch(Description* description,
+                                                    const bool&) {
     (*description) << "true";
 }
 

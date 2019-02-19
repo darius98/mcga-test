@@ -2,47 +2,50 @@
 
 #include <cstring>
 
+#include "core/src/export.hpp"
+
 using namespace std;
 
 namespace kktest {
 namespace matchers {
 
-detail::CharInStringMatcher isLetter(
-        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",
-        "a letter");
+KKTEST_EXPORT detail::CharInStringMatcher isLetter(
+        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", "a letter");
 
-detail::CharInStringMatcher isDigit("0123456789", "a digit");
+KKTEST_EXPORT detail::CharInStringMatcher isDigit("0123456789", "a digit");
 
-detail::CharInStringMatcher isLowercaseLetter("abcdefghijklmnopqrstuvwxyz",
-                                      "a lowercase letter");
+KKTEST_EXPORT detail::CharInStringMatcher isLowercaseLetter(
+        "abcdefghijklmnopqrstuvwxyz", "a lowercase letter");
 
-detail::CharInStringMatcher isUppercaseLetter("ABCDEFGHIJKLMNOPQRSTUVWXYZ",
-                                      "an uppercase letter");
+KKTEST_EXPORT detail::CharInStringMatcher isUppercaseLetter(
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "an uppercase letter");
 
-detail::CharInStringMatcher isBinaryDigit("01", "a binary digit");
+KKTEST_EXPORT detail::CharInStringMatcher isBinaryDigit("01", "a binary digit");
 
-detail::CharInStringMatcher isOctDigit("01234567", "an oct digit");
+KKTEST_EXPORT detail::CharInStringMatcher isOctDigit(
+        "01234567", "an oct digit");
 
-detail::CharInStringMatcher isHexDigit("0123456789ABCDEFabcdef", "a hex digit");
+KKTEST_EXPORT detail::CharInStringMatcher isHexDigit(
+        "0123456789ABCDEFabcdef", "a hex digit");
 
-detail::CharInStringMatcher isWhitespace(" \t\r\n\f\v",
-                                         "a whitespace character");
+KKTEST_EXPORT detail::CharInStringMatcher isWhitespace(
+        " \t\r\n\f\v", "a whitespace character");
 
-detail::IsSubstringMatcher isSubstringOf(const string& s) {
+KKTEST_EXPORT detail::IsSubstringMatcher isSubstringOf(const string& s) {
     return detail::IsSubstringMatcher(s);
 }
 
 namespace detail {
 
-CharInStringMatcher::CharInStringMatcher(const char* _container,
-                                         const char* _expectation) noexcept:
-        container(_container), expectation(_expectation) {}
+KKTEST_EXPORT CharInStringMatcher::CharInStringMatcher(
+        const char* _container, const char* _expectation) noexcept:
+    container(_container), expectation(_expectation) {}
 
-bool CharInStringMatcher::matches(const char& ch) {
+KKTEST_EXPORT bool CharInStringMatcher::matches(const char& ch) {
     return strchr(container, ch) != nullptr;
 }
 
-void CharInStringMatcher::describe(Description* description) {
+KKTEST_EXPORT void CharInStringMatcher::describe(Description* description) {
     if (expectation != nullptr) {
         (*description) << expectation;
     } else {
@@ -50,8 +53,8 @@ void CharInStringMatcher::describe(Description* description) {
     }
 }
 
-void CharInStringMatcher::describeMismatch(Description* description,
-                                           const char& ch) {
+KKTEST_EXPORT void CharInStringMatcher::describeMismatch(
+        Description* description, const char& ch) {
     if (expectation != nullptr) {
         (*description) << "not " << expectation;
     } else {
@@ -59,19 +62,19 @@ void CharInStringMatcher::describeMismatch(Description* description,
     }
 }
 
-IsSubstringMatcher::IsSubstringMatcher(string _container):
+KKTEST_EXPORT IsSubstringMatcher::IsSubstringMatcher(string _container):
         container(move(_container)) {}
 
-bool IsSubstringMatcher::matches(const string& object) {
+KKTEST_EXPORT bool IsSubstringMatcher::matches(const string& object) {
     return container.find(object) != string::npos;
 }
 
-void IsSubstringMatcher::describe(Description* description) {
+KKTEST_EXPORT void IsSubstringMatcher::describe(Description* description) {
     (*description) << "a substring of '" << container << "'";
 }
 
-void IsSubstringMatcher::describeMismatch(Description* description,
-                                          const string&) {
+KKTEST_EXPORT void IsSubstringMatcher::describeMismatch(
+        Description* description, const string&) {
     (*description) << "not a substring";
 }
 

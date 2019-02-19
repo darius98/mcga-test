@@ -7,15 +7,15 @@
 namespace kktest {
 namespace matchers {
 
-extern KKTEST_API detail::IsPositiveMatcher isPositive;
+extern detail::IsPositiveMatcher isPositive;
 
-extern KKTEST_API detail::IsNegativeMatcher isNegative;
+extern detail::IsNegativeMatcher isNegative;
 
-extern KKTEST_API detail::IsEvenMatcher isEven;
+extern detail::IsEvenMatcher isEven;
 
-extern KKTEST_API detail::IsOddMatcher isOdd;
+extern detail::IsOddMatcher isOdd;
 
-extern KKTEST_API detail::IsZeroMatcher isZero;
+extern detail::IsZeroMatcher isZero;
 
 template<class T>
 detail::IsAlmostEqualMatcher<T> isAlmostEqualTo(const T& target,
@@ -25,7 +25,7 @@ detail::IsAlmostEqualMatcher<T> isAlmostEqualTo(const T& target,
 
 namespace detail {
 
-class KKTEST_API IsPositiveMatcher: public Matcher {
+class IsPositiveMatcher: public Matcher {
  public:
     template<class T>
     bool matches(const T& object) {
@@ -40,7 +40,7 @@ class KKTEST_API IsPositiveMatcher: public Matcher {
     }
 };
 
-class KKTEST_API IsNegativeMatcher: public Matcher {
+class IsNegativeMatcher: public Matcher {
  public:
     template<class T>
     bool matches(const T& object) {
@@ -55,7 +55,7 @@ class KKTEST_API IsNegativeMatcher: public Matcher {
     }
 };
 
-class KKTEST_API IsEvenMatcher: public Matcher {
+class IsEvenMatcher: public Matcher {
  public:
     template<class T>
     bool matches(const T& object) {
@@ -70,7 +70,7 @@ class KKTEST_API IsEvenMatcher: public Matcher {
     }
 };
 
-class KKTEST_API IsOddMatcher: public Matcher {
+class IsOddMatcher: public Matcher {
  public:
     template<class T>
     bool matches(const T& object) {
@@ -85,7 +85,7 @@ class KKTEST_API IsOddMatcher: public Matcher {
     }
 };
 
-class KKTEST_API IsZeroMatcher: public Matcher {
+class IsZeroMatcher: public Matcher {
  public:
     template<class T>
     bool matches(const T& object) {

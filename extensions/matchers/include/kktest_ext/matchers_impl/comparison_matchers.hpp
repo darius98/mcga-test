@@ -212,7 +212,7 @@ class IdentityMatcher: public Matcher {
 };
 
 template<>
-class KKTEST_API EqualityMatcher<std::string>: public Matcher {
+class EqualityMatcher<std::string>: public Matcher {
  public:
     explicit EqualityMatcher(std::string _target);
 
@@ -243,7 +243,7 @@ EqualityMatcher<std::string>::operator EqualityMatcher<char[n]>() const {
 }
 
 template<>
-class KKTEST_API NonEqualityMatcher<std::string>: public Matcher {
+class NonEqualityMatcher<std::string>: public Matcher {
  public:
     explicit NonEqualityMatcher(std::string _target);
 
@@ -274,7 +274,7 @@ NonEqualityMatcher<std::string>::operator NonEqualityMatcher<char[n]>() const {
 }
 
 template<>
-class KKTEST_API IsLessThanMatcher<std::string>: public Matcher {
+class IsLessThanMatcher<std::string>: public Matcher {
  public:
     explicit IsLessThanMatcher(std::string _target);
 
@@ -305,7 +305,7 @@ IsLessThanMatcher<std::string>::operator IsLessThanMatcher<char[n]>() const {
 }
 
 template<>
-class KKTEST_API IsLessThanEqualMatcher<std::string>: public Matcher {
+class IsLessThanEqualMatcher<std::string>: public Matcher {
  public:
     explicit IsLessThanEqualMatcher(std::string _target);
 
@@ -338,7 +338,7 @@ IsLessThanEqualMatcher<std::string>::
 }
 
 template<>
-class KKTEST_API IsGreaterThanMatcher<std::string>: public Matcher {
+class IsGreaterThanMatcher<std::string>: public Matcher {
  public:
     explicit IsGreaterThanMatcher(std::string _target);
 
@@ -370,7 +370,7 @@ IsGreaterThanMatcher<std::string>::
 }
 
 template<>
-class KKTEST_API IsGreaterThanEqualMatcher<std::string>: public Matcher {
+class IsGreaterThanEqualMatcher<std::string>: public Matcher {
  public:
     explicit IsGreaterThanEqualMatcher(std::string _target);
 

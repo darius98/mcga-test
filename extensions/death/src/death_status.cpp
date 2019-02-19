@@ -1,40 +1,44 @@
 #include "extensions/death/include/kktest_ext/death_impl/death_status.hpp"
 
+#include "core/src/export.hpp"
+
 using namespace std;
 
 namespace kktest {
 namespace death {
 
-DeathStatus::DeathStatus() = default;
+KKTEST_EXPORT DeathStatus::DeathStatus() = default;
 
-bool DeathStatus::exitedOrKilled() const {
+KKTEST_EXPORT bool DeathStatus::exitedOrKilled() const {
     return exitCode >= 0 || killedBySignal();
 }
 
-bool DeathStatus::exited() const {
+KKTEST_EXPORT bool DeathStatus::exited() const {
     return exitCode >= 0 && !killedBySignal();
 }
 
-bool DeathStatus::killedBySignal() const {
+KKTEST_EXPORT bool DeathStatus::killedBySignal() const {
     return signal > 0;
 }
 
-int DeathStatus::getExitCode() const {
+KKTEST_EXPORT int DeathStatus::getExitCode() const {
     return exitCode;
 }
 
-int DeathStatus::getSignal() const {
+KKTEST_EXPORT int DeathStatus::getSignal() const {
     return signal;
 }
 
-string DeathStatus::getOutput() const {
+KKTEST_EXPORT string DeathStatus::getOutput() const {
     return output;
 }
 
-DeathStatus::DeathStatus(int _exitCode, int _signal, string _output):
+KKTEST_EXPORT DeathStatus::DeathStatus(int _exitCode,
+                                       int _signal,
+                                       string _output):
         exitCode(_exitCode), signal(_signal), output(move(_output)) {}
 
-ostream& operator<<(ostream& out, const DeathStatus& status) {
+KKTEST_EXPORT ostream& operator<<(ostream& out, const DeathStatus& status) {
     out << "(exit_code="
         << status.exitCode
         << ", signal="

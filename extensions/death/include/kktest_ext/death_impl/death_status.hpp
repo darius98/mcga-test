@@ -4,13 +4,10 @@
 #include <ostream>
 #include <string>
 
-#include <kktest_impl/executable.hpp>
-#include <kktest_impl/export.hpp>
-
 namespace kktest {
 namespace death {
 
-class KKTEST_API DeathStatus {
+class DeathStatus {
  public:
     DeathStatus();
 

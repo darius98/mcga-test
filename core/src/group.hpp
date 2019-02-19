@@ -1,8 +1,8 @@
 #ifndef KKTEST_CORE_SRC_GROUP_HPP_
 #define KKTEST_CORE_SRC_GROUP_HPP_
 
-#include "core/include/kktest_impl/executable.hpp"
-#include "core/include/kktest_impl/config.hpp"
+#include "core/include/kktest.hpp"
+#include "core/src/executable.hpp"
 
 namespace kktest {
 

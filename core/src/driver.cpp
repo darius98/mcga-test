@@ -1,6 +1,6 @@
 #include "core/src/driver.hpp"
 
-#include "core/include/kktest_impl/config.hpp"
+#include "core/include/kktest.hpp"
 #include "core/src/box_executor.hpp"
 #include "core/src/test_case_registry.hpp"
 
