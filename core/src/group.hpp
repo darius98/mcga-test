@@ -2,7 +2,6 @@
 #define KKTEST_CORE_SRC_GROUP_HPP_
 
 #include "core/include/kktest.hpp"
-#include "core/src/executable.hpp"
 
 namespace kktest {
 
@@ -28,8 +27,8 @@ class Group : private GroupConfig {
     Group* parentGroup;
     int index;
 
-    CopyableExecutable setUpFunc;
-    CopyableExecutable tearDownFunc;
+    std::function<void()> setUpFunc;
+    std::function<void()> tearDownFunc;
 };
 
 typedef const Group*const GroupPtr;

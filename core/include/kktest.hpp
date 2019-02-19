@@ -18,6 +18,8 @@
 
 namespace kktest {
 
+typedef const std::function<void()>& Executable;
+
 struct KKTEST_EXPORT TestConfig {
     std::string description = "-";
     bool optional = false;
@@ -46,13 +48,13 @@ struct KKTEST_EXPORT TestCaseDefiner {
     TestCaseDefiner(void (*testCase)(), const char* name);
 };
 
-KKTEST_EXPORT void test(TestConfig config, const std::function<void()>& func);
+KKTEST_EXPORT void test(TestConfig config, Executable func);
 
-KKTEST_EXPORT void group(GroupConfig config, const std::function<void()>& func);
+KKTEST_EXPORT void group(GroupConfig config, Executable func);
 
-KKTEST_EXPORT void setUp(const std::function<void()>& func);
+KKTEST_EXPORT void setUp(Executable func);
 
-KKTEST_EXPORT void tearDown(const std::function<void()>& func);
+KKTEST_EXPORT void tearDown(Executable func);
 
 KKTEST_EXPORT void fail(const std::string& message = std::string());
 
