@@ -9,7 +9,6 @@ add_library(kktest_core OBJECT
     src/main.cpp
     src/test.cpp
     src/test_case_registry.cpp
-    src/test_run.cpp
 )
 target_compile_options(kktest_core PRIVATE -Wall -Wextra -pedantic)
 target_include_directories(kktest_core PUBLIC include)

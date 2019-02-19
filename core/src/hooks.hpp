@@ -5,14 +5,13 @@
 
 #include "core/src/group.hpp"
 #include "core/src/test.hpp"
-#include "core/src/test_run.hpp"
 
 namespace kktest {
 
 class Hooks {
  public:
     typedef std::function<void(const Test&)> BeforeTestHook;
-    typedef std::function<void(const TestRun&)> AfterTestHook;
+    typedef std::function<void(const ExecutedTest&)> AfterTestHook;
     typedef std::function<void(GroupPtr)> BeforeGroupHook;
     typedef std::function<void(GroupPtr)> AfterGroupHook;
     typedef std::function<void()> AfterInitHook;

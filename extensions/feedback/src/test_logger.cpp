@@ -9,12 +9,12 @@ namespace feedback {
 
 TestLogger::TestLogger(ostream& _stream): stream(_stream) {}
 
-void TestLogger::logTest(const TestRun& testRun) {
-    passedTests += testRun.isPassed();
-    failedTests += !testRun.isPassed();
+void TestLogger::logTest(const ExecutedTest& test) {
+    passedTests += test.isPassed();
+    failedTests += !test.isPassed();
 
-    failedOptionalTests += (!testRun.isPassed() && testRun.isTestOptional());
-    printTestMessage(testRun);
+    failedOptionalTests += (!test.isPassed() && test.isOptional());
+    printTestMessage(test);
     testsLogged += 1;
 }
 
@@ -60,24 +60,24 @@ string TestLogger::getRecursiveGroupDescription(GroupPtr group) {
     return recursive + group->getDescription() + "::";
 }
 
-void TestLogger::printTestMessage(const TestRun& testRun) {
+void TestLogger::printTestMessage(const ExecutedTest& test) {
     stream << "[";
-    if (testRun.isPassed()) {
+    if (test.isPassed()) {
         stream << termcolor::green << "P" << termcolor::reset;
     } else {
         stream << termcolor::red << "F" << termcolor::reset;
     }
     stream << "] ";
-    string groupDescription = getRecursiveGroupDescription(testRun.getGroup());
+    string groupDescription = getRecursiveGroupDescription(test.getGroup());
     stream << termcolor::grey
            << groupDescription
            << termcolor::reset
-           << testRun.getTestDescription();
-    if (!testRun.isPassed()) {
+           << test.getDescription();
+    if (!test.isPassed()) {
         stream << "\n\t";
         // TODO(darius98): This should be somewhere else (in utils maybe?)
         size_t pos = 0;
-        string failure = testRun.getFailure();
+        string failure = test.getFailure();
         while ((pos = failure.find('\n', pos)) != string::npos) {
             failure.replace(pos, 1, "\n\t");
             pos += 2;

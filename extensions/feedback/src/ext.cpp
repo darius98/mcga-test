@@ -41,8 +41,8 @@ void FeedbackExtension::init(ExtensionApi* api) {
 void FeedbackExtension::initLogging(ExtensionApi* api) {
     logger = unique_ptr<TestLogger>(new TestLogger(cout));
 
-    api->afterTest([this](const TestRun& testRun) {
-        logger->logTest(testRun);
+    api->afterTest([this](const ExecutedTest& test) {
+        logger->logTest(test);
     });
 
     api->beforeDestroy([this]() {
@@ -64,14 +64,14 @@ void FeedbackExtension::initPipe(ExtensionApi* api, const string& pipeName) {
                           group->getDescription());
     });
 
-    api->afterTest([this](const TestRun& testRun) {
+    api->afterTest([this](const ExecutedTest& test) {
         pipe->sendMessage(PipeMessageType::TEST,
-                          testRun.getGroupIndex(),
-                          testRun.getTestIndex(),
-                          testRun.isTestOptional(),
-                          testRun.getTestDescription(),
-                          testRun.isPassed(),
-                          testRun.getFailure());
+                          test.getGroup()->getIndex(),
+                          test.getIndex(),
+                          test.isOptional(),
+                          test.getDescription(),
+                          test.isPassed(),
+                          test.getFailure());
     });
 
     api->beforeDestroy([this]() {

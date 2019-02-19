@@ -34,6 +34,29 @@ class Test {
     int index;
 };
 
+class ExecutedTest : public Test {
+ public:
+    struct Info {
+        double timeTicks;
+        bool passed;
+        std::string failure;
+
+        void fail(const std::string& _failure);
+    };
+
+    // When we create a test run, we no longer need the test.
+    // So we always move it.
+    ExecutedTest(Test&& test, std::string failure);
+    ExecutedTest(Test&& test, Info&& info);
+
+    bool isPassed() const;
+
+    std::string getFailure() const;
+
+ private:
+    Info info;
+};
+
 }
 
 #endif

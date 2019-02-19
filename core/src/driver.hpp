@@ -41,7 +41,7 @@ class Driver {
 
  private:
     void beforeTest(const Test& test);
-    void afterTest(const TestRun& testRun);
+    void afterTest(const ExecutedTest& test);
     void beforeGroup(Group* group);
     void afterGroup(Group* group);
 

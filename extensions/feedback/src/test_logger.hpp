@@ -7,7 +7,7 @@
 #include <utility>
 
 #include "core/src/group.hpp"
-#include "core/src/test_run.hpp"
+#include "core/src/test.hpp"
 
 namespace kktest {
 namespace feedback {
@@ -16,7 +16,7 @@ class TestLogger {
  public:
     explicit TestLogger(std::ostream& _stream);
 
-    void logTest(const TestRun& testRun);
+    void logTest(const ExecutedTest& test);
 
     void logFatalError(const std::string& errorMessage);
 
@@ -25,7 +25,7 @@ class TestLogger {
  private:
     std::string getRecursiveGroupDescription(GroupPtr group);
 
-    void printTestMessage(const TestRun& testRun);
+    void printTestMessage(const ExecutedTest& test);
 
     std::ostream& stream;
 

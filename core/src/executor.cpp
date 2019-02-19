@@ -32,13 +32,13 @@ void Executor::checkIsInactive(const string& methodName) const {
 void Executor::finalize() {}
 
 void Executor::execute(Test&& test, Executable func) {
-    ExecutionInfo info = run(test.getGroup(), func);
-    onTestFinishedCallback(TestRun(move(test), move(info)));
+    ExecutedTest::Info info = run(test.getGroup(), func);
+    onTestFinishedCallback(ExecutedTest(move(test), move(info)));
 }
 
-ExecutionInfo Executor::run(GroupPtr group, Executable func) {
+ExecutedTest::Info Executor::run(GroupPtr group, Executable func) {
     state = ACTIVE;
-    ExecutionInfo info;
+    ExecutedTest::Info info;
     info.passed = true;
     ProcessTimer t;
     runSetUps(group, &info);
@@ -50,7 +50,7 @@ ExecutionInfo Executor::run(GroupPtr group, Executable func) {
     return info;
 }
 
-void Executor::runSetUps(GroupPtr group, ExecutionInfo* executionInfo) {
+void Executor::runSetUps(GroupPtr group, ExecutedTest::Info* executionInfo) {
     if (group == nullptr) {
         return;
     }
@@ -71,7 +71,7 @@ void Executor::runSetUps(GroupPtr group, ExecutionInfo* executionInfo) {
     }
 }
 
-void Executor::runTest(Executable func, ExecutionInfo* executionInfo) {
+void Executor::runTest(Executable func, ExecutedTest::Info* executionInfo) {
     try {
         func();
     } catch(const ConfigurationError& e) {
@@ -86,7 +86,7 @@ void Executor::runTest(Executable func, ExecutionInfo* executionInfo) {
     }
 }
 
-void Executor::runTearDowns(GroupPtr group, ExecutionInfo* executionInfo) {
+void Executor::runTearDowns(GroupPtr group, ExecutedTest::Info* executionInfo) {
     if (group == nullptr) {
         return;
     }

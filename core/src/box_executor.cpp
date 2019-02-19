@@ -51,7 +51,7 @@ void BoxExecutor::runContained(GroupPtr group,
                                Executable func,
                                PipeWriter* pipe) {
     try {
-        ExecutionInfo info = run(group, func);
+        ExecutedTest::Info info = run(group, func);
         pipe->sendMessage(SUCCESS, info.timeTicks, info.passed, info.failure);
     } catch(const ConfigurationError& error) {
         pipe->sendMessage(CONFIGURATION_ERROR, string(error.what()));
@@ -118,7 +118,7 @@ bool BoxExecutor::tryCloseContainer(vector<BoxedTest>::iterator boxedTest) {
         return false;
     }
     if (!passed) {
-        onTestFinishedCallback(TestRun(move(boxedTest->test), error));
+        onTestFinishedCallback(ExecutedTest(move(boxedTest->test), error));
         return true;
     }
     MessageStatus status;
@@ -128,9 +128,9 @@ bool BoxExecutor::tryCloseContainer(vector<BoxedTest>::iterator boxedTest) {
         message >> errorMessage;
         throw ConfigurationError(errorMessage);
     }
-    ExecutionInfo info;
+    ExecutedTest::Info info;
     message >> info.timeTicks >> info.passed >> info.failure;
-    onTestFinishedCallback(TestRun(move(boxedTest->test), move(info)));
+    onTestFinishedCallback(ExecutedTest(move(boxedTest->test), move(info)));
     return true;
 }
 

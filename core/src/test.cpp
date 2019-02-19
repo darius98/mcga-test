@@ -32,4 +32,25 @@ int Test::getIndex() const {
     return index;
 }
 
+void ExecutedTest::Info::fail(const string& _failure) {
+    if (passed) {
+        passed = false;
+        failure = _failure;
+    }
+}
+
+ExecutedTest::ExecutedTest(Test&& test, string failure):
+    Test(move(test)), info{-1.0, false, move(failure)} {}
+
+ExecutedTest::ExecutedTest(Test&& test, Info&& info):
+        Test(move(test)), info(move(info)) {}
+
+bool ExecutedTest::isPassed() const {
+    return info.passed;
+}
+
+string ExecutedTest::getFailure() const {
+    return info.failure;
+}
+
 }

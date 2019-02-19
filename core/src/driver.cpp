@@ -106,12 +106,12 @@ void Driver::beforeTest(const Test& test) {
     hooks.runHooks<Hooks::BEFORE_TEST>(test);
 }
 
-void Driver::afterTest(const TestRun& testRun) {
-    if (!testRun.isTestOptional()) {
-        failedAnyNonOptionalTest |= !testRun.isPassed();
+void Driver::afterTest(const ExecutedTest& test) {
+    if (!test.isOptional()) {
+        failedAnyNonOptionalTest |= !test.isPassed();
     }
-    hooks.runHooks<Hooks::AFTER_TEST>(testRun);
-    markTestFinished(testRun.getGroup());
+    hooks.runHooks<Hooks::AFTER_TEST>(test);
+    markTestFinished(test.getGroup());
 }
 
 void Driver::beforeGroup(Group* group) {
