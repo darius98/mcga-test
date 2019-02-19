@@ -4,9 +4,21 @@
 #include <functional>
 #include <string>
 
+#define KKTEST_VERSION "1.0.0"
+
+#if defined _WIN32 || defined __CYGWIN__
+    #define KKTEST_EXPORT __declspec(dllexport)
+#else
+    #if __GNUC__ >= 4
+        #define KKTEST_EXPORT __attribute__((visibility("default")))
+    #else
+        #define KKTEST_EXPORT
+    #endif
+#endif
+
 namespace kktest {
 
-struct TestConfig {
+struct KKTEST_EXPORT TestConfig {
     std::string description = "-";
     bool optional = false;
     double timeTicksLimit = 1.0;
@@ -20,7 +32,7 @@ struct TestConfig {
     TestConfig& setTimeTicksLimit(double _timeTicksLimit);
 };
 
-struct GroupConfig {
+struct KKTEST_EXPORT GroupConfig {
     std::string description = "-";
 
     GroupConfig() = default;
@@ -30,21 +42,21 @@ struct GroupConfig {
     GroupConfig& setDescription(std::string _description);
 };
 
-struct TestCaseDefiner {
+struct KKTEST_EXPORT TestCaseDefiner {
     TestCaseDefiner(void (*testCase)(), const char* name);
 };
 
-void test(TestConfig config, const std::function<void()>& func);
+KKTEST_EXPORT void test(TestConfig config, const std::function<void()>& func);
 
-void group(GroupConfig config, const std::function<void()>& func);
+KKTEST_EXPORT void group(GroupConfig config, const std::function<void()>& func);
 
-void setUp(const std::function<void()>& func);
+KKTEST_EXPORT void setUp(const std::function<void()>& func);
 
-void tearDown(const std::function<void()>& func);
+KKTEST_EXPORT void tearDown(const std::function<void()>& func);
 
-void fail(const std::string& message = std::string());
+KKTEST_EXPORT void fail(const std::string& message = std::string());
 
-void expect(bool expr, const std::string& message = std::string());
+KKTEST_EXPORT void expect(bool expr, const std::string& message=std::string());
 
 }
 

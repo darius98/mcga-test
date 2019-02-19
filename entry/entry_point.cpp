@@ -1,6 +1,3 @@
-#define VERSION "1.0.0"
-
-#include "core/src/export.hpp"
 #include "core/src/main.hpp"
 
 #include "extensions/feedback/src/ext.hpp"
@@ -16,7 +13,7 @@ KKTEST_EXPORT int main(int argc, char** argv) {
     feedback::FeedbackExtension feedbackExtension;
     feedbackExtension.registerCommandLineArgs(parser);
 
-    InternalArgs internalArgs = registerInternalFlags(parser, VERSION);
+    InternalArgs internalArgs = registerInternalFlags(parser, KKTEST_VERSION);
 
     parser.interpret(argc, argv);
 

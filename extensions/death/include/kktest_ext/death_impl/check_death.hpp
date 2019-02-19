@@ -6,8 +6,8 @@
 namespace kktest {
 namespace death {
 
-DeathStatus checkDeath(const std::function<void()>& func,
-                       double timeTicksLimit = 1.0);
+KKTEST_EXPORT DeathStatus checkDeath(const std::function<void()>& func,
+                                     double timeTicksLimit = 1.0);
 
 }
 }

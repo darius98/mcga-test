@@ -4,10 +4,12 @@
 #include <ostream>
 #include <string>
 
+#include <kktest.hpp>
+
 namespace kktest {
 namespace death {
 
-class DeathStatus {
+class KKTEST_EXPORT DeathStatus {
  public:
     DeathStatus();
 
@@ -32,7 +34,8 @@ class DeathStatus {
 
 friend DeathStatus checkDeath(const std::function<void()>& func,
                               double timeTicksLimit);
-friend std::ostream& operator<<(std::ostream& out, const DeathStatus& status);
+KKTEST_EXPORT friend std::ostream& operator<<(std::ostream& out,
+                                              const DeathStatus& status);
 };
 
 }

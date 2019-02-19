@@ -7,12 +7,12 @@
 namespace kktest {
 namespace matchers {
 
-extern detail::IsNullptrMatcher isNull;
-extern detail::IsNotNullptrMatcher isNotNull;
+KKTEST_EXPORT extern detail::IsNullptrMatcher isNull;
+KKTEST_EXPORT extern detail::IsNotNullptrMatcher isNotNull;
 
 namespace detail {
 
-class IsNullptrMatcher: public Matcher {
+class KKTEST_EXPORT IsNullptrMatcher: public Matcher {
  public:
     bool matches(void*const& obj);
 
@@ -21,7 +21,7 @@ class IsNullptrMatcher: public Matcher {
     void describeMismatch(Description* description, void*const&);
 };
 
-class IsNotNullptrMatcher: public Matcher {
+class KKTEST_EXPORT IsNotNullptrMatcher: public Matcher {
  public:
     bool matches(void*const& obj);
 

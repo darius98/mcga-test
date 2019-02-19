@@ -16,16 +16,15 @@ template<class T> class HasExitedWithCodeMatcher;
 template<class T> class HasOutputMatcher;
 }
 
-extern detail::ExitsMatcher exits;
+KKTEST_EXPORT extern detail::ExitsMatcher exits;
 
-extern detail::HasExitedMatcher hasExited;
+KKTEST_EXPORT extern detail::HasExitedMatcher hasExited;
 
-extern detail::HasExitedWithCodeMatcher<matchers::detail::EqualityMatcher<int>>
-        hasExitedWithCodeZero;
+KKTEST_EXPORT extern detail::HasExitedWithCodeMatcher
+        <matchers::detail::EqualityMatcher<int>> hasExitedWithCodeZero;
 
-extern detail::HasExitedWithCodeMatcher
-        <matchers::detail::NonEqualityMatcher<int>>
-            hasExitedWithNonZeroCode;
+KKTEST_EXPORT extern detail::HasExitedWithCodeMatcher
+        <matchers::detail::NonEqualityMatcher<int>> hasExitedWithNonZeroCode;
 
 template<class T,
          class=typename std::enable_if<
@@ -66,8 +65,8 @@ detail::HasOutputMatcher<matchers::detail::EqualityMatcher<T>>
 
 namespace detail {
 
-void describeStatus(matchers::Description* description,
-                    const DeathStatus& status);
+KKTEST_EXPORT void describeStatus(matchers::Description* description,
+                                  const DeathStatus& status);
 
 template<class CM, class OM>
 class ExitsWithCodeAndOutputMatcher: public matchers::Matcher {
@@ -225,7 +224,7 @@ class ExitsWithOutputMatcher: public matchers::Matcher {
     DeathStatus status;
 };
 
-class ExitsMatcher: public matchers::Matcher {
+class KKTEST_EXPORT ExitsMatcher: public matchers::Matcher {
  public:
     ExitsMatcher();
 
@@ -285,7 +284,7 @@ class ExitsMatcher: public matchers::Matcher {
     DeathStatus status;
 };
 
-class HasExitedMatcher: public matchers::Matcher {
+class KKTEST_EXPORT HasExitedMatcher: public matchers::Matcher {
  public:
     bool matches(const DeathStatus& status);
 

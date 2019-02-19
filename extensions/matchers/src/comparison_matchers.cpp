@@ -1,7 +1,5 @@
 #include "extensions/matchers/include/kktest_ext/matchers_impl/comparison_matchers.hpp"
 
-#include "core/src/export.hpp"
-
 using namespace std;
 
 namespace {
@@ -28,10 +26,9 @@ namespace kktest {
 namespace matchers {
 namespace detail {
 
-KKTEST_EXPORT EqualityMatcher<string>::EqualityMatcher(string _target):
-        target(move(_target)) {}
+EqualityMatcher<string>::EqualityMatcher(string target): target(move(target)) {}
 
-KKTEST_EXPORT bool EqualityMatcher<string>::matches(const string& obj) {
+bool EqualityMatcher<string>::matches(const string& obj) {
     return obj == target;
 }
 
@@ -43,8 +40,8 @@ KKTEST_EXPORT void EqualityMatcher<string>::describe(Description* description) {
     (*description) << "'" << target << "'";
 }
 
-KKTEST_EXPORT void EqualityMatcher<string>::describeMismatch(
-        Description* description, const string& obj) {
+void EqualityMatcher<string>::describeMismatch(Description* description,
+                                               const string& obj) {
     size_t mismatchIndex = 0;
     while (mismatchIndex < min(target.size(), obj.size())
             && target[mismatchIndex] == obj[mismatchIndex]) {
@@ -83,110 +80,103 @@ KKTEST_EXPORT void EqualityMatcher<string>::describeMismatch(
     description->appendRawString("'\n\t" + string(numSpaces, ' ') + "^");
 }
 
-KKTEST_EXPORT NonEqualityMatcher<string>::NonEqualityMatcher(string _target):
+NonEqualityMatcher<string>::NonEqualityMatcher(string _target):
         target(move(_target)) {}
 
-KKTEST_EXPORT bool NonEqualityMatcher<string>::matches(const string& obj) {
+bool NonEqualityMatcher<string>::matches(const string& obj) {
     return obj != target;
 }
 
-KKTEST_EXPORT bool NonEqualityMatcher<string>::matches(const char* obj) {
+bool NonEqualityMatcher<string>::matches(const char* obj) {
     return string(obj) != target;
 }
 
-KKTEST_EXPORT void NonEqualityMatcher<string>::describe(
-        Description* description) {
+void NonEqualityMatcher<string>::describe(Description* description) {
     (*description) << "not '" << target << "'";
 }
 
-KKTEST_EXPORT void NonEqualityMatcher<string>::describeMismatch(
-        Description* description, const string&) {
+void NonEqualityMatcher<string>::describeMismatch(Description* description,
+                                                  const string&) {
     (*description) << "'" << target << "'";
 }
 
-KKTEST_EXPORT IsLessThanMatcher<string>::IsLessThanMatcher(string _target):
+IsLessThanMatcher<string>::IsLessThanMatcher(string _target):
         target(move(_target)) {}
 
-KKTEST_EXPORT bool IsLessThanMatcher<string>::matches(const string& obj) {
+bool IsLessThanMatcher<string>::matches(const string& obj) {
     return obj < target;
 }
 
-KKTEST_EXPORT bool IsLessThanMatcher<string>::matches(const char* obj) {
+bool IsLessThanMatcher<string>::matches(const char* obj) {
     return string(obj) < target;
 }
 
-KKTEST_EXPORT void IsLessThanMatcher<string>::describe(
-        Description* description) {
+void IsLessThanMatcher<string>::describe(Description* description) {
     (*description) << "< '" << target << "'";
 }
 
-KKTEST_EXPORT void IsLessThanMatcher<string>::describeMismatch(
-        Description* description, const string&) {
+void IsLessThanMatcher<string>::describeMismatch(Description* description,
+                                                 const string&) {
     (*description) << ">= '" << target << "'";
 }
 
-KKTEST_EXPORT IsLessThanEqualMatcher<string>::IsLessThanEqualMatcher(
-        string _target): target(move(_target)) {}
+IsLessThanEqualMatcher<string>::IsLessThanEqualMatcher(string _target):
+        target(move(_target)) {}
 
-KKTEST_EXPORT bool IsLessThanEqualMatcher<string>::matches(const string& obj) {
+bool IsLessThanEqualMatcher<string>::matches(const string& obj) {
     return obj <= target;
 }
 
-KKTEST_EXPORT bool IsLessThanEqualMatcher<string>::matches(const char* obj) {
+bool IsLessThanEqualMatcher<string>::matches(const char* obj) {
     return string(obj) <= target;
 }
 
-KKTEST_EXPORT void IsLessThanEqualMatcher<string>::describe(
-        Description* description) {
+void IsLessThanEqualMatcher<string>::describe(Description* description) {
     (*description) << "<= '" << target << "'";
 }
 
-KKTEST_EXPORT void IsLessThanEqualMatcher<string>::describeMismatch(
-        Description* description, const string&) {
+void IsLessThanEqualMatcher<string>::describeMismatch(Description* description,
+                                                      const string&) {
     (*description) << "> '" << target << "'";
 }
 
-KKTEST_EXPORT IsGreaterThanMatcher<string>::IsGreaterThanMatcher(
-        string _target): target(move(_target)) {}
+IsGreaterThanMatcher<string>::IsGreaterThanMatcher(string _target):
+        target(move(_target)) {}
 
-KKTEST_EXPORT bool IsGreaterThanMatcher<string>::matches(const string& obj) {
+bool IsGreaterThanMatcher<string>::matches(const string& obj) {
     return obj > target;
 }
 
-KKTEST_EXPORT bool IsGreaterThanMatcher<string>::matches(const char* obj) {
+bool IsGreaterThanMatcher<string>::matches(const char* obj) {
     return string(obj) > target;
 }
 
-KKTEST_EXPORT void IsGreaterThanMatcher<string>::describe(
-        Description* description) {
+void IsGreaterThanMatcher<string>::describe(Description* description) {
     (*description) << "> '" << target << "'";
 }
 
-KKTEST_EXPORT void IsGreaterThanMatcher<string>::describeMismatch(
-        Description* description, const string& obj) {
+void IsGreaterThanMatcher<string>::describeMismatch(Description* description,
+                                                    const string& obj) {
     (*description) << "<= '" << target << "'";
 }
 
-KKTEST_EXPORT IsGreaterThanEqualMatcher<string>::IsGreaterThanEqualMatcher(
-        string _target): target(move(_target)) {}
+IsGreaterThanEqualMatcher<string>::IsGreaterThanEqualMatcher(string _target):
+        target(move(_target)) {}
 
-KKTEST_EXPORT bool IsGreaterThanEqualMatcher<string>::matches(
-        const string& obj) {
+bool IsGreaterThanEqualMatcher<string>::matches(const string& obj) {
     return obj >= target;
 }
 
-KKTEST_EXPORT bool IsGreaterThanEqualMatcher<string>::matches(const char* obj) {
+bool IsGreaterThanEqualMatcher<string>::matches(const char* obj) {
     return string(obj) >= target;
 }
 
-KKTEST_EXPORT void IsGreaterThanEqualMatcher<string>::describe(
-        Description* description) {
+void IsGreaterThanEqualMatcher<string>::describe(Description* description) {
     (*description) << ">= '" << target << "'";
 }
 
-KKTEST_EXPORT void IsGreaterThanEqualMatcher<string>::describeMismatch(
-        Description* description,
-        const string&) {
+void IsGreaterThanEqualMatcher<string>::describeMismatch(
+        Description* description, const string&) {
     (*description) << "< '" << target << "'";
 }
 

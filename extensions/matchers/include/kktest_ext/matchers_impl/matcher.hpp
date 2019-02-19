@@ -1,12 +1,13 @@
 #ifndef KKTEST_EXTENSIONS_MATCHERS_INCLUDE_KKTEST_EXT_MATCHERS_IMPL_MATCHER_HPP_
 #define KKTEST_EXTENSIONS_MATCHERS_INCLUDE_KKTEST_EXT_MATCHERS_IMPL_MATCHER_HPP_
 
+#include <kktest.hpp>
 #include <kktest_ext/matchers_impl/detail/streamer.hpp>
 
 namespace kktest {
 namespace matchers {
 
-class Description {
+class KKTEST_EXPORT Description {
  public:
     Description();
     Description(const Description& other);

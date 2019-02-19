@@ -7,12 +7,12 @@
 namespace kktest {
 namespace matchers {
 
-extern detail::IsTrueMatcher isTrue;
-extern detail::IsFalseMatcher isFalse;
+KKTEST_EXPORT extern detail::IsTrueMatcher isTrue;
+KKTEST_EXPORT extern detail::IsFalseMatcher isFalse;
 
 namespace detail {
 
-class IsTrueMatcher: public Matcher {
+class KKTEST_EXPORT IsTrueMatcher: public Matcher {
  public:
     bool matches(const bool& object);
 
@@ -21,7 +21,7 @@ class IsTrueMatcher: public Matcher {
     void describeMismatch(Description* description, const bool&);
 };
 
-class IsFalseMatcher: public Matcher {
+class KKTEST_EXPORT IsFalseMatcher: public Matcher {
  public:
     bool matches(const bool& object);
 

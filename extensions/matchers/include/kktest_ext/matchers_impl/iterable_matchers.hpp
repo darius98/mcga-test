@@ -7,9 +7,9 @@
 namespace kktest {
 namespace matchers {
 
-extern detail::IsEmptyMatcher isEmpty;
+KKTEST_EXPORT extern detail::IsEmptyMatcher isEmpty;
 
-extern detail::IsNotEmptyMatcher isNotEmpty;
+KKTEST_EXPORT extern detail::IsNotEmptyMatcher isNotEmpty;
 
 template<
     class T,
@@ -60,7 +60,7 @@ detail::IterableAnyMatcher<detail::EqualityMatcher<T>> anyElement(
 
 namespace detail {
 
-class IsEmptyMatcher: public Matcher {
+class KKTEST_EXPORT IsEmptyMatcher: public Matcher {
  public:
     template<class T>
     bool matches(const T& object) {
@@ -75,7 +75,7 @@ class IsEmptyMatcher: public Matcher {
     }
 };
 
-class IsNotEmptyMatcher: public Matcher {
+class KKTEST_EXPORT IsNotEmptyMatcher: public Matcher {
  public:
     template<class T>
     bool matches(const T& object) {
