@@ -26,18 +26,17 @@ namespace detail {
 
 class KKTEST_EXPORT ThrowsAnythingMatcher: public Matcher {
  public:
-    bool matches(const std::function<void()>& func);
+    bool matches(Executable func);
 
     void describe(Description* description);
 
-    void describeMismatch(Description* description,
-                          const std::function<void()>& func);
+    void describeMismatch(Description* description, Executable func);
 };
 
 template<class E>
 class ThrowsSpecificMatcher: public Matcher {
  public:
-    bool matches(const std::function<void()>& func) {
+    bool matches(Executable func) {
         try {
             func();
             failureType = 1;
@@ -55,8 +54,7 @@ class ThrowsSpecificMatcher: public Matcher {
         (*description) << "a function that throws " << typeid(E).name();
     }
 
-    void describeMismatch(Description* description,
-                          const std::function<void()>& func) {
+    void describeMismatch(Description* description, Executable func) {
         if (failureType == 1) {
             (*description) << "a function that did not throw";
         }

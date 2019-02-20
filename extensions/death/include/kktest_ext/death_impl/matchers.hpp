@@ -81,7 +81,7 @@ class ExitsWithCodeAndOutputMatcher: public matchers::Matcher {
             codeMatcher(std::move(codeMatcher)),
             outputMatcher(std::move(outputMatcher)) {}
 
-    bool matches(const std::function<void()>& func) {
+    bool matches(Executable func) {
         status = checkDeath(func);
         codeMatcherMatched = codeMatcher.matches(status.getExitCode());
         return codeMatcherMatched && outputMatcher.matches(status.getOutput());
@@ -94,13 +94,11 @@ class ExitsWithCodeAndOutputMatcher: public matchers::Matcher {
         outputMatcher.describe(description);
     }
 
-    void describeObject(matchers::Description* description,
-                        const std::function<void()>& func) {
+    void describeObject(matchers::Description* description, Executable func) {
         (*description) << status;
     }
 
-    void describeMismatch(matchers::Description* description,
-                          const std::function<void()>& func) {
+    void describeMismatch(matchers::Description* description, Executable func) {
         if (!codeMatcherMatched) {
             describeStatus(description, status);
         } else {
@@ -126,7 +124,7 @@ class ExitsWithCodeMatcher: public matchers::Matcher {
     explicit ExitsWithCodeMatcher(M codeMatcher):
             codeMatcher(std::move(codeMatcher)) {}
 
-    bool matches(const std::function<void()>& func) {
+    bool matches(Executable func) {
         status = checkDeath(func);
         return codeMatcher.matches(status.getExitCode());
     }
@@ -136,13 +134,11 @@ class ExitsWithCodeMatcher: public matchers::Matcher {
         codeMatcher.describe(description);
     }
 
-    void describeObject(matchers::Description* description,
-                        const std::function<void()>& func) {
+    void describeObject(matchers::Description* description, Executable func) {
         (*description) << status;
     }
 
-    void describeMismatch(matchers::Description* description,
-                          const std::function<void()>& func) {
+    void describeMismatch(matchers::Description* description, Executable func) {
         describeStatus(description, status);
     }
 
@@ -179,7 +175,7 @@ class ExitsWithOutputMatcher: public matchers::Matcher {
     explicit ExitsWithOutputMatcher(M outputMatcher):
             outputMatcher(std::move(outputMatcher)) {}
 
-    bool matches(const std::function<void()>& func) {
+    bool matches(Executable func) {
         status = checkDeath(func);
         return outputMatcher.matches(status.getOutput());
     }
@@ -189,13 +185,11 @@ class ExitsWithOutputMatcher: public matchers::Matcher {
         outputMatcher.describe(description);
     }
 
-    void describeObject(matchers::Description* description,
-                        const std::function<void()>& func) {
+    void describeObject(matchers::Description* description, Executable func) {
         (*description) << status;
     }
 
-    void describeMismatch(matchers::Description* description,
-                          const std::function<void()>& func) {
+    void describeMismatch(matchers::Description* description, Executable func) {
         outputMatcher.describeMismatch(description, status.getOutput());
     }
 
@@ -211,9 +205,8 @@ class ExitsWithOutputMatcher: public matchers::Matcher {
              class=typename std::enable_if<
                        !std::is_base_of<matchers::Matcher, T>::value
                    >::type>
-    ExitsWithCodeAndOutputMatcher
-            <matchers::detail::EqualityMatcher<T>, M> withCode(
-                    const T& code) {
+    ExitsWithCodeAndOutputMatcher<matchers::detail::EqualityMatcher<T>, M>
+            withCode(const T& code) {
         return ExitsWithCodeAndOutputMatcher
                 <matchers::detail::EqualityMatcher<T>, M>(
                         matchers::isEqualTo(code), outputMatcher);
@@ -228,15 +221,13 @@ class KKTEST_EXPORT ExitsMatcher: public matchers::Matcher {
  public:
     ExitsMatcher();
 
-    bool matches(const std::function<void()>& func);
+    bool matches(Executable func);
 
     void describe(matchers::Description* description);
 
-    void describeObject(matchers::Description* description,
-                        const std::function<void()>& func);
+    void describeObject(matchers::Description* description, Executable func);
 
-    void describeMismatch(matchers::Description* description,
-                          const std::function<void()>& func);
+    void describeMismatch(matchers::Description* description, Executable func);
 
     template<class T,
              class=typename std::enable_if<
@@ -250,8 +241,8 @@ class KKTEST_EXPORT ExitsMatcher: public matchers::Matcher {
              class=typename std::enable_if<
                        !std::is_base_of<matchers::Matcher, T>::value
                    >::type>
-    ExitsWithCodeMatcher<
-            matchers::detail::EqualityMatcher<T>> withCode(const T& code) {
+    ExitsWithCodeMatcher<matchers::detail::EqualityMatcher<T>>
+            withCode(const T& code) {
         return ExitsWithCodeMatcher<matchers::detail::EqualityMatcher<T>>(
                 matchers::isEqualTo(code));
     }
@@ -268,9 +259,8 @@ class KKTEST_EXPORT ExitsMatcher: public matchers::Matcher {
              class=typename std::enable_if<
                        !std::is_base_of<matchers::Matcher, T>::value
                    >::type>
-    ExitsWithOutputMatcher<
-            matchers::detail::EqualityMatcher<T>
-            > withOutput(const T& output) {
+    ExitsWithOutputMatcher<matchers::detail::EqualityMatcher<T>>
+            withOutput(const T& output) {
         return ExitsWithOutputMatcher
                 <matchers::detail::EqualityMatcher<T>>(
                         matchers::isEqualTo(output));

@@ -11,7 +11,7 @@ using namespace std;
 namespace kktest {
 namespace death {
 
-DeathStatus checkDeath(const function<void()>& func, double timeTicksLimit) {
+DeathStatus checkDeath(Executable func, double timeTicksLimit) {
     WorkerSubprocess proc(
         timeTicksLimit * Executor::getTimeTickLengthMs(),
         [func](PipeWriter* writer) {

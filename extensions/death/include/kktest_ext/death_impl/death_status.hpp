@@ -32,10 +32,8 @@ class KKTEST_EXPORT DeathStatus {
     int signal;
     std::string output;
 
-friend DeathStatus checkDeath(const std::function<void()>& func,
-                              double timeTicksLimit);
-KKTEST_EXPORT friend std::ostream& operator<<(std::ostream& out,
-                                              const DeathStatus& status);
+friend DeathStatus checkDeath(Executable func, double timeTicksLimit);
+friend std::ostream& operator<<(std::ostream& out, const DeathStatus& status);
 };
 
 }

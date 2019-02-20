@@ -36,7 +36,7 @@ void HasExitedMatcher::describeMismatch(Description* description,
 ExitsMatcher::ExitsMatcher():
         zero(isEqualTo(0)), nonZero(isNotEqualTo(0)) {}
 
-bool ExitsMatcher::matches(const function<void()>& func) {
+bool ExitsMatcher::matches(Executable func) {
     status = checkDeath(func);
     return status.exited();
 }
@@ -45,13 +45,11 @@ void ExitsMatcher::describe(Description* description) {
     (*description) << "the program's end";
 }
 
-void ExitsMatcher::describeObject(Description* description,
-                                  const function<void()>& func) {
+void ExitsMatcher::describeObject(Description* description, Executable func) {
     (*description) << status;
 }
 
-void ExitsMatcher::describeMismatch(Description* description,
-                                    const function<void()>& func) {
+void ExitsMatcher::describeMismatch(Description* description, Executable func) {
     describeStatus(description, status);
 }
 

@@ -9,7 +9,7 @@ detail::ThrowsAnythingMatcher throws;
 
 namespace detail {
 
-bool ThrowsAnythingMatcher::matches(const function<void()>& func) {
+bool ThrowsAnythingMatcher::matches(Executable func) {
     try {
         func();
         return false;
@@ -23,7 +23,7 @@ void ThrowsAnythingMatcher::describe(Description* description) {
 }
 
 void ThrowsAnythingMatcher::describeMismatch(Description* description,
-                                             const function<void()>& func) {
+                                             Executable func) {
     (*description) << "a function that did not throw";
 }
 
