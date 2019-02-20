@@ -8,7 +8,7 @@ namespace interproc {
 
 class InterprocError: public std::runtime_error {
  public:
-    explicit InterprocError(const std::string& _what);
+    explicit InterprocError(const std::string& what);
 };
 
 }

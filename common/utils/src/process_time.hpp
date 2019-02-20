@@ -15,7 +15,7 @@ class Duration {
     Duration();
     Duration(const Duration& other);
     Duration(Duration&& other) noexcept;
-    Duration(int _nSeconds, long long _nNanoseconds);
+    Duration(int nSeconds, long long nNanoseconds);
 
     Duration operator+(const Duration& other) const;
     Duration operator-(const Duration& other) const;

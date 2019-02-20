@@ -96,8 +96,8 @@ class IterableSizeMatcher: public Matcher {
                   "SizeMatcher only supports other matchers as template args.");
 
  public:
-    explicit IterableSizeMatcher(const M& _sizeMatcher):
-            sizeMatcher(_sizeMatcher) {}
+    explicit IterableSizeMatcher(const M& sizeMatcher):
+            sizeMatcher(sizeMatcher) {}
 
     template<class T>
     bool matches(const T& object) {
@@ -125,8 +125,8 @@ class IterableEachMatcher: public Matcher {
                   "EachMatcher only supports other matchers as template args.");
 
  public:
-    explicit IterableEachMatcher(M _elementMatcher):
-            elementMatcher(_elementMatcher) {}
+    explicit IterableEachMatcher(M elementMatcher):
+            elementMatcher(elementMatcher) {}
 
     IterableEachMatcher(const IterableEachMatcher& other):
             elementMatcher(other.elementMatcher),
@@ -169,8 +169,8 @@ class IterableEachMatcher: public Matcher {
 template<class M>
 class IterableAnyMatcher: public Matcher {
  public:
-    explicit IterableAnyMatcher(M _elementMatcher):
-            elementMatcher(_elementMatcher) {}
+    explicit IterableAnyMatcher(M elementMatcher):
+            elementMatcher(elementMatcher) {}
     IterableAnyMatcher(const IterableAnyMatcher& other):
             elementMatcher(other.elementMatcher) {}
 

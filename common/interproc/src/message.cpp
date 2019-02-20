@@ -35,7 +35,7 @@ Message::Message(Message&& other) noexcept: payload(other.payload) {
     }
 }
 
-Message::Message(void* _payload) noexcept: payload(_payload) {}
+Message::Message(void* payload) noexcept: payload(payload) {}
 
 Message::~Message() {
     if (payload != nullptr) {

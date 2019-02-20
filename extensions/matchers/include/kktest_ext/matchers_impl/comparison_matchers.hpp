@@ -50,7 +50,7 @@ namespace detail {
 template<class T>
 class EqualityMatcher: public Matcher {
  public:
-    explicit EqualityMatcher(const T& _target): target(_target) {}
+    explicit EqualityMatcher(const T& target): target(target) {}
 
     template<class O>
     bool matches(const O& obj) {
@@ -73,7 +73,7 @@ class EqualityMatcher: public Matcher {
 template<class T>
 class NonEqualityMatcher: public Matcher {
  public:
-    explicit NonEqualityMatcher(const T& _target): target(_target) {}
+    explicit NonEqualityMatcher(const T& target): target(target) {}
 
     template<class O>
     bool matches(const O& obj) {
@@ -96,7 +96,7 @@ class NonEqualityMatcher: public Matcher {
 template<class T>
 class IsLessThanMatcher: public Matcher {
  public:
-    explicit IsLessThanMatcher(const T& _target): target(_target) {}
+    explicit IsLessThanMatcher(const T& target): target(target) {}
 
     template<class O>
     bool matches(const O& object) {
@@ -119,7 +119,7 @@ class IsLessThanMatcher: public Matcher {
 template<class T>
 class IsLessThanEqualMatcher: public Matcher {
  public:
-    explicit IsLessThanEqualMatcher(const T& _target): target(_target) {}
+    explicit IsLessThanEqualMatcher(const T& target): target(target) {}
 
     template<class O>
     bool matches(const O& object) {
@@ -142,7 +142,7 @@ class IsLessThanEqualMatcher: public Matcher {
 template<class T>
 class IsGreaterThanMatcher: public Matcher {
  public:
-    explicit IsGreaterThanMatcher(const T& _target): target(_target) {}
+    explicit IsGreaterThanMatcher(const T& target): target(target) {}
 
     template<class O>
     bool matches(const O& object) {
@@ -165,7 +165,7 @@ class IsGreaterThanMatcher: public Matcher {
 template<class T>
 class IsGreaterThanEqualMatcher: public Matcher {
  public:
-    explicit IsGreaterThanEqualMatcher(const T& _target): target(_target) {}
+    explicit IsGreaterThanEqualMatcher(const T& target): target(target) {}
 
     template<class O>
     bool matches(const O& object) {
@@ -190,8 +190,7 @@ class IdentityMatcher: public Matcher {
  public:
     explicit IdentityMatcher(const T& target):
             address(static_cast<const void*>(&target)) {}
-
-    IdentityMatcher(const IdentityMatcher& other): address(other.address) {}
+    IdentityMatcher(const IdentityMatcher& other) = default;
 
     template<class S>
     bool matches(const S& object) {
@@ -214,7 +213,7 @@ class IdentityMatcher: public Matcher {
 template<>
 class KKTEST_EXPORT EqualityMatcher<std::string>: public Matcher {
  public:
-    explicit EqualityMatcher(std::string _target);
+    explicit EqualityMatcher(std::string target);
 
     bool matches(const std::string& obj);
 
@@ -245,7 +244,7 @@ EqualityMatcher<std::string>::operator EqualityMatcher<char[n]>() const {
 template<>
 class KKTEST_EXPORT NonEqualityMatcher<std::string>: public Matcher {
  public:
-    explicit NonEqualityMatcher(std::string _target);
+    explicit NonEqualityMatcher(std::string target);
 
     bool matches(const std::string& obj);
 
@@ -276,7 +275,7 @@ NonEqualityMatcher<std::string>::operator NonEqualityMatcher<char[n]>() const {
 template<>
 class KKTEST_EXPORT IsLessThanMatcher<std::string>: public Matcher {
  public:
-    explicit IsLessThanMatcher(std::string _target);
+    explicit IsLessThanMatcher(std::string target);
 
     bool matches(const std::string& obj);
 
@@ -307,7 +306,7 @@ IsLessThanMatcher<std::string>::operator IsLessThanMatcher<char[n]>() const {
 template<>
 class KKTEST_EXPORT IsLessThanEqualMatcher<std::string>: public Matcher {
  public:
-    explicit IsLessThanEqualMatcher(std::string _target);
+    explicit IsLessThanEqualMatcher(std::string target);
 
     bool matches(const std::string& obj);
 
@@ -340,7 +339,7 @@ IsLessThanEqualMatcher<std::string>::
 template<>
 class KKTEST_EXPORT IsGreaterThanMatcher<std::string>: public Matcher {
  public:
-    explicit IsGreaterThanMatcher(std::string _target);
+    explicit IsGreaterThanMatcher(std::string target);
 
     bool matches(const std::string& obj);
 
@@ -372,7 +371,7 @@ IsGreaterThanMatcher<std::string>::
 template<>
 class KKTEST_EXPORT IsGreaterThanEqualMatcher<std::string>: public Matcher {
  public:
-    explicit IsGreaterThanEqualMatcher(std::string _target);
+    explicit IsGreaterThanEqualMatcher(std::string target);
 
     bool matches(const std::string& obj);
 

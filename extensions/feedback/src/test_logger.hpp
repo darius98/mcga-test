@@ -14,7 +14,7 @@ namespace feedback {
 
 class TestLogger {
  public:
-    explicit TestLogger(std::ostream& _stream);
+    explicit TestLogger(std::ostream& stream);
 
     void logTest(const ExecutedTest& test);
 

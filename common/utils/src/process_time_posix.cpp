@@ -10,7 +10,7 @@ namespace utils {
 ProcessTimestamp processNow() {
     timespec now{};
     clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &now);
-    return ProcessTimestamp(static_cast<int>(now.tv_sec), now.tv_nsec);
+    return {static_cast<int>(now.tv_sec), now.tv_nsec};
 }
 
 void sleepForDuration(const Duration& duration) {

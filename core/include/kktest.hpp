@@ -26,22 +26,22 @@ struct KKTEST_EXPORT TestConfig {
     double timeTicksLimit = 1.0;
 
     TestConfig() = default;
-    TestConfig(std::string _description); // NOLINT(google-explicit-constructor)
-    TestConfig(const char* _description); // NOLINT(google-explicit-constructor)
+    TestConfig(std::string description); // NOLINT(google-explicit-constructor)
+    TestConfig(const char* description); // NOLINT(google-explicit-constructor)
 
-    TestConfig& setDescription(std::string _description);
-    TestConfig& setOptional(bool _optional);
-    TestConfig& setTimeTicksLimit(double _timeTicksLimit);
+    TestConfig& setDescription(std::string description);
+    TestConfig& setOptional(bool optional);
+    TestConfig& setTimeTicksLimit(double timeTicksLimit);
 };
 
 struct KKTEST_EXPORT GroupConfig {
     std::string description = "-";
 
     GroupConfig() = default;
-    GroupConfig(std::string _description);// NOLINT(google-explicit-constructor)
-    GroupConfig(const char* _description);// NOLINT(google-explicit-constructor)
+    GroupConfig(std::string description);// NOLINT(google-explicit-constructor)
+    GroupConfig(const char* description);// NOLINT(google-explicit-constructor)
 
-    GroupConfig& setDescription(std::string _description);
+    GroupConfig& setDescription(std::string description);
 };
 
 struct KKTEST_EXPORT TestCaseDefiner {
@@ -56,7 +56,7 @@ KKTEST_EXPORT void setUp(Executable func);
 
 KKTEST_EXPORT void tearDown(Executable func);
 
-KKTEST_EXPORT void fail(const std::string& message = std::string());
+KKTEST_EXPORT void fail(const std::string& message=std::string());
 
 KKTEST_EXPORT void expect(bool expr, const std::string& message=std::string());
 

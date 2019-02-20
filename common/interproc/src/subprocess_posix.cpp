@@ -19,7 +19,7 @@ namespace interproc {
 
 class LinuxSubprocessHandler: public Subprocess {
  public:
-    explicit LinuxSubprocessHandler(pid_t _pid): pid(_pid) {}
+    explicit LinuxSubprocessHandler(pid_t pid): pid(pid) {}
 
     bool isFinished() override {
         if (killed || finished) {

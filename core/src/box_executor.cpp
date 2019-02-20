@@ -20,8 +20,8 @@ enum MessageStatus: uint8_t {
 
 namespace kktest {
 
-BoxedTest::BoxedTest(Test&& _test, WorkerSubprocess* _process):
-        test(move(_test)), process(_process) {}
+BoxedTest::BoxedTest(Test&& test, WorkerSubprocess* process):
+        test(move(test)), process(process) {}
 
 BoxedTest::BoxedTest(BoxedTest&& other) noexcept:
         test(move(other.test)), process(move(other.process)) {}
@@ -34,8 +34,8 @@ BoxedTest& BoxedTest::operator=(BoxedTest&& other) noexcept {
     return *this;
 }
 
-BoxExecutor::BoxExecutor(OnTestFinished onTestFinished, size_t _numBoxes):
-        Executor(move(onTestFinished)), numBoxes(_numBoxes) {}
+BoxExecutor::BoxExecutor(OnTestFinished onTestFinished, size_t numBoxes):
+        Executor(move(onTestFinished)), numBoxes(numBoxes) {}
 
 void BoxExecutor::execute(Test&& test, Executable func) {
     ensureEmptyBoxes(1);
@@ -48,7 +48,7 @@ void BoxExecutor::execute(Test&& test, Executable func) {
 
 void BoxExecutor::runBoxed(GroupPtr group, Executable func, PipeWriter* pipe) {
     try {
-        ExecutedTest::Info info = run(group, func);
+        ExecutedTest::Info info = run(move(group), func);
         pipe->sendMessage(SUCCESS, info.timeTicks, info.passed, info.failure);
     } catch(const ConfigurationError& error) {
         pipe->sendMessage(CONFIGURATION_ERROR, string(error.what()));

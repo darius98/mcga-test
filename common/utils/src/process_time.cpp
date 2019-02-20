@@ -18,8 +18,8 @@ Duration Duration::fromMs(double ms) {
 Duration::Duration() = default;
 Duration::Duration(const Duration& other) = default;
 Duration::Duration(Duration&& other) noexcept = default;
-Duration::Duration(int _nSeconds, long long _nNanoseconds):
-        nSeconds(_nSeconds), nNanoseconds(_nNanoseconds) {
+Duration::Duration(int nSeconds, long long nNanoseconds):
+        nSeconds(nSeconds), nNanoseconds(nNanoseconds) {
     normalize();
 }
 

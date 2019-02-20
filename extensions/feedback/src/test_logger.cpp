@@ -7,7 +7,7 @@ using namespace std;
 namespace kktest {
 namespace feedback {
 
-TestLogger::TestLogger(ostream& _stream): stream(_stream) {}
+TestLogger::TestLogger(ostream& stream): stream(stream) {}
 
 void TestLogger::logTest(const ExecutedTest& test) {
     passedTests += test.isPassed();

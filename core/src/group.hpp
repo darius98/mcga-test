@@ -11,7 +11,7 @@ class Group : private GroupConfig {
  public:
     typedef std::shared_ptr<Group> Ptr;
 
-    Group(GroupConfig&& _config, Ptr _parentGroup, int _index);
+    Group(GroupConfig&& config, Ptr parentGroup, int index);
 
     std::string getDescription() const;
 

@@ -6,8 +6,8 @@ using namespace std;
 
 namespace kktest {
 
-Test::Test(TestConfig&& _config, GroupPtr _group, int _index):
-        TestConfig(move(_config)), group(move(_group)), index(_index) {}
+Test::Test(TestConfig&& config, GroupPtr group, int index):
+        TestConfig(move(config)), group(move(group)), index(index) {}
 
 string Test::getDescription() const {
     return description;
@@ -31,8 +31,8 @@ int Test::getIndex() const {
 
 ExecutedTest::Info::Info(): timeTicks(-1.0), passed(true), failure() {}
 
-ExecutedTest::Info::Info(string&& _failure):
-        timeTicks(-1.0), passed(false), failure(move(_failure)) {}
+ExecutedTest::Info::Info(string&& failure):
+        timeTicks(-1.0), passed(false), failure(move(failure)) {}
 
 ExecutedTest::Info::Info(Info&& other) noexcept:
         timeTicks(other.timeTicks),
@@ -48,10 +48,10 @@ ExecutedTest::Info& ExecutedTest::Info::operator=(Info&& other) noexcept {
     return *this;
 }
 
-void ExecutedTest::Info::fail(const string& _failure) {
+void ExecutedTest::Info::fail(const string& failure) {
     if (passed) {
         passed = false;
-        failure = _failure;
+        this->failure = failure;
     }
 }
 

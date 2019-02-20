@@ -111,7 +111,7 @@ class AndMatcher: public Matcher {
                   "AndMatcher only supports other matchers as template args.");
 
  public:
-    AndMatcher(const M1& _m1, const M2& _m2): m1(_m1), m2(_m2) {}
+    AndMatcher(const M1& m1, const M2& m2): m1(m1), m2(m2) {}
 
     template<class T>
     bool matches(const T& obj) {
@@ -151,7 +151,7 @@ class OrMatcher: public Matcher {
                   "OrMatcher only supports other matchers as template args.");
 
  public:
-    OrMatcher(const M1& _m1, const M2& _m2): m1(_m1), m2(_m2) {}
+    OrMatcher(const M1& m1, const M2& m2): m1(m1), m2(m2) {}
 
     template<class T>
     bool matches(const T& obj) {
@@ -187,7 +187,7 @@ class NotMatcher: public Matcher {
                   "NotMatcher only supports other matchers as template args.");
 
  public:
-    explicit NotMatcher(const M& _matcher): matcher(_matcher) {}
+    explicit NotMatcher(const M& matcher): matcher(matcher) {}
 
     template<class T>
     bool matches(const T& obj) {

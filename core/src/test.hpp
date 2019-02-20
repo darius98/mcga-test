@@ -8,7 +8,7 @@ namespace kktest {
 
 class Test : private TestConfig {
  public:
-    Test(TestConfig&& _config, GroupPtr _group, int _index);
+    Test(TestConfig&& config, GroupPtr group, int index);
 
     Test(Test&& other) noexcept = default;
     Test& operator=(Test&& other) noexcept = default;
@@ -39,13 +39,13 @@ class ExecutedTest : public Test {
         std::string failure;
 
         Info();
-        explicit Info(std::string&& _failure);
+        explicit Info(std::string&& failure);
         Info(Info&& other) noexcept;
         Info& operator=(Info&& other) noexcept;
 
         Info(const Info& other) = delete;
 
-        void fail(const std::string& _failure);
+        void fail(const std::string& failure);
     };
 
     // When we create a test run, we no longer need the test.

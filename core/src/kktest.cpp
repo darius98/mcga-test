@@ -28,7 +28,7 @@ TestConfig& TestConfig::setTimeTicksLimit(double timeTicksLimit) {
 
 GroupConfig::GroupConfig(string description): description(move(description)) {}
 
-GroupConfig::GroupConfig(const char* _description): description(_description) {}
+GroupConfig::GroupConfig(const char* description): description(description) {}
 
 GroupConfig& GroupConfig::setDescription(string description) {
     this->description = move(description);

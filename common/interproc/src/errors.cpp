@@ -5,7 +5,7 @@ using namespace std;
 namespace kktest {
 namespace interproc {
 
-InterprocError::InterprocError(const string& _what): runtime_error(_what) {}
+InterprocError::InterprocError(const string& what): runtime_error(what) {}
 
 }
 }

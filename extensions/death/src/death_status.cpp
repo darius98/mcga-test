@@ -31,8 +31,8 @@ string DeathStatus::getOutput() const {
     return output;
 }
 
-DeathStatus::DeathStatus(int _exitCode, int _signal, string _output):
-        exitCode(_exitCode), signal(_signal), output(move(_output)) {}
+DeathStatus::DeathStatus(int exitCode, int signal, string output):
+        exitCode(exitCode), signal(signal), output(move(output)) {}
 
 ostream& operator<<(ostream& out, const DeathStatus& status) {
     out << "(code=" << status.exitCode << ", signal=" << status.signal << ")";

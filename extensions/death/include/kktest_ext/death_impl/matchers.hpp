@@ -77,9 +77,9 @@ class ExitsWithCodeAndOutputMatcher: public matchers::Matcher {
                   "ExitsWithCodeAndOutputMatcher only supports matchers as "
                   "template arguments.");
  public:
-    ExitsWithCodeAndOutputMatcher(CM _codeMatcher, OM _outputMatcher):
-            codeMatcher(std::move(_codeMatcher)),
-            outputMatcher(std::move(_outputMatcher)) {}
+    ExitsWithCodeAndOutputMatcher(CM codeMatcher, OM outputMatcher):
+            codeMatcher(std::move(codeMatcher)),
+            outputMatcher(std::move(outputMatcher)) {}
 
     bool matches(const std::function<void()>& func) {
         status = checkDeath(func);
@@ -123,8 +123,8 @@ class ExitsWithCodeMatcher: public matchers::Matcher {
                   "ExitsWithCodeMatcher only supports matchers as template "
                   "arguments.");
  public:
-    explicit ExitsWithCodeMatcher(M _codeMatcher):
-            codeMatcher(std::move(_codeMatcher)) {}
+    explicit ExitsWithCodeMatcher(M codeMatcher):
+            codeMatcher(std::move(codeMatcher)) {}
 
     bool matches(const std::function<void()>& func) {
         status = checkDeath(func);
@@ -176,8 +176,8 @@ class ExitsWithOutputMatcher: public matchers::Matcher {
                   "ExitsWithCodeMatcher only supports matchers as template "
                   "arguments.");
  public:
-    explicit ExitsWithOutputMatcher(M _outputMatcher):
-            outputMatcher(std::move(_outputMatcher)) {}
+    explicit ExitsWithOutputMatcher(M outputMatcher):
+            outputMatcher(std::move(outputMatcher)) {}
 
     bool matches(const std::function<void()>& func) {
         status = checkDeath(func);
@@ -300,8 +300,8 @@ class HasExitedWithCodeMatcher: public matchers::Matcher {
                   "HasExitedWithCodeMatcher only supports matchers as template "
                   "arguments.");
  public:
-    explicit HasExitedWithCodeMatcher(M _exitCodeMatcher):
-            exitCodeMatcher(std::move(_exitCodeMatcher)) {}
+    explicit HasExitedWithCodeMatcher(M exitCodeMatcher):
+            exitCodeMatcher(std::move(exitCodeMatcher)) {}
 
     bool matches(const DeathStatus& status) {
         return status.exited() && exitCodeMatcher.matches(status.getExitCode());
@@ -328,8 +328,8 @@ class HasOutputMatcher: public matchers::Matcher {
                   "arguments.");
 
  public:
-    explicit HasOutputMatcher(M _outputMatcher):
-            outputMatcher(std::move(_outputMatcher)) {}
+    explicit HasOutputMatcher(M outputMatcher):
+            outputMatcher(std::move(outputMatcher)) {}
 
     bool matches(const DeathStatus& status) {
         return outputMatcher.matches(status.getOutput());

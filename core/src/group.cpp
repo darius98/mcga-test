@@ -6,10 +6,10 @@ using namespace std;
 
 namespace kktest {
 
-Group::Group(GroupConfig&& _config, Ptr _parentGroup, int _index):
-        GroupConfig(move(_config)),
-        parentGroup(move(_parentGroup)),
-        index(_index) {}
+Group::Group(GroupConfig&& config, Ptr parentGroup, int index):
+        GroupConfig(move(config)),
+        parentGroup(move(parentGroup)),
+        index(index) {}
 
 string Group::getDescription() const {
     return description;

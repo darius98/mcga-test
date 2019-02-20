@@ -33,9 +33,9 @@ detail::IsSubstringMatcher isSubstringOf(const string& s) {
 
 namespace detail {
 
-CharInStringMatcher::CharInStringMatcher(const char* _container,
-                                         const char* _expectation) noexcept:
-    container(_container), expectation(_expectation) {}
+CharInStringMatcher::CharInStringMatcher(const char* container,
+                                         const char* expectation) noexcept:
+    container(container), expectation(expectation) {}
 
 bool CharInStringMatcher::matches(const char& ch) {
     return strchr(container, ch) != nullptr;
@@ -58,8 +58,8 @@ void CharInStringMatcher::describeMismatch(Description* description,
     }
 }
 
-IsSubstringMatcher::IsSubstringMatcher(string _container):
-        container(move(_container)) {}
+IsSubstringMatcher::IsSubstringMatcher(string container):
+        container(move(container)) {}
 
 bool IsSubstringMatcher::matches(const string& object) {
     return container.find(object) != string::npos;

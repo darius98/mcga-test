@@ -8,8 +8,8 @@ using namespace std;
 
 namespace kktest {
 
-Executor::Executor(OnTestFinished _onTestFinished):
-        onTestFinished(move(_onTestFinished)) {}
+Executor::Executor(OnTestFinished onTestFinished):
+        onTestFinished(move(onTestFinished)) {}
 
 Executor::~Executor() = default;
 

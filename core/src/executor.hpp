@@ -12,7 +12,7 @@ class Executor {
 
     static double getTimeTickLengthMs();
 
-    explicit Executor(OnTestFinished _onTestFinished);
+    explicit Executor(OnTestFinished onTestFinished);
 
     virtual ~Executor();
 

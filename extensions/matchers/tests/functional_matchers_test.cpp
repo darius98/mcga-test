@@ -10,7 +10,7 @@ class BasicClass {
  public:
     int x;
 
-    explicit BasicClass(int _x): x(_x) {}
+    explicit BasicClass(int x): x(x) {}
 
     int addWith(int y) { return x + y; }
 

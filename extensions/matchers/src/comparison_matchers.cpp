@@ -80,8 +80,8 @@ void EqualityMatcher<string>::describeMismatch(Description* description,
     description->appendRawString("'\n\t" + string(numSpaces, ' ') + "^");
 }
 
-NonEqualityMatcher<string>::NonEqualityMatcher(string _target):
-        target(move(_target)) {}
+NonEqualityMatcher<string>::NonEqualityMatcher(string target):
+        target(move(target)) {}
 
 bool NonEqualityMatcher<string>::matches(const string& obj) {
     return obj != target;
@@ -100,8 +100,8 @@ void NonEqualityMatcher<string>::describeMismatch(Description* description,
     (*description) << "'" << target << "'";
 }
 
-IsLessThanMatcher<string>::IsLessThanMatcher(string _target):
-        target(move(_target)) {}
+IsLessThanMatcher<string>::IsLessThanMatcher(string target):
+        target(move(target)) {}
 
 bool IsLessThanMatcher<string>::matches(const string& obj) {
     return obj < target;
@@ -120,8 +120,8 @@ void IsLessThanMatcher<string>::describeMismatch(Description* description,
     (*description) << ">= '" << target << "'";
 }
 
-IsLessThanEqualMatcher<string>::IsLessThanEqualMatcher(string _target):
-        target(move(_target)) {}
+IsLessThanEqualMatcher<string>::IsLessThanEqualMatcher(string target):
+        target(move(target)) {}
 
 bool IsLessThanEqualMatcher<string>::matches(const string& obj) {
     return obj <= target;
@@ -140,8 +140,8 @@ void IsLessThanEqualMatcher<string>::describeMismatch(Description* description,
     (*description) << "> '" << target << "'";
 }
 
-IsGreaterThanMatcher<string>::IsGreaterThanMatcher(string _target):
-        target(move(_target)) {}
+IsGreaterThanMatcher<string>::IsGreaterThanMatcher(string target):
+        target(move(target)) {}
 
 bool IsGreaterThanMatcher<string>::matches(const string& obj) {
     return obj > target;
@@ -160,8 +160,8 @@ void IsGreaterThanMatcher<string>::describeMismatch(Description* description,
     (*description) << "<= '" << target << "'";
 }
 
-IsGreaterThanEqualMatcher<string>::IsGreaterThanEqualMatcher(string _target):
-        target(move(_target)) {}
+IsGreaterThanEqualMatcher<string>::IsGreaterThanEqualMatcher(string target):
+        target(move(target)) {}
 
 bool IsGreaterThanEqualMatcher<string>::matches(const string& obj) {
     return obj >= target;

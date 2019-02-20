@@ -52,7 +52,7 @@ class Message {
     }
 
  private:
-    explicit Message(void* _payload) noexcept;
+    explicit Message(void* payload) noexcept;
 
     std::size_t getSize() const;
 

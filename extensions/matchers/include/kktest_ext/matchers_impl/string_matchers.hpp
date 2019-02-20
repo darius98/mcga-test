@@ -31,8 +31,8 @@ namespace detail {
 
 class KKTEST_EXPORT CharInStringMatcher: public Matcher {
  public:
-    explicit CharInStringMatcher(const char* _container,
-                                 const char* _expectation = nullptr) noexcept;
+    explicit CharInStringMatcher(const char* container,
+                                 const char* expectation = nullptr) noexcept;
 
     bool matches(const char& ch);
 
@@ -47,7 +47,7 @@ class KKTEST_EXPORT CharInStringMatcher: public Matcher {
 
 class KKTEST_EXPORT IsSubstringMatcher: public Matcher {
  public:
-    explicit IsSubstringMatcher(std::string _container);
+    explicit IsSubstringMatcher(std::string container);
 
     bool matches(const std::string& object);
 

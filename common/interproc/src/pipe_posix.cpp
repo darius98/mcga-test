@@ -17,8 +17,8 @@ namespace interproc {
 
 class LinuxPipeReader: public PipeReader {
  public:
-    explicit LinuxPipeReader(const int& _inputFD):
-        inputFD(_inputFD),
+    explicit LinuxPipeReader(const int& inputFD):
+        inputFD(inputFD),
         buffer(malloc(128)),
         bufferReadHead(0),
         bufferSize(0),
@@ -128,8 +128,7 @@ class LinuxPipeReader: public PipeReader {
 
 class LinuxPipeWriter: public PipeWriter {
  public:
-    explicit LinuxPipeWriter(const int& _outputFD):
-        outputFD(_outputFD) {}
+    explicit LinuxPipeWriter(const int& outputFD): outputFD(outputFD) {}
 
     ~LinuxPipeWriter() override {
         close(outputFD);

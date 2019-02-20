@@ -26,7 +26,7 @@ class KKTEST_EXPORT DeathStatus {
     std::string getOutput() const;
 
  private:
-    DeathStatus(int _exitCode, int _signal, std::string _output);
+    DeathStatus(int exitCode, int signal, std::string output);
 
     int exitCode;
     int signal;

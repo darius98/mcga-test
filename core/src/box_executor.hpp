@@ -12,7 +12,7 @@ struct BoxedTest {
     Test test;
     std::unique_ptr<interproc::WorkerSubprocess> process;
 
-    BoxedTest(Test&& _test, interproc::WorkerSubprocess* _process);
+    BoxedTest(Test&& test, interproc::WorkerSubprocess* process);
     BoxedTest(BoxedTest&& other) noexcept;
 
     BoxedTest& operator=(BoxedTest&& other) noexcept;
@@ -20,7 +20,7 @@ struct BoxedTest {
 
 class BoxExecutor: public Executor {
  public:
-    BoxExecutor(OnTestFinished onTestFinished, std::size_t _numBoxes);
+    BoxExecutor(OnTestFinished onTestFinished, std::size_t numBoxes);
 
     void finalize() override;
 
