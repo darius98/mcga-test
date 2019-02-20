@@ -7,14 +7,7 @@
 
 namespace kktest {
 
-struct InternalArgs {
-    cppli::Flag smoothFlag;
-    cppli::NumericArgument<std::size_t> maxParallelTestsArgument;
-};
-
-InternalArgs registerInternalFlags(cppli::Parser& parser, std::string version);
-
-int main(const std::vector<Extension*>& extensions, InternalArgs internalFlags);
+int main(int argc, char** argv, const std::vector<Extension*>& extensions);
 
 }
 
