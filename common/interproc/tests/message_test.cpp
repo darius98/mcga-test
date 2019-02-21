@@ -10,7 +10,7 @@ using namespace kktest::matchers;
 using namespace kktest::interproc;
 using namespace std;
 
-void kkTestCase(InterprocMessage) {
+void interprocMessageTest() {
     test("Building & reading a message from 3 ints", [] {
         auto message = Message::build(1, 2, 3);
         int x, y, z;

@@ -2,7 +2,6 @@
 
 #include "core/include/kktest.hpp"
 #include "core/src/box_executor.hpp"
-#include "core/src/test_case_registry.hpp"
 
 using namespace std;
 using namespace std::placeholders;
@@ -29,13 +28,11 @@ Driver* Driver::init(const Hooks& hooks, bool smooth, size_t numBoxes) {
 
 int Driver::clean() {
     hooks.runHooks<Hooks::BEFORE_DESTROY>();
-    TestCaseRegistry::clean();
     return failedAnyNonOptionalTest ? 1 : 0;
 }
 
 void Driver::forceDestroy(const ConfigurationError& error) {
     hooks.runHooks<Hooks::BEFORE_FORCE_DESTROY>(error);
-    TestCaseRegistry::clean();
 }
 
 void Driver::beforeTestCase(const string& name) {

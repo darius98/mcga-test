@@ -5,7 +5,7 @@
 using namespace kktest;
 using namespace kktest::matchers;
 
-void kkTestCase(CompositeMatchers) {
+void compositeMatchersTest() {
     group("both", [] {
         test("both(fitting value, fitting value)", [&] {
             expect(both(3, 3).matches(3));

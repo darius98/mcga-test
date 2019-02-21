@@ -3,6 +3,7 @@
 
 #include <functional>
 #include <string>
+#include <vector>
 
 #define KKTEST_VERSION "1.0.0"
 
@@ -38,14 +39,21 @@ struct KKTEST_EXPORT GroupConfig {
     std::string description = "-";
 
     GroupConfig() = default;
-    GroupConfig(std::string description);// NOLINT(google-explicit-constructor)
-    GroupConfig(const char* description);// NOLINT(google-explicit-constructor)
+    GroupConfig(std::string description); // NOLINT(google-explicit-constructor)
+    GroupConfig(const char* description); // NOLINT(google-explicit-constructor)
 
     GroupConfig& setDescription(std::string description);
 };
 
-struct KKTEST_EXPORT TestCaseDefiner {
-    TestCaseDefiner(void (*testCase)(), const char* name);
+struct KKTEST_EXPORT TestCase {
+    std::function<void()> exec;
+    std::string name;
+
+    TestCase(std::function<void()> exec); // NOLINT(google-explicit-constructor)
+    TestCase(void (*exec)()); // NOLINT(google-explicit-constructor)
+    TestCase(std::function<void()> exec, std::string name);
+
+    virtual void run();
 };
 
 KKTEST_EXPORT void test(TestConfig config, Executable func);
@@ -60,16 +68,8 @@ KKTEST_EXPORT void fail(const std::string& message=std::string());
 
 KKTEST_EXPORT void expect(bool expr, const std::string& message=std::string());
 
-}
+KKTEST_EXPORT int run(int argc, char **argv, std::vector<TestCase>&& tests);
 
-#define KK_TEST_CASE_DEF_AUX_1_(x, y) x##_##y
-#define KK_TEST_CASE_DEF_AUX_2_(x, y) KK_TEST_CASE_DEF_AUX_1_(x, y)
-#define kkTestCase(NAME)                                                       \
-            KK_TEST_CASE_DEF_AUX_2_(kkTestCaseInstance, NAME)();               \
-            kktest::TestCaseDefiner                                            \
-                    KK_TEST_CASE_DEF_AUX_2_(kkTestCaseDefiner, NAME)(          \
-                            KK_TEST_CASE_DEF_AUX_2_(kkTestCaseInstance, NAME), \
-                            #NAME);                                            \
-            void KK_TEST_CASE_DEF_AUX_2_(kkTestCaseInstance, NAME)()
+}
 
 #endif

@@ -14,7 +14,7 @@ class Executor {
 
     explicit Executor(OnTestFinished onTestFinished);
 
-    virtual ~Executor();
+    virtual ~Executor() = default;
 
     void checkIsInactive(const std::string& methodName) const;
 

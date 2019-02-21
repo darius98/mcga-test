@@ -46,7 +46,7 @@ void simpleFunctionThrow5() {
 }
 
 
-void kkTestCase(FunctionalMatchers) {
+void functionalMatchersTest() {
     group("Lambdas", [] {
         test("throws matcher matches lambda throwing exception", [] {
             expect(throws.matches([] { throw runtime_error("Some error."); }));

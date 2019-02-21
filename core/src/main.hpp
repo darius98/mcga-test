@@ -7,7 +7,9 @@
 
 namespace kktest {
 
-int main(int argc, char** argv, const std::vector<Extension*>& extensions);
+int main(int argc, char** argv,
+         std::vector<TestCase>&& tests,
+         const std::vector<Extension*>& extensions);
 
 }
 

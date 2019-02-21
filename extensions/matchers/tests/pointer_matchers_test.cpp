@@ -14,7 +14,7 @@ BasicClass globalClass;
 BasicStruct globalStruct;
 double globalDouble;
 
-void kkTestCase(PointerMatchers) {
+void pointerMatchersTest() {
     group("Null pointers", [] {
         int* intNullPtr = nullptr;
         char* charNullPtr = nullptr;

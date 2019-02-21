@@ -8,7 +8,7 @@ using namespace kktest::matchers;
 using namespace kktest::interproc;
 using namespace std;
 
-void kkTestCase(InterprocPipe) {
+void interprocPipeTest() {
     PipeReader* reader = nullptr;
     PipeWriter* writer = nullptr;
 

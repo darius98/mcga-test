@@ -6,7 +6,7 @@ using namespace kktest;
 using namespace kktest::matchers;
 using namespace std;
 
-void kkTestCase(ComparisonMatchers) {
+void comparisonMatchersTest() {
     group("Equality", [&] {
         test("isEqualTo matches equal values", [&] {
             expect(isEqualTo(3).matches(3));

@@ -13,6 +13,7 @@ target_link_libraries(kktest_extension_death
 install(DIRECTORY include DESTINATION .)
 
 add_kktest(kktest_extension_death_test
-        tests/check_death_test.cpp
-        tests/matchers_test.cpp
+    tests/main.cpp
+    tests/check_death_test.cpp
+    tests/matchers_test.cpp
 )

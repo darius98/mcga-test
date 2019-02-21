@@ -1,7 +1,6 @@
 #include "core/include/kktest.hpp"
 
 #include "core/src/driver.hpp"
-#include "core/src/test_case_registry.hpp"
 
 using namespace std;
 
@@ -35,8 +34,15 @@ GroupConfig& GroupConfig::setDescription(string description) {
     return *this;
 }
 
-TestCaseDefiner::TestCaseDefiner(void (*testCase)(), const char* name) {
-    TestCaseRegistry::add(testCase, name);
+TestCase::TestCase(function<void()> exec): exec(move(exec)) {}
+
+TestCase::TestCase(void (*exec)()): exec(exec), name("") {}
+
+TestCase::TestCase(function<void()> exec, std::string name):
+        exec(move(exec)), name(move(name)) {}
+
+void TestCase::run() {
+    exec();
 }
 
 void test(TestConfig config, Executable func) {

@@ -10,7 +10,7 @@ using namespace kktest::matchers;
 using namespace kktest::death;
 using namespace std;
 
-void kkTestCase(DeathExtension_matchers) {
+void matchersTest() {
     auto funcExit0 = [] {
         exit(0);
     };

@@ -1,8 +1,6 @@
 #ifndef KKTEST_CORE_SRC_BOX_EXECUTOR_HPP_
 #define KKTEST_CORE_SRC_BOX_EXECUTOR_HPP_
 
-#include <vector>
-
 #include "common/interproc/src/worker_subprocess.hpp"
 #include "core/src/executor.hpp"
 

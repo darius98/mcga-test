@@ -5,7 +5,7 @@
 using namespace kktest;
 using namespace kktest::matchers;
 
-void kkTestCase(TruthMatchers) {
+void truthMatchersTest() {
     test("isTrue matcher matches true", [] {
         expect(isTrue.matches(true));
     });

@@ -11,8 +11,6 @@ namespace kktest {
 Executor::Executor(OnTestFinished onTestFinished):
         onTestFinished(move(onTestFinished)) {}
 
-Executor::~Executor() = default;
-
 double Executor::getTimeTickLengthMs() {
     static double timeTickLengthMs = -1.0;
     if (timeTickLengthMs == -1.0) {
@@ -39,7 +37,6 @@ void Executor::execute(Test&& test, Executable func) {
 ExecutedTest::Info Executor::run(GroupPtr group, Executable func) {
     state = ACTIVE;
     ExecutedTest::Info info;
-    info.passed = true;
     ProcessTimer t;
     runSetUps(group, &info);
     runTest(func, &info);

@@ -10,5 +10,6 @@ endif ()
 add_library(common_utils ${common_utils_src})
 
 add_kktest(common_utils_test
+    tests/main.cpp
     tests/process_time_test.cpp
 )

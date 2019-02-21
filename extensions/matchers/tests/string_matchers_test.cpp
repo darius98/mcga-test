@@ -8,7 +8,7 @@ using namespace kktest;
 using namespace kktest::matchers;
 using namespace std;
 
-void kkTestCase(StringMatchers) {
+void stringMatchersTest() {
     group("Specific charset matchers", [] {
         test("isLetter matches only letters", [] {
             for (unsigned char i = 1; i <= 127; ++i) {

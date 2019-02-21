@@ -5,7 +5,7 @@
 using namespace kktest;
 using namespace kktest::matchers;
 
-void kkTestCase(NumericMatchers) {
+void numericMatchersTest() {
     group("isPositive", [&] {
         test("Matches positive numbers", [&] {
             expect(isPositive.matches(3));
