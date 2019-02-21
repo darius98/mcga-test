@@ -27,9 +27,21 @@ class Group : private GroupConfig {
 
     void tearDown() const;
 
+    void addStartedTest();
+
+    void setStartedAllTests();
+
+    void addFinishedTest();
+
+    bool finishedAllTests() const;
+
  private:
     Ptr parentGroup;
     int index;
+
+    int testsStarted = 0;
+    bool allTestsStarted = false;
+    int testsFinished = 0;
 
     std::function<void()> setUpFunc;
     std::function<void()> tearDownFunc;

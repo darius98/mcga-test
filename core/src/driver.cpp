@@ -77,7 +77,10 @@ void Driver::addGroup(GroupConfig&& config, Executable func) {
             "Non-exception thrown in group \"" + group->getDescription() + "\""
             ".");
     }
-    markAllTestsStarted(group);
+    group->setStartedAllTests();
+    if (group->finishedAllTests()) {
+        afterGroup(group);
+    }
     groupStack.pop_back();
 }
 
@@ -85,7 +88,7 @@ void Driver::addTest(TestConfig&& config, Executable func) {
     executor->checkIsInactive("test");
     GroupPtr parentGroup = groupStack.back();
     Test test(move(config), parentGroup, ++ currentTestIndex);
-    markTestStarted(parentGroup);
+    parentGroup->addStartedTest();
     beforeTest(test);
     executor->execute(move(test), func);
 }
@@ -107,7 +110,14 @@ void Driver::beforeTest(const Test& test) {
 void Driver::afterTest(const ExecutedTest& test) {
     failedAnyNonOptionalTest |= (!test.isOptional() && !test.isPassed());
     hooks.runHooks<Hooks::AFTER_TEST>(test);
-    markTestFinished(test.getGroup());
+    GroupPtr parentGroup = test.getGroup();
+    parentGroup->addFinishedTest();
+    while (parentGroup != nullptr) {
+        if (parentGroup->finishedAllTests()) {
+            afterGroup(parentGroup);
+        }
+        parentGroup = parentGroup->getParentGroup();
+    }
 }
 
 void Driver::beforeGroup(GroupPtr group) {
@@ -116,33 +126,6 @@ void Driver::beforeGroup(GroupPtr group) {
 
 void Driver::afterGroup(GroupPtr group) {
     hooks.runHooks<Hooks::AFTER_GROUP>(group);
-    testsInExecution.erase(group);
-    groupsPendingFinish.erase(group);
-}
-
-void Driver::markTestStarted(GroupPtr group) {
-    while (group != nullptr) {
-        testsInExecution[group] += 1;
-        group = group->getParentGroup();
-    }
-}
-
-void Driver::markAllTestsStarted(GroupPtr group) {
-    groupsPendingFinish.insert(group);
-    if (groupsPendingFinish.count(group) && testsInExecution[group] == 0) {
-        afterGroup(group);
-    }
-}
-
-void Driver::markTestFinished(GroupPtr group) {
-    while (group != nullptr) {
-        testsInExecution[group] -= 1;
-        GroupPtr parentGroup = group->getParentGroup();
-        if (groupsPendingFinish.count(group) && testsInExecution[group] == 0) {
-            afterGroup(group);
-        }
-        group = parentGroup;
-    }
 }
 
 }

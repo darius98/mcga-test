@@ -15,6 +15,14 @@ string Group::getDescription() const {
     return description;
 }
 
+int Group::getIndex() const {
+    return index;
+}
+
+GroupPtr Group::getParentGroup() const {
+    return parentGroup;
+}
+
 void Group::addSetUp(Executable func) {
     if (setUpFunc) {
         throw ConfigurationError(
@@ -43,12 +51,26 @@ void Group::tearDown() const {
     }
 }
 
-int Group::getIndex() const {
-    return index;
+void Group::addStartedTest() {
+    testsStarted += 1;
+    if (parentGroup != nullptr) {
+        parentGroup->addStartedTest();
+    }
 }
 
-GroupPtr Group::getParentGroup() const {
-    return parentGroup;
+void Group::setStartedAllTests() {
+    allTestsStarted = true;
+}
+
+void Group::addFinishedTest() {
+    testsFinished += 1;
+    if (parentGroup != nullptr) {
+        parentGroup->addFinishedTest();
+    }
+}
+
+bool Group::finishedAllTests() const {
+    return allTestsStarted && testsStarted == testsFinished;
 }
 
 }

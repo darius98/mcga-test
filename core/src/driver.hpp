@@ -1,21 +1,16 @@
 #ifndef KKTEST_CORE_SRC_DRIVER_HPP_
 #define KKTEST_CORE_SRC_DRIVER_HPP_
 
-#include <functional>
-#include <map>
-#include <set>
-#include <string>
-#include <vector>
-
 #include "core/src/errors.hpp"
 #include "core/src/executor.hpp"
-#include "core/src/group.hpp"
 #include "core/src/hooks.hpp"
-#include "core/src/test.hpp"
 
 namespace kktest {
 
 class Driver {
+ private:
+    static Driver* instance;
+
  public:
     static Driver* getInstance();
 
@@ -45,16 +40,7 @@ class Driver {
     void beforeGroup(GroupPtr group);
     void afterGroup(GroupPtr group);
 
-    void markTestStarted(GroupPtr group);
-    void markAllTestsStarted(GroupPtr group);
-    void markTestFinished(GroupPtr test);
-
-    static Driver* instance;
-
     Hooks hooks;
-
-    std::map<GroupPtr, int> testsInExecution;
-    std::set<GroupPtr> groupsPendingFinish;
 
     std::unique_ptr<Executor> executor;
     std::vector<GroupPtr> groupStack = {};
