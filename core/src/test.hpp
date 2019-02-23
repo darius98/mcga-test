@@ -57,6 +57,8 @@ class ExecutedTest : public Test {
 
     std::string getFailure() const;
 
+    double getTimeTicks() const;
+
  private:
     Info info;
 };

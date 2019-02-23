@@ -3,7 +3,7 @@
 #include <csignal>
 
 #include "common/interproc/src/subprocess.hpp"
-#include "common/utils/src/process_time.hpp"
+#include "common/utils/src/time.hpp"
 
 using namespace kktest;
 using namespace kktest::interproc;

@@ -69,4 +69,8 @@ string ExecutedTest::getFailure() const {
     return info.failure;
 }
 
+double ExecutedTest::getTimeTicks() const {
+    return info.timeTicks;
+}
+
 }

@@ -3,7 +3,7 @@
 
 #include "common/interproc/src/subprocess.hpp"
 #include "common/interproc/src/pipe.hpp"
-#include "common/utils/src/process_time.hpp"
+#include "common/utils/src/time.hpp"
 
 namespace kktest {
 namespace interproc {

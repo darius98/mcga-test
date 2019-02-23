@@ -1,4 +1,4 @@
-#include "common/utils/src/process_time.hpp"
+#include "common/utils/src/time.hpp"
 
 #include <cmath>
 
@@ -69,13 +69,6 @@ void Duration::normalize() {
     }
 }
 
-ProcessStopwatch::ProcessStopwatch(Duration duration):
-        endTime(processNow() + duration) {}
-
-bool ProcessStopwatch::isElapsed() const {
-    return endTime < processNow();
-}
-
 RealTimeStopwatch::RealTimeStopwatch(Duration duration):
         endTime(realNow() + duration) {}
 
@@ -83,16 +76,16 @@ bool RealTimeStopwatch::isElapsed() const {
     return endTime < realNow();
 }
 
-ProcessTimer::ProcessTimer(): startTime(processNow()) {}
+RealTimeTimer::RealTimeTimer(): startTime(realNow()) {}
 
-Duration ProcessTimer::elapsed() const {
-    return processNow() - startTime;
+Duration RealTimeTimer::elapsed() const {
+    return realNow() - startTime;
 }
 
 void spinForDuration(const Duration& duration) {
-    auto end = processNow() + duration;
+    auto end = realNow() + duration;
     volatile int spins = 0;
-    while (processNow() < end) {
+    while (realNow() < end) {
         spins += 1;
     }
 }

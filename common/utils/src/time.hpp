@@ -36,29 +36,18 @@ class Duration {
     long long nNanoseconds = 0;
 };
 
-typedef Duration ProcessTimestamp;
+typedef Duration Timestamp;
 
-ProcessTimestamp processNow();
-ProcessTimestamp realNow();
+Timestamp realNow();
 
-class ProcessStopwatch {
+class RealTimeTimer {
  public:
-    explicit ProcessStopwatch(Duration duration);
-
-    bool isElapsed() const;
-
- private:
-    ProcessTimestamp endTime;
-};
-
-class ProcessTimer {
- public:
-    ProcessTimer();
+    RealTimeTimer();
 
     Duration elapsed() const;
 
  private:
-    ProcessTimestamp startTime;
+    Timestamp startTime;
 };
 
 class RealTimeStopwatch {
@@ -68,7 +57,7 @@ class RealTimeStopwatch {
     bool isElapsed() const;
 
  private:
-    ProcessTimestamp endTime;
+    Timestamp endTime;
 };
 
 void sleepForDuration(const Duration& duration);

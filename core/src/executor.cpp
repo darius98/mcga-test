@@ -1,6 +1,6 @@
 #include "core/src/executor.hpp"
 
-#include "common/utils/src/process_time.hpp"
+#include "common/utils/src/time.hpp"
 #include "core/src/errors.hpp"
 
 using namespace kktest::utils;
@@ -37,7 +37,7 @@ void Executor::execute(Test&& test, Executable func) {
 ExecutedTest::Info Executor::run(GroupPtr group, Executable func) {
     state = ACTIVE;
     ExecutedTest::Info info;
-    ProcessTimer t;
+    RealTimeTimer t;
     runSetUps(group, &info);
     runTest(func, &info);
     runTearDowns(group, &info);

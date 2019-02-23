@@ -29,6 +29,7 @@ class TestLogger {
 
     std::ostream& stream;
 
+    double totalTimeTicks = 0;
     int passedTests = 0;
     int failedTests = 0;
     int failedOptionalTests = 0;

@@ -1,7 +1,7 @@
 #include <kktest.hpp>
 #include <kktest_ext/matchers.hpp>
 
-#include "common/utils/src/process_time.hpp"
+#include "common/utils/src/time.hpp"
 
 using namespace kktest;
 using namespace kktest::matchers;
@@ -140,94 +140,6 @@ void utilsTimeTest() {
                 expect(c.totalNs(), isEqualTo(2000000400));
                 expect(c, isEqualTo(Duration(2, 400)));
             });
-        });
-    });
-
-    group("ProcessStopwatch::Starting a stopwatch with 50ms", [] {
-        ProcessStopwatch* watch = nullptr;
-
-        setUp([&] {
-            watch = new ProcessStopwatch(Duration::fromMs(50));
-        });
-
-        tearDown([&] {
-            delete watch;
-            watch = nullptr;
-        });
-
-        test("isElapsed() returns false when called immediately", [&] {
-            expect(watch->isElapsed(), isFalse);
-            expect(watch->isElapsed(), isFalse);
-            expect(watch->isElapsed(), isFalse);
-        });
-
-        test("isElapsed() returns false when called after 30ms", [&] {
-            spinForDuration(Duration::fromMs(30));
-            expect(watch->isElapsed(), isFalse);
-            expect(watch->isElapsed(), isFalse);
-            expect(watch->isElapsed(), isFalse);
-        });
-
-        test("isElapsed() returns true when called after 51ms", [&] {
-            spinForDuration(Duration::fromMs(51));
-            expect(watch->isElapsed(), isTrue);
-            expect(watch->isElapsed(), isTrue);
-            expect(watch->isElapsed(), isTrue);
-        });
-
-        test("isElapsed() returns true when called after 70ms", [&] {
-            spinForDuration(Duration::fromMs(70));
-            expect(watch->isElapsed(), isTrue);
-            expect(watch->isElapsed(), isTrue);
-            expect(watch->isElapsed(), isTrue);
-        });
-    });
-
-    group("ProcessTimer", [] {
-        test("Calling getMsElapsed() immediately returns almost 0", [] {
-            ProcessTimer t;
-            expect(1.0 * t.elapsed().totalNs() / Duration::kMilliToNano,
-                   isAlmostEqualTo(0, 0.1));
-            expect(1.0 * t.elapsed().totalNs() / Duration::kMilliToNano,
-                   isAlmostEqualTo(0, 0.1));
-            expect(1.0 * t.elapsed().totalNs() / Duration::kMilliToNano,
-                   isAlmostEqualTo(0, 0.1));
-        });
-
-        test("Calling getMsElapsed() after 20ms returns around 20", [] {
-            ProcessTimer t;
-            spinForDuration(Duration::fromMs(20));
-            expect(1.0 * t.elapsed().totalNs() / Duration::kMilliToNano,
-                   isAlmostEqualTo(20, 0.1));
-            expect(1.0 * t.elapsed().totalNs() / Duration::kMilliToNano,
-                   isAlmostEqualTo(20, 0.1));
-            expect(1.0 * t.elapsed().totalNs() / Duration::kMilliToNano,
-                   isAlmostEqualTo(20, 0.1));
-        });
-
-        test("Calling getMsElapsed() several times returns correctly", [] {
-            ProcessTimer t;
-            spinForDuration(Duration::fromMs(20));
-            expect(1.0 * t.elapsed().totalNs() / Duration::kMilliToNano,
-                   isAlmostEqualTo(20, 0.1));
-            expect(1.0 * t.elapsed().totalNs() / Duration::kMilliToNano,
-                   isAlmostEqualTo(20, 0.1));
-            expect(1.0 * t.elapsed().totalNs() / Duration::kMilliToNano,
-                   isAlmostEqualTo(20, 0.1));
-            spinForDuration(Duration::fromMs(20));
-            expect(1.0 * t.elapsed().totalNs() / Duration::kMilliToNano,
-                   isAlmostEqualTo(40, 0.1));
-            expect(1.0 * t.elapsed().totalNs() / Duration::kMilliToNano,
-                   isAlmostEqualTo(40, 0.1));
-            expect(1.0 * t.elapsed().totalNs() / Duration::kMilliToNano,
-                   isAlmostEqualTo(40, 0.1));
-            spinForDuration(Duration::fromMs(20));
-            expect(1.0 * t.elapsed().totalNs() / Duration::kMilliToNano,
-                   isAlmostEqualTo(60, 0.1));
-            expect(1.0 * t.elapsed().totalNs() / Duration::kMilliToNano,
-                   isAlmostEqualTo(60, 0.1));
-            expect(1.0 * t.elapsed().totalNs() / Duration::kMilliToNano,
-                   isAlmostEqualTo(60, 0.1));
         });
     });
 }

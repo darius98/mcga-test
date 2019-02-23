@@ -1,6 +1,10 @@
 #include "extensions/feedback/src/test_logger.hpp"
 
+#include <iomanip>
+
 #include <termcolor/termcolor.hpp>
+
+#include "core/src/executor.hpp"
 
 using namespace std;
 
@@ -12,6 +16,7 @@ TestLogger::TestLogger(ostream& stream): stream(stream) {}
 void TestLogger::logTest(const ExecutedTest& test) {
     passedTests += test.isPassed();
     failedTests += !test.isPassed();
+    totalTimeTicks += test.getTimeTicks();
 
     failedOptionalTests += (!test.isPassed() && test.isOptional());
     printTestMessage(test);
@@ -37,6 +42,13 @@ void TestLogger::logFinalInformation() {
                << " optional)";
     }
     stream << "\n";
+    stream << "Total testing time: "
+           << fixed
+           << setprecision(3)
+           << totalTimeTicks
+           << " ticks ("
+           << totalTimeTicks * Executor::getTimeTickLengthMs()
+           << " ms)\n";
 }
 
 void TestLogger::logFatalError(const string& errorMessage) {
@@ -69,10 +81,15 @@ void TestLogger::printTestMessage(const ExecutedTest& test) {
     }
     stream << "] ";
     string groupDescription = getRecursiveGroupDescription(test.getGroup());
-    stream << termcolor::grey
-           << groupDescription
-           << termcolor::reset
-           << test.getDescription();
+    stream << groupDescription
+           << test.getDescription()
+           << " - "
+           << fixed
+           << setprecision(3)
+           << test.getTimeTicks()
+           << " ticks ("
+           << test.getTimeTicks() * Executor::getTimeTickLengthMs()
+           << " ms)";
     if (!test.isPassed()) {
         stream << "\n\t";
         // TODO(darius98): This should be somewhere else (in utils maybe?)

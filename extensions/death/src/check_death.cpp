@@ -1,7 +1,7 @@
 #include "extensions/death/include/kktest_ext/death_impl/check_death.hpp"
 
 #include "common/interproc/src/worker_subprocess.hpp"
-#include "common/utils/src/process_time.hpp"
+#include "common/utils/src/time.hpp"
 #include "core/src/executor.hpp"
 
 using namespace kktest::interproc;

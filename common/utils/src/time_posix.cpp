@@ -1,4 +1,4 @@
-#include "common/utils/src/process_time.hpp"
+#include "common/utils/src/time.hpp"
 
 #include <ctime>
 
@@ -7,13 +7,7 @@ using namespace std;
 namespace kktest {
 namespace utils {
 
-ProcessTimestamp processNow() {
-    timespec now{};
-    clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &now);
-    return {static_cast<int>(now.tv_sec), now.tv_nsec};
-}
-
-ProcessTimestamp realNow() {
+Timestamp realNow() {
     timespec now{};
     clock_gettime(CLOCK_REALTIME, &now);
     return {static_cast<int>(now.tv_sec), now.tv_nsec};
