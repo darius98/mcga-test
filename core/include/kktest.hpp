@@ -21,17 +21,60 @@ namespace kktest {
 
 typedef const std::function<void()>& Executable;
 
+/** Structure defining the configuration for a test.
+ *
+ * Pass an instance of this class to the test() function. */
 struct KKTEST_EXPORT TestConfig {
+    /** Description of the test.
+     *
+     * A test should provide a concise, yet clear and explicit description,
+     * both for future maintainers of the test and user interfaces of this
+     * library. */
     std::string description = "-";
+
+    /** Whether this test is optional.
+     *
+     * If only tests that have this flag marked as `true` fail during a test
+     * run, the test run will still exit with code `0`, meaning a successful
+     * finish. User interfaces can provide extra feedback based on this flag,
+     * like marking a failed optional test in yellow instead of red (for
+     * example). */
     bool optional = false;
+
+    /** The time limit (in a canonical unit of `ticks`) of this test.
+     *
+     * The time `tick` is a unit introduced to make tests more _portable_. If
+     * the time limits and measurements were in, say, seconds, running the same
+     * test on different hardware might have different results, making the test
+     * _flaky_. The time tick is calculated to be approximately one second on a
+     * 3.0GHz processor, yet this may vary based on hardware. The library
+     * provides an option of displaying the time tick to absolute time ratio
+     * through the getTimeTickLengthMs() function. User interfaces of this
+     * library should provide the time of execution of a test both in ticks and
+     * in a standard unit of time. */
     double timeTicksLimit = 1.0;
 
+    /** Default constructor. */
     TestConfig() = default;
+
+    /** Implicit constructor from a description string.
+     *
+     * This constructor is provided for easier use of default values for
+     * #optional and #timeTicksLimit, which should be used in most cases. It is
+     * implicit by design, to allow an inline string call to test(). */
     TestConfig(std::string description); // NOLINT(google-explicit-constructor)
+
+    /** Implicit constructor from a description C-style string (see
+     * TestConfig(std::string)). */
     TestConfig(const char* description); // NOLINT(google-explicit-constructor)
 
+    /** Set the #description of the test. */
     TestConfig& setDescription(std::string description);
+
+    /** Set the #optional flag of the test. */
     TestConfig& setOptional(bool optional);
+
+    /** Set the #timeTicksLimit of the test. */
     TestConfig& setTimeTicksLimit(double timeTicksLimit);
 };
 
