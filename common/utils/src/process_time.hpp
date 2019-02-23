@@ -39,6 +39,7 @@ class Duration {
 typedef Duration ProcessTimestamp;
 
 ProcessTimestamp processNow();
+ProcessTimestamp realNow();
 
 class ProcessStopwatch {
  public:
@@ -58,6 +59,16 @@ class ProcessTimer {
 
  private:
     ProcessTimestamp startTime;
+};
+
+class RealTimeStopwatch {
+ public:
+    explicit RealTimeStopwatch(Duration duration);
+
+    bool isElapsed() const;
+
+ private:
+    ProcessTimestamp endTime;
 };
 
 void sleepForDuration(const Duration& duration);

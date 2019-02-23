@@ -13,6 +13,12 @@ ProcessTimestamp processNow() {
     return {static_cast<int>(now.tv_sec), now.tv_nsec};
 }
 
+ProcessTimestamp realNow() {
+    timespec now{};
+    clock_gettime(CLOCK_REALTIME, &now);
+    return {static_cast<int>(now.tv_sec), now.tv_nsec};
+}
+
 void sleepForDuration(const Duration& duration) {
     timespec sleepDuration{duration.getSeconds(), duration.getNanoseconds()};
     do {

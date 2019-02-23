@@ -76,6 +76,13 @@ bool ProcessStopwatch::isElapsed() const {
     return endTime < processNow();
 }
 
+RealTimeStopwatch::RealTimeStopwatch(Duration duration):
+        endTime(realNow() + duration) {}
+
+bool RealTimeStopwatch::isElapsed() const {
+    return endTime < realNow();
+}
+
 ProcessTimer::ProcessTimer(): startTime(processNow()) {}
 
 Duration ProcessTimer::elapsed() const {

@@ -2,6 +2,7 @@
 #define KKTEST_COMMON_INTERPROC_SRC_ERRORS_HPP_
 
 #include <stdexcept>
+#include <string>
 
 namespace kktest {
 namespace interproc {

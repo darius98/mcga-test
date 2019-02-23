@@ -3,9 +3,6 @@
 
 #include <functional>
 
-#include "common/interproc/src/message.hpp"
-#include "common/interproc/src/pipe.hpp"
-
 namespace kktest {
 namespace interproc {
 
@@ -30,8 +27,6 @@ class Subprocess {
 
     virtual bool isFinished() = 0;
 
-    virtual KillResult kill() = 0;
-
     virtual bool isExited() = 0;
 
     virtual int getReturnCode() = 0;
@@ -40,7 +35,9 @@ class Subprocess {
 
     virtual int getSignal() = 0;
 
-    virtual FinishStatus getFinishStatus();
+    virtual KillResult kill() = 0;
+
+    virtual FinishStatus getFinishStatus() = 0;
 };
 
 }

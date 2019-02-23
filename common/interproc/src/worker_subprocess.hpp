@@ -2,6 +2,7 @@
 #define KKTEST_COMMON_INTERPROC_SRC_WORKER_SUBPROCESS_HPP_
 
 #include "common/interproc/src/subprocess.hpp"
+#include "common/interproc/src/pipe.hpp"
 #include "common/utils/src/process_time.hpp"
 
 namespace kktest {
@@ -19,8 +20,6 @@ class WorkerSubprocess: public Subprocess {
 
     ~WorkerSubprocess() override;
 
-    Message getNextMessage(int maxConsecutiveFailedReadAttempts = -1);
-
     bool isFinished() override;
 
     KillResult kill() override;
@@ -33,16 +32,20 @@ class WorkerSubprocess: public Subprocess {
 
     int getSignal() override;
 
-    std::string getOutput();
-
     FinishStatus getFinishStatus() override;
 
+    std::string getOutput();
+
+    Message getNextMessage(int maxConsecutiveFailedReadAttempts = -1);
+
  private:
+    void updateOutput();
+
     std::string output;
     Subprocess* subprocess;
     PipeReader* pipeReader;
     PipeReader* stdoutReader;
-    utils::ProcessStopwatch stopwatch;
+    utils::RealTimeStopwatch stopwatch;
 };
 
 }

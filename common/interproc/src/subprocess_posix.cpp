@@ -39,6 +39,9 @@ class LinuxSubprocessHandler: public Subprocess {
     }
 
     KillResult kill() override {
+        if (isFinished()) {
+            return ALREADY_DEAD;
+        }
         int killStatus = ::kill(pid, SIGKILL);
         if (killStatus < 0) {
             if (errno == ESRCH) {
@@ -50,7 +53,7 @@ class LinuxSubprocessHandler: public Subprocess {
     }
 
     bool isExited() override {
-        return finished && WIFEXITED(lastWaitStatus);
+        return isFinished() && WIFEXITED(lastWaitStatus);
     }
 
     int getReturnCode() override {
@@ -61,7 +64,7 @@ class LinuxSubprocessHandler: public Subprocess {
     }
 
     bool isSignaled() override {
-        return finished && WIFSIGNALED(lastWaitStatus);
+        return isFinished() && WIFSIGNALED(lastWaitStatus);
     }
 
     int getSignal() override {
@@ -69,6 +72,19 @@ class LinuxSubprocessHandler: public Subprocess {
             return WTERMSIG(lastWaitStatus);
         }
         return -1;
+    }
+
+    FinishStatus getFinishStatus() override  {
+        if (!isFinished()) {
+            return NO_EXIT;
+        }
+        if (WIFSIGNALED(lastWaitStatus)) {
+            return SIGNAL_EXIT;
+        }
+        if (WEXITSTATUS(lastWaitStatus) != 0) {
+            return NON_ZERO_EXIT;
+        }
+        return ZERO_EXIT;
     }
 
  private:

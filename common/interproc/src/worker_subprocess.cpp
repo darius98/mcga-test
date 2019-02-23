@@ -7,6 +7,10 @@ namespace kktest {
 namespace interproc {
 
 WorkerSubprocess::WorkerSubprocess(double timeLimitMs, Work run):
+// TODO(darius98): I am not sure exactly what I want here.
+//  The current implementation uses a real-time stopwatch to set the
+//  subprocess's time limit. Is this the desired behaviour or is it
+//  to take into account only the subprocess' CPU time?
         stopwatch(Duration::fromMs(timeLimitMs)) {
     auto pipe = createAnonymousPipe();
     auto stdoutPipe = createAnonymousPipe();
@@ -43,40 +47,47 @@ WorkerSubprocess::~WorkerSubprocess() {
 }
 
 Message WorkerSubprocess::getNextMessage(int maxConsecutiveFailedReadAttempts) {
+    updateOutput();
     return pipeReader->getNextMessage(maxConsecutiveFailedReadAttempts);
 }
 
 bool WorkerSubprocess::isFinished() {
-    auto newBytes = stdoutReader->getBytes();
-    output += string(newBytes.begin(), newBytes.end());
+    updateOutput();
     return subprocess->isFinished();
 }
 
 Subprocess::KillResult WorkerSubprocess::kill() {
+    updateOutput();
     return subprocess->kill();
 }
 
 bool WorkerSubprocess::isExited() {
+    updateOutput();
     return subprocess->isExited();
 }
 
 int WorkerSubprocess::getReturnCode() {
+    updateOutput();
     return subprocess->getReturnCode();
 }
 
 bool WorkerSubprocess::isSignaled() {
+    updateOutput();
     return subprocess->isSignaled();
 }
 
 int WorkerSubprocess::getSignal() {
+    updateOutput();
     return subprocess->getSignal();
 }
 
 string WorkerSubprocess::getOutput() {
+    updateOutput();
     return output;
 }
 
-WorkerSubprocess::FinishStatus WorkerSubprocess::getFinishStatus() {
+Subprocess::FinishStatus WorkerSubprocess::getFinishStatus() {
+    updateOutput();
     if (!isFinished()) {
         if (!stopwatch.isElapsed()) {
             return NO_EXIT;
@@ -89,7 +100,12 @@ WorkerSubprocess::FinishStatus WorkerSubprocess::getFinishStatus() {
         }
         return TIMEOUT;
     }
-    return Subprocess::getFinishStatus();
+    return subprocess->getFinishStatus();
+}
+
+void WorkerSubprocess::updateOutput() {
+    auto newBytes = stdoutReader->getBytes();
+    output += string(newBytes.begin(), newBytes.end());
 }
 
 }
