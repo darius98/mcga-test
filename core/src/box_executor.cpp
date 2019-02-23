@@ -9,30 +9,12 @@ using namespace kktest::utils;
 using namespace std;
 using namespace std::placeholders;
 
-namespace {
+namespace kktest {
 
 enum MessageStatus: uint8_t {
     SUCCESS = 0,
     CONFIGURATION_ERROR = 1
 };
-
-}
-
-namespace kktest {
-
-BoxedTest::BoxedTest(Test&& test, WorkerSubprocess* process):
-        test(move(test)), process(process) {}
-
-BoxedTest::BoxedTest(BoxedTest&& other) noexcept:
-        test(move(other.test)), process(move(other.process)) {}
-
-BoxedTest& BoxedTest::operator=(BoxedTest&& other) noexcept {
-    if (this != &other) {
-        test = move(other.test);
-        process = move(other.process);
-    }
-    return *this;
-}
 
 BoxExecutor::BoxExecutor(OnTestFinished onTestFinished, size_t numBoxes):
         Executor(move(onTestFinished)), numBoxes(numBoxes) {}
@@ -43,7 +25,8 @@ void BoxExecutor::execute(Test&& test, Executable func) {
     GroupPtr group = test.getGroup();
     auto process = new WorkerSubprocess(
             timeLimit, bind(&BoxExecutor::runBoxed, this, group, func, _1));
-    activeBoxes.emplace_back(move(test), process);
+    activeBoxes.push_back(
+            BoxedTest{move(test), unique_ptr<WorkerSubprocess>(process)});
 }
 
 void BoxExecutor::runBoxed(GroupPtr group, Executable func, PipeWriter* pipe) {

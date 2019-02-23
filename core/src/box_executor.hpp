@@ -9,11 +9,6 @@ namespace kktest {
 struct BoxedTest {
     Test test;
     std::unique_ptr<interproc::WorkerSubprocess> process;
-
-    BoxedTest(Test&& test, interproc::WorkerSubprocess* process);
-    BoxedTest(BoxedTest&& other) noexcept;
-
-    BoxedTest& operator=(BoxedTest&& other) noexcept;
 };
 
 class BoxExecutor: public Executor {
