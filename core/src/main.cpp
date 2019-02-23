@@ -40,13 +40,13 @@ int main(int argc, char** argv,
 
     ExtensionApi api;
     for (Extension* extension : extensions) {
-        extension->init(&api);
+        extension->init(api);
     }
 
     bool smooth = smoothFlag.get();
     size_t numBoxes = max(maxParallelTestsArgument.get(), 1ul);
 
-    Driver* driver = Driver::init(api.getHooks(), smooth, numBoxes);
+    Driver* driver = Driver::init(api, smooth, numBoxes);
 
     int ret = 1;
     try {

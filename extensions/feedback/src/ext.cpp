@@ -29,7 +29,7 @@ void FeedbackExtension::registerCommandLineArgs(Parser& parser) {
                         "results as they become available."));
 }
 
-void FeedbackExtension::init(ExtensionApi* api) {
+void FeedbackExtension::init(ExtensionApi& api) {
     if (!quietFlag.get()) {
         initLogging(api);
     }
@@ -38,33 +38,34 @@ void FeedbackExtension::init(ExtensionApi* api) {
     }
 }
 
-void FeedbackExtension::initLogging(ExtensionApi* api) {
+void FeedbackExtension::initLogging(ExtensionApi& api) {
     logger = unique_ptr<TestLogger>(new TestLogger(cout));
 
-    api->afterTest([this](const ExecutedTest& test) {
+    api.addHook<ExtensionApi::AFTER_TEST>([this](const ExecutedTest& test) {
         logger->logTest(test);
     });
 
-    api->beforeDestroy([this]() {
+    api.addHook<ExtensionApi::BEFORE_DESTROY>([this]() {
         logger->logFinalInformation();
     });
 
-    api->beforeForceDestroy([this](const exception& error) {
+    api.addHook<ExtensionApi::BEFORE_FORCE_DESTROY>(
+            [this](const exception& error) {
         logger->logFatalError(error.what());
     });
 }
 
-void FeedbackExtension::initPipe(ExtensionApi* api, const string& pipeName) {
+void FeedbackExtension::initPipe(ExtensionApi& api, const string& pipeName) {
     pipe = unique_ptr<PipeWriter>(openNamedPipeForWriting(pipeName));
 
-    api->beforeGroup([this](GroupPtr group) {
+    api.addHook<ExtensionApi::BEFORE_GROUP>([this](GroupPtr group) {
         pipe->sendMessage(PipeMessageType::GROUP,
                           group->getParentGroup()->getIndex(),
                           group->getIndex(),
                           group->getDescription());
     });
 
-    api->afterTest([this](const ExecutedTest& test) {
+    api.addHook<ExtensionApi::AFTER_TEST>([this](const ExecutedTest& test) {
         pipe->sendMessage(PipeMessageType::TEST,
                           test.getGroup()->getIndex(),
                           test.getIndex(),
@@ -74,11 +75,12 @@ void FeedbackExtension::initPipe(ExtensionApi* api, const string& pipeName) {
                           test.getFailure());
     });
 
-    api->beforeDestroy([this]() {
+    api.addHook<ExtensionApi::BEFORE_DESTROY>([this]() {
         pipe->sendMessage(PipeMessageType::DONE);
     });
 
-    api->beforeForceDestroy([this](const exception& error) {
+    api.addHook<ExtensionApi::BEFORE_FORCE_DESTROY>(
+            [this](const exception& error) {
         pipe->sendMessage(PipeMessageType::ERROR, string(error.what()));
     });
 }

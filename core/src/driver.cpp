@@ -17,22 +17,22 @@ Driver* Driver::getInstance() {
     return instance;
 }
 
-Driver* Driver::init(const Hooks& hooks, bool smooth, size_t numBoxes) {
+Driver* Driver::init(const ExtensionApi& api, bool smooth, size_t numBoxes) {
     if (instance != nullptr) {
         throw ConfigurationError("Driver: init() called a twice.");
     }
-    instance = new Driver(hooks, smooth, numBoxes);
-    instance->hooks.runHooks<Hooks::AFTER_INIT>();
+    instance = new Driver(api, smooth, numBoxes);
+    instance->extensionApi.runHooks<ExtensionApi::AFTER_INIT>();
     return instance;
 }
 
 int Driver::clean() {
-    hooks.runHooks<Hooks::BEFORE_DESTROY>();
+    extensionApi.runHooks<ExtensionApi::BEFORE_DESTROY>();
     return failedAnyNonOptionalTest ? 1 : 0;
 }
 
 void Driver::forceDestroy(const ConfigurationError& error) {
-    hooks.runHooks<Hooks::BEFORE_FORCE_DESTROY>(error);
+    extensionApi.runHooks<ExtensionApi::BEFORE_FORCE_DESTROY>(error);
 }
 
 void Driver::beforeTestCase(const string& name) {
@@ -46,8 +46,8 @@ void Driver::afterTestCase() {
     afterGroup(groupStack.back());
 }
 
-Driver::Driver(Hooks hooks, bool smooth, size_t numBoxes):
-        hooks(move(hooks)),
+Driver::Driver(ExtensionApi extensionApi, bool smooth, size_t numBoxes):
+        extensionApi(move(extensionApi)),
         executor(smooth
              ? new    Executor(bind(&Driver::afterTest, this, _1))
              : new BoxExecutor(bind(&Driver::afterTest, this, _1), numBoxes)) {}
@@ -104,12 +104,12 @@ void Driver::addTearDown(Executable func) {
 }
 
 void Driver::beforeTest(const Test& test) {
-    hooks.runHooks<Hooks::BEFORE_TEST>(test);
+    extensionApi.runHooks<ExtensionApi::BEFORE_TEST>(test);
 }
 
 void Driver::afterTest(const ExecutedTest& test) {
     failedAnyNonOptionalTest |= (!test.isOptional() && !test.isPassed());
-    hooks.runHooks<Hooks::AFTER_TEST>(test);
+    extensionApi.runHooks<ExtensionApi::AFTER_TEST>(test);
     GroupPtr parentGroup = test.getGroup();
     parentGroup->addFinishedTest();
     while (parentGroup != nullptr) {
@@ -121,11 +121,11 @@ void Driver::afterTest(const ExecutedTest& test) {
 }
 
 void Driver::beforeGroup(GroupPtr group) {
-    hooks.runHooks<Hooks::BEFORE_GROUP>(group);
+    extensionApi.runHooks<ExtensionApi::BEFORE_GROUP>(group);
 }
 
 void Driver::afterGroup(GroupPtr group) {
-    hooks.runHooks<Hooks::AFTER_GROUP>(group);
+    extensionApi.runHooks<ExtensionApi::AFTER_GROUP>(group);
 }
 
 }

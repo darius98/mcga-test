@@ -3,7 +3,7 @@
 
 #include "core/src/errors.hpp"
 #include "core/src/executor.hpp"
-#include "core/src/hooks.hpp"
+#include "core/src/extension_api.hpp"
 
 namespace kktest {
 
@@ -14,9 +14,10 @@ class Driver {
  public:
     static Driver* getInstance();
 
-    static Driver* init(const Hooks& hooks, bool smooth, std::size_t numBoxes);
+    static Driver* init(
+            const ExtensionApi& api, bool smooth, std::size_t numBoxes);
 
-    Driver(Hooks hooks, bool smooth, std::size_t numBoxes);
+    Driver(ExtensionApi hooks, bool smooth, std::size_t numBoxes);
 
     int clean();
 
@@ -40,7 +41,7 @@ class Driver {
     void beforeGroup(GroupPtr group);
     void afterGroup(GroupPtr group);
 
-    Hooks hooks;
+    ExtensionApi extensionApi;
 
     std::unique_ptr<Executor> executor;
     std::vector<GroupPtr> groupStack = {};
