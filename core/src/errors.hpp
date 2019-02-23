@@ -6,15 +6,11 @@
 namespace kktest {
 
 struct ConfigurationError : std::runtime_error {
-    explicit ConfigurationError(const std::string& str);
-};
-
-struct Bug : std::runtime_error {
-    explicit Bug(const std::string& str);
+    using std::runtime_error::runtime_error;
 };
 
 struct ExpectationFailed : std::runtime_error {
-    explicit ExpectationFailed(const std::string& str);
+    using std::runtime_error::runtime_error;
 };
 
 }

@@ -12,14 +12,14 @@ Driver* Driver::instance = nullptr;
 
 Driver* Driver::getInstance() {
     if (instance == nullptr) {
-        throw Bug("Driver: getInstance() called before init().");
+        throw ConfigurationError("Driver: getInstance() called before init().");
     }
     return instance;
 }
 
 Driver* Driver::init(const Hooks& hooks, bool smooth, size_t numBoxes) {
     if (instance != nullptr) {
-        throw Bug("Driver: init() called a twice.");
+        throw ConfigurationError("Driver: init() called a twice.");
     }
     instance = new Driver(hooks, smooth, numBoxes);
     instance->hooks.runHooks<Hooks::AFTER_INIT>();

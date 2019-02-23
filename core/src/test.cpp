@@ -9,7 +9,7 @@ namespace kktest {
 Test::Test(TestConfig&& config, GroupPtr group, int index):
         TestConfig(move(config)), group(move(group)), index(index) {}
 
-string Test::getDescription() const {
+const string& Test::getDescription() const {
     return description;
 }
 
@@ -65,7 +65,7 @@ bool ExecutedTest::isPassed() const {
     return info.passed;
 }
 
-string ExecutedTest::getFailure() const {
+const string& ExecutedTest::getFailure() const {
     return info.failure;
 }
 

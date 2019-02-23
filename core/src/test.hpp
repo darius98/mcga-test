@@ -16,7 +16,7 @@ class Test : private TestConfig {
     Test(const Test& other) = delete;
     Test& operator=(const Test& other) = delete;
 
-    std::string getDescription() const;
+    const std::string& getDescription() const;
 
     bool isOptional() const;
 
@@ -55,7 +55,7 @@ class ExecutedTest : public Test {
 
     bool isPassed() const;
 
-    std::string getFailure() const;
+    const std::string& getFailure() const;
 
     double getTimeTicks() const;
 

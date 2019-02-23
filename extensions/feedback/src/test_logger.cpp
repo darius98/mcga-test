@@ -90,7 +90,7 @@ void TestLogger::printTestMessage(const ExecutedTest& test) {
            << " ticks ("
            << test.getTimeTicks() * Executor::getTimeTickLengthMs()
            << " ms)";
-    if (!test.isPassed()) {
+    if (!test.isPassed() && !test.getFailure().empty()) {
         stream << "\n\t";
         // TODO(darius98): This should be somewhere else (in utils maybe?)
         size_t pos = 0;
