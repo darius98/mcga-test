@@ -29,24 +29,8 @@ int Test::getIndex() const {
     return index;
 }
 
-ExecutedTest::Info::Info(): timeTicks(-1.0), passed(true), failure() {}
-
 ExecutedTest::Info::Info(string&& failure):
         timeTicks(-1.0), passed(false), failure(move(failure)) {}
-
-ExecutedTest::Info::Info(Info&& other) noexcept:
-        timeTicks(other.timeTicks),
-        passed(other.passed),
-        failure(move(other.failure)) {}
-
-ExecutedTest::Info& ExecutedTest::Info::operator=(Info&& other) noexcept {
-    if (this != &other) {
-        timeTicks = other.timeTicks;
-        passed = other.passed;
-        failure = move(other.failure);
-    }
-    return *this;
-}
 
 void ExecutedTest::Info::fail(const string& failure) {
     if (passed) {

@@ -34,22 +34,21 @@ class Test : private TestConfig {
 class ExecutedTest : public Test {
  public:
     struct Info {
-        double timeTicks;
-        bool passed;
-        std::string failure;
+        double timeTicks = -1.0;
+        bool passed = true;
+        std::string failure = "";
 
-        Info();
+        Info() = default;
         explicit Info(std::string&& failure);
-        Info(Info&& other) noexcept;
-        Info& operator=(Info&& other) noexcept;
 
-        Info(const Info& other) = delete;
+        Info(Info&& other) noexcept = default;
+        Info& operator=(Info&& other) noexcept = default;
 
         void fail(const std::string& failure);
     };
 
-    // When we create a test run, we no longer need the test.
-    // So we always move it.
+    // When we create an ExecutedTest, we no longer need the test.
+    // So we always move it. Test is not copy-constructible, so neither is this.
     ExecutedTest(Test&& test, std::string&& failure);
     ExecutedTest(Test&& test, Info&& info);
 
