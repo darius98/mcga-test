@@ -1,7 +1,6 @@
 #ifndef KKTEST_COMMON_INTERPROC_SRC_MESSAGE_HPP_
 #define KKTEST_COMMON_INTERPROC_SRC_MESSAGE_HPP_
 
-#include <functional>
 #include <string>
 
 namespace kktest {

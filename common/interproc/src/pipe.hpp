@@ -1,7 +1,6 @@
 #ifndef KKTEST_COMMON_INTERPROC_SRC_PIPE_HPP_
 #define KKTEST_COMMON_INTERPROC_SRC_PIPE_HPP_
 
-#include <utility>
 #include <string>
 #include <vector>
 

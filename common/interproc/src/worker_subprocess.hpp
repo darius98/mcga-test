@@ -12,7 +12,7 @@ class WorkerSubprocess: public Subprocess {
  public:
     typedef const std::function<void(PipeWriter*)>& Work;
 
-    WorkerSubprocess(double timeLimitMs, Work run);
+    WorkerSubprocess(utils::Duration timeLimit, Work run);
 
     WorkerSubprocess(WorkerSubprocess&& other) noexcept;
 

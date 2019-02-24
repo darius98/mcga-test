@@ -24,7 +24,8 @@ void BoxExecutor::execute(Test&& test, Executable func) {
     double timeLimit = test.getTimeTicksLimit() * getTimeTickLengthMs() + 100.0;
     GroupPtr group = test.getGroup();
     auto process = new WorkerSubprocess(
-            timeLimit, bind(&BoxExecutor::runBoxed, this, group, func, _1));
+            Duration::fromMs(timeLimit),
+            bind(&BoxExecutor::runBoxed, this, group, func, _1));
     activeBoxes.push_back(
             BoxedTest{move(test), unique_ptr<WorkerSubprocess>(process)});
 }
@@ -55,7 +56,7 @@ void BoxExecutor::ensureEmptyBoxes(size_t requiredEmpty) {
             }
         }
         if (!progress) {
-            sleepForDuration(Duration::fromMs(5));
+            sleepForDuration(5_ms);
         }
     }
 }

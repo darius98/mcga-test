@@ -10,11 +10,11 @@ class Duration {
     static constexpr int kMilliToNano = 1000000;
     static constexpr int kSecondsToNano = kSecondsToMilli * kMilliToNano;
 
-    static Duration fromMs(double ms);
+    static Duration fromMs(long double ms);
 
-    Duration();
-    Duration(const Duration& other);
-    Duration(Duration&& other) noexcept;
+    Duration() = default;
+    Duration(const Duration& other) = default;
+    Duration(Duration&& other) noexcept = default;
     Duration(int nSeconds, long long nNanoseconds);
 
     Duration operator+(const Duration& other) const;
@@ -35,6 +35,12 @@ class Duration {
     int nSeconds = 0;
     long long nNanoseconds = 0;
 };
+
+Duration operator"" _ms(long double ms);
+Duration operator"" _ms(unsigned long long ms);
+Duration operator"" _s(long double s);
+Duration operator"" _s(unsigned long long s);
+Duration operator"" _ns(unsigned long long ns);
 
 typedef Duration Timestamp;
 

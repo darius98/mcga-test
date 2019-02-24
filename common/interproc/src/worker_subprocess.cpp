@@ -6,12 +6,12 @@ using namespace std;
 namespace kktest {
 namespace interproc {
 
-WorkerSubprocess::WorkerSubprocess(double timeLimitMs, Work run):
+WorkerSubprocess::WorkerSubprocess(Duration timeLimit, Work run):
 // TODO(darius98): I am not sure exactly what I want here.
 //  The current implementation uses a real-time stopwatch to set the
 //  subprocess's time limit. Is this the desired behaviour or is it
 //  to take into account only the subprocess' CPU time?
-        stopwatch(Duration::fromMs(timeLimitMs)) {
+        stopwatch(timeLimit) {
     auto pipe = createAnonymousPipe();
     auto stdoutPipe = createAnonymousPipe();
     subprocess = Subprocess::fork([&stdoutPipe, &pipe, &run]() {
@@ -34,7 +34,7 @@ WorkerSubprocess::WorkerSubprocess(WorkerSubprocess&& other) noexcept:
         subprocess(other.subprocess),
         pipeReader(other.pipeReader),
         stdoutReader(other.stdoutReader),
-        stopwatch(move(other.stopwatch)) {
+        stopwatch(other.stopwatch) {
     other.subprocess = nullptr;
     other.pipeReader = nullptr;
     other.stdoutReader = nullptr;

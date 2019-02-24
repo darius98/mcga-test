@@ -14,10 +14,10 @@ void interprocWorkerSubprocessTest() {
         WorkerSubprocess* proc = nullptr;
 
         setUp([&] {
-            proc = new WorkerSubprocess(50, [](PipeWriter* writer) {
+            proc = new WorkerSubprocess(50_ms, [](PipeWriter* writer) {
                 writer->sendMessage(2, 0, 1, 9);
             });
-            sleepForDuration(Duration::fromMs(50));
+            sleepForDuration(50_ms);
         });
 
         tearDown([&] {
@@ -72,8 +72,8 @@ void interprocWorkerSubprocessTest() {
         });
 
         test("getNextMessage(32) is invalid", [&] {
-            proc = new WorkerSubprocess(50, [](PipeWriter*) {});
-            sleepForDuration(Duration::fromMs(50));
+            proc = new WorkerSubprocess(50_ms, [](PipeWriter*) {});
+            sleepForDuration(50_ms);
             expect(proc->getNextMessage(32).isInvalid());
         });
     });
@@ -87,11 +87,11 @@ void interprocWorkerSubprocessTest() {
         });
 
         test("getOutput() returns the written output", [&] {
-            proc = new WorkerSubprocess(50, [](PipeWriter*) {
+            proc = new WorkerSubprocess(50_ms, [](PipeWriter*) {
                 cout << "Hello, World!";
                 cout.flush();
             });
-            sleepForDuration(Duration::fromMs(50));
+            sleepForDuration(50_ms);
             expect(proc->getOutput() == "Hello, World!");
         });
     });
@@ -105,10 +105,10 @@ void interprocWorkerSubprocessTest() {
         });
 
         test("getFinishStatus()==TIMEOUT", [&] {
-            proc = new WorkerSubprocess(50, [](PipeWriter*) {
-                spinForDuration(Duration::fromMs(200));
+            proc = new WorkerSubprocess(50_ms, [](PipeWriter*) {
+                spinForDuration(200_ms);
             });
-            sleepForDuration(Duration::fromMs(100));
+            sleepForDuration(100_ms);
             expect(proc->getFinishStatus() == Subprocess::TIMEOUT);
         });
     });

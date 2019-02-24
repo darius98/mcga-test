@@ -13,14 +13,14 @@ namespace death {
 
 DeathStatus checkDeath(Executable func, double timeTicksLimit) {
     WorkerSubprocess proc(
-        timeTicksLimit * Executor::getTimeTickLengthMs(),
+        Duration::fromMs(timeTicksLimit * Executor::getTimeTickLengthMs()),
         [func](PipeWriter* writer) {
             func();
             writer->sendMessage(1);
         });
 
     while (!proc.isFinished()) {
-        sleepForDuration(Duration::fromMs(5));
+        sleepForDuration(5_ms);
     }
     if (proc.getNextMessage(32).isInvalid()) {
         // The exit was ok.

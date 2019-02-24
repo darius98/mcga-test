@@ -7,7 +7,7 @@ using namespace std;
 namespace kktest {
 namespace utils {
 
-Duration Duration::fromMs(double ms) {
+Duration Duration::fromMs(long double ms) {
     return {
         static_cast<int>(floor(ms / kSecondsToMilli)),
         static_cast<long long>(
@@ -15,9 +15,6 @@ Duration Duration::fromMs(double ms) {
     };
 }
 
-Duration::Duration() = default;
-Duration::Duration(const Duration& other) = default;
-Duration::Duration(Duration&& other) noexcept = default;
 Duration::Duration(int nSeconds, long long nNanoseconds):
         nSeconds(nSeconds), nNanoseconds(nNanoseconds) {
     normalize();
@@ -67,6 +64,26 @@ void Duration::normalize() {
         nNanoseconds += kSecondsToNano;
         nSeconds -= 1;
     }
+}
+
+Duration operator"" _ms(long double ms) {
+    return Duration::fromMs(ms);
+}
+
+Duration operator"" _ms(unsigned long long ms) {
+    return Duration::fromMs(ms);
+}
+
+Duration operator"" _s(long double s) {
+    return Duration::fromMs(s * Duration::kSecondsToMilli);
+}
+
+Duration operator"" _s(unsigned long long s) {
+    return Duration::fromMs(s * Duration::kSecondsToMilli);
+}
+
+Duration operator"" _ns(unsigned long long d) {
+    return {0, static_cast<long long>(d)};
 }
 
 RealTimeStopwatch::RealTimeStopwatch(Duration duration):

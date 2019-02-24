@@ -16,7 +16,7 @@ void interprocSubprocessTest() {
 
         setUp([&proc] {
             proc = Subprocess::fork([] {});
-            sleepForDuration(Duration::fromMs(50));
+            sleepForDuration(50_ms);
         });
 
         tearDown([&proc] {
@@ -56,7 +56,7 @@ void interprocSubprocessTest() {
             proc = Subprocess::fork([] {
                 exit(17);
             });
-            sleepForDuration(Duration::fromMs(50));
+            sleepForDuration(50_ms);
         });
 
         tearDown([&proc] {
@@ -96,7 +96,7 @@ void interprocSubprocessTest() {
             proc = Subprocess::fork([] {
                 raise(SIGINT);
             });
-            sleepForDuration(Duration::fromMs(50));
+            sleepForDuration(50_ms);
         });
 
         tearDown([&proc] {
@@ -139,7 +139,7 @@ void interprocSubprocessTest() {
                     spins += 1;
                 }
             });
-            sleepForDuration(Duration::fromMs(50));
+            sleepForDuration(50_ms);
         });
 
         tearDown([&proc] {
