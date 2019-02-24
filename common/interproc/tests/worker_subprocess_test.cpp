@@ -89,6 +89,7 @@ void interprocWorkerSubprocessTest() {
         test("getOutput() returns the written output", [&] {
             proc = new WorkerSubprocess(50, [](PipeWriter*) {
                 cout << "Hello, World!";
+                cout.flush();
             });
             sleepForDuration(Duration::fromMs(50));
             expect(proc->getOutput() == "Hello, World!");

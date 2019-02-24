@@ -7,9 +7,8 @@
 namespace kktest {
 namespace interproc {
 
-class InterprocError: public std::runtime_error {
- public:
-    explicit InterprocError(const std::string& what);
+struct InterprocError: public std::runtime_error {
+    using std::runtime_error::runtime_error;
 };
 
 }
