@@ -16,7 +16,7 @@ class TestLogger {
  public:
     explicit TestLogger(std::ostream& stream);
 
-    void logTest(const ExecutedTest& test);
+    void addTest(const ExecutedTest& test);
 
     void logFatalError(const std::string& errorMessage);
 
@@ -33,7 +33,7 @@ class TestLogger {
     int passedTests = 0;
     int failedTests = 0;
     int failedOptionalTests = 0;
-    int testsLogged = 0;
+    int loggedTests = 0;
 };
 
 }

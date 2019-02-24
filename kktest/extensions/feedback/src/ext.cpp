@@ -42,7 +42,7 @@ void FeedbackExtension::initLogging(ExtensionApi& api) {
     logger = unique_ptr<TestLogger>(new TestLogger(cout));
 
     api.addHook<ExtensionApi::AFTER_TEST>([this](const ExecutedTest& test) {
-        logger->logTest(test);
+        logger->addTest(test);
     });
 
     api.addHook<ExtensionApi::BEFORE_DESTROY>([this]() {

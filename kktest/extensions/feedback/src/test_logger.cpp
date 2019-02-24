@@ -13,14 +13,14 @@ namespace feedback {
 
 TestLogger::TestLogger(ostream& stream): stream(stream) {}
 
-void TestLogger::logTest(const ExecutedTest& test) {
+void TestLogger::addTest(const ExecutedTest& test) {
+    totalTimeTicks += test.getTimeTicks();
     passedTests += test.isPassed();
     failedTests += !test.isPassed();
-    totalTimeTicks += test.getTimeTicks();
-
     failedOptionalTests += (!test.isPassed() && test.isOptional());
+    loggedTests += 1;
+
     printTestMessage(test);
-    testsLogged += 1;
 }
 
 void TestLogger::logFinalInformation() {
