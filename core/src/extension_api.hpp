@@ -36,7 +36,6 @@ class ExtensionApi {
         std::get<t>(hooks).push_back(hook);
     }
 
- private:
     template<Type t, class... Args>
     void runHooks(const Args&... args) {
         for (const auto& hook : std::get<t>(hooks)) {
@@ -44,6 +43,7 @@ class ExtensionApi {
         }
     }
 
+ private:
     std::tuple<
         std::vector<AfterInit>,
         std::vector<BeforeGroup>,
@@ -53,8 +53,6 @@ class ExtensionApi {
         std::vector<BeforeDestroy>,
         std::vector<BeforeForceDestroy>
     > hooks;
-
- friend class Driver;
 };
 
 class Extension {

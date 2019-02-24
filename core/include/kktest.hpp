@@ -78,13 +78,32 @@ struct KKTEST_EXPORT TestConfig {
     TestConfig& setTimeTicksLimit(double timeTicksLimit);
 };
 
+/** Structure defining the configuration for a group.
+ *
+ * Pass an instance of this class to the group() function. */
 struct KKTEST_EXPORT GroupConfig {
+    /** Description of the group.
+     *
+     * A group should provide a concise, yet clear and explicit description,
+     * both for future maintainers of the group and user interfaces of this
+     * library. */
     std::string description = "-";
 
+    /** Default constructor. */
     GroupConfig() = default;
+
+    /** Implicit constructor from a description string.
+     *
+     * This constructor is provided for easier use of default values for
+     * all the other properties, which should be used in most cases. It is
+     * implicit by design, to allow an inline string call to group(). */
     GroupConfig(std::string description); // NOLINT(google-explicit-constructor)
+
+    /** Implicit constructor from a description C-style string (see
+     * GroupConfig(std::string)). */
     GroupConfig(const char* description); // NOLINT(google-explicit-constructor)
 
+    /** Set the #description of the group. */
     GroupConfig& setDescription(std::string description);
 };
 

@@ -39,10 +39,8 @@ class Test : private TestConfig {
     int getIndex() const;
 
  private:
-    /** Pointer to the Group containing this Test. */
     GroupPtr group;
 
-    /** See getIndex(). */
     int index;
 };
 
@@ -116,7 +114,6 @@ class ExecutedTest : public Test {
     double getTimeTicks() const;
 
  private:
-    /** Execution information for this test. */
     Info info;
 };
 
