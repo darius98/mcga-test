@@ -110,7 +110,7 @@ void utilsTimeTest() {
             });
         });
 
-        group("Substraction", [] {
+        group("Subtraction", [] {
             test("Without overflow", [] {
                 Duration a(1, 100);
                 Duration b(1, 0);
