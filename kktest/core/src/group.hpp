@@ -33,6 +33,9 @@ class Group: private GroupConfig {
     /** See GroupConfig#description. */
     std::string getDescription() const;
 
+    /** See GroupConfig#optional. */
+    bool isOptional() const;
+
     /** Globally unique, incremental index of the group. */
     int getIndex() const;
 

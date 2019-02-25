@@ -34,6 +34,11 @@ GroupConfig& GroupConfig::setDescription(string description) {
     return *this;
 }
 
+GroupConfig& GroupConfig::setOptional(bool optional) {
+    this->optional = optional;
+    return *this;
+}
+
 TestCase::TestCase(function<void()> exec): exec(move(exec)) {}
 
 TestCase::TestCase(void (*exec)()): exec(exec), name("") {}

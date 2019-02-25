@@ -76,6 +76,8 @@ void TestLogger::printTestMessage(const ExecutedTest& test) {
     stream << "[";
     if (test.isPassed()) {
         stream << termcolor::green << "P" << termcolor::reset;
+    } else if (test.isOptional()) {
+        stream << termcolor::yellow << "F" << termcolor::reset;
     } else {
         stream << termcolor::red << "F" << termcolor::reset;
     }

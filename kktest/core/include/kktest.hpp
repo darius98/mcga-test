@@ -89,6 +89,12 @@ struct KKTEST_EXPORT GroupConfig {
      * library. */
     std::string description = "-";
 
+    /** Flag that marks this whole group as optional.
+     *
+     * This is equivalent to marking each individual test inside the group and
+     * all its subgroups as optional. */
+     bool optional = false;
+
     /** Default constructor. */
     GroupConfig() = default;
 
@@ -105,6 +111,9 @@ struct KKTEST_EXPORT GroupConfig {
 
     /** Set the #description of the group. */
     GroupConfig& setDescription(std::string description);
+
+    /** Set the #optional flag for this group. */
+    GroupConfig& setOptional(bool optional);
 };
 
 struct KKTEST_EXPORT TestCase {

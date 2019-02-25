@@ -4,7 +4,7 @@ add_subdirectory(extensions/death)
 add_subdirectory(extensions/feedback)
 
 add_library(kktest SHARED
-    entry/entry_point.cpp
+    entry_point.cpp
     $<TARGET_OBJECTS:kktest_core>
     $<TARGET_OBJECTS:kktest_extension_matchers>
     $<TARGET_OBJECTS:kktest_extension_death>

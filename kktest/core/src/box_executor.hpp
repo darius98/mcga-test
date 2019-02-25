@@ -15,6 +15,8 @@ class BoxExecutor: public Executor {
  public:
     BoxExecutor(OnTestFinished onTestFinished, std::size_t numBoxes);
 
+    ~BoxExecutor() override = default;
+
     void finalize() override;
 
  private:

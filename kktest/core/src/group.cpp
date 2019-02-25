@@ -15,6 +15,10 @@ string Group::getDescription() const {
     return description;
 }
 
+bool Group::isOptional() const {
+    return optional || (parentGroup != nullptr && parentGroup->isOptional());
+}
+
 int Group::getIndex() const {
     return index;
 }

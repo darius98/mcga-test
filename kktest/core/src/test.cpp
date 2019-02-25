@@ -14,7 +14,7 @@ const string& Test::getDescription() const {
 }
 
 bool Test::isOptional() const {
-    return optional;
+    return optional || group->isOptional();
 }
 
 double Test::getTimeTicksLimit() const {
