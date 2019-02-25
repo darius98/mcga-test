@@ -139,7 +139,12 @@ KKTEST_EXPORT void fail(const std::string& message=std::string());
 
 KKTEST_EXPORT void expect(bool expr, const std::string& message=std::string());
 
-KKTEST_EXPORT int run(int argc, char **argv, std::vector<TestCase>&& tests);
+KKTEST_EXPORT void init(int argc, char** argv);
+
+KKTEST_EXPORT int run(std::vector<TestCase> tests);
+
+KKTEST_EXPORT int initAndRun(int argc, char** argv,
+                             std::vector<TestCase> tests);
 
 }
 

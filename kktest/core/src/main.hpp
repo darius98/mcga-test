@@ -7,16 +7,9 @@
 
 namespace kktest {
 
-/** Entry-point of the core library.
- *
- * This function has the responsibility to instantiate a testing Driver,
- * initialize the extensions, parse command line arguments and actually run the
- * test cases provided.
- *
- * This should only be called once during the run() public entry point. */
-int main(int argc, char** argv,
-         std::vector<TestCase>&& tests,
-         const std::vector<Extension*>& extensions);
+void initialize(int argc, char** argv, std::vector<Extension*>* extensions);
+
+int runTests(std::vector<TestCase> tests, std::vector<Extension*>* extensions);
 
 }
 

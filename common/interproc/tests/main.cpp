@@ -8,7 +8,7 @@ extern void interprocSubprocessTest();
 extern void interprocWorkerSubprocessTest();
 
 int main(int argc, char** argv) {
-    return run(argc, argv, {
+    return initAndRun(argc, argv, {
         TestCase(interprocMessageTest, "Interproc::Message"),
         TestCase(interprocPipeTest, "Interproc::Pipe"),
         TestCase(interprocSubprocessTest, "Interproc::Subprocess"),
