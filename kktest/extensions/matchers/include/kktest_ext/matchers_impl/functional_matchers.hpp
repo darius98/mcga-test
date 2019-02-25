@@ -10,8 +10,6 @@
 namespace kktest {
 namespace matchers {
 
-KKTEST_EXPORT extern detail::ThrowsAnythingMatcher throws;
-
 template<class E>
 detail::ThrowsSpecificMatcher<E> throwsA() {
     return detail::ThrowsSpecificMatcher<E>();
@@ -24,13 +22,24 @@ std::function<void()> wrapFunc(const F& func, const Args... args) {
 
 namespace detail {
 
-class KKTEST_EXPORT ThrowsAnythingMatcher: public Matcher {
+class ThrowsAnythingMatcher: public Matcher {
  public:
-    bool matches(Executable func);
+    bool matches(Executable func) {
+        try {
+            func();
+            return false;
+        } catch(...) {
+            return true;
+        }
+    }
 
-    void describe(Description* description);
+    void describe(Description* description) {
+        (*description) << "a function that throws";
+    }
 
-    void describeMismatch(Description* description, Executable func);
+    void describeMismatch(Description* description, Executable func) {
+        (*description) << "a function that did not throw";
+    }
 };
 
 template<class E>
@@ -68,6 +77,9 @@ class ThrowsSpecificMatcher: public Matcher {
 };
 
 }
+
+static detail::ThrowsAnythingMatcher throws;
+
 }
 }
 

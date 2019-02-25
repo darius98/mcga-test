@@ -6,31 +6,44 @@
 
 namespace kktest {
 namespace matchers {
-
-KKTEST_EXPORT extern detail::IsTrueMatcher isTrue;
-KKTEST_EXPORT extern detail::IsFalseMatcher isFalse;
-
 namespace detail {
 
-class KKTEST_EXPORT IsTrueMatcher: public Matcher {
+class IsTrueMatcher: public Matcher {
  public:
-    bool matches(const bool& object);
+    bool matches(const bool& object) {
+        return object;
+    }
 
-    void describe(Description* description);
+    void describe(Description* description) {
+        (*description) << "true";
+    }
 
-    void describeMismatch(Description* description, const bool&);
+    void describeMismatch(Description* description, const bool&) {
+        (*description) << "false";
+    }
 };
 
-class KKTEST_EXPORT IsFalseMatcher: public Matcher {
+class IsFalseMatcher: public Matcher {
  public:
-    bool matches(const bool& object);
+    bool matches(const bool& object) {
+        return !object;
+    }
 
-    void describe(Description* description);
+    void describe(Description* description) {
+        (*description) << "false";
+    }
 
-    void describeMismatch(Description* description, const bool&);
+    void describeMismatch(Description* description, const bool&) {
+        (*description) << "true";
+    }
 };
 
 }
+
+static detail::IsTrueMatcher isTrue;
+
+static detail::IsFalseMatcher isFalse;
+
 }
 }
 

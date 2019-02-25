@@ -7,16 +7,6 @@
 namespace kktest {
 namespace matchers {
 
-KKTEST_EXPORT extern detail::IsPositiveMatcher isPositive;
-
-KKTEST_EXPORT extern detail::IsNegativeMatcher isNegative;
-
-KKTEST_EXPORT extern detail::IsEvenMatcher isEven;
-
-KKTEST_EXPORT extern detail::IsOddMatcher isOdd;
-
-KKTEST_EXPORT extern detail::IsZeroMatcher isZero;
-
 template<class T>
 detail::IsAlmostEqualMatcher<T> isAlmostEqualTo(const T& target,
                                                 const double& eps) {
@@ -25,14 +15,16 @@ detail::IsAlmostEqualMatcher<T> isAlmostEqualTo(const T& target,
 
 namespace detail {
 
-class KKTEST_EXPORT IsPositiveMatcher: public Matcher {
+class IsPositiveMatcher: public Matcher {
  public:
     template<class T>
     bool matches(const T& object) {
         return object > 0;
     }
 
-    void describe(Description* description);
+    void describe(Description* description) {
+        (*description) << "a positive number";
+    }
 
     template<class T>
     void describeMismatch(Description* description, const T&) {
@@ -40,14 +32,16 @@ class KKTEST_EXPORT IsPositiveMatcher: public Matcher {
     }
 };
 
-class KKTEST_EXPORT IsNegativeMatcher: public Matcher {
+class IsNegativeMatcher: public Matcher {
  public:
     template<class T>
     bool matches(const T& object) {
         return object < 0;
     }
 
-    void describe(Description* description);
+    void describe(Description* description) {
+        (*description) << "a negative number";
+    }
 
     template<class T>
     void describeMismatch(Description* description, const T&) {
@@ -55,14 +49,16 @@ class KKTEST_EXPORT IsNegativeMatcher: public Matcher {
     }
 };
 
-class KKTEST_EXPORT IsEvenMatcher: public Matcher {
+class IsEvenMatcher: public Matcher {
  public:
     template<class T>
     bool matches(const T& object) {
         return object % 2 == 0;
     }
 
-    void describe(Description* description);
+    void describe(Description* description) {
+        (*description) << "an even number";
+    }
 
     template<class T>
     void describeMismatch(Description* description, const T&) {
@@ -70,14 +66,16 @@ class KKTEST_EXPORT IsEvenMatcher: public Matcher {
     }
 };
 
-class KKTEST_EXPORT IsOddMatcher: public Matcher {
+class IsOddMatcher: public Matcher {
  public:
     template<class T>
     bool matches(const T& object) {
         return object % 2 == 1 || object % 2 == -1;
     }
 
-    void describe(Description* description);
+    void describe(Description* description) {
+        (*description) << "an odd number";
+    }
 
     template<class T>
     void describeMismatch(Description* description, const T&) {
@@ -85,14 +83,16 @@ class KKTEST_EXPORT IsOddMatcher: public Matcher {
     }
 };
 
-class KKTEST_EXPORT IsZeroMatcher: public Matcher {
+class IsZeroMatcher: public Matcher {
  public:
     template<class T>
     bool matches(const T& object) {
         return object == 0;
     }
 
-    void describe(Description* description);
+    void describe(Description* description) {
+        (*description) << "zero";
+    }
 
     template<class T>
     void describeMismatch(Description* description, const T&) {
@@ -125,6 +125,17 @@ class IsAlmostEqualMatcher: public Matcher {
 };
 
 }
+
+static detail::IsPositiveMatcher isPositive;
+
+static detail::IsNegativeMatcher isNegative;
+
+static detail::IsEvenMatcher isEven;
+
+static detail::IsOddMatcher isOdd;
+
+static detail::IsZeroMatcher isZero;
+
 }
 }
 

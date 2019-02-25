@@ -16,16 +16,6 @@ template<class T> class HasExitedWithCodeMatcher;
 template<class T> class HasOutputMatcher;
 }
 
-KKTEST_EXPORT extern detail::ExitsMatcher exits;
-
-KKTEST_EXPORT extern detail::HasExitedMatcher hasExited;
-
-KKTEST_EXPORT extern detail::HasExitedWithCodeMatcher
-        <matchers::detail::EqualityMatcher<int>> hasExitedWithCodeZero;
-
-KKTEST_EXPORT extern detail::HasExitedWithCodeMatcher
-        <matchers::detail::NonEqualityMatcher<int>> hasExitedWithNonZeroCode;
-
 template<class T,
          class=typename std::enable_if<
                    std::is_base_of<matchers::Matcher, T>::value
@@ -65,8 +55,18 @@ detail::HasOutputMatcher<matchers::detail::EqualityMatcher<T>>
 
 namespace detail {
 
-KKTEST_EXPORT void describeStatus(matchers::Description* description,
-                                  const DeathStatus& status);
+void describeStatus(matchers::Description* description,
+                    const DeathStatus& status) {
+    if (status.killedBySignal()) {
+        (*description) << "the program's termination by signal "
+                       << status.getSignal();
+    } else if (status.exited()) {
+        (*description) << "the program's end with code "
+                       << status.getExitCode();
+    } else {
+        (*description) << "not a program exit";
+    }
+}
 
 template<class CM, class OM>
 class ExitsWithCodeAndOutputMatcher: public matchers::Matcher {
@@ -217,17 +217,27 @@ class ExitsWithOutputMatcher: public matchers::Matcher {
     DeathStatus status;
 };
 
-class KKTEST_EXPORT ExitsMatcher: public matchers::Matcher {
+class ExitsMatcher: public matchers::Matcher {
  public:
-    ExitsMatcher();
+    ExitsMatcher():
+        zero(matchers::isEqualTo(0)), nonZero(matchers::isNotEqualTo(0)) {}
 
-    bool matches(Executable func);
+    bool matches(Executable func) {
+        status = checkDeath(func);
+        return status.exited();
+    }
 
-    void describe(matchers::Description* description);
+    void describe(matchers::Description* description) {
+        (*description) << "the program's end";
+    }
 
-    void describeObject(matchers::Description* description, Executable func);
+    void describeObject(matchers::Description* description, Executable func) {
+        (*description) << status;
+    }
 
-    void describeMismatch(matchers::Description* description, Executable func);
+    void describeMismatch(matchers::Description* description, Executable func) {
+        describeStatus(description, status);
+    }
 
     template<class T,
              class=typename std::enable_if<
@@ -274,14 +284,20 @@ class KKTEST_EXPORT ExitsMatcher: public matchers::Matcher {
     DeathStatus status;
 };
 
-class KKTEST_EXPORT HasExitedMatcher: public matchers::Matcher {
+class HasExitedMatcher: public matchers::Matcher {
  public:
-    bool matches(const DeathStatus& status);
+    bool matches(const DeathStatus& status) {
+        return status.exited();
+    }
 
-    void describe(matchers::Description* description);
+    void describe(matchers::Description* description) {
+        (*description) << "the program's end";
+    }
 
     void describeMismatch(matchers::Description* description,
-                          const DeathStatus& status);
+                          const DeathStatus& status) {
+        describeStatus(description, status);
+    }
 };
 
 template<class M>
@@ -340,6 +356,18 @@ class HasOutputMatcher: public matchers::Matcher {
 };
 
 }
+
+static detail::ExitsMatcher exits;
+
+static detail::HasExitedMatcher hasExited;
+
+static detail::HasExitedWithCodeMatcher<matchers::detail::EqualityMatcher<int>>
+        hasExitedWithCodeZero(matchers::isEqualTo(0));
+
+static detail::HasExitedWithCodeMatcher
+    <matchers::detail::NonEqualityMatcher<int>>
+        hasExitedWithNonZeroCode(matchers::isNotEqualTo(0));
+
 }
 }
 

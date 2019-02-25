@@ -7,10 +7,10 @@
 namespace kktest {
 namespace matchers {
 
-class KKTEST_EXPORT Description {
+class Description {
  public:
-    Description();
-    Description(const Description& other);
+    Description() = default;
+    Description(const Description& other): stream(other.stream.str()) {}
 
     template<class T>
     Description& operator<<(const T& obj) {
@@ -24,9 +24,14 @@ class KKTEST_EXPORT Description {
         return *this;
     }
 
-    Description& appendRawString(const std::string& str);
+    Description& appendRawString(const std::string& str) {
+        stream << str;
+        return *this;
+    }
 
-    std::string toString() const;
+    std::string toString() const {
+        return stream.str();
+    }
 
  private:
     std::stringstream stream;

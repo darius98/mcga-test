@@ -7,10 +7,6 @@
 namespace kktest {
 namespace matchers {
 
-KKTEST_EXPORT extern detail::IsEmptyMatcher isEmpty;
-
-KKTEST_EXPORT extern detail::IsNotEmptyMatcher isNotEmpty;
-
 template<
     class T,
     class=typename std::enable_if<std::is_base_of<Matcher, T>::value>::type>
@@ -60,14 +56,16 @@ detail::IterableAnyMatcher<detail::EqualityMatcher<T>> anyElement(
 
 namespace detail {
 
-class KKTEST_EXPORT IsEmptyMatcher: public Matcher {
+class IsEmptyMatcher: public Matcher {
  public:
     template<class T>
     bool matches(const T& object) {
         return object.empty();
     }
 
-    void describe(Description* description);
+    void describe(Description* description) {
+        (*description) << "empty iterable";
+    }
 
     template<class T>
     void describeMismatch(Description* description, const T&) {
@@ -75,14 +73,16 @@ class KKTEST_EXPORT IsEmptyMatcher: public Matcher {
     }
 };
 
-class KKTEST_EXPORT IsNotEmptyMatcher: public Matcher {
+class IsNotEmptyMatcher: public Matcher {
  public:
     template<class T>
     bool matches(const T& object) {
         return !object.empty();
     }
 
-    void describe(Description* description);
+    void describe(Description* description) {
+        (*description) << "non-empty iterable";
+    }
 
     template<class T>
     void describeMismatch(Description* description, const T&) {
@@ -203,6 +203,11 @@ class IterableAnyMatcher: public Matcher {
 };
 
 }
+
+static detail::IsEmptyMatcher isEmpty;
+
+static detail::IsNotEmptyMatcher isNotEmpty;
+
 }
 }
 

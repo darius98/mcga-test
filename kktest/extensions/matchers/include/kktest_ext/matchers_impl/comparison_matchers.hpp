@@ -210,24 +210,87 @@ class IdentityMatcher: public Matcher {
     const void* address;
 };
 
+constexpr const std::size_t relevantRange = 20;
+
 template<>
-class KKTEST_EXPORT EqualityMatcher<std::string>: public Matcher {
+class EqualityMatcher<std::string>: public Matcher {
  public:
-    explicit EqualityMatcher(std::string target);
+    explicit EqualityMatcher(std::string target) : target(std::move(target)) {}
 
-    bool matches(const std::string& obj);
+    bool matches(const std::string& obj) {
+        return obj == target;
+    }
 
-    bool matches(const char* obj);
+    bool matches(const char* obj) {
+        return obj == target;
+    }
 
-    void describe(Description* description);
+    void describe(Description* description) {
+        (*description) << "'" << target << "'";
+    }
 
-    void describeMismatch(Description* description, const std::string& obj);
+    void describeMismatch(Description* description, const std::string& obj) {
+        std::size_t mismatchIndex = 0;
+        while (mismatchIndex < std::min(target.size(), obj.size())
+               && target[mismatchIndex] == obj[mismatchIndex]) {
+            mismatchIndex += 1;
+        }
+
+        // number of spaces we must place the mismatch caret to the right
+        // the initial '11' represents the length of
+        // "Expected: '" / "     Got: '"
+        std::size_t numSpaces = 11u + std::min(mismatchIndex, relevantRange);
+        if (mismatchIndex > relevantRange) {
+            numSpaces += 3;
+        }
+        // TODO(darius98): There is a problem with the design here: we need to
+        //             count how many characters will be changed by the Streamer
+        //             implementation to be represented here by two characters
+        //             (so we know where to position the mismatch caret).
+        //             This class should not be inter-dependent with the
+        //             implementation of Streamer.
+        for (std::size_t index = mismatchIndex >= relevantRange
+                                 ? mismatchIndex - relevantRange
+                                 : 0;
+             index < mismatchIndex;
+             ++ index) {
+            if (target[index] == '\n'
+                || target[index] == '\r'
+                || target[index] == '\t') {
+                numSpaces += 1;
+            }
+        }
+
+        (*description) << "different at index " << mismatchIndex << ":";
+        description->appendRawString("\n\tExpected: '");
+        (*description) << extractRelevantSection(target, mismatchIndex);
+        description->appendRawString("'\n\t     Got: '");
+        (*description) << extractRelevantSection(obj, mismatchIndex);
+        description->appendRawString(
+                "'\n\t" + std::string(numSpaces, ' ') + "^");
+    }
 
     template<int n>
     operator EqualityMatcher<char[n]>() const;
 
  protected:
     std::string target;
+
+ private:
+    static std::string extractRelevantSection(const std::string& s,
+                                              const std::size_t index) {
+        auto firstIndex = index >= relevantRange ? index - relevantRange : 0;
+        auto lastIndex = std::min(index + relevantRange, s.size() - 1);
+        auto relevantSection = s.substr(firstIndex, lastIndex - firstIndex + 1);
+
+        if (index + relevantRange + 1 < s.size()) {
+            relevantSection += "...";
+        }
+        if (index > relevantRange) {
+            relevantSection = "..." + relevantSection;
+        }
+        return relevantSection;
+    }
 };
 
 template<int n>
@@ -242,17 +305,26 @@ EqualityMatcher<std::string>::operator EqualityMatcher<char[n]>() const {
 }
 
 template<>
-class KKTEST_EXPORT NonEqualityMatcher<std::string>: public Matcher {
+class NonEqualityMatcher<std::string>: public Matcher {
  public:
-    explicit NonEqualityMatcher(std::string target);
+    explicit NonEqualityMatcher(std::string target):
+            target(std::move(target)) {}
 
-    bool matches(const std::string& obj);
+    bool matches(const std::string& obj) {
+        return obj != target;
+    }
 
-    bool matches(const char* obj);
+    bool matches(const char* obj) {
+        return obj != target;
+    }
 
-    void describe(Description* description);
+    void describe(Description* description) {
+        (*description) << "not '" << target << "'";
+    }
 
-    void describeMismatch(Description* description, const std::string& obj);
+    void describeMismatch(Description* description, const std::string& obj) {
+        (*description) << "'" << target << "'";
+    }
 
     template<int n>
     operator NonEqualityMatcher<char[n]>() const;
@@ -273,17 +345,26 @@ NonEqualityMatcher<std::string>::operator NonEqualityMatcher<char[n]>() const {
 }
 
 template<>
-class KKTEST_EXPORT IsLessThanMatcher<std::string>: public Matcher {
+class IsLessThanMatcher<std::string>: public Matcher {
  public:
-    explicit IsLessThanMatcher(std::string target);
+    explicit IsLessThanMatcher(std::string target):
+            target(std::move(target)) {}
 
-    bool matches(const std::string& obj);
+    bool matches(const std::string& obj) {
+        return obj < target;
+    }
 
-    bool matches(const char* obj);
+    bool matches(const char* obj) {
+        return obj < target;
+    }
 
-    void describe(Description* description);
+    void describe(Description* description) {
+        (*description) << "< '" << target << "'";
+    }
 
-    void describeMismatch(Description* description, const std::string& obj);
+    void describeMismatch(Description* description, const std::string& obj) {
+        (*description) << ">= '" << target << "'";
+    }
 
     template<int n>
     operator IsLessThanMatcher<char[n]>() const;
@@ -304,17 +385,26 @@ IsLessThanMatcher<std::string>::operator IsLessThanMatcher<char[n]>() const {
 }
 
 template<>
-class KKTEST_EXPORT IsLessThanEqualMatcher<std::string>: public Matcher {
+class IsLessThanEqualMatcher<std::string>: public Matcher {
  public:
-    explicit IsLessThanEqualMatcher(std::string target);
+    explicit IsLessThanEqualMatcher(std::string target):
+            target(std::move(target)) {}
 
-    bool matches(const std::string& obj);
+    bool matches(const std::string& obj) {
+        return obj <= target;
+    }
 
-    bool matches(const char* obj);
+    bool matches(const char* obj) {
+        return obj <= target;
+    }
 
-    void describe(Description* description);
+    void describe(Description* description) {
+        (*description) << "<= '" << target << "'";
+    }
 
-    void describeMismatch(Description* description, const std::string& obj);
+    void describeMismatch(Description* description, const std::string& obj) {
+        (*description) << "> '" << target << "'";
+    }
 
     template<int n>
     operator IsLessThanEqualMatcher<char[n]>() const;
@@ -337,17 +427,26 @@ IsLessThanEqualMatcher<std::string>::
 }
 
 template<>
-class KKTEST_EXPORT IsGreaterThanMatcher<std::string>: public Matcher {
+class IsGreaterThanMatcher<std::string>: public Matcher {
  public:
-    explicit IsGreaterThanMatcher(std::string target);
+    explicit IsGreaterThanMatcher(std::string target):
+            target(std::move(target)) {}
 
-    bool matches(const std::string& obj);
+    bool matches(const std::string& obj) {
+        return obj > target;
+    }
 
-    bool matches(const char* obj);
+    bool matches(const char* obj) {
+        return std::string(obj) > target;
+    }
 
-    void describe(Description* description);
+    void describe(Description* description) {
+        (*description) << "> '" << target << "'";
+    }
 
-    void describeMismatch(Description* description, const std::string& obj);
+    void describeMismatch(Description* description, const std::string& obj) {
+        (*description) << "<= '" << target << "'";
+    }
 
     template<int n>
     operator IsGreaterThanMatcher<char[n]>() const;
@@ -369,17 +468,26 @@ IsGreaterThanMatcher<std::string>::
 }
 
 template<>
-class KKTEST_EXPORT IsGreaterThanEqualMatcher<std::string>: public Matcher {
+class IsGreaterThanEqualMatcher<std::string>: public Matcher {
  public:
-    explicit IsGreaterThanEqualMatcher(std::string target);
+    explicit IsGreaterThanEqualMatcher(std::string target):
+            target(std::move(target)) {}
 
-    bool matches(const std::string& obj);
+    bool matches(const std::string& obj) {
+        return obj >= target;
+    }
 
-    bool matches(const char* obj);
+    bool matches(const char* obj) {
+        return obj >= target;
+    }
 
-    void describe(Description* description);
+    void describe(Description* description) {
+        (*description) << ">= '" << target << "'";
+    }
 
-    void describeMismatch(Description* description, const std::string& obj);
+    void describeMismatch(Description* description, const std::string& obj) {
+        (*description) << "< '" << target << "'";
+    }
 
     template<int n>
     operator IsGreaterThanEqualMatcher<char[n]>() const;

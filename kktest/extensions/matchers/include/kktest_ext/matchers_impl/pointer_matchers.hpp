@@ -7,30 +7,44 @@
 namespace kktest {
 namespace matchers {
 
-KKTEST_EXPORT extern detail::IsNullptrMatcher isNull;
-KKTEST_EXPORT extern detail::IsNotNullptrMatcher isNotNull;
-
 namespace detail {
 
-class KKTEST_EXPORT IsNullptrMatcher: public Matcher {
+class IsNullptrMatcher: public Matcher {
  public:
-    bool matches(void*const& obj);
+    bool matches(void*const& obj) {
+        return obj == nullptr;
+    }
 
-    void describe(Description* description);
+    void describe(Description* description) {
+        (*description) << "nullptr";
+    }
 
-    void describeMismatch(Description* description, void*const&);
+    void describeMismatch(Description* description, void*const&) {
+        (*description) << "non-null pointer";
+    }
 };
 
-class KKTEST_EXPORT IsNotNullptrMatcher: public Matcher {
+class IsNotNullptrMatcher: public Matcher {
  public:
-    bool matches(void*const& obj);
+    bool matches(void*const& obj) {
+        return obj != nullptr;
+    }
 
-    void describe(Description* description);
+    void describe(Description* description) {
+        (*description) << "non-null pointer";
+    }
 
-    void describeMismatch(Description* description, void*const&);
+    void describeMismatch(Description* description, void*const&) {
+        (*description) << "nullptr";
+    }
 };
 
 }
+
+static detail::IsNullptrMatcher isNull;
+
+static detail::IsNotNullptrMatcher isNotNull;
+
 }
 }
 
