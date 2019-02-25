@@ -120,7 +120,7 @@ class IsAlmostEqualMatcher: public Matcher {
     }
 
  private:
-    T target;
+    const T& target;
     double eps;
 };
 

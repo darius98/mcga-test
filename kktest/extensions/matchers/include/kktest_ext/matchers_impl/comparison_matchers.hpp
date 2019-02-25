@@ -67,7 +67,7 @@ class EqualityMatcher: public Matcher {
     }
 
  private:
-    T target;
+    const T& target;
 };
 
 template<class T>
@@ -90,7 +90,7 @@ class NonEqualityMatcher: public Matcher {
     }
 
  private:
-    T target;
+    const T& target;
 };
 
 template<class T>
@@ -113,7 +113,7 @@ class IsLessThanMatcher: public Matcher {
     }
 
  private:
-    T target;
+    const T& target;
 };
 
 template<class T>
@@ -136,7 +136,7 @@ class IsLessThanEqualMatcher: public Matcher {
     }
 
  private:
-    T target;
+    const T& target;
 };
 
 template<class T>
@@ -159,7 +159,7 @@ class IsGreaterThanMatcher: public Matcher {
     }
 
  private:
-    T target;
+    const T& target;
 };
 
 template<class T>
@@ -182,7 +182,7 @@ class IsGreaterThanEqualMatcher: public Matcher {
     }
 
  private:
-    T target;
+    const T& target;
 };
 
 template<class T>
