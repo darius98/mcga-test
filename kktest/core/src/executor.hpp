@@ -18,17 +18,17 @@ class Executor {
 
     void checkIsInactive(const std::string& methodName) const;
 
-    virtual void execute(Test&& test, Executable func);
+    virtual void execute(Test&& test, const Executable& func);
 
     virtual void finalize();
 
  protected:
-    ExecutedTest::Info run(GroupPtr group, Executable func);
+    ExecutedTest::Info run(GroupPtr group, const Executable& func);
 
  private:
     void runSetUps(GroupPtr group, ExecutedTest::Info* executionInfo);
 
-    void runTest(Executable func, ExecutedTest::Info* executionInfo);
+    void runTest(const Executable& func, ExecutedTest::Info* executionInfo);
 
     void runTearDowns(GroupPtr group, ExecutedTest::Info* executionInfo);
 

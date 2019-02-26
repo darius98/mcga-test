@@ -27,13 +27,13 @@ class Driver {
 
     void afterTestCase();
 
-    void addGroup(GroupConfig&& config, Executable func);
+    void addGroup(GroupConfig&& config, const Executable& func);
 
-    void addTest(TestConfig&& config, Executable func);
+    void addTest(TestConfig&& config, const Executable& func);
 
-    void addSetUp(Executable func);
+    void addSetUp(const Executable& func);
 
-    void addTearDown(Executable func);
+    void addTearDown(const Executable& func);
 
  private:
     void beforeTest(const Test& test);

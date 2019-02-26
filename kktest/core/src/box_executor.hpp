@@ -8,7 +8,7 @@ namespace kktest {
 
 struct BoxedTest {
     Test test;
-    std::function<void()> testFunc;
+    Executable testFunc;
     std::vector<ExecutedTest::Info> executions;
     std::unique_ptr<interproc::WorkerSubprocess> process;
 };
@@ -19,12 +19,14 @@ class BoxExecutor: public Executor {
 
     ~BoxExecutor() override = default;
 
+    void execute(Test&& test, const Executable& func) override;
+
     void finalize() override;
 
  private:
-    void execute(Test&& test, Executable func) override;
-
-    void runBoxed(GroupPtr group, Executable func, interproc::PipeWriter* pipe);
+    void runBoxed(GroupPtr group,
+                  const Executable& func,
+                  interproc::PipeWriter* pipe);
 
     void ensureEmptyBoxes(std::size_t numContainers);
 

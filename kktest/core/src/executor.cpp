@@ -29,7 +29,7 @@ void Executor::checkIsInactive(const string& methodName) const {
 
 void Executor::finalize() {}
 
-void Executor::execute(Test&& test, Executable func) {
+void Executor::execute(Test&& test, const Executable& func) {
     vector<ExecutedTest::Info> executions;
     executions.reserve(static_cast<size_t>(test.getNumAttempts()));
     for (int i = 0; i < test.getNumAttempts(); ++ i) {
@@ -38,7 +38,7 @@ void Executor::execute(Test&& test, Executable func) {
     onTestFinished(ExecutedTest(move(test), move(executions)));
 }
 
-ExecutedTest::Info Executor::run(GroupPtr group, Executable func) {
+ExecutedTest::Info Executor::run(GroupPtr group, const Executable& func) {
     state = ACTIVE;
     ExecutedTest::Info info;
     RealTimeTimer t;
@@ -51,43 +51,43 @@ ExecutedTest::Info Executor::run(GroupPtr group, Executable func) {
     return info;
 }
 
-void Executor::runSetUps(GroupPtr group, ExecutedTest::Info* executionInfo) {
+void Executor::runSetUps(GroupPtr group, ExecutedTest::Info* execution) {
     if (group == nullptr) {
         return;
     }
 
-    runSetUps(group->getParentGroup(), executionInfo);
+    runSetUps(group->getParentGroup(), execution);
     try {
         group->setUp();
     } catch(const ConfigurationError& e) {
         throw e;
     } catch(const ExpectationFailed& failure) {
-        executionInfo->fail(failure.what());
+        execution->fail(failure.what());
     } catch(const exception& e) {
-        executionInfo->fail("Exception thrown in setUp of group \""
-                            + group->getDescription() + "\": " + e.what());
+        execution->fail("Exception thrown in setUp of group \""
+                        + group->getDescription() + "\": " + e.what());
     } catch(...) {
-        executionInfo->fail("Non-exception thrown in setUp of group \""
-                            + group->getDescription() + "\".");
+        execution->fail("Non-exception thrown in setUp of group \""
+                        + group->getDescription() + "\".");
     }
 }
 
-void Executor::runTest(Executable func, ExecutedTest::Info* executionInfo) {
+void Executor::runTest(const Executable& func, ExecutedTest::Info* execution) {
     try {
         func();
     } catch(const ConfigurationError& e) {
         throw e;
     } catch(const ExpectationFailed& failure) {
-        executionInfo->fail(failure.what());
+        execution->fail(failure.what());
     } catch(const exception& e) {
-        executionInfo->fail("An exception was thrown during test: "
-                            + string(e.what()));
+        execution->fail("An exception was thrown during test: "
+                        + string(e.what()));
     } catch(...) {
-        executionInfo->fail("A non-exception object was thrown during test");
+        execution->fail("A non-exception object was thrown during test");
     }
 }
 
-void Executor::runTearDowns(GroupPtr group, ExecutedTest::Info* executionInfo) {
+void Executor::runTearDowns(GroupPtr group, ExecutedTest::Info* execution) {
     if (group == nullptr) {
         return;
     }
@@ -97,15 +97,15 @@ void Executor::runTearDowns(GroupPtr group, ExecutedTest::Info* executionInfo) {
     } catch(const ConfigurationError& e) {
         throw e;
     } catch(const ExpectationFailed& failure) {
-        executionInfo->fail(failure.what());
+        execution->fail(failure.what());
     } catch(const exception& e) {
-        executionInfo->fail("Exception thrown in tearDown of group \"" +
-                            group->getDescription() + "\": " + e.what());
+        execution->fail("Exception thrown in tearDown of group \""
+                        + group->getDescription() + "\": " + e.what());
     } catch(...) {
-        executionInfo->fail("Non-exception thrown in tearDown of group \"" +
-                            group->getDescription() + "\".");
+        execution->fail("Non-exception thrown in tearDown of group \""
+                        + group->getDescription() + "\".");
     }
-    runTearDowns(group->getParentGroup(), executionInfo);
+    runTearDowns(group->getParentGroup(), execution);
 }
 
 }

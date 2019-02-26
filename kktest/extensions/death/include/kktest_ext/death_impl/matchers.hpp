@@ -81,7 +81,7 @@ class ExitsWithCodeAndOutputMatcher: public matchers::Matcher {
             codeMatcher(std::move(codeMatcher)),
             outputMatcher(std::move(outputMatcher)) {}
 
-    bool matches(Executable func) {
+    bool matches(const Executable& func) {
         status = checkDeath(func);
         codeMatcherMatched = codeMatcher.matches(status.getExitCode());
         return codeMatcherMatched && outputMatcher.matches(status.getOutput());
@@ -94,11 +94,8 @@ class ExitsWithCodeAndOutputMatcher: public matchers::Matcher {
         outputMatcher.describe(description);
     }
 
-    void describeObject(matchers::Description* description, Executable func) {
-        (*description) << status;
-    }
-
-    void describeMismatch(matchers::Description* description, Executable func) {
+    void describeMismatch(matchers::Description* description,
+                          const Executable& func) {
         if (!codeMatcherMatched) {
             describeStatus(description, status);
         } else {
@@ -124,7 +121,7 @@ class ExitsWithCodeMatcher: public matchers::Matcher {
     explicit ExitsWithCodeMatcher(M codeMatcher):
             codeMatcher(std::move(codeMatcher)) {}
 
-    bool matches(Executable func) {
+    bool matches(const Executable& func) {
         status = checkDeath(func);
         return codeMatcher.matches(status.getExitCode());
     }
@@ -134,11 +131,8 @@ class ExitsWithCodeMatcher: public matchers::Matcher {
         codeMatcher.describe(description);
     }
 
-    void describeObject(matchers::Description* description, Executable func) {
-        (*description) << status;
-    }
-
-    void describeMismatch(matchers::Description* description, Executable func) {
+    void describeMismatch(matchers::Description* description,
+                          const Executable& func) {
         describeStatus(description, status);
     }
 
@@ -175,7 +169,7 @@ class ExitsWithOutputMatcher: public matchers::Matcher {
     explicit ExitsWithOutputMatcher(M outputMatcher):
             outputMatcher(std::move(outputMatcher)) {}
 
-    bool matches(Executable func) {
+    bool matches(const Executable& func) {
         status = checkDeath(func);
         return outputMatcher.matches(status.getOutput());
     }
@@ -185,11 +179,8 @@ class ExitsWithOutputMatcher: public matchers::Matcher {
         outputMatcher.describe(description);
     }
 
-    void describeObject(matchers::Description* description, Executable func) {
-        (*description) << status;
-    }
-
-    void describeMismatch(matchers::Description* description, Executable func) {
+    void describeMismatch(matchers::Description* description,
+                          const Executable& func) {
         outputMatcher.describeMismatch(description, status.getOutput());
     }
 
@@ -222,7 +213,7 @@ class ExitsMatcher: public matchers::Matcher {
     ExitsMatcher():
         zero(matchers::isZero), nonZero(matchers::isNot(matchers::isZero)) {}
 
-    bool matches(Executable func) {
+    bool matches(const Executable& func) {
         status = checkDeath(func);
         return status.exited();
     }
@@ -231,11 +222,8 @@ class ExitsMatcher: public matchers::Matcher {
         (*description) << "the program's end";
     }
 
-    void describeObject(matchers::Description* description, Executable func) {
-        (*description) << status;
-    }
-
-    void describeMismatch(matchers::Description* description, Executable func) {
+    void describeMismatch(matchers::Description* description,
+                          const Executable& func) {
         describeStatus(description, status);
     }
 

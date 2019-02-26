@@ -101,8 +101,8 @@ class Group: private GroupConfig {
     bool allTestsStarted = false;
     int testsFinished = 0;
 
-    std::function<void()> setUpFunc;
-    std::function<void()> tearDownFunc;
+    Executable setUpFunc;
+    Executable tearDownFunc;
 };
 
 typedef std::shared_ptr<Group> GroupPtr;

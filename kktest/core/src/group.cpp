@@ -32,7 +32,7 @@ void Group::addSetUp(Executable func) {
         throw ConfigurationError(
             "Trying to add second setUp to group \"" + description + "\".");
     }
-    setUpFunc = func;
+    setUpFunc = move(func);
 }
 
 void Group::setUp() const {
@@ -46,7 +46,7 @@ void Group::addTearDown(Executable func) {
         throw ConfigurationError(
             "Trying to add second tearDown to group \"" + description + "\".");
     }
-    tearDownFunc = func;
+    tearDownFunc = move(func);
 }
 
 void Group::tearDown() const {

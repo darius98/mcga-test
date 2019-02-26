@@ -19,7 +19,7 @@
 
 namespace kktest {
 
-typedef const std::function<void()>& Executable;
+typedef std::function<void()> Executable;
 
 /** Structure defining the configuration for a test.
  *
@@ -135,23 +135,23 @@ struct KKTEST_EXPORT GroupConfig {
 };
 
 struct KKTEST_EXPORT TestCase {
-    std::function<void()> exec;
+    Executable exec;
     std::string name;
 
-    TestCase(std::function<void()> exec); // NOLINT(google-explicit-constructor)
     TestCase(void (*exec)()); // NOLINT(google-explicit-constructor)
-    TestCase(std::function<void()> exec, std::string name);
+    TestCase(Executable exec); // NOLINT(google-explicit-constructor)
+    TestCase(Executable exec, std::string name);
 
     virtual void run();
 };
 
-KKTEST_EXPORT void test(TestConfig config, Executable func);
+KKTEST_EXPORT void test(TestConfig config, const Executable& func);
 
-KKTEST_EXPORT void group(GroupConfig config, Executable func);
+KKTEST_EXPORT void group(GroupConfig config, const Executable& func);
 
-KKTEST_EXPORT void setUp(Executable func);
+KKTEST_EXPORT void setUp(const Executable& func);
 
-KKTEST_EXPORT void tearDown(Executable func);
+KKTEST_EXPORT void tearDown(const Executable& func);
 
 KKTEST_EXPORT void fail(const std::string& message=std::string());
 

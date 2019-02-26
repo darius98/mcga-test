@@ -16,7 +16,7 @@ detail::ThrowsSpecificMatcher<E> throwsA() {
 }
 
 template<class F, class... Args>
-std::function<void()> wrapFunc(const F& func, const Args... args) {
+Executable wrapFunc(const F& func, const Args... args) {
     return [&]() { detail::invokePolyfill(func, args...); };
 }
 
@@ -24,7 +24,7 @@ namespace detail {
 
 class ThrowsAnythingMatcher: public Matcher {
  public:
-    bool matches(Executable func) {
+    bool matches(const Executable& func) {
         try {
             func();
             return false;
@@ -37,7 +37,7 @@ class ThrowsAnythingMatcher: public Matcher {
         (*description) << "a function that throws";
     }
 
-    void describeMismatch(Description* description, Executable func) {
+    void describeMismatch(Description* description, const Executable& func) {
         (*description) << "a function that did not throw";
     }
 };
@@ -45,7 +45,7 @@ class ThrowsAnythingMatcher: public Matcher {
 template<class E>
 class ThrowsSpecificMatcher: public Matcher {
  public:
-    bool matches(Executable func) {
+    bool matches(const Executable& func) {
         try {
             func();
             failureType = 1;
@@ -63,7 +63,7 @@ class ThrowsSpecificMatcher: public Matcher {
         (*description) << "a function that throws " << typeid(E).name();
     }
 
-    void describeMismatch(Description* description, Executable func) {
+    void describeMismatch(Description* description, const Executable& func) {
         if (failureType == 1) {
             (*description) << "a function that did not throw";
         }

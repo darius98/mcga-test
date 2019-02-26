@@ -49,30 +49,30 @@ GroupConfig& GroupConfig::setOptional(bool optional) {
     return *this;
 }
 
-TestCase::TestCase(function<void()> exec): exec(move(exec)) {}
-
 TestCase::TestCase(void (*exec)()): exec(exec), name("") {}
 
-TestCase::TestCase(function<void()> exec, std::string name):
+TestCase::TestCase(Executable exec): exec(move(exec)) {}
+
+TestCase::TestCase(Executable exec, std::string name):
         exec(move(exec)), name(move(name)) {}
 
 void TestCase::run() {
     exec();
 }
 
-void test(TestConfig config, Executable func) {
+void test(TestConfig config, const Executable& func) {
     Driver::getInstance()->addTest(move(config), func);
 }
 
-void group(GroupConfig config, Executable func) {
+void group(GroupConfig config, const Executable& func) {
     Driver::getInstance()->addGroup(move(config), func);
 }
 
-void setUp(Executable func) {
+void setUp(const Executable& func) {
     Driver::getInstance()->addSetUp(func);
 }
 
-void tearDown(Executable func) {
+void tearDown(const Executable& func) {
     Driver::getInstance()->addTearDown(func);
 }
 

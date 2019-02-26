@@ -21,7 +21,7 @@ enum MessageStatus: uint8_t {
 BoxExecutor::BoxExecutor(OnTestFinished onTestFinished, size_t numBoxes):
         Executor(move(onTestFinished)), numBoxes(numBoxes) {}
 
-void BoxExecutor::execute(Test&& test, Executable func) {
+void BoxExecutor::execute(Test&& test, const Executable& func) {
     ensureEmptyBoxes(1);
     double timeLimit = test.getTimeTicksLimit() * getTimeTickLengthMs() + 100.0;
     GroupPtr group = test.getGroup();
@@ -32,7 +32,9 @@ void BoxExecutor::execute(Test&& test, Executable func) {
         BoxedTest{move(test), func, {}, unique_ptr<WorkerSubprocess>(process)});
 }
 
-void BoxExecutor::runBoxed(GroupPtr group, Executable func, PipeWriter* pipe) {
+void BoxExecutor::runBoxed(GroupPtr group,
+                           const Executable& func,
+                           PipeWriter* pipe) {
     try {
         ExecutedTest::Info info = run(move(group), func);
         pipe->sendMessage(SUCCESS, info.timeTicks, info.passed, info.failure);

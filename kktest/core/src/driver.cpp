@@ -52,7 +52,7 @@ Driver::Driver(ExtensionApi extensionApi, bool smooth, size_t numBoxes):
              ? new    Executor(bind(&Driver::afterTest, this, _1))
              : new BoxExecutor(bind(&Driver::afterTest, this, _1), numBoxes)) {}
 
-void Driver::addGroup(GroupConfig&& config, Executable func) {
+void Driver::addGroup(GroupConfig&& config, const Executable& func) {
     executor->checkIsInactive("group");
     auto group = make_shared<Group>(move(config),
                                     groupStack.back(),
@@ -84,7 +84,7 @@ void Driver::addGroup(GroupConfig&& config, Executable func) {
     groupStack.pop_back();
 }
 
-void Driver::addTest(TestConfig&& config, Executable func) {
+void Driver::addTest(TestConfig&& config, const Executable& func) {
     executor->checkIsInactive("test");
     GroupPtr parentGroup = groupStack.back();
     Test test(move(config), parentGroup, ++ currentTestIndex);
@@ -93,12 +93,12 @@ void Driver::addTest(TestConfig&& config, Executable func) {
     executor->execute(move(test), func);
 }
 
-void Driver::addSetUp(Executable func) {
+void Driver::addSetUp(const Executable& func) {
     executor->checkIsInactive("setUp");
     groupStack.back()->addSetUp(func);
 }
 
-void Driver::addTearDown(Executable func) {
+void Driver::addTearDown(const Executable& func) {
     executor->checkIsInactive("tearDown");
     groupStack.back()->addTearDown(func);
 }
