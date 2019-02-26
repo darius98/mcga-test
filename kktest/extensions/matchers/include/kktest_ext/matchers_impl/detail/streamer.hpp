@@ -124,20 +124,19 @@ class Streamer<std::string,
                 > {
  public:
     static void send(std::stringstream& s, const std::string& obj) {
-        // TODO(darius98): This should be somewhere else (in utils maybe?)
         std::string objCopy = obj;
         std::size_t pos = 0;
-        while ((pos = obj.find('\n', pos)) != std::string::npos) {
+        while ((pos = objCopy.find('\n', pos)) != std::string::npos) {
             objCopy.replace(pos, 1, "\\n");
             pos += 2;
         }
         pos = 0;
-        while ((pos = obj.find('\t', pos)) != std::string::npos) {
+        while ((pos = objCopy.find('\t', pos)) != std::string::npos) {
             objCopy.replace(pos, 1, "\\t");
             pos += 2;
         }
         pos = 0;
-        while ((pos = obj.find('\r', pos)) != std::string::npos) {
+        while ((pos = objCopy.find('\r', pos)) != std::string::npos) {
             objCopy.replace(pos, 1, "\\r");
             pos += 2;
         }
