@@ -32,6 +32,12 @@ class Test : private TestConfig {
     /** See TestConfig#timeTicksLimit. */
     double getTimeTicksLimit() const;
 
+    /** See TestConfig#attempts. */
+    int getNumAttempts() const;
+
+    /** See TestConfig#passedAttemptsRequired */
+    int getNumRequiredPassedAttempts() const;
+
     /** The group that contains this test. */
     GroupPtr getGroup() const;
 
@@ -83,38 +89,42 @@ class ExecutedTest : public Test {
         void fail(const std::string& failure);
     };
 
-    /** Upgrade a Test to an ExecutedTest with the use of an execution Info
-     * result.
+    /** Upgrade a Test to an ExecutedTest with the use of the execution Info
+     * result for all executions.
      *
      * Since this process only happens once for a test, and since the Test
      * instance should no longer be needed after obtaining an ExecutedTest
      * instance, this constructor moves the Test. */
-    ExecutedTest(Test&& test, Info&& info);
-
-    /** Upgrade a Test to an ExecutedTest with the use of a failure message.
-     *
-     * Sometimes the Test can fail because of a KBS or an unexpected exit etc.
-     * and we cannot fill in any other information into the execution Info
-     * except for a failure message. This constructor is a shorthand for such
-     * cases. */
-    ExecutedTest(Test&& test, std::string&& failure);
+    ExecutedTest(Test&& test, std::vector<Info>&& executions);
 
     /** Check whether the execution Info marks the test as passed or failed. */
     bool isPassed() const;
 
-    /** Get the failure message of the test execution, or empty string if the
-     * test passed. */
-    const std::string& getFailure() const;
+    /** The number of attempts passed. */
+    int getNumPassedAttempts() const;
 
-    /** Get the number of time ticks the execution took.
-     *
-     * If the test passed (isPassed() returns `true`), the number is always
-     * valid. If the test failed and the number of time ticks was not
-     * measurable, returns `-1` instead. */
-    double getTimeTicks() const;
+    /** The average number of time ticks per execution (only counting executions
+     * where the number of time ticks is computable). */
+    double getAvgTimeTicksForExecution() const;
+
+    /** The total number of time ticks used (only counting executions where the
+     * number of time ticks is computable). */
+    double getTotalTimeTicks() const;
+
+    /** Get the error message for the last failed execution, or empty string if
+     * all executions passed. */
+    std::string getLastFailure() const;
+
+    /** Get the array of executions. */
+    const std::vector<Info>& getExecutions() const;
 
  private:
-    Info info;
+    std::vector<Info> executions;
+
+    // Cached values.
+    mutable int numPassedExecutions = -1;
+    mutable double totalTimeTicks = -2; // -1=un-computable. -2=not calculated
+    mutable double avgTimeTicks = -2; // -1=un-computable. -2=not calculated
 };
 
 }

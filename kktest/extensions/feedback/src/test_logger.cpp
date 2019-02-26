@@ -14,7 +14,7 @@ namespace feedback {
 TestLogger::TestLogger(ostream& stream): stream(stream) {}
 
 void TestLogger::addTest(const ExecutedTest& test) {
-    totalTimeTicks += test.getTimeTicks();
+    totalTimeTicks += test.getTotalTimeTicks();
     passedTests += test.isPassed();
     failedTests += !test.isPassed();
     failedOptionalTests += (!test.isPassed() && test.isOptional());
@@ -88,15 +88,34 @@ void TestLogger::printTestMessage(const ExecutedTest& test) {
            << " - "
            << fixed
            << setprecision(3)
-           << test.getTimeTicks()
+           << (test.getNumAttempts() > 1 ? "~ " : "")
+           << test.getAvgTimeTicksForExecution()
            << " ticks ("
-           << test.getTimeTicks() * Executor::getTimeTickLengthMs()
+           << (test.getNumAttempts() > 1 ? "~ " : "")
+           << test.getAvgTimeTicksForExecution()
+                * Executor::getTimeTickLengthMs()
            << " ms)";
-    if (!test.isPassed() && !test.getFailure().empty()) {
+    if (test.getNumAttempts() > 1 && !test.isPassed()) {
+        stream << " ("
+               << test.getNumPassedAttempts()
+               << " passed, "
+               << test.getNumRequiredPassedAttempts()
+               << " / "
+               << test.getNumRequiredPassedAttempts()
+               << " required)";
+    }
+    if (test.getNumAttempts() > 1 && test.isPassed()) {
+        stream << " ("
+               << test.getNumPassedAttempts()
+               << " / "
+               << test.getNumAttempts()
+               << " passed)";
+    }
+    if (!test.isPassed() && !test.getLastFailure().empty()) {
         stream << "\n\t";
         // TODO(darius98): This should be somewhere else (in utils maybe?)
         size_t pos = 0;
-        string failure = test.getFailure();
+        string failure = test.getLastFailure();
         while ((pos = failure.find('\n', pos)) != string::npos) {
             failure.replace(pos, 1, "\n\t");
             pos += 2;

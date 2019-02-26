@@ -6,6 +6,16 @@ using namespace cppli;
 using namespace kktest::interproc;
 using namespace std;
 
+template<>
+Message::BytesConsumer& Message::BytesConsumer::add(
+        const vector<ExecutedTest::Info>& obj) {
+    add(obj.size());
+    for (const auto& info : obj) {
+        add(info.timeTicks, info.passed, info.failure);
+    }
+    return *this;
+}
+
 namespace kktest {
 namespace feedback {
 
@@ -69,10 +79,11 @@ void FeedbackExtension::initPipe(ExtensionApi& api, const string& pipeName) {
         pipe->sendMessage(PipeMessageType::TEST,
                           test.getGroup()->getIndex(),
                           test.getIndex(),
-                          test.isOptional(),
                           test.getDescription(),
-                          test.isPassed(),
-                          test.getFailure());
+                          test.isOptional(),
+                          test.getNumAttempts(),
+                          test.getNumRequiredPassedAttempts(),
+                          test.getExecutions());
     });
 
     api.addHook<ExtensionApi::BEFORE_DESTROY>([this]() {

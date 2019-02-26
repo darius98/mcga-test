@@ -9,6 +9,8 @@ using namespace kktest::utils;
 using namespace std;
 using namespace std::placeholders;
 
+// TODO(darius98): This implementation required refactoring.
+
 namespace kktest {
 
 enum MessageStatus: uint8_t {
@@ -27,7 +29,7 @@ void BoxExecutor::execute(Test&& test, Executable func) {
             Duration::fromMs(timeLimit),
             bind(&BoxExecutor::runBoxed, this, group, func, _1));
     activeBoxes.push_back(
-            BoxedTest{move(test), unique_ptr<WorkerSubprocess>(process)});
+        BoxedTest{move(test), func, {}, unique_ptr<WorkerSubprocess>(process)});
 }
 
 void BoxExecutor::runBoxed(GroupPtr group, Executable func, PipeWriter* pipe) {
@@ -49,7 +51,23 @@ void BoxExecutor::ensureEmptyBoxes(size_t requiredEmpty) {
         bool progress = false;
         for (auto it = activeBoxes.begin(); it != activeBoxes.end(); ) {
             if (tryCloseBox(it)) {
-                it = activeBoxes.erase(it);
+                if (it->executions.size() == it->test.getNumAttempts()) {
+                    onTestFinished(ExecutedTest(move(it->test),
+                                                move(it->executions)));
+                    it = activeBoxes.erase(it);
+                } else {
+                    double timeLimit = it->test.getTimeTicksLimit()
+                                            * getTimeTickLengthMs() + 100.0;
+                    GroupPtr group = it->test.getGroup();
+                    it->process.reset(new WorkerSubprocess(
+                        Duration::fromMs(timeLimit),
+                        bind(&BoxExecutor::runBoxed,
+                             this,
+                             group,
+                             it->testFunc,
+                             _1)));
+                    ++ it;
+                }
                 progress = true;
             } else {
                 ++ it;
@@ -95,7 +113,7 @@ bool BoxExecutor::tryCloseBox(vector<BoxedTest>::iterator boxedTest) {
         }
     }
     if (!passed) {
-        onTestFinished(ExecutedTest(move(boxedTest->test), move(error)));
+        boxedTest->executions.emplace_back(move(error));
         return true;
     }
     if (message.read<MessageStatus>() == CONFIGURATION_ERROR) {
@@ -104,7 +122,7 @@ bool BoxExecutor::tryCloseBox(vector<BoxedTest>::iterator boxedTest) {
     }
     ExecutedTest::Info info;
     message >> info.timeTicks >> info.passed >> info.failure;
-    onTestFinished(ExecutedTest(move(boxedTest->test), move(info)));
+    boxedTest->executions.push_back(move(info));
     return true;
 }
 

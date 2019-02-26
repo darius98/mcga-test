@@ -25,6 +25,16 @@ TestConfig& TestConfig::setTimeTicksLimit(double timeTicksLimit) {
     return *this;
 }
 
+TestConfig& TestConfig::setAttempts(int attempts) {
+    this->attempts = attempts;
+    return *this;
+}
+
+TestConfig& TestConfig::setRequiredPassedAttempts(int requiredPassedAttempts) {
+    this->requiredPassedAttempts = requiredPassedAttempts;
+    return *this;
+}
+
 GroupConfig::GroupConfig(string description): description(move(description)) {}
 
 GroupConfig::GroupConfig(const char* description): description(description) {}

@@ -21,6 +21,14 @@ double Test::getTimeTicksLimit() const {
     return timeTicksLimit;
 }
 
+int Test::getNumAttempts() const {
+    return attempts;
+}
+
+int Test::getNumRequiredPassedAttempts() const {
+    return requiredPassedAttempts;
+}
+
 GroupPtr Test::getGroup() const {
     return group;
 }
@@ -39,22 +47,70 @@ void ExecutedTest::Info::fail(const string& failure) {
     }
 }
 
-ExecutedTest::ExecutedTest(Test&& test, string&& failure):
-        Test(move(test)), info(move(failure)) {}
-
-ExecutedTest::ExecutedTest(Test&& test, Info&& info):
-        Test(move(test)), info(move(info)) {}
+ExecutedTest::ExecutedTest(Test&& test, vector<Info>&& executions):
+        Test(move(test)), executions(move(executions)) {}
 
 bool ExecutedTest::isPassed() const {
-    return info.passed;
+    return getNumPassedAttempts() >= getNumRequiredPassedAttempts();
 }
 
-const string& ExecutedTest::getFailure() const {
-    return info.failure;
+int ExecutedTest::getNumPassedAttempts() const {
+    if (numPassedExecutions == -1) {
+        numPassedExecutions = 0;
+        for (const auto& info: executions) {
+            numPassedExecutions += info.passed;
+        }
+    }
+    return numPassedExecutions;
 }
 
-double ExecutedTest::getTimeTicks() const {
-    return info.timeTicks;
+double ExecutedTest::getAvgTimeTicksForExecution() const {
+    if (avgTimeTicks == -2) {
+        int numCountedExecutions = 0;
+        double totalTimeTicks = 0;
+        for (const auto& info: executions) {
+            if (info.timeTicks != -1) {
+                totalTimeTicks += info.timeTicks;
+                numCountedExecutions += 1;
+            }
+        }
+        if (numCountedExecutions > 0) {
+            avgTimeTicks = totalTimeTicks / numCountedExecutions;
+        } else {
+            avgTimeTicks = -1;
+        }
+    }
+    return avgTimeTicks;
+}
+
+double ExecutedTest::getTotalTimeTicks() const {
+    if (totalTimeTicks == -2) {
+        int numCountedExecutions = 0;
+        totalTimeTicks = 0;
+        for (const auto& info: executions) {
+            if (info.timeTicks != -1) {
+                totalTimeTicks += info.timeTicks;
+                numCountedExecutions += 1;
+            }
+        }
+        if (numCountedExecutions == 0) {
+            totalTimeTicks = -1;
+        }
+    }
+    return totalTimeTicks;
+}
+
+string ExecutedTest::getLastFailure() const {
+    for (int i = static_cast<int>(executions.size()); i >= 0; -- i) {
+        if (!executions[i].passed) {
+            return executions[i].failure;
+        }
+    }
+    return "";
+}
+
+const vector<ExecutedTest::Info>& ExecutedTest::getExecutions() const {
+    return executions;
 }
 
 }

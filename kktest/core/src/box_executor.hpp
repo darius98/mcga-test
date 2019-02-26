@@ -8,6 +8,8 @@ namespace kktest {
 
 struct BoxedTest {
     Test test;
+    std::function<void()> testFunc;
+    std::vector<ExecutedTest::Info> executions;
     std::unique_ptr<interproc::WorkerSubprocess> process;
 };
 

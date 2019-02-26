@@ -30,8 +30,12 @@ void Executor::checkIsInactive(const string& methodName) const {
 void Executor::finalize() {}
 
 void Executor::execute(Test&& test, Executable func) {
-    ExecutedTest::Info info = run(test.getGroup(), func);
-    onTestFinished(ExecutedTest(move(test), move(info)));
+    vector<ExecutedTest::Info> executions;
+    executions.reserve(static_cast<size_t>(test.getNumAttempts()));
+    for (int i = 0; i < test.getNumAttempts(); ++ i) {
+        executions.push_back(run(test.getGroup(), func));
+    }
+    onTestFinished(ExecutedTest(move(test), move(executions)));
 }
 
 ExecutedTest::Info Executor::run(GroupPtr group, Executable func) {
