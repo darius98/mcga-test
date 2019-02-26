@@ -42,70 +42,49 @@ ExecutedTest::Info Executor::run(const Test& test) {
     state = ACTIVE;
     ExecutedTest::Info info;
     RealTimeTimer t;
-    runSetUps(test.getGroup(), &info);
-    runTest(test, &info);
-    runTearDowns(test.getGroup(), &info);
+    vector<GroupPtr> testGroupStack = test.getGroupStack();
+    vector<GroupPtr>::iterator it;
+    // Execute setUp()-s, in the order of the group stack.
+    for (it = testGroupStack.begin(); it != testGroupStack.end(); ++ it) {
+        runJob([it] { (*it)->setUp(); },
+               &info,
+               "setUp of group \"" + (*it)->getDescription() + "\"");
+        if (!info.passed) {
+            // If a setUp() fails, do not execute the rest.
+            break;
+        }
+    }
+    if (info.passed) {
+        // Only run the test if all setUp()-s passed without exception.
+        runJob(bind(&Test::run, &test), &info, "test");
+        -- it;
+    }
+    // Execute tearDown()-s in reverse order, from where setUp()-s stopped.
+    for (; it + 1 != testGroupStack.begin(); -- it) {
+        runJob([it] { (*it)->tearDown(); },
+               &info,
+               "tearDown of group \"" + (*it)->getDescription() + "\"");
+    }
     double elapsedMs = 1.0 * t.elapsed().totalNs() / Duration::kMilliToNano;
     info.timeTicks = elapsedMs / getTimeTickLengthMs();
     state = INACTIVE;
     return info;
 }
 
-void Executor::runSetUps(GroupPtr group, ExecutedTest::Info* execution) {
-    if (group == nullptr) {
-        return;
-    }
-
-    runSetUps(group->getParentGroup(), execution);
+void Executor::runJob(const Executable& job,
+                      ExecutedTest::Info* execution,
+                      const string& where) {
     try {
-        group->setUp();
+        job();
     } catch(const ConfigurationError& e) {
         throw e;
     } catch(const ExpectationFailed& failure) {
         execution->fail(failure.what());
     } catch(const exception& e) {
-        execution->fail("Exception thrown in setUp of group \""
-                        + group->getDescription() + "\": " + e.what());
+        execution->fail("Uncaught exception in " + where + ": " + e.what());
     } catch(...) {
-        execution->fail("Non-exception thrown in setUp of group \""
-                        + group->getDescription() + "\".");
+        execution->fail("Uncaught non-exception type in " + where + "\".");
     }
-}
-
-void Executor::runTest(const Test& test, ExecutedTest::Info* execution) {
-    try {
-        test.run();
-    } catch(const ConfigurationError& e) {
-        throw e;
-    } catch(const ExpectationFailed& failure) {
-        execution->fail(failure.what());
-    } catch(const exception& e) {
-        execution->fail("An exception was thrown during test: "
-                        + string(e.what()));
-    } catch(...) {
-        execution->fail("A non-exception object was thrown during test");
-    }
-}
-
-void Executor::runTearDowns(GroupPtr group, ExecutedTest::Info* execution) {
-    if (group == nullptr) {
-        return;
-    }
-
-    try {
-        group->tearDown();
-    } catch(const ConfigurationError& e) {
-        throw e;
-    } catch(const ExpectationFailed& failure) {
-        execution->fail(failure.what());
-    } catch(const exception& e) {
-        execution->fail("Exception thrown in tearDown of group \""
-                        + group->getDescription() + "\": " + e.what());
-    } catch(...) {
-        execution->fail("Non-exception thrown in tearDown of group \""
-                        + group->getDescription() + "\".");
-    }
-    runTearDowns(group->getParentGroup(), execution);
 }
 
 }

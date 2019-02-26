@@ -1,6 +1,6 @@
 #include "kktest/core/src/test.hpp"
 
-#include "kktest/core/src/group.hpp"
+#include <algorithm>
 
 using namespace std;
 
@@ -34,6 +34,15 @@ std::size_t Test::getNumRequiredPassedAttempts() const {
 
 GroupPtr Test::getGroup() const {
     return group;
+}
+
+vector<GroupPtr> Test::getGroupStack() const {
+    vector<GroupPtr> groupStack(1, getGroup());
+    while (groupStack.back()->getParentGroup() != nullptr) {
+        groupStack.push_back(groupStack.back()->getParentGroup());
+    }
+    reverse(groupStack.begin(), groupStack.end());
+    return groupStack;
 }
 
 int Test::getIndex() const {

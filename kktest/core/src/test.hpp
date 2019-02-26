@@ -1,6 +1,8 @@
 #ifndef KKTEST_CORE_SRC_TEST_HPP_
 #define KKTEST_CORE_SRC_TEST_HPP_
 
+#include <vector>
+
 #include "kktest/core/include/kktest.hpp"
 #include "kktest/core/src/group.hpp"
 
@@ -47,6 +49,10 @@ class Test : private TestConfig {
 
     /** The group that contains this test. */
     GroupPtr getGroup() const;
+
+    /** The groups, in order from the global scope to the nearest, that
+     * contain this test. */
+    std::vector<GroupPtr> getGroupStack() const;
 
     /** Globally unique, incremental index of the test. */
     int getIndex() const;
