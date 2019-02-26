@@ -220,7 +220,7 @@ class ExitsWithOutputMatcher: public matchers::Matcher {
 class ExitsMatcher: public matchers::Matcher {
  public:
     ExitsMatcher():
-        zero(matchers::isEqualTo(0)), nonZero(matchers::isNotEqualTo(0)) {}
+        zero(matchers::isZero), nonZero(matchers::isNot(matchers::isZero)) {}
 
     bool matches(Executable func) {
         status = checkDeath(func);
@@ -276,9 +276,9 @@ class ExitsMatcher: public matchers::Matcher {
                         matchers::isEqualTo(output));
     }
 
-    ExitsWithCodeMatcher<matchers::detail::EqualityMatcher<int>> zero;
-    ExitsWithCodeMatcher<matchers::detail::NonEqualityMatcher<int>>
-            nonZero;
+    ExitsWithCodeMatcher<matchers::detail::IsZeroMatcher> zero;
+    ExitsWithCodeMatcher
+        <matchers::detail::NotMatcher<matchers::detail::IsZeroMatcher>> nonZero;
 
  private:
     DeathStatus status;
