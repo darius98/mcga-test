@@ -36,9 +36,7 @@ class Message {
 
     template<class T>
     Message& operator>>(T& obj) {
-        obj = *static_cast<T*>(
-                static_cast<void*>(
-                        static_cast<std::uint8_t*>(payload) + readHead));
+        obj = *reinterpret_cast<T*>(payload + readHead);
         readHead += sizeof(obj);
         return *this;
     }
@@ -51,16 +49,20 @@ class Message {
     }
 
  private:
-    explicit Message(void* payload) noexcept;
+    explicit Message(uint8_t* payload) noexcept;
 
     std::size_t getSize() const;
 
     void copyContent(const Message& other);
 
     std::size_t readHead = sizeof(std::size_t);
-    void* payload;
+    std::uint8_t* payload;
 
     // helper internal classes
+
+    static std::size_t expectedContentSizeFromBuffer(const void* buffer);
+
+    static std::uint8_t* allocate(std::size_t numBytes);
 
     class BytesConsumer {
      public:
@@ -104,7 +106,7 @@ class Message {
         Message build();
 
      private:
-        void* payloadBuilder;
+        std::uint8_t* payloadBuilder;
         std::size_t cursor;
     };
 

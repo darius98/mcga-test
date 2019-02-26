@@ -24,11 +24,11 @@ double Test::getTimeTicksLimit() const {
     return timeTicksLimit;
 }
 
-int Test::getNumAttempts() const {
+std::size_t Test::getNumAttempts() const {
     return attempts;
 }
 
-int Test::getNumRequiredPassedAttempts() const {
+std::size_t Test::getNumRequiredPassedAttempts() const {
     return requiredPassedAttempts;
 }
 

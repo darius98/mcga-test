@@ -29,22 +29,22 @@ void Executor::checkIsInactive(const string& methodName) const {
 
 void Executor::finalize() {}
 
-void Executor::execute(Test&& test) {
+void Executor::execute(Test test) {
     vector<ExecutedTest::Info> executions;
-    executions.reserve(static_cast<size_t>(test.getNumAttempts()));
-    for (int i = 0; i < test.getNumAttempts(); ++ i) {
-        executions.push_back(run(test.getGroup(), test.body));
+    executions.reserve(test.getNumAttempts());
+    for (size_t i = 0; i < test.getNumAttempts(); ++ i) {
+        executions.push_back(run(test));
     }
     onTestFinished(ExecutedTest(move(test), move(executions)));
 }
 
-ExecutedTest::Info Executor::run(GroupPtr group, const Executable& func) {
+ExecutedTest::Info Executor::run(const Test& test) {
     state = ACTIVE;
     ExecutedTest::Info info;
     RealTimeTimer t;
-    runSetUps(group, &info);
-    runTest(func, &info);
-    runTearDowns(group, &info);
+    runSetUps(test.getGroup(), &info);
+    runTest(test.body, &info);
+    runTearDowns(test.getGroup(), &info);
     double elapsedMs = 1.0 * t.elapsed().totalNs() / Duration::kMilliToNano;
     info.timeTicks = elapsedMs / getTimeTickLengthMs();
     state = INACTIVE;

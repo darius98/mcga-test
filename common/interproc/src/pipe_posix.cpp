@@ -19,7 +19,7 @@ class LinuxPipeReader: public PipeReader {
  public:
     explicit LinuxPipeReader(const int& inputFD):
         inputFD(inputFD),
-        buffer(malloc(128)),
+        buffer(static_cast<uint8_t*>(malloc(128))),
         bufferReadHead(0),
         bufferSize(0),
         bufferCapacity(128) {}
@@ -64,9 +64,9 @@ class LinuxPipeReader: public PipeReader {
             }
         }
         vector<uint8_t> result(bufferSize - bufferReadHead, 0);
-        for (size_t i = 0; i < bufferSize - bufferReadHead; ++ i) {
-            result[i] = *(static_cast<uint8_t*>(buffer) + bufferReadHead + i);
-        }
+        memcpy(result.data(),
+               buffer + bufferReadHead,
+               bufferSize - bufferReadHead);
         bufferReadHead = bufferSize;
         return result;
     }
@@ -85,9 +85,7 @@ class LinuxPipeReader: public PipeReader {
             return false;
         }
         resizeBufferToFit((size_t)numBytesRead);
-        memcpy(static_cast<uint8_t*>(buffer) + bufferSize,
-               block,
-               static_cast<size_t>(numBytesRead));
+        memcpy(buffer + bufferSize, block, static_cast<size_t>(numBytesRead));
         bufferSize += numBytesRead;
         return true;
     }
@@ -95,13 +93,13 @@ class LinuxPipeReader: public PipeReader {
     void resizeBufferToFit(size_t extraBytes) {
         if (bufferCapacity < bufferSize + extraBytes && bufferReadHead > 0) {
             memcpy(buffer,
-                   static_cast<uint8_t*>(buffer) + bufferReadHead,
+                   buffer + bufferReadHead,
                    bufferCapacity - bufferReadHead);
             bufferSize -= bufferReadHead;
             bufferReadHead = 0;
         }
         while (bufferCapacity < bufferSize + extraBytes) {
-            void* newBuffer = malloc(2 * bufferCapacity);
+            auto newBuffer = static_cast<uint8_t*>(malloc(2 * bufferCapacity));
             memcpy(newBuffer, buffer, bufferSize);
             free(buffer);
             buffer = newBuffer;
@@ -110,9 +108,8 @@ class LinuxPipeReader: public PipeReader {
     }
 
     Message readMessageFromBuffer() {
-        auto message = Message::read(
-                static_cast<uint8_t*>(buffer) + bufferReadHead,
-                bufferSize - bufferReadHead);
+        auto message = Message::read(buffer + bufferReadHead,
+                                     bufferSize - bufferReadHead);
         if (!message.isInvalid()) {
             bufferReadHead += getMessageSize(message);
         }
@@ -120,7 +117,7 @@ class LinuxPipeReader: public PipeReader {
     }
 
     int inputFD;
-    void* buffer;
+    uint8_t* buffer;
     size_t bufferReadHead;
     size_t bufferSize;
     size_t bufferCapacity;
@@ -134,10 +131,10 @@ class LinuxPipeWriter: public PipeWriter {
         close(outputFD);
     }
 
-    void sendBytes(void* bytes, size_t numBytes) override {
+    void sendBytes(uint8_t* bytes, size_t numBytes) override {
         size_t written = 0;
         while (written < numBytes) {
-            auto target = static_cast<const uint8_t*>(bytes) + written;
+            auto target = bytes + written;
             size_t remaining = numBytes - written;
             ssize_t currentWriteBlockSize = write(outputFD, target, remaining);
             if (currentWriteBlockSize < 0) {

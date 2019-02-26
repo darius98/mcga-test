@@ -14,11 +14,11 @@ Message Message::read(const void* src, size_t maxSize) {
     if (maxSize < sizeof(size_t)) {
         return INVALID;
     }
-    auto expectedSize = (*static_cast<const size_t*>(src)) + sizeof(size_t);
+    auto expectedSize = expectedContentSizeFromBuffer(src) + sizeof(size_t);
     if (expectedSize > maxSize) {
         return INVALID;
     }
-    void* messagePayload = malloc(expectedSize);
+    auto messagePayload = allocate(expectedSize);
     memcpy(messagePayload, src, expectedSize);
     return Message(messagePayload);
 }
@@ -35,7 +35,7 @@ Message::Message(Message&& other) noexcept: payload(other.payload) {
     }
 }
 
-Message::Message(void* payload) noexcept: payload(payload) {}
+Message::Message(uint8_t* payload) noexcept: payload(payload) {}
 
 Message::~Message() {
     if (payload != nullptr) {
@@ -57,11 +57,10 @@ Message& Message::operator=(const Message& other) {
 
 Message& Message::operator=(Message&& other) noexcept {
     readHead = sizeof(size_t);
-    if (this == &other) {
-        return *this;
-    }
     payload = other.payload;
-    other.payload = nullptr;
+    if (this != &other) {
+        other.payload = nullptr;
+    }
     return *this;
 }
 
@@ -70,13 +69,13 @@ void Message::copyContent(const Message& other) {
         payload = nullptr;
     } else {
         auto size = other.getSize();
-        payload = malloc(size);
+        payload = allocate(size);
         memcpy(payload, other.payload, size);
     }
 }
 
 size_t Message::getSize() const {
-    return sizeof(size_t) + *static_cast<size_t*>(payload);
+    return sizeof(size_t) + expectedContentSizeFromBuffer(payload);
 }
 
 bool Message::operator==(const Message& other) const {
@@ -91,10 +90,18 @@ template<>
 Message& Message::operator>>(string& obj) {
     decltype(obj.size()) size;
     (*this) >> size;
-    obj.assign(static_cast<char*>(payload) + readHead,
-               static_cast<char*>(payload) + readHead + size);
+    obj.assign(reinterpret_cast<char*>(payload) + readHead,
+               reinterpret_cast<char*>(payload) + readHead + size);
     readHead += size;
     return *this;
+}
+
+size_t Message::expectedContentSizeFromBuffer(const void* buffer) {
+    return *static_cast<const size_t*>(buffer);
+}
+
+uint8_t* Message::allocate(size_t numBytes) {
+    return static_cast<uint8_t*>(malloc(numBytes));
 }
 
 template<>
@@ -106,8 +113,8 @@ Message::BytesConsumer& Message::BytesConsumer::add(const string& obj) {
 
 template<>
 Message::BytesConsumer& Message::BytesConsumer::add(const Message& obj) {
-    auto contentSize = *static_cast<size_t*>(obj.payload);
-    addBytes(static_cast<uint8_t*>(obj.payload) + sizeof(size_t), contentSize);
+    auto contentSize = expectedContentSizeFromBuffer(obj.payload);
+    addBytes(obj.payload + sizeof(size_t), contentSize);
     return *this;
 }
 
@@ -122,14 +129,14 @@ size_t Message::BytesCounter::getNumBytesConsumed() const {
 }
 
 Message::Builder::Builder(size_t size):
-        payloadBuilder(malloc(size + sizeof(size_t))) {
+        payloadBuilder(allocate(size + sizeof(size_t))) {
     memcpy(payloadBuilder, &size, sizeof(size_t));
     cursor = sizeof(size_t);
 }
 
 Message::Builder& Message::Builder::addBytes(const void* bytes,
                                              size_t numBytes) {
-    memcpy(static_cast<uint8_t*>(payloadBuilder) + cursor, bytes, numBytes);
+    memcpy(payloadBuilder + cursor, bytes, numBytes);
     cursor += numBytes;
     return *this;
 }

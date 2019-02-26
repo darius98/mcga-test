@@ -25,12 +25,13 @@ TestConfig& TestConfig::setTimeTicksLimit(double timeTicksLimit) {
     return *this;
 }
 
-TestConfig& TestConfig::setAttempts(int attempts) {
+TestConfig& TestConfig::setAttempts(size_t attempts) {
     this->attempts = attempts;
     return *this;
 }
 
-TestConfig& TestConfig::setRequiredPassedAttempts(int requiredPassedAttempts) {
+TestConfig& TestConfig::setRequiredPassedAttempts(
+        size_t requiredPassedAttempts) {
     this->requiredPassedAttempts = requiredPassedAttempts;
     return *this;
 }

@@ -14,15 +14,15 @@ void ExecutedTest::Info::fail(const string& failure) {
     }
 }
 
-ExecutedTest::ExecutedTest(Test&& test, vector<Info>&& executions):
+ExecutedTest::ExecutedTest(Test test, vector<Info>&& executions):
         Test(move(test)), executions(move(executions)) {}
 
 bool ExecutedTest::isPassed() const {
     return getNumPassedAttempts() >= getNumRequiredPassedAttempts();
 }
 
-int ExecutedTest::getNumPassedAttempts() const {
-    if (numPassedExecutions == -1) {
+size_t ExecutedTest::getNumPassedAttempts() const {
+    if (numPassedExecutions == static_cast<size_t>(-1)) {
         numPassedExecutions = 0;
         for (const auto& info: executions) {
             numPassedExecutions += info.passed;
@@ -68,9 +68,9 @@ double ExecutedTest::getTotalTimeTicks() const {
 }
 
 string ExecutedTest::getLastFailure() const {
-    for (int i = static_cast<int>(executions.size()); i >= 0; -- i) {
-        if (!executions[i].passed) {
-            return executions[i].failure;
+    for (auto it = executions.rbegin(); it != executions.rend(); ++ it) {
+        if (!it->passed) {
+            return it->failure;
         }
     }
     return "";

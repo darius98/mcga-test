@@ -58,13 +58,13 @@ struct KKTEST_EXPORT TestConfig {
      *
      * This item should be configured for non-deterministic tests, together with
      * #requiredPassedAttempts. */
-    int attempts = 1;
+    std::size_t attempts = 1;
 
     /** The number of attempts that must be passed for the test to be considered
      * passed overall.
      *
      * This should be at most equal to #attempts. */
-     int requiredPassedAttempts = 1;
+     std::size_t requiredPassedAttempts = 1;
 
     /** Default constructor. */
     TestConfig() = default;
@@ -90,10 +90,10 @@ struct KKTEST_EXPORT TestConfig {
     TestConfig& setTimeTicksLimit(double timeTicksLimit);
 
     /** Set the #attempts property of the test. */
-    TestConfig& setAttempts(int attempts);
+    TestConfig& setAttempts(std::size_t attempts);
 
     /** Set the #requiredPassedAttempts property of the test. */
-    TestConfig& setRequiredPassedAttempts(int requiredPassedAttempts);
+    TestConfig& setRequiredPassedAttempts(std::size_t requiredPassedAttempts);
 };
 
 /** Structure defining the configuration for a group.

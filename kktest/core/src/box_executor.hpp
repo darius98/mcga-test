@@ -13,13 +13,15 @@ struct RunningTest {
     std::vector<ExecutedTest::Info> executions;
     std::unique_ptr<interproc::WorkerSubprocess> process = nullptr;
 
-    explicit RunningTest(Test&& test);
+    explicit RunningTest(Test test);
 
-    void startExecution(interproc::WorkerSubprocess::Work work);
+    void startExecution(Executor* executor);
 
     bool finishedCurrentExecution();
 
     bool finishedAllExecutions() const;
+
+    void executeBoxed(Executor* executor, interproc::PipeWriter* pipe) const;
 
     ExecutedTest toExecutedTest() &&;
 };
@@ -30,13 +32,11 @@ class BoxExecutor: public Executor {
 
     ~BoxExecutor() override = default;
 
-    void execute(Test&& test) override;
+    void execute(Test test) override;
 
     void finalize() override;
 
  private:
-    void runBoxed(const Test& test, interproc::PipeWriter* pipe);
-
     void ensureEmptyBoxes(std::size_t numContainers);
 
     std::size_t numBoxes;

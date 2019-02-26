@@ -52,13 +52,13 @@ class ExecutedTest : public Test {
      * Since this process only happens once for a test, and since the Test
      * instance should no longer be needed after obtaining an ExecutedTest
      * instance, this constructor moves the Test. */
-    ExecutedTest(Test&& test, std::vector<Info>&& executions);
+    ExecutedTest(Test test, std::vector<Info>&& executions);
 
     /** Check whether the execution Info marks the test as passed or failed. */
     bool isPassed() const;
 
     /** The number of attempts passed. */
-    int getNumPassedAttempts() const;
+    std::size_t getNumPassedAttempts() const;
 
     /** The average number of time ticks per execution (only counting executions
      * where the number of time ticks is computable). */
@@ -79,7 +79,7 @@ class ExecutedTest : public Test {
     std::vector<Info> executions;
 
     // Cached values.
-    mutable int numPassedExecutions = -1;
+    mutable std::size_t numPassedExecutions = static_cast<std::size_t>(-1);
     mutable double totalTimeTicks = -2; // -1=un-computable. -2=not calculated
     mutable double avgTimeTicks = -2; // -1=un-computable. -2=not calculated
 };

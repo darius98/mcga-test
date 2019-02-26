@@ -39,7 +39,7 @@ class PipeWriter {
     }
 
  private:
-    virtual void sendBytes(void* bytes, std::size_t numBytes) = 0;
+    virtual void sendBytes(std::uint8_t* bytes, std::size_t numBytes) = 0;
 };
 
 void redirectStdoutToPipe(PipeWriter* writer);

@@ -16,13 +16,24 @@ enum MessageStatus: uint8_t {
     CONFIGURATION_ERROR = 1
 };
 
-RunningTest::RunningTest(Test&& test): test(move(test)) {}
+RunningTest::RunningTest(Test test): test(move(test)) {}
 
-void RunningTest::startExecution(WorkerSubprocess::Work work) {
+void RunningTest::startExecution(Executor* executor) {
     double timeLimitMs = test.getTimeTicksLimit()
                              * Executor::getTimeTickLengthMs()
                          + 100.0;
-    process.reset(new WorkerSubprocess(Duration::fromMs(timeLimitMs), work));
+    process.reset(new WorkerSubprocess(
+        Duration::fromMs(timeLimitMs),
+        bind(&RunningTest::executeBoxed, this, executor, _1)));
+}
+
+void RunningTest::executeBoxed(Executor *executor, PipeWriter *pipe) const {
+    try {
+        ExecutedTest::Info info = executor->run(test);
+        pipe->sendMessage(SUCCESS, info.timeTicks, info.passed, info.failure);
+    } catch(const ConfigurationError& error) {
+        pipe->sendMessage(CONFIGURATION_ERROR, string(error.what()));
+    }
 }
 
 bool RunningTest::finishedCurrentExecution() {
@@ -72,7 +83,7 @@ bool RunningTest::finishedCurrentExecution() {
 }
 
 bool RunningTest::finishedAllExecutions() const {
-    return static_cast<int>(executions.size()) == test.getNumAttempts();
+    return executions.size() == test.getNumAttempts();
 }
 
 ExecutedTest RunningTest::toExecutedTest() && {
@@ -82,20 +93,10 @@ ExecutedTest RunningTest::toExecutedTest() && {
 BoxExecutor::BoxExecutor(OnTestFinished onTestFinished, size_t numBoxes):
         Executor(move(onTestFinished)), numBoxes(numBoxes) {}
 
-void BoxExecutor::execute(Test&& test) {
+void BoxExecutor::execute(Test test) {
     ensureEmptyBoxes(1);
     activeBoxes.emplace_back(move(test));
-    activeBoxes.back().startExecution(
-            bind(&BoxExecutor::runBoxed, this, activeBoxes.back().test, _1));
-}
-
-void BoxExecutor::runBoxed(const Test& test, PipeWriter* pipe) {
-    try {
-        ExecutedTest::Info info = run(test.getGroup(), test.body);
-        pipe->sendMessage(SUCCESS, info.timeTicks, info.passed, info.failure);
-    } catch(const ConfigurationError& error) {
-        pipe->sendMessage(CONFIGURATION_ERROR, string(error.what()));
-    }
+    activeBoxes.back().startExecution(this);
 }
 
 void BoxExecutor::finalize() {
@@ -112,8 +113,7 @@ void BoxExecutor::ensureEmptyBoxes(size_t requiredEmpty) {
                     onTestFinished(move(*it).toExecutedTest());
                     it = activeBoxes.erase(it);
                 } else {
-                    it->startExecution(
-                        bind(&BoxExecutor::runBoxed, this, it->test, _1));
+                    it->startExecution(this);
                     ++ it;
                 }
                 progress = true;
