@@ -51,10 +51,15 @@ class Test : private TestConfig {
     /** Globally unique, incremental index of the test. */
     int getIndex() const;
 
-    // TODO(darius98): Make this private!
-    Executable body;
+    /** Execute the test body.
+     *
+     * Should only be called by Executor and its sub-/helper-classes, after
+     * running all required set-ups and before all required tear-downs.
+     */
+    void run() const;
 
  private:
+    Executable body;
     GroupPtr group;
     int index;
 };

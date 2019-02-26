@@ -43,7 +43,7 @@ ExecutedTest::Info Executor::run(const Test& test) {
     ExecutedTest::Info info;
     RealTimeTimer t;
     runSetUps(test.getGroup(), &info);
-    runTest(test.body, &info);
+    runTest(test, &info);
     runTearDowns(test.getGroup(), &info);
     double elapsedMs = 1.0 * t.elapsed().totalNs() / Duration::kMilliToNano;
     info.timeTicks = elapsedMs / getTimeTickLengthMs();
@@ -72,9 +72,9 @@ void Executor::runSetUps(GroupPtr group, ExecutedTest::Info* execution) {
     }
 }
 
-void Executor::runTest(const Executable& func, ExecutedTest::Info* execution) {
+void Executor::runTest(const Test& test, ExecutedTest::Info* execution) {
     try {
-        func();
+        test.run();
     } catch(const ConfigurationError& e) {
         throw e;
     } catch(const ExpectationFailed& failure) {

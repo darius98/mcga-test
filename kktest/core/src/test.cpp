@@ -40,4 +40,8 @@ int Test::getIndex() const {
     return index;
 }
 
+void Test::run() const {
+    body();
+}
+
 }

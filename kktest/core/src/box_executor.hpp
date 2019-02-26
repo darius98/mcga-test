@@ -6,13 +6,8 @@
 
 namespace kktest {
 
-// TODO(darius98): Make this a class!
-struct RunningTest {
-    // TODO(darius98): Make these private!
-    Test test;
-    std::vector<ExecutedTest::Info> executions;
-    std::unique_ptr<interproc::WorkerSubprocess> process = nullptr;
-
+class RunningTest {
+ public:
     explicit RunningTest(Test test);
 
     void startExecution(Executor* executor);
@@ -24,6 +19,11 @@ struct RunningTest {
     void executeBoxed(Executor* executor, interproc::PipeWriter* pipe) const;
 
     ExecutedTest toExecutedTest() &&;
+
+ private:
+    Test test;
+    std::vector<ExecutedTest::Info> executions;
+    std::unique_ptr<interproc::WorkerSubprocess> currentExecution = nullptr;
 };
 
 class BoxExecutor: public Executor {

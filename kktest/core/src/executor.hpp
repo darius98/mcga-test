@@ -27,7 +27,7 @@ class Executor {
  private:
     void runSetUps(GroupPtr group, ExecutedTest::Info* executionInfo);
 
-    void runTest(const Executable& func, ExecutedTest::Info* executionInfo);
+    void runTest(const Test& test, ExecutedTest::Info* executionInfo);
 
     void runTearDowns(GroupPtr group, ExecutedTest::Info* executionInfo);
 

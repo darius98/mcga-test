@@ -22,7 +22,7 @@ void RunningTest::startExecution(Executor* executor) {
     double timeLimitMs = test.getTimeTicksLimit()
                              * Executor::getTimeTickLengthMs()
                          + 100.0;
-    process.reset(new WorkerSubprocess(
+    currentExecution.reset(new WorkerSubprocess(
         Duration::fromMs(timeLimitMs),
         bind(&RunningTest::executeBoxed, this, executor, _1)));
 }
@@ -40,12 +40,12 @@ bool RunningTest::finishedCurrentExecution() {
     bool passed = false;
     Message message;
     string error;
-    switch (process->getFinishStatus()) {
+    switch (currentExecution->getFinishStatus()) {
         case WorkerSubprocess::NO_EXIT: {
             return false;
         }
         case WorkerSubprocess::ZERO_EXIT: {
-            message = process->getNextMessage(32);
+            message = currentExecution->getNextMessage(32);
             if (message.isInvalid()) {
                 passed = false;
                 error = "Unexpected 0-code exit.";
@@ -56,11 +56,12 @@ bool RunningTest::finishedCurrentExecution() {
         }
         case WorkerSubprocess::NON_ZERO_EXIT: {
             error = "Test exited with code "
-                    + to_string(process->getReturnCode()) + ".";
+                    + to_string(currentExecution->getReturnCode()) + ".";
             break;
         }
         case WorkerSubprocess::SIGNAL_EXIT: {
-            error = "Test killed by signal " + to_string(process->getSignal());
+            error = "Test killed by signal "
+                    + to_string(currentExecution->getSignal());
             break;
         }
         case WorkerSubprocess::TIMEOUT: {
