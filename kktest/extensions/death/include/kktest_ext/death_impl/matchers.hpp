@@ -361,12 +361,12 @@ static detail::ExitsMatcher exits;
 
 static detail::HasExitedMatcher hasExited;
 
-static detail::HasExitedWithCodeMatcher<matchers::detail::EqualityMatcher<int>>
-        hasExitedWithCodeZero(matchers::isEqualTo(0));
+static detail::HasExitedWithCodeMatcher<matchers::detail::IsZeroMatcher>
+        hasExitedWithCodeZero(matchers::isZero);
 
 static detail::HasExitedWithCodeMatcher
-    <matchers::detail::NonEqualityMatcher<int>>
-        hasExitedWithNonZeroCode(matchers::isNotEqualTo(0));
+    <matchers::detail::NotMatcher<matchers::detail::IsZeroMatcher>>
+        hasExitedWithNonZeroCode(matchers::isNot(matchers::isZero));
 
 }
 }
