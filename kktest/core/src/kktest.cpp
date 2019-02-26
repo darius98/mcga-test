@@ -60,20 +60,20 @@ void TestCase::run() {
     exec();
 }
 
-void test(TestConfig config, const Executable& func) {
-    Driver::getInstance()->addTest(move(config), func);
+void test(TestConfig config, Executable func) {
+    Driver::getInstance()->addTest(move(config), move(func));
 }
 
 void group(GroupConfig config, const Executable& func) {
     Driver::getInstance()->addGroup(move(config), func);
 }
 
-void setUp(const Executable& func) {
-    Driver::getInstance()->addSetUp(func);
+void setUp(Executable func) {
+    Driver::getInstance()->addSetUp(move(func));
 }
 
-void tearDown(const Executable& func) {
-    Driver::getInstance()->addTearDown(func);
+void tearDown(Executable func) {
+    Driver::getInstance()->addTearDown(move(func));
 }
 
 void expect(bool expr, const string& message) {

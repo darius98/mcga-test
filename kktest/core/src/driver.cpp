@@ -84,23 +84,23 @@ void Driver::addGroup(GroupConfig&& config, const Executable& func) {
     groupStack.pop_back();
 }
 
-void Driver::addTest(TestConfig&& config, const Executable& func) {
+void Driver::addTest(TestConfig&& config, Executable body) {
     executor->checkIsInactive("test");
     GroupPtr parentGroup = groupStack.back();
-    Test test(move(config), parentGroup, ++ currentTestIndex);
+    Test test(move(config), move(body), parentGroup, ++ currentTestIndex);
     parentGroup->addStartedTest();
     beforeTest(test);
-    executor->execute(move(test), func);
+    executor->execute(move(test));
 }
 
-void Driver::addSetUp(const Executable& func) {
+void Driver::addSetUp(Executable func) {
     executor->checkIsInactive("setUp");
-    groupStack.back()->addSetUp(func);
+    groupStack.back()->addSetUp(move(func));
 }
 
-void Driver::addTearDown(const Executable& func) {
+void Driver::addTearDown(Executable func) {
     executor->checkIsInactive("tearDown");
-    groupStack.back()->addTearDown(func);
+    groupStack.back()->addTearDown(move(func));
 }
 
 void Driver::beforeTest(const Test& test) {

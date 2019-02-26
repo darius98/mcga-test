@@ -6,11 +6,22 @@
 
 namespace kktest {
 
-struct BoxedTest {
+// TODO(darius98): Make this a class!
+struct RunningTest {
+    // TODO(darius98): Make these private!
     Test test;
-    Executable testFunc;
     std::vector<ExecutedTest::Info> executions;
-    std::unique_ptr<interproc::WorkerSubprocess> process;
+    std::unique_ptr<interproc::WorkerSubprocess> process = nullptr;
+
+    explicit RunningTest(Test&& test);
+
+    void startExecution(interproc::WorkerSubprocess::Work work);
+
+    bool finishedCurrentExecution();
+
+    bool finishedAllExecutions() const;
+
+    ExecutedTest toExecutedTest() &&;
 };
 
 class BoxExecutor: public Executor {
@@ -19,21 +30,17 @@ class BoxExecutor: public Executor {
 
     ~BoxExecutor() override = default;
 
-    void execute(Test&& test, const Executable& func) override;
+    void execute(Test&& test) override;
 
     void finalize() override;
 
  private:
-    void runBoxed(GroupPtr group,
-                  const Executable& func,
-                  interproc::PipeWriter* pipe);
+    void runBoxed(const Test& test, interproc::PipeWriter* pipe);
 
     void ensureEmptyBoxes(std::size_t numContainers);
 
-    bool tryCloseBox(std::vector<BoxedTest>::iterator boxedTest);
-
     std::size_t numBoxes;
-    std::vector<BoxedTest> activeBoxes;
+    std::vector<RunningTest> activeBoxes;
 };
 
 }

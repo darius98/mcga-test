@@ -18,7 +18,7 @@ class Executor {
 
     void checkIsInactive(const std::string& methodName) const;
 
-    virtual void execute(Test&& test, const Executable& func);
+    virtual void execute(Test&& test);
 
     virtual void finalize();
 

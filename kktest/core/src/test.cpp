@@ -6,8 +6,11 @@ using namespace std;
 
 namespace kktest {
 
-Test::Test(TestConfig&& config, GroupPtr group, int index):
-        TestConfig(move(config)), group(move(group)), index(index) {}
+Test::Test(TestConfig&& config, Executable body, GroupPtr group, int index):
+        TestConfig(move(config)),
+        body(move(body)),
+        group(move(group)),
+        index(index) {}
 
 const string& Test::getDescription() const {
     return description;

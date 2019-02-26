@@ -21,7 +21,7 @@ class Test : private TestConfig {
  public:
     /** Default constructor from a TestConfig and the metadata received from the
      * testing Driver. */
-    Test(TestConfig&& config, GroupPtr group, int index);
+    Test(TestConfig&& config, Executable body, GroupPtr group, int index);
 
     /** See TestConfig#description. */
     const std::string& getDescription() const;
@@ -44,9 +44,11 @@ class Test : private TestConfig {
     /** Globally unique, incremental index of the test. */
     int getIndex() const;
 
+    // TODO(darius98): Make this private!
+    Executable body;
+
  private:
     GroupPtr group;
-
     int index;
 };
 

@@ -9,8 +9,6 @@ using namespace kktest::utils;
 using namespace std;
 using namespace std::placeholders;
 
-// TODO(darius98): This implementation required refactoring.
-
 namespace kktest {
 
 enum MessageStatus: uint8_t {
@@ -18,74 +16,19 @@ enum MessageStatus: uint8_t {
     CONFIGURATION_ERROR = 1
 };
 
-BoxExecutor::BoxExecutor(OnTestFinished onTestFinished, size_t numBoxes):
-        Executor(move(onTestFinished)), numBoxes(numBoxes) {}
+RunningTest::RunningTest(Test&& test): test(move(test)) {}
 
-void BoxExecutor::execute(Test&& test, const Executable& func) {
-    ensureEmptyBoxes(1);
-    double timeLimit = test.getTimeTicksLimit() * getTimeTickLengthMs() + 100.0;
-    GroupPtr group = test.getGroup();
-    auto process = new WorkerSubprocess(
-            Duration::fromMs(timeLimit),
-            bind(&BoxExecutor::runBoxed, this, group, func, _1));
-    activeBoxes.push_back(
-        BoxedTest{move(test), func, {}, unique_ptr<WorkerSubprocess>(process)});
+void RunningTest::startExecution(WorkerSubprocess::Work work) {
+    double timeLimitMs = test.getTimeTicksLimit()
+                             * Executor::getTimeTickLengthMs()
+                         + 100.0;
+    process.reset(new WorkerSubprocess(Duration::fromMs(timeLimitMs), work));
 }
 
-void BoxExecutor::runBoxed(GroupPtr group,
-                           const Executable& func,
-                           PipeWriter* pipe) {
-    try {
-        ExecutedTest::Info info = run(move(group), func);
-        pipe->sendMessage(SUCCESS, info.timeTicks, info.passed, info.failure);
-    } catch(const ConfigurationError& error) {
-        pipe->sendMessage(CONFIGURATION_ERROR, string(error.what()));
-    }
-}
-
-void BoxExecutor::finalize() {
-    ensureEmptyBoxes(numBoxes);
-}
-
-void BoxExecutor::ensureEmptyBoxes(size_t requiredEmpty) {
-    size_t maxActive = numBoxes - requiredEmpty;
-    while (activeBoxes.size() > maxActive) {
-        bool progress = false;
-        for (auto it = activeBoxes.begin(); it != activeBoxes.end(); ) {
-            if (tryCloseBox(it)) {
-                if (it->executions.size() == it->test.getNumAttempts()) {
-                    onTestFinished(ExecutedTest(move(it->test),
-                                                move(it->executions)));
-                    it = activeBoxes.erase(it);
-                } else {
-                    double timeLimit = it->test.getTimeTicksLimit()
-                                            * getTimeTickLengthMs() + 100.0;
-                    GroupPtr group = it->test.getGroup();
-                    it->process.reset(new WorkerSubprocess(
-                        Duration::fromMs(timeLimit),
-                        bind(&BoxExecutor::runBoxed,
-                             this,
-                             group,
-                             it->testFunc,
-                             _1)));
-                    ++ it;
-                }
-                progress = true;
-            } else {
-                ++ it;
-            }
-        }
-        if (!progress) {
-            sleepForDuration(5_ms);
-        }
-    }
-}
-
-bool BoxExecutor::tryCloseBox(vector<BoxedTest>::iterator boxedTest) {
+bool RunningTest::finishedCurrentExecution() {
     bool passed = false;
     Message message;
     string error;
-    auto process = boxedTest->process.get();
     switch (process->getFinishStatus()) {
         case WorkerSubprocess::NO_EXIT: {
             return false;
@@ -115,7 +58,7 @@ bool BoxExecutor::tryCloseBox(vector<BoxedTest>::iterator boxedTest) {
         }
     }
     if (!passed) {
-        boxedTest->executions.emplace_back(move(error));
+        executions.emplace_back(move(error));
         return true;
     }
     if (message.read<MessageStatus>() == CONFIGURATION_ERROR) {
@@ -124,8 +67,64 @@ bool BoxExecutor::tryCloseBox(vector<BoxedTest>::iterator boxedTest) {
     }
     ExecutedTest::Info info;
     message >> info.timeTicks >> info.passed >> info.failure;
-    boxedTest->executions.push_back(move(info));
+    executions.push_back(move(info));
     return true;
+}
+
+bool RunningTest::finishedAllExecutions() const {
+    return static_cast<int>(executions.size()) == test.getNumAttempts();
+}
+
+ExecutedTest RunningTest::toExecutedTest() && {
+    return ExecutedTest(move(test), move(executions));
+}
+
+BoxExecutor::BoxExecutor(OnTestFinished onTestFinished, size_t numBoxes):
+        Executor(move(onTestFinished)), numBoxes(numBoxes) {}
+
+void BoxExecutor::execute(Test&& test) {
+    ensureEmptyBoxes(1);
+    activeBoxes.emplace_back(move(test));
+    activeBoxes.back().startExecution(
+            bind(&BoxExecutor::runBoxed, this, activeBoxes.back().test, _1));
+}
+
+void BoxExecutor::runBoxed(const Test& test, PipeWriter* pipe) {
+    try {
+        ExecutedTest::Info info = run(test.getGroup(), test.body);
+        pipe->sendMessage(SUCCESS, info.timeTicks, info.passed, info.failure);
+    } catch(const ConfigurationError& error) {
+        pipe->sendMessage(CONFIGURATION_ERROR, string(error.what()));
+    }
+}
+
+void BoxExecutor::finalize() {
+    ensureEmptyBoxes(numBoxes);
+}
+
+void BoxExecutor::ensureEmptyBoxes(size_t requiredEmpty) {
+    size_t maxActive = numBoxes - requiredEmpty;
+    while (activeBoxes.size() > maxActive) {
+        bool progress = false;
+        for (auto it = activeBoxes.begin(); it != activeBoxes.end(); ) {
+            if (it->finishedCurrentExecution()) {
+                if (it->finishedAllExecutions()) {
+                    onTestFinished(move(*it).toExecutedTest());
+                    it = activeBoxes.erase(it);
+                } else {
+                    it->startExecution(
+                        bind(&BoxExecutor::runBoxed, this, it->test, _1));
+                    ++ it;
+                }
+                progress = true;
+            } else {
+                ++ it;
+            }
+        }
+        if (!progress) {
+            sleepForDuration(5_ms);
+        }
+    }
 }
 
 }
