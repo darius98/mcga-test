@@ -7,7 +7,7 @@
 
 #include <cppli.hpp>
 
-#include "kktest/core/src/test.hpp"
+#include "kktest/core/src/executed_test.hpp"
 
 namespace kktest {
 

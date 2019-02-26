@@ -6,8 +6,7 @@
 #include <set>
 #include <utility>
 
-#include "kktest/core/src/group.hpp"
-#include "kktest/core/src/test.hpp"
+#include "kktest/core/src/executed_test.hpp"
 
 namespace kktest {
 namespace feedback {
