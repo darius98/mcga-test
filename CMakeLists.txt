@@ -28,7 +28,7 @@ include_directories(.)
 add_subdirectory(common/interproc)
 add_subdirectory(common/utils)
 
-add_subdirectory(third_party/cppli)
-add_subdirectory(third_party/termcolor)
+add_subdirectory(third_party/cppli EXCLUDE_FROM_ALL)
+add_subdirectory(third_party/termcolor EXCLUDE_FROM_ALL)
 
 add_subdirectory(kktest)
