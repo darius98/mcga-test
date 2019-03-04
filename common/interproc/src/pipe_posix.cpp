@@ -8,7 +8,7 @@
 #include <cstdlib>
 #include <cstring>
 
-#include "common/interproc/src/errors.hpp"
+#include <system_error>
 
 using namespace std;
 
@@ -79,7 +79,8 @@ class LinuxPipeReader: public PipeReader {
             if (errno == EWOULDBLOCK || errno == EAGAIN) {
                 return false;
             }
-            throw InterprocError(strerror(errno));
+            throw system_error(errno, generic_category(),
+                               "PipeReader:readBytes()");
         }
         if (numBytesRead == 0) {
             return false;
@@ -138,7 +139,8 @@ class LinuxPipeWriter: public PipeWriter {
             size_t remaining = numBytes - written;
             ssize_t currentWriteBlockSize = write(outputFD, target, remaining);
             if (currentWriteBlockSize < 0) {
-                throw InterprocError(strerror(errno));
+                throw system_error(errno, generic_category(),
+                                   "PipeWriter:sendBytes");
             }
             written += currentWriteBlockSize;
         }
@@ -151,11 +153,13 @@ void redirectStdoutToPipe(PipeWriter* pipeWriter) {
     auto linuxPipeWriter = dynamic_cast<LinuxPipeWriter*>(pipeWriter);
     int ret = dup2(linuxPipeWriter->outputFD, STDOUT_FILENO);
     if (ret < 0) {
-        throw InterprocError(strerror(errno));
+        throw system_error(errno, generic_category(),
+                           "redirectStdoutToPipe:dup2");
     }
     ret = ::close(linuxPipeWriter->outputFD);
     if (ret < 0) {
-        throw InterprocError(strerror(errno));
+        throw system_error(errno, generic_category(),
+                           "redirectStdoutToPipe:closing initial pipe");
     }
     linuxPipeWriter->outputFD = STDOUT_FILENO;
 }
@@ -163,13 +167,16 @@ void redirectStdoutToPipe(PipeWriter* pipeWriter) {
 pair<PipeReader*, PipeWriter*> createAnonymousPipe() {
     int fd[2];
     if (pipe(fd) < 0) {
-        throw InterprocError(strerror(errno));
+        throw system_error(errno, generic_category(),
+                           "createAnonymousPipe:pipe");
     }
     if (fcntl(fd[0], F_SETFL, O_NONBLOCK) < 0) {
-        throw InterprocError(strerror(errno));
+        throw system_error(errno, generic_category(),
+                           "createAnonymousPipe:fcntl (set read non-blocking");
     }
     if (fcntl(fd[1], F_SETFL, O_NONBLOCK) < 0) {
-        throw InterprocError(strerror(errno));
+        throw system_error(errno, generic_category(),
+                           "createAnonymousPipe:fcntl (set write non-blocking");
     }
     return {new LinuxPipeReader(fd[0]), new LinuxPipeWriter(fd[1])};
 }
@@ -177,21 +184,23 @@ pair<PipeReader*, PipeWriter*> createAnonymousPipe() {
 void createNamedPipe(const string& pipeName) {
     int pipeCreateStatus = mkfifo(pipeName.c_str(), 0666);
     if (pipeCreateStatus < 0) {
-        throw InterprocError(strerror(errno));
+        throw system_error(errno, generic_category(), "createNamedPipe:mkfifo");
     }
 }
 
 void destroyNamedPipe(const string& pipeName) {
     int removeStat = remove(pipeName.c_str());
     if (removeStat < 0) {
-        throw InterprocError(strerror(errno));
+        throw system_error(errno, generic_category(),
+                           "destroyNamedPipe:remove");
     }
 }
 
 PipeReader* openNamedPipeForReading(const string& pipeName) {
     int pipeFD = open(pipeName.c_str(), O_RDONLY | O_NONBLOCK);
     if (pipeFD < 0) {
-        throw InterprocError(strerror(errno));
+        throw system_error(errno, generic_category(),
+                           "openNamedPipeForReading:open");
     }
     return new LinuxPipeReader(pipeFD);
 }
@@ -199,7 +208,8 @@ PipeReader* openNamedPipeForReading(const string& pipeName) {
 PipeWriter* openNamedPipeForWriting(const string& pipeName) {
     int pipeFD = open(pipeName.c_str(), O_WRONLY | O_NONBLOCK);
     if (pipeFD < 0) {
-        throw InterprocError(strerror(errno));
+        throw system_error(errno, generic_category(),
+                           "openNamedPipeForWriting:open");
     }
     return new LinuxPipeWriter(pipeFD);
 }

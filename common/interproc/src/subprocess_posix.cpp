@@ -9,7 +9,7 @@
 #include <cstdlib>
 #include <cstring>
 
-#include "common/interproc/src/errors.hpp"
+#include <system_error>
 
 using namespace std;
 
@@ -28,7 +28,8 @@ class LinuxSubprocessHandler: public Subprocess {
         int wStatus;
         int ret = waitpid(pid, &wStatus, WNOHANG);
         if (ret < 0) {
-            throw InterprocError(strerror(errno));
+            throw system_error(errno, generic_category(),
+                               "LinuxSubprocessHandler:waitpid");
         }
         if (ret == 0) {
             return false;
@@ -47,7 +48,8 @@ class LinuxSubprocessHandler: public Subprocess {
             if (errno == ESRCH) {
                 return ALREADY_DEAD;
             }
-            throw InterprocError(strerror(errno));
+            throw system_error(errno, generic_category(),
+                               "LinuxSubprocessHandler:kill");
         }
         return KILLED;
     }
@@ -97,7 +99,8 @@ class LinuxSubprocessHandler: public Subprocess {
 Subprocess* Subprocess::fork(const function<void()>& func) {
     pid_t forkPid = ::fork();
     if (forkPid < 0) {
-        throw InterprocError(strerror(errno));
+        throw system_error(errno, generic_category(),
+                           "LinuxSubprocessHandler:fork");
     }
     if (forkPid == 0) {  // child process
         func();
