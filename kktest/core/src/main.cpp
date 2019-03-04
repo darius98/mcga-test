@@ -44,11 +44,11 @@ void initialize(int argc, char** argv, vector<Extension*>* extensions) {
     bool smooth = smoothFlag.get();
     size_t numBoxes = max(maxParallelTestsArgument.get(), 1ul);
 
-    Driver::init(api, smooth, numBoxes);
+    Driver::Init(api, smooth, numBoxes);
 }
 
 int runTests(vector<TestCase> tests, vector<Extension*>* extensions) {
-    auto driver = Driver::getInstance();
+    auto driver = Driver::Instance();
 
     int ret = 1;
     try {

@@ -13,7 +13,7 @@ vector<uint8_t> PipeReader::getBytes() {
     return getBytes(1);
 }
 
-size_t PipeReader::getMessageSize(const Message& message) {
+size_t PipeReader::GetMessageSize(const Message& message) {
     return message.getSize();
 }
 

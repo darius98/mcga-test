@@ -11,7 +11,7 @@ class Message {
     static const Message INVALID;
 
     template<class... Args>
-    static Message build(const Args... args) {
+    static Message Build(const Args... args) {
         BytesCounter counter;
         counter.add(args...);
         Builder messageBuilder(counter.getNumBytesConsumed());
@@ -19,7 +19,7 @@ class Message {
         return messageBuilder.build();
     }
 
-    static Message read(const void* src, std::size_t maxSize);
+    static Message Read(const void* src, std::size_t maxSize);
 
     Message();
     Message(const Message& other);
@@ -60,9 +60,9 @@ class Message {
 
     // helper internal classes
 
-    static std::size_t expectedContentSizeFromBuffer(const void* buffer);
+    static std::size_t ExpectedContentSizeFromBuffer(const void* buffer);
 
-    static std::uint8_t* allocate(std::size_t numBytes);
+    static std::uint8_t* Allocate(std::size_t numBytes);
 
     class BytesConsumer {
      public:

@@ -14,7 +14,7 @@ WorkerSubprocess::WorkerSubprocess(Duration timeLimit, Work run):
         stopwatch(timeLimit) {
     auto pipe = createAnonymousPipe();
     auto stdoutPipe = createAnonymousPipe();
-    subprocess = Subprocess::fork([&stdoutPipe, &pipe, &run]() {
+    subprocess = Subprocess::Fork([&stdoutPipe, &pipe, &run]() {
         delete pipe.first;
         delete stdoutPipe.first;
         redirectStdoutToPipe(stdoutPipe.second);

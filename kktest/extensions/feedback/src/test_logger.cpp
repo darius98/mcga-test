@@ -47,7 +47,7 @@ void TestLogger::logFinalInformation() {
            << setprecision(3)
            << totalTimeTicks
            << " ticks ("
-           << totalTimeTicks * Executor::getTimeTickLengthMs()
+           << totalTimeTicks * Executor::GetTimeTickLengthMs()
            << " ms)\n";
 }
 
@@ -93,7 +93,7 @@ void TestLogger::printTestMessage(const ExecutedTest& test) {
            << " ticks ("
            << (test.getNumAttempts() > 1 ? "~ " : "")
            << test.getAvgTimeTicksForExecution()
-                * Executor::getTimeTickLengthMs()
+                * Executor::GetTimeTickLengthMs()
            << " ms)";
     if (test.getNumAttempts() > 1 && !test.isPassed()) {
         stream << " ("

@@ -12,9 +12,9 @@ class Driver {
     static Driver* instance;
 
  public:
-    static Driver* getInstance();
+    static Driver* Instance();
 
-    static Driver* init(
+    static Driver* Init(
             const ExtensionApi& api, bool smooth, std::size_t numBoxes);
 
     Driver(ExtensionApi hooks, bool smooth, std::size_t numBoxes);

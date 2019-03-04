@@ -10,15 +10,15 @@ namespace interproc {
 
 const Message Message::INVALID = Message(nullptr);
 
-Message Message::read(const void* src, size_t maxSize) {
+Message Message::Read(const void* src, size_t maxSize) {
     if (maxSize < sizeof(size_t)) {
         return INVALID;
     }
-    auto expectedSize = expectedContentSizeFromBuffer(src) + sizeof(size_t);
+    auto expectedSize = ExpectedContentSizeFromBuffer(src) + sizeof(size_t);
     if (expectedSize > maxSize) {
         return INVALID;
     }
-    auto messagePayload = allocate(expectedSize);
+    auto messagePayload = Allocate(expectedSize);
     memcpy(messagePayload, src, expectedSize);
     return Message(messagePayload);
 }
@@ -69,13 +69,13 @@ void Message::copyContent(const Message& other) {
         payload = nullptr;
     } else {
         auto size = other.getSize();
-        payload = allocate(size);
+        payload = Allocate(size);
         memcpy(payload, other.payload, size);
     }
 }
 
 size_t Message::getSize() const {
-    return sizeof(size_t) + expectedContentSizeFromBuffer(payload);
+    return sizeof(size_t) + ExpectedContentSizeFromBuffer(payload);
 }
 
 bool Message::operator==(const Message& other) const {
@@ -96,11 +96,11 @@ Message& Message::operator>>(string& obj) {
     return *this;
 }
 
-size_t Message::expectedContentSizeFromBuffer(const void* buffer) {
+size_t Message::ExpectedContentSizeFromBuffer(const void* buffer) {
     return *static_cast<const size_t*>(buffer);
 }
 
-uint8_t* Message::allocate(size_t numBytes) {
+uint8_t* Message::Allocate(size_t numBytes) {
     return static_cast<uint8_t*>(malloc(numBytes));
 }
 
@@ -113,7 +113,7 @@ Message::BytesConsumer& Message::BytesConsumer::add(const string& obj) {
 
 template<>
 Message::BytesConsumer& Message::BytesConsumer::add(const Message& obj) {
-    auto contentSize = expectedContentSizeFromBuffer(obj.payload);
+    auto contentSize = ExpectedContentSizeFromBuffer(obj.payload);
     addBytes(obj.payload + sizeof(size_t), contentSize);
     return *this;
 }
@@ -129,7 +129,7 @@ size_t Message::BytesCounter::getNumBytesConsumed() const {
 }
 
 Message::Builder::Builder(size_t size):
-        payloadBuilder(allocate(size + sizeof(size_t))) {
+        payloadBuilder(Allocate(size + sizeof(size_t))) {
     memcpy(payloadBuilder, &size, sizeof(size_t));
     cursor = sizeof(size_t);
 }

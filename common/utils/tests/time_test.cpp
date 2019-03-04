@@ -11,15 +11,15 @@ void utilsTimeTest() {
     group("Duration", [] {
         group("Factory methods", [] {
             test("Duration::fromMs(.1) is 100000ns", [] {
-                expect(Duration::fromMs(.1).totalNs(), isEqualTo(100000));
+                expect(Duration::FromMs(.1).totalNs(), isEqualTo(100000));
             });
 
             test("Duration::fromMs(1) is 1000000ns", [] {
-                expect(Duration::fromMs(1).totalNs(), isEqualTo(1000000));
+                expect(Duration::FromMs(1).totalNs(), isEqualTo(1000000));
             });
 
             test("Duration::fromMs(100) is 100000000ns", [] {
-                expect(Duration::fromMs(100).totalNs(), isEqualTo(100000000));
+                expect(Duration::FromMs(100).totalNs(), isEqualTo(100000000));
             });
         });
 

@@ -21,7 +21,7 @@ class Subprocess {
         ALREADY_DEAD
     };
 
-    static Subprocess* fork(const std::function<void()>& func);
+    static Subprocess* Fork(const std::function<void()>& func);
 
     virtual ~Subprocess() = default;
 

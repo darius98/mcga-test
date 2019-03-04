@@ -9,7 +9,7 @@ class Executor {
  public:
     typedef std::function<void(const ExecutedTest&)> OnTestFinished;
 
-    static double getTimeTickLengthMs();
+    static double GetTimeTickLengthMs();
 
     explicit Executor(OnTestFinished onTestFinished);
 

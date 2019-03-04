@@ -21,49 +21,49 @@ namespace detail {
 template<class S, class = void>
 class Streamer {
  public:
-    static void send(std::stringstream& stream, const S& obj) {
-        format(stream, obj);
+    static void Send(std::stringstream& stream, const S& obj) {
+        Format(stream, obj);
     }
 
  private:
     template<class T>
-    static void format(std::stringstream& s, const std::vector<T>& obj) {
-        formatList<T, std::vector<T>>(s, obj);
+    static void Format(std::stringstream& s, const std::vector<T>& obj) {
+        FormatList<T, std::vector<T>>(s, obj);
     }
 
     template<class T>
-    static void format(std::stringstream& s, const std::list<T>& obj) {
-        formatList<T, std::list<T>>(s, obj);
+    static void Format(std::stringstream& s, const std::list<T>& obj) {
+        FormatList<T, std::list<T>>(s, obj);
     }
 
     template<class T>
-    static void format(std::stringstream& s, const std::deque<T>& obj) {
-        formatList<T, std::deque<T>>(s, obj);
+    static void Format(std::stringstream& s, const std::deque<T>& obj) {
+        FormatList<T, std::deque<T>>(s, obj);
     }
 
     template<class T>
-    static void format(std::stringstream& s, const std::set<T>& obj) {
-        formatList<T, std::set<T>>(s, obj, '{', '}');
+    static void Format(std::stringstream& s, const std::set<T>& obj) {
+        FormatList<T, std::set<T>>(s, obj, '{', '}');
     }
 
     template<class T>
-    static void format(std::stringstream& s, const std::unordered_set<T>& obj) {
-        formatList<T, std::unordered_set<T>>(s, obj, '{', '}');
+    static void Format(std::stringstream& s, const std::unordered_set<T>& obj) {
+        FormatList<T, std::unordered_set<T>>(s, obj, '{', '}');
     }
 
     template<class K, class V>
-    static void format(std::stringstream& s, const std::map<K, V>& obj) {
-        formatMap<K, V, std::map<K, V>>(s, obj);
+    static void Format(std::stringstream& s, const std::map<K, V>& obj) {
+        FormatMap<K, V, std::map<K, V>>(s, obj);
     }
 
     template<class K, class V>
-    static void format(std::stringstream& s,
+    static void Format(std::stringstream& s,
                        const std::unordered_map<K, V>& obj) {
-        formatMap<K, V, std::unordered_map<K, V>>(s, obj);
+        FormatMap<K, V, std::unordered_map<K, V>>(s, obj);
     }
 
     template<class I, class T>
-    static void formatList(std::stringstream& s, const T& obj,
+    static void FormatList(std::stringstream& s, const T& obj,
                            char start = '[',
                            char finish = ']') {
         s << start;
@@ -71,13 +71,13 @@ class Streamer {
             if (it != obj.begin()) {
                 s << ", ";
             }
-            Streamer<I>::send(s, *it);
+            Streamer<I>::Send(s, *it);
         }
         s << finish;
     }
 
     template<class K, class V, class T>
-    static void formatMap(std::stringstream& s, const T& obj) {
+    static void FormatMap(std::stringstream& s, const T& obj) {
         bool first = true;
         s << "{";
         for (const std::pair<K, V>& entry : obj) {
@@ -86,9 +86,9 @@ class Streamer {
             } else {
                 s << ", ";
             }
-            Streamer<K>::send(s, entry.first);
+            Streamer<K>::Send(s, entry.first);
             s << ":";
-            Streamer<V>::send(s, entry.second);
+            Streamer<V>::Send(s, entry.second);
         }
         s << "}";
     }
@@ -97,7 +97,7 @@ class Streamer {
      * In case all else fails.
      */
     template<class T>
-    static void format(std::stringstream& s, const T&) {
+    static void Format(std::stringstream& s, const T&) {
         s << "[UNPRINTABLE OBJECT]";
     }
 };
@@ -107,11 +107,11 @@ template<class...> using void_t = void;
 template<class S>
 class Streamer<S, void_t<decltype(std::cout << std::declval<S>())>> {
  public:
-    static void send(std::stringstream& s, const S& obj) {
+    static void Send(std::stringstream& s, const S& obj) {
         s << obj;
     }
 
-    static void send(std::stringstream& s, const S* obj) {
+    static void Send(std::stringstream& s, const S* obj) {
         s << obj;
     }
 };
@@ -123,7 +123,7 @@ class Streamer<std::string,
                       >
                 > {
  public:
-    static void send(std::stringstream& s, const std::string& obj) {
+    static void Send(std::stringstream& s, const std::string& obj) {
         std::string objCopy = obj;
         std::size_t pos = 0;
         while ((pos = objCopy.find('\n', pos)) != std::string::npos) {

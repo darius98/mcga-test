@@ -10,7 +10,7 @@ class Duration {
     static constexpr int kMilliToNano = 1000000;
     static constexpr int kSecondsToNano = kSecondsToMilli * kMilliToNano;
 
-    static Duration fromMs(long double ms);
+    static Duration FromMs(long double ms);
 
     Duration() = default;
     Duration(const Duration& other) = default;

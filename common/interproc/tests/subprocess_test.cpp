@@ -15,7 +15,7 @@ void interprocSubprocessTest() {
         Subprocess* proc = nullptr;
 
         setUp([&proc] {
-            proc = Subprocess::fork([] {});
+            proc = Subprocess::Fork([] {});
             sleepForDuration(50_ms);
         });
 
@@ -53,7 +53,7 @@ void interprocSubprocessTest() {
         Subprocess* proc = nullptr;
 
         setUp([&proc] {
-            proc = Subprocess::fork([] {
+            proc = Subprocess::Fork([] {
                 exit(17);
             });
             sleepForDuration(50_ms);
@@ -93,7 +93,7 @@ void interprocSubprocessTest() {
         Subprocess* proc = nullptr;
 
         setUp([&proc] {
-            proc = Subprocess::fork([] {
+            proc = Subprocess::Fork([] {
                 raise(SIGINT);
             });
             sleepForDuration(50_ms);
@@ -133,7 +133,7 @@ void interprocSubprocessTest() {
         Subprocess* proc = nullptr;
 
         setUp([&proc] {
-            proc = Subprocess::fork([] {
+            proc = Subprocess::Fork([] {
                 volatile int spins = 0;
                 while (spins >= 0) {
                     spins += 1;

@@ -13,7 +13,7 @@ namespace death {
 
 DeathStatus checkDeath(const Executable& func, double timeTicksLimit) {
     WorkerSubprocess proc(
-        Duration::fromMs(timeTicksLimit * Executor::getTimeTickLengthMs()),
+            Duration::FromMs(timeTicksLimit * Executor::GetTimeTickLengthMs()),
         [func](PipeWriter* writer) {
             func();
             writer->sendMessage(1);

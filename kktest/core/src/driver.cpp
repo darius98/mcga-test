@@ -10,14 +10,14 @@ namespace kktest {
 
 Driver* Driver::instance = nullptr;
 
-Driver* Driver::getInstance() {
+Driver* Driver::Instance() {
     if (instance == nullptr) {
         throw ConfigurationError("Driver: getInstance() called before init().");
     }
     return instance;
 }
 
-Driver* Driver::init(const ExtensionApi& api, bool smooth, size_t numBoxes) {
+Driver* Driver::Init(const ExtensionApi& api, bool smooth, size_t numBoxes) {
     if (instance != nullptr) {
         throw ConfigurationError("Driver: init() called a twice.");
     }

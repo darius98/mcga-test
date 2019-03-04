@@ -24,7 +24,7 @@ class PipeReader {
     std::vector<std::uint8_t> getBytes();
 
  protected:
-    static std::size_t getMessageSize(const Message& message);
+    static std::size_t GetMessageSize(const Message& message);
 };
 
 class PipeWriter {
@@ -35,7 +35,7 @@ class PipeWriter {
 
     template<class... Args>
     void sendMessage(const Args... args) {
-        sendMessage(Message::build(args...));
+        sendMessage(Message::Build(args...));
     }
 
  private:

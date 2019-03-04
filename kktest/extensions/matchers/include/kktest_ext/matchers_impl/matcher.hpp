@@ -14,13 +14,13 @@ class Description {
 
     template<class T>
     Description& operator<<(const T& obj) {
-        detail::Streamer<T>::send(stream, obj);
+        detail::Streamer<T>::Send(stream, obj);
         return *this;
     }
 
     template<class T>
     Description& operator<<(const T* obj) {
-        detail::Streamer<T>::send(stream, obj);
+        detail::Streamer<T>::Send(stream, obj);
         return *this;
     }
 

@@ -11,7 +11,7 @@ namespace kktest {
 Executor::Executor(OnTestFinished onTestFinished):
         onTestFinished(move(onTestFinished)) {}
 
-double Executor::getTimeTickLengthMs() {
+double Executor::GetTimeTickLengthMs() {
     static double timeTickLengthMs = -1.0;
     if (timeTickLengthMs == -1.0) {
         // TODO(darius98): Don't hard-code this, estimate it based on how much a
@@ -66,7 +66,7 @@ ExecutedTest::Info Executor::run(const Test& test) {
                "tearDown of group \"" + (*it)->getDescription() + "\"");
     }
     double elapsedMs = 1.0 * t.elapsed().totalNs() / Duration::kMilliToNano;
-    info.timeTicks = elapsedMs / getTimeTickLengthMs();
+    info.timeTicks = elapsedMs / GetTimeTickLengthMs();
     state = INACTIVE;
     return info;
 }

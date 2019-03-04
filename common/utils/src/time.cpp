@@ -7,7 +7,7 @@ using namespace std;
 namespace kktest {
 namespace utils {
 
-Duration Duration::fromMs(long double ms) {
+Duration Duration::FromMs(long double ms) {
     return {
         static_cast<int>(floor(ms / kSecondsToMilli)),
         static_cast<long long>(
@@ -67,19 +67,19 @@ void Duration::normalize() {
 }
 
 Duration operator"" _ms(long double ms) {
-    return Duration::fromMs(ms);
+    return Duration::FromMs(ms);
 }
 
 Duration operator"" _ms(unsigned long long ms) {
-    return Duration::fromMs(ms);
+    return Duration::FromMs(ms);
 }
 
 Duration operator"" _s(long double s) {
-    return Duration::fromMs(s * Duration::kSecondsToMilli);
+    return Duration::FromMs(s * Duration::kSecondsToMilli);
 }
 
 Duration operator"" _s(unsigned long long s) {
-    return Duration::fromMs(s * Duration::kSecondsToMilli);
+    return Duration::FromMs(s * Duration::kSecondsToMilli);
 }
 
 Duration operator"" _ns(unsigned long long d) {

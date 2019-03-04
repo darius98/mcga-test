@@ -12,7 +12,7 @@ using namespace std;
 
 void interprocMessageTest() {
     test("Building & reading a message from 3 ints", [] {
-        auto message = Message::build(1, 2, 3);
+        auto message = Message::Build(1, 2, 3);
         int x, y, z;
         message >> x >> y >> z;
         expect(message.isInvalid(), isFalse);
@@ -26,7 +26,7 @@ void interprocMessageTest() {
         long long y = 2;
         double z = 3.0;
         char t = 'a';
-        auto message = Message::build(x, y, z, t);
+        auto message = Message::Build(x, y, z, t);
         int a;
         long long b;
         double c;
@@ -43,7 +43,7 @@ void interprocMessageTest() {
         string s = "abc";
         int r = 5;
         string t = "def";
-        auto message = Message::build(s, r, t);
+        auto message = Message::Build(s, r, t);
         expect(message.isInvalid(), isFalse);
         string a;
         int b;
@@ -67,7 +67,7 @@ void interprocMessageTest() {
         int a = 2;
         int b = 4;
         string s = "abc";
-        auto message = Message::build(a, b, s);
+        auto message = Message::Build(a, b, s);
 
         expect(message.isInvalid(), isFalse);
 
@@ -105,8 +105,8 @@ void interprocMessageTest() {
         Message message2(Message::INVALID);
         expect(message1 == message2, isTrue);
 
-        auto a = Message::build(1, 2, 3);
-        auto b = Message::build(1, 2, 3);
+        auto a = Message::Build(1, 2, 3);
+        auto b = Message::Build(1, 2, 3);
 
         auto &aRef = a;
         expect(a == aRef, isTrue);
@@ -128,7 +128,7 @@ void interprocMessageTest() {
         memcpy(static_cast<uint8_t*>(buffer) + sizeof(size_t),
                &messageContent,
                sizeof(int));
-        Message message = Message::read(buffer, bufferSize);
+        Message message = Message::Read(buffer, bufferSize);
         expect(message.isInvalid(), isFalse);
         int actualContent;
         message >> actualContent;

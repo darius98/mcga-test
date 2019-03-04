@@ -20,10 +20,10 @@ RunningTest::RunningTest(Test test): test(move(test)) {}
 
 void RunningTest::startExecution(Executor* executor) {
     double timeLimitMs = test.getTimeTicksLimit()
-                             * Executor::getTimeTickLengthMs()
+                             * Executor::GetTimeTickLengthMs()
                          + 100.0;
     currentExecution.reset(new WorkerSubprocess(
-        Duration::fromMs(timeLimitMs),
+            Duration::FromMs(timeLimitMs),
         bind(&RunningTest::executeBoxed, this, executor, _1)));
 }
 

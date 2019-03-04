@@ -109,10 +109,10 @@ class PosixPipeReader: public PipeReader {
     }
 
     Message readMessageFromBuffer() {
-        auto message = Message::read(buffer + bufferReadHead,
+        auto message = Message::Read(buffer + bufferReadHead,
                                      bufferSize - bufferReadHead);
         if (!message.isInvalid()) {
-            bufferReadHead += getMessageSize(message);
+            bufferReadHead += GetMessageSize(message);
         }
         return message;
     }

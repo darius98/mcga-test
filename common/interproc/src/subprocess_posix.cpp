@@ -95,7 +95,7 @@ class PosixSubprocessHandler: public Subprocess {
     int lastWaitStatus = 0;
 };
 
-Subprocess* Subprocess::fork(const function<void()>& func) {
+Subprocess* Subprocess::Fork(const function<void()>& func) {
     pid_t forkPid = ::fork();
     if (forkPid < 0) {
         throw system_error(errno, generic_category(),
