@@ -10,8 +10,8 @@ if (UNIX OR APPLE)
     )
 endif ()
 
-add_library(common_interproc ${interproc_src})
-target_link_libraries(common_interproc PUBLIC common_utils)
+add_library(common_interproc_obj OBJECT ${interproc_src})
+target_link_libraries(common_interproc_obj PUBLIC common_utils)
 
 add_kktest(common_interproc_test
     tests/main.cpp

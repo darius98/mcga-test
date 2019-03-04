@@ -7,7 +7,7 @@ if (UNIX OR APPLE)
     )
 endif ()
 
-add_library(common_utils ${common_utils_src})
+add_library(common_utils_obj OBJECT ${common_utils_src})
 
 add_kktest(common_utils_test
     tests/main.cpp

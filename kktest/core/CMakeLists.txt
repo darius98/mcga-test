@@ -10,10 +10,5 @@ add_library(kktest_core OBJECT
 )
 target_compile_options(kktest_core PRIVATE -Wall -Wextra -pedantic)
 target_include_directories(kktest_core PUBLIC include)
-target_link_libraries(kktest_core
-    PUBLIC common_interproc
-    PUBLIC common_utils
-    PUBLIC cppli
-)
 
 install(DIRECTORY include DESTINATION .)
