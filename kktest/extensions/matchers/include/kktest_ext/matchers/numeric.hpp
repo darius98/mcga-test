@@ -1,8 +1,8 @@
-#ifndef KKTEST_EXTENSIONS_MATCHERS_INCLUDE_KKTEST_EXT_MATCHERS_IMPL_NUMERIC_MATCHERS_HPP_
-#define KKTEST_EXTENSIONS_MATCHERS_INCLUDE_KKTEST_EXT_MATCHERS_IMPL_NUMERIC_MATCHERS_HPP_
+#ifndef KKTEST_EXTENSIONS_MATCHERS_INCLUDE_KKTEST_EXT_MATCHERS_NUMERIC_HPP_
+#define KKTEST_EXTENSIONS_MATCHERS_INCLUDE_KKTEST_EXT_MATCHERS_NUMERIC_HPP_
 
-#include <kktest_ext/matchers_impl/matcher.hpp>
-#include <kktest_ext/matchers_impl/detail/decl.hpp>
+#include <kktest_ext/matchers/matcher.hpp>
+#include <kktest_ext/matchers/detail/decl.hpp>
 
 namespace kktest {
 namespace matchers {

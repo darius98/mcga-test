@@ -1,6 +1,6 @@
 #include <kktest.hpp>
 
-#include "kktest/extensions/matchers/include/kktest_ext/matchers_impl/comparison_matchers.hpp"
+#include "kktest/extensions/matchers/include/kktest_ext/matchers/comparison.hpp"
 
 using namespace kktest;
 using namespace kktest::matchers;

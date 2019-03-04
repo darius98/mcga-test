@@ -1,10 +1,10 @@
-#ifndef KKTEST_EXTENSIONS_MATCHERS_INCLUDE_KKTEST_EXT_MATCHERS_IMPL_STRING_MATCHERS_HPP_
-#define KKTEST_EXTENSIONS_MATCHERS_INCLUDE_KKTEST_EXT_MATCHERS_IMPL_STRING_MATCHERS_HPP_
+#ifndef KKTEST_EXTENSIONS_MATCHERS_INCLUDE_KKTEST_EXT_MATCHERS_STRING_HPP_
+#define KKTEST_EXTENSIONS_MATCHERS_INCLUDE_KKTEST_EXT_MATCHERS_STRING_HPP_
 
 #include <string>
 
-#include <kktest_ext/matchers_impl/matcher.hpp>
-#include <kktest_ext/matchers_impl/detail/decl.hpp>
+#include <kktest_ext/matchers/matcher.hpp>
+#include <kktest_ext/matchers/detail/decl.hpp>
 
 namespace kktest {
 namespace matchers {

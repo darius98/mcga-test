@@ -2,7 +2,7 @@
 
 #include <kktest.hpp>
 
-#include "kktest/extensions/matchers/include/kktest_ext/matchers_impl/string_matchers.hpp"
+#include "kktest/extensions/matchers/include/kktest_ext/matchers/string.hpp"
 
 using namespace kktest;
 using namespace kktest::matchers;

@@ -1,5 +1,5 @@
 #include <kktest.hpp>
-#include <kktest_ext/matchers.hpp>
+#include <kktest_ext/matchers/comparison.hpp>
 
 #include "common/utils/src/time.hpp"
 

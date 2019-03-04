@@ -1,7 +1,10 @@
 #include <csignal>
 
 #include <kktest.hpp>
-#include <kktest_ext/matchers.hpp>
+#include <kktest_ext/matchers/comparison.hpp>
+#include <kktest_ext/matchers/iterable.hpp>
+#include <kktest_ext/matchers/numeric.hpp>
+#include <kktest_ext/matchers/truth.hpp>
 
 #include "kktest/extensions/death/include/kktest_ext/death_impl/check_death.hpp"
 

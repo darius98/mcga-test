@@ -1,7 +1,8 @@
 #include <cstring>
 
 #include <kktest.hpp>
-#include <kktest_ext/matchers.hpp>
+#include <kktest_ext/matchers/comparison.hpp>
+#include <kktest_ext/matchers/truth.hpp>
 
 #include "common/interproc/src/message.hpp"
 

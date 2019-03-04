@@ -1,11 +1,11 @@
-#ifndef KKTEST_EXTENSIONS_MATCHERS_INCLUDE_KKTEST_EXT_MATCHERS_IMPL_FUNCTIONAL_MATCHERS_HPP_
-#define KKTEST_EXTENSIONS_MATCHERS_INCLUDE_KKTEST_EXT_MATCHERS_IMPL_FUNCTIONAL_MATCHERS_HPP_
+#ifndef KKTEST_EXTENSIONS_MATCHERS_INCLUDE_KKTEST_EXT_MATCHERS_FUNCTIONAL_HPP_
+#define KKTEST_EXTENSIONS_MATCHERS_INCLUDE_KKTEST_EXT_MATCHERS_FUNCTIONAL_HPP_
 
 #include <functional>
 
-#include <kktest_ext/matchers_impl/matcher.hpp>
-#include <kktest_ext/matchers_impl/detail/decl.hpp>
-#include <kktest_ext/matchers_impl/detail/std_invoke_polyfill.hpp>
+#include <kktest_ext/matchers/matcher.hpp>
+#include <kktest_ext/matchers/detail/decl.hpp>
+#include <kktest_ext/matchers/detail/std_invoke_polyfill.hpp>
 
 namespace kktest {
 namespace matchers {

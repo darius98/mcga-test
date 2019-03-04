@@ -1,8 +1,8 @@
-#ifndef KKTEST_EXTENSIONS_MATCHERS_INCLUDE_KKTEST_EXT_MATCHERS_IMPL_MATCHER_HPP_
-#define KKTEST_EXTENSIONS_MATCHERS_INCLUDE_KKTEST_EXT_MATCHERS_IMPL_MATCHER_HPP_
+#ifndef KKTEST_EXTENSIONS_MATCHERS_INCLUDE_KKTEST_EXT_MATCHERS_MATCHER_HPP_
+#define KKTEST_EXTENSIONS_MATCHERS_INCLUDE_KKTEST_EXT_MATCHERS_MATCHER_HPP_
 
 #include <kktest.hpp>
-#include <kktest_ext/matchers_impl/detail/streamer.hpp>
+#include <kktest_ext/matchers/detail/streamer.hpp>
 
 namespace kktest {
 namespace matchers {
@@ -49,6 +49,27 @@ class Matcher {
     // virtual void describeMismatch(Description* description,
     //                               const T& object) = 0;
 };
+
+template<
+        class T,
+        class M,
+        class = typename std::enable_if<
+                std::is_base_of<matchers::Matcher, M>::value
+        >
+>
+void expect(const T& object, M matcher) {
+    if (matcher.matches(object)) {
+        return;
+    }
+    matchers::Description description;
+    description << "Expected ";
+    matcher.describe(&description);
+    description << "\n\tGot      '";
+    description << object;
+    description << "'\n";
+    matcher.describeMismatch(&description, object);
+    fail("Expectation failed:\n\t" + description.toString());
+}
 
 }
 }

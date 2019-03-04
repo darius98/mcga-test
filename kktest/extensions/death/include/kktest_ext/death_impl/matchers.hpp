@@ -1,8 +1,9 @@
-#ifndef KKTEST_EXTENSIONS_DEATH_INCLUDE_KKTEST_EXT_DEATH_IMPL_MATCHERS_HPP_
-#define KKTEST_EXTENSIONS_DEATH_INCLUDE_KKTEST_EXT_DEATH_IMPL_MATCHERS_HPP_
+#ifndef KKTEST_EXTENSIONS_DEATH_INCLUDE_KKTEST_EXT_DEATH_IMPL_HPP_
+#define KKTEST_EXTENSIONS_DEATH_INCLUDE_KKTEST_EXT_DEATH_IMPL_HPP_
 
-#include <kktest_ext/matchers_impl/comparison_matchers.hpp>
-#include <kktest_ext/matchers_impl/matcher.hpp>
+#include <kktest_ext/matchers/comparison.hpp>
+#include <kktest_ext/matchers/composite.hpp>
+#include <kktest_ext/matchers/matcher.hpp>
 #include <kktest_ext/death_impl/check_death.hpp>
 #include <kktest_ext/death_impl/death_status.hpp>
 
