@@ -101,7 +101,7 @@ void TestLogger::printTestMessage(const ExecutedTest& test) {
                << " passed, "
                << test.getNumRequiredPassedAttempts()
                << " / "
-               << test.getNumRequiredPassedAttempts()
+               << test.getNumAttempts()
                << " required)";
     }
     if (test.getNumAttempts() > 1 && test.isPassed()) {
