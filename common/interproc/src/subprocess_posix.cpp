@@ -16,10 +16,9 @@ using namespace std;
 namespace kktest {
 namespace interproc {
 
-
-class LinuxSubprocessHandler: public Subprocess {
+class PosixSubprocessHandler: public Subprocess {
  public:
-    explicit LinuxSubprocessHandler(pid_t pid): pid(pid) {}
+    explicit PosixSubprocessHandler(pid_t pid): pid(pid) {}
 
     bool isFinished() override {
         if (killed || finished) {
@@ -29,7 +28,7 @@ class LinuxSubprocessHandler: public Subprocess {
         int ret = waitpid(pid, &wStatus, WNOHANG);
         if (ret < 0) {
             throw system_error(errno, generic_category(),
-                               "LinuxSubprocessHandler:waitpid");
+                               "PosixSubprocessHandler:waitpid");
         }
         if (ret == 0) {
             return false;
@@ -49,7 +48,7 @@ class LinuxSubprocessHandler: public Subprocess {
                 return ALREADY_DEAD;
             }
             throw system_error(errno, generic_category(),
-                               "LinuxSubprocessHandler:kill");
+                               "PosixSubprocessHandler:kill");
         }
         return KILLED;
     }
@@ -100,13 +99,13 @@ Subprocess* Subprocess::fork(const function<void()>& func) {
     pid_t forkPid = ::fork();
     if (forkPid < 0) {
         throw system_error(errno, generic_category(),
-                           "LinuxSubprocessHandler:fork");
+                           "PosixSubprocessHandler:fork");
     }
     if (forkPid == 0) {  // child process
         func();
         exit(0);
     }
-    return new LinuxSubprocessHandler(forkPid);
+    return new PosixSubprocessHandler(forkPid);
 }
 
 }

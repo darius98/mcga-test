@@ -15,16 +15,16 @@ using namespace std;
 namespace kktest {
 namespace interproc {
 
-class LinuxPipeReader: public PipeReader {
+class PosixPipeReader: public PipeReader {
  public:
-    explicit LinuxPipeReader(const int& inputFD):
+    explicit PosixPipeReader(const int& inputFD):
         inputFD(inputFD),
         buffer(static_cast<uint8_t*>(malloc(128))),
         bufferReadHead(0),
         bufferSize(0),
         bufferCapacity(128) {}
 
-    ~LinuxPipeReader() override {
+    ~PosixPipeReader() override {
         close(inputFD);
         free(buffer);
     }
@@ -124,11 +124,11 @@ class LinuxPipeReader: public PipeReader {
     size_t bufferCapacity;
 };
 
-class LinuxPipeWriter: public PipeWriter {
+class PosixPipeWriter: public PipeWriter {
  public:
-    explicit LinuxPipeWriter(const int& outputFD): outputFD(outputFD) {}
+    explicit PosixPipeWriter(const int& outputFD): outputFD(outputFD) {}
 
-    ~LinuxPipeWriter() override {
+    ~PosixPipeWriter() override {
         close(outputFD);
     }
 
@@ -150,7 +150,7 @@ class LinuxPipeWriter: public PipeWriter {
 };
 
 void redirectStdoutToPipe(PipeWriter* pipeWriter) {
-    auto linuxPipeWriter = dynamic_cast<LinuxPipeWriter*>(pipeWriter);
+    auto linuxPipeWriter = dynamic_cast<PosixPipeWriter*>(pipeWriter);
     int ret = dup2(linuxPipeWriter->outputFD, STDOUT_FILENO);
     if (ret < 0) {
         throw system_error(errno, generic_category(),
@@ -178,7 +178,7 @@ pair<PipeReader*, PipeWriter*> createAnonymousPipe() {
         throw system_error(errno, generic_category(),
                            "createAnonymousPipe:fcntl (set write non-blocking");
     }
-    return {new LinuxPipeReader(fd[0]), new LinuxPipeWriter(fd[1])};
+    return {new PosixPipeReader(fd[0]), new PosixPipeWriter(fd[1])};
 }
 
 void createNamedPipe(const string& pipeName) {
@@ -202,7 +202,7 @@ PipeReader* openNamedPipeForReading(const string& pipeName) {
         throw system_error(errno, generic_category(),
                            "openNamedPipeForReading:open");
     }
-    return new LinuxPipeReader(pipeFD);
+    return new PosixPipeReader(pipeFD);
 }
 
 PipeWriter* openNamedPipeForWriting(const string& pipeName) {
@@ -211,7 +211,7 @@ PipeWriter* openNamedPipeForWriting(const string& pipeName) {
         throw system_error(errno, generic_category(),
                            "openNamedPipeForWriting:open");
     }
-    return new LinuxPipeWriter(pipeFD);
+    return new PosixPipeWriter(pipeFD);
 }
 
 }
