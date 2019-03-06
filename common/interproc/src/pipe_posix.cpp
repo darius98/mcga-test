@@ -12,8 +12,7 @@
 
 using namespace std;
 
-namespace kktest {
-namespace interproc {
+namespace kktest::interproc {
 
 class PosixPipeReader: public PipeReader {
  public:
@@ -214,5 +213,4 @@ PipeWriter* openNamedPipeForWriting(const string& pipeName) {
     return new PosixPipeWriter(pipeFD);
 }
 
-}
 }

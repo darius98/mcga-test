@@ -1,5 +1,4 @@
-#ifndef KKTEST_CORE_SRC_BOX_EXECUTOR_HPP_
-#define KKTEST_CORE_SRC_BOX_EXECUTOR_HPP_
+#pragma once
 
 #include "common/interproc/src/worker_subprocess.hpp"
 #include "kktest/core/src/executor.hpp"
@@ -44,5 +43,3 @@ class BoxExecutor: public Executor {
 };
 
 }
-
-#endif

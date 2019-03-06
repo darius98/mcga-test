@@ -1,12 +1,10 @@
-#ifndef KKTEST_EXTENSIONS_FEEDBACK_SRC_EXT_HPP_
-#define KKTEST_EXTENSIONS_FEEDBACK_SRC_EXT_HPP_
+#pragma once
 
 #include "common/interproc/src/pipe.hpp"
 #include "kktest/core/src/extension_api.hpp"
 #include "kktest/extensions/feedback/src/test_logger.hpp"
 
-namespace kktest {
-namespace feedback {
+namespace kktest::feedback {
 
 class FeedbackExtension: public Extension {
  public:
@@ -27,6 +25,4 @@ class FeedbackExtension: public Extension {
 };
 
 }
-}
 
-#endif

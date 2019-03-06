@@ -1,5 +1,4 @@
-#ifndef KKTEST_CORE_SRC_GROUP_HPP_
-#define KKTEST_CORE_SRC_GROUP_HPP_
+#pragma once
 
 #include <memory>
 
@@ -28,7 +27,7 @@ class Group: private GroupConfig {
 
     /** Default constructor from the upgraded GroupConfig and extra metadata
      * received from the testing Driver. Very similar to Test#Test().*/
-    Group(GroupConfig&& config, Ptr parentGroup, int index);
+    Group(GroupConfig config, Ptr parentGroup, int index);
 
     /** See GroupConfig#description. */
     std::string getDescription() const;
@@ -105,8 +104,6 @@ class Group: private GroupConfig {
     Executable tearDownFunc;
 };
 
-typedef std::shared_ptr<Group> GroupPtr;
+typedef Group::Ptr GroupPtr;
 
 }
-
-#endif

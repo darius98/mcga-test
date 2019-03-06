@@ -1,104 +1,51 @@
-#ifndef KKTEST_EXTENSIONS_MATCHERS_INCLUDE_KKTEST_EXT_MATCHERS_COMPOSITE_HPP_
-#define KKTEST_EXTENSIONS_MATCHERS_INCLUDE_KKTEST_EXT_MATCHERS_COMPOSITE_HPP_
+#pragma once
 
 #include <kktest_ext/matchers/comparison.hpp>
 #include <kktest_ext/matchers/detail/decl.hpp>
 
-namespace kktest {
-namespace matchers {
+namespace kktest::matchers {
 
-template<
-    class A,
-    class B,
-    class=typename std::enable_if<std::is_base_of<Matcher, A>::value>::type,
-    class=typename std::enable_if<std::is_base_of<Matcher, B>::value>::type>
-detail::AndMatcher<A, B> both(const A& a, const B& b) {
-    return detail::AndMatcher<A, B>(a, b);
+template<class A, class B>
+constexpr auto both(const A& a, const B& b) {
+    if constexpr (std::is_base_of_v<Matcher, A>) {
+        if constexpr (std::is_base_of_v<Matcher, B>) {
+            return detail::AndMatcher(a, b);
+        } else {
+            return detail::AndMatcher(a, isEqualTo(b));
+        }
+    } else {
+        if constexpr (std::is_base_of_v<Matcher, B>) {
+            return detail::AndMatcher(isEqualTo(a), b);
+        } else {
+            return detail::AndMatcher(isEqualTo(a), isEqualTo(b));
+        }
+    }
 }
 
-template<
-    class A,
-    class B,
-    class=typename std::enable_if<std::is_base_of<Matcher, A>::value>::type,
-    class=typename std::enable_if<!std::is_base_of<Matcher, B>::value>::type>
-detail::AndMatcher<A, detail::EqualityMatcher<B>> both(const A& a, const B& b) {
-    return detail::AndMatcher<A, detail::EqualityMatcher<B>>(a, isEqualTo(b));
+template<class A, class B>
+constexpr auto either(const A& a, const B& b) {
+    if constexpr (std::is_base_of_v<Matcher, A>) {
+        if constexpr (std::is_base_of_v<Matcher, B>) {
+            return detail::OrMatcher(a, b);
+        } else {
+            return detail::OrMatcher(a, isEqualTo(b));
+        }
+    } else {
+        if constexpr (std::is_base_of_v<Matcher, B>) {
+            return detail::OrMatcher(isEqualTo(a), b);
+        } else {
+            return detail::OrMatcher(isEqualTo(a), isEqualTo(b));
+        }
+    }
 }
 
-template<
-    class A,
-    class B,
-    class=typename std::enable_if<!std::is_base_of<Matcher, A>::value>::type,
-    class=typename std::enable_if<std::is_base_of<Matcher, B>::value>::type>
-detail::AndMatcher<detail::EqualityMatcher<A>, B> both(const A& a, const B& b) {
-    return detail::AndMatcher<detail::EqualityMatcher<A>, B>(isEqualTo(a), b);
-}
-
-template<
-    class A,
-    class B,
-    class=typename std::enable_if<!std::is_base_of<Matcher, A>::value>::type,
-    class=typename std::enable_if<!std::is_base_of<Matcher, B>::value>::type>
-detail::AndMatcher<detail::EqualityMatcher<A>, detail::EqualityMatcher<B>>
-        both(const A& a, const B& b) {
-    return detail::AndMatcher<detail::EqualityMatcher<A>,
-                              detail::EqualityMatcher<B>
-                             >(isEqualTo(a), isEqualTo(b));
-}
-
-template<
-    class A,
-    class B,
-    class=typename std::enable_if<std::is_base_of<Matcher, A>::value>::type,
-    class=typename std::enable_if<std::is_base_of<Matcher, B>::value>::type>
-detail::OrMatcher<A, B> either(const A& a, const B& b) {
-    return detail::OrMatcher<A, B>(a, b);
-}
-
-template<
-    class A,
-    class B,
-    class=typename std::enable_if<std::is_base_of<Matcher, A>::value>::type,
-    class=typename std::enable_if<!std::is_base_of<Matcher, B>::value>::type>
-detail::OrMatcher<A, detail::EqualityMatcher<B>> either(const A& a,
-                                                        const B& b) {
-    return detail::OrMatcher<A, detail::EqualityMatcher<B>>(a, isEqualTo(b));
-}
-
-template<
-    class A,
-    class B,
-    class=typename std::enable_if<!std::is_base_of<Matcher, A>::value>::type,
-    class=typename std::enable_if<std::is_base_of<Matcher, B>::value>::type>
-detail::OrMatcher<detail::EqualityMatcher<A>, B> either(const A& a,
-                                                        const B& b) {
-    return detail::OrMatcher<detail::EqualityMatcher<A>, B>(isEqualTo(a), b);
-}
-
-template<
-    class A,
-    class B,
-    class=typename std::enable_if<!std::is_base_of<Matcher, A>::value>::type,
-    class=typename std::enable_if<!std::is_base_of<Matcher, B>::value>::type>
-detail::OrMatcher<detail::EqualityMatcher<A>,
-                  detail::EqualityMatcher<B>> either(const A& a, const B& b) {
-    return detail::OrMatcher<detail::EqualityMatcher<A>,
-                             detail::EqualityMatcher<B>>(isEqualTo(a),
-                                                         isEqualTo(b));
-}
-
-template<
-    class T,
-    class=typename std::enable_if<std::is_base_of<Matcher, T>::value>::type>
-detail::NotMatcher<T> isNot(const T& x) {
-    return detail::NotMatcher<T>(x);
-}
-
-template<
-    class T,
-    class=typename std::enable_if<!std::is_base_of<Matcher, T>::value>::type>
-detail::NonEqualityMatcher<T> isNot(const T& x) {
-    return isNotEqualTo(x);
+template<class T>
+constexpr auto isNot(const T& x) {
+    if constexpr (std::is_base_of_v<Matcher, T>) {
+        return detail::NotMatcher(x);
+    } else {
+        return detail::NotMatcher(isEqualTo(x));
+    }
 }
 
 namespace detail {
@@ -111,7 +58,7 @@ class AndMatcher: public Matcher {
                   "AndMatcher only supports other matchers as template args.");
 
  public:
-    AndMatcher(const M1& m1, const M2& m2): m1(m1), m2(m2) {}
+    constexpr AndMatcher(const M1& m1, const M2& m2): m1(m1), m2(m2) {}
 
     template<class T>
     bool matches(const T& obj) {
@@ -151,7 +98,7 @@ class OrMatcher: public Matcher {
                   "OrMatcher only supports other matchers as template args.");
 
  public:
-    OrMatcher(const M1& m1, const M2& m2): m1(m1), m2(m2) {}
+    constexpr OrMatcher(const M1& m1, const M2& m2): m1(m1), m2(m2) {}
 
     template<class T>
     bool matches(const T& obj) {
@@ -187,7 +134,7 @@ class NotMatcher: public Matcher {
                   "NotMatcher only supports other matchers as template args.");
 
  public:
-    explicit NotMatcher(const M& matcher): matcher(matcher) {}
+    constexpr explicit NotMatcher(const M& matcher): matcher(matcher) {}
 
     template<class T>
     bool matches(const T& obj) {
@@ -208,7 +155,5 @@ class NotMatcher: public Matcher {
 };
 
 }
-}
-}
 
-#endif
+}

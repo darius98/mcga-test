@@ -8,8 +8,7 @@
 
 using namespace std;
 
-namespace kktest {
-namespace feedback {
+namespace kktest::feedback {
 
 TestLogger::TestLogger(ostream& stream): stream(stream) {}
 
@@ -125,5 +124,4 @@ void TestLogger::printTestMessage(const ExecutedTest& test) {
     stream << "\n";
 }
 
-}
 }

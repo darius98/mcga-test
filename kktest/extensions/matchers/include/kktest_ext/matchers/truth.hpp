@@ -1,11 +1,10 @@
-#ifndef KKTEST_EXTENSIONS_MATCHERS_INCLUDE_KKTEST_EXT_MATCHERS_TRUTH_HPP_
-#define KKTEST_EXTENSIONS_MATCHERS_INCLUDE_KKTEST_EXT_MATCHERS_TRUTH_HPP_
+#pragma once
 
 #include <kktest_ext/matchers/matcher.hpp>
 #include <kktest_ext/matchers/detail/decl.hpp>
 
-namespace kktest {
-namespace matchers {
+namespace kktest::matchers {
+
 namespace detail {
 
 class IsTrueMatcher: public Matcher {
@@ -45,6 +44,3 @@ static detail::IsTrueMatcher isTrue;
 static detail::IsFalseMatcher isFalse;
 
 }
-}
-
-#endif

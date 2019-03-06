@@ -1,13 +1,10 @@
-#ifndef KKTEST_EXTENSIONS_MATCHERS_INCLUDE_KKTEST_EXT_MATCHERS_DETAIL_DECL_HPP_
-#define KKTEST_EXTENSIONS_MATCHERS_INCLUDE_KKTEST_EXT_MATCHERS_DETAIL_DECL_HPP_
+#pragma once
 
 // This file forward-declares all classes used from the public API of matchers.
 // We use this to maintain the public API at the top of each respective matcher
 // file.
 
-namespace kktest {
-namespace matchers {
-namespace detail {
+namespace kktest::matchers::detail {
 
 // Comparison matchers
 template<class T> class EqualityMatcher;
@@ -55,7 +52,3 @@ class IsTrueMatcher;
 class IsFalseMatcher;
 
 }
-}
-}
-
-#endif

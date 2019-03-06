@@ -6,7 +6,7 @@ using namespace std;
 
 namespace kktest {
 
-Group::Group(GroupConfig&& config, Ptr parentGroup, int index):
+Group::Group(GroupConfig config, Ptr parentGroup, int index):
         GroupConfig(move(config)),
         parentGroup(move(parentGroup)),
         index(index) {}

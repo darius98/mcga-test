@@ -1,5 +1,4 @@
-#ifndef KKTEST_EXTENSIONS_DEATH_INCLUDE_KKTEST_EXT_DEATH_IMPL_HPP_
-#define KKTEST_EXTENSIONS_DEATH_INCLUDE_KKTEST_EXT_DEATH_IMPL_HPP_
+#pragma once
 
 #include <kktest_ext/matchers/comparison.hpp>
 #include <kktest_ext/matchers/composite.hpp>
@@ -7,8 +6,7 @@
 #include <kktest_ext/death_impl/check_death.hpp>
 #include <kktest_ext/death_impl/death_status.hpp>
 
-namespace kktest {
-namespace death {
+namespace kktest::death {
 
 namespace detail {
 class ExitsMatcher;
@@ -17,41 +15,22 @@ template<class T> class HasExitedWithCodeMatcher;
 template<class T> class HasOutputMatcher;
 }
 
-template<class T,
-         class=typename std::enable_if<
-                   std::is_base_of<matchers::Matcher, T>::value
-               >::type>
-detail::HasExitedWithCodeMatcher<T> hasExitedWithCode(const T& exitCodeMatcher){
-    return detail::HasExitedWithCodeMatcher<T>(exitCodeMatcher);
+template<class T>
+auto hasExitedWithCode(const T& exitCode) {
+    if constexpr (std::is_base_of_v<matchers::Matcher, T>) {
+        return detail::HasExitedWithCodeMatcher(exitCode);
+    } else {
+        return detail::HasExitedWithCodeMatcher(matchers::isEqualTo(exitCode));
+    }
 }
 
-template<class T,
-         class=typename std::enable_if<
-                   !std::is_base_of<matchers::Matcher, T>::value
-               >::type>
-detail::HasExitedWithCodeMatcher<matchers::detail::EqualityMatcher<T>>
-        hasExitedWithCode(const T& exitCode) {
-    return detail::HasExitedWithCodeMatcher
-            <matchers::detail::EqualityMatcher<T>>(
-                    matchers::isEqualTo(exitCode));
-}
-
-template<class T,
-         class=typename std::enable_if<
-                   std::is_base_of<matchers::Matcher, T>::value
-               >::type>
-detail::HasOutputMatcher<T> hasOutput(const T& outputMatcher) {
-    return detail::HasOutputMatcher<T>(outputMatcher);
-}
-
-template<class T,
-         class=typename std::enable_if<
-                   !std::is_base_of<matchers::Matcher, T>::value
-               >::type>
-detail::HasOutputMatcher<matchers::detail::EqualityMatcher<T>>
-        hasOutput(const T& output) {
-    return detail::HasOutputMatcher<matchers::detail::EqualityMatcher<T>>(
-        matchers::isEqualTo(output));
+template<class T>
+auto hasOutput(const T& output) {
+    if constexpr (std::is_base_of_v<matchers::Matcher, T>) {
+        return detail::HasOutputMatcher(output);
+    } else {
+        return detail::HasOutputMatcher(matchers::isEqualTo(output));
+    }
 }
 
 namespace detail {
@@ -358,6 +337,3 @@ static detail::HasExitedWithCodeMatcher
         hasExitedWithNonZeroCode(matchers::isNot(matchers::isZero));
 
 }
-}
-
-#endif

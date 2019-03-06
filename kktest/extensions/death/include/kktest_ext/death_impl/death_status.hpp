@@ -1,13 +1,11 @@
-#ifndef KKTEST_EXTENSIONS_DEATH_INCLUDE_KKTEST_EXT_DEATH_IMPL_DEATH_STATUS_HPP_
-#define KKTEST_EXTENSIONS_DEATH_INCLUDE_KKTEST_EXT_DEATH_IMPL_DEATH_STATUS_HPP_
+#pragma once
 
 #include <ostream>
 #include <string>
 
 #include <kktest.hpp>
 
-namespace kktest {
-namespace death {
+namespace kktest::death {
 
 class KKTEST_EXPORT DeathStatus {
  public:
@@ -37,6 +35,3 @@ friend std::ostream& operator<<(std::ostream& out, const DeathStatus& status);
 };
 
 }
-}
-
-#endif

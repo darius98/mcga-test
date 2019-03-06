@@ -1,5 +1,4 @@
-#ifndef KKTEST_CORE_SRC_ERRORS_HPP_
-#define KKTEST_CORE_SRC_ERRORS_HPP_
+#pragma once
 
 #include <stdexcept>
 
@@ -14,5 +13,3 @@ struct ExpectationFailed : std::runtime_error {
 };
 
 }
-
-#endif

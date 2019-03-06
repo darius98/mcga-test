@@ -1,3 +1,5 @@
+#include <memory>
+
 #include "kktest/extensions/feedback/src/ext.hpp"
 
 #include <iostream>
@@ -16,8 +18,7 @@ Message::BytesConsumer& Message::BytesConsumer::add(
     return *this;
 }
 
-namespace kktest {
-namespace feedback {
+namespace kktest::feedback {
 
 enum PipeMessageType : uint8_t {
     TEST,
@@ -49,7 +50,7 @@ void FeedbackExtension::init(ExtensionApi& api) {
 }
 
 void FeedbackExtension::initLogging(ExtensionApi& api) {
-    logger = unique_ptr<TestLogger>(new TestLogger(cout));
+    logger = make_unique<TestLogger>(cout);
 
     api.addHook<ExtensionApi::AFTER_TEST>([this](const ExecutedTest& test) {
         logger->addTest(test);
@@ -96,5 +97,4 @@ void FeedbackExtension::initPipe(ExtensionApi& api, const string& pipeName) {
     });
 }
 
-}
 }

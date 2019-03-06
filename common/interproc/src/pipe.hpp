@@ -1,13 +1,11 @@
-#ifndef KKTEST_COMMON_INTERPROC_SRC_PIPE_HPP_
-#define KKTEST_COMMON_INTERPROC_SRC_PIPE_HPP_
+#pragma once
 
 #include <string>
 #include <vector>
 
 #include "common/interproc/src/message.hpp"
 
-namespace kktest {
-namespace interproc {
+namespace kktest::interproc {
 
 class PipeReader {
  public:
@@ -55,6 +53,3 @@ PipeReader* openNamedPipeForReading(const std::string& pipeName);
 PipeWriter* openNamedPipeForWriting(const std::string& pipeName);
 
 }
-}
-
-#endif

@@ -1,11 +1,9 @@
-#ifndef KKTEST_EXTENSIONS_MATCHERS_INCLUDE_KKTEST_EXT_MATCHERS_NUMERIC_HPP_
-#define KKTEST_EXTENSIONS_MATCHERS_INCLUDE_KKTEST_EXT_MATCHERS_NUMERIC_HPP_
+#pragma once
 
 #include <kktest_ext/matchers/matcher.hpp>
 #include <kktest_ext/matchers/detail/decl.hpp>
 
-namespace kktest {
-namespace matchers {
+namespace kktest::matchers {
 
 template<class T>
 detail::IsAlmostEqualMatcher<T> isAlmostEqualTo(const T& target,
@@ -137,6 +135,3 @@ static detail::IsOddMatcher isOdd;
 static detail::IsZeroMatcher isZero;
 
 }
-}
-
-#endif

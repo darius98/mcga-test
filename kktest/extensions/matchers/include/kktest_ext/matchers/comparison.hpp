@@ -1,5 +1,4 @@
-#ifndef KKTEST_EXTENSIONS_MATCHERS_INCLUDE_KKTEST_EXT_MATCHERS_COMPARISON_HPP_
-#define KKTEST_EXTENSIONS_MATCHERS_INCLUDE_KKTEST_EXT_MATCHERS_COMPARISON_HPP_
+#pragma once
 
 #include <functional>
 #include <string>
@@ -7,8 +6,7 @@
 #include <kktest_ext/matchers/matcher.hpp>
 #include <kktest_ext/matchers/detail/decl.hpp>
 
-namespace kktest {
-namespace matchers {
+namespace kktest::matchers {
 
 template<class T>
 detail::EqualityMatcher<T> isEqualTo(const T& object) {
@@ -512,6 +510,3 @@ IsGreaterThanEqualMatcher<std::string>::
 }
 
 }
-}
-
-#endif

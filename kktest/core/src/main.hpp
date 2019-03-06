@@ -1,5 +1,4 @@
-#ifndef KKTEST_CORE_SRC_MAIN_HPP_
-#define KKTEST_CORE_SRC_MAIN_HPP_
+#pragma once
 
 #include <vector>
 
@@ -12,5 +11,3 @@ void initialize(int argc, char** argv, std::vector<Extension*>* extensions);
 int runTests(std::vector<TestCase> tests, std::vector<Extension*>* extensions);
 
 }
-
-#endif

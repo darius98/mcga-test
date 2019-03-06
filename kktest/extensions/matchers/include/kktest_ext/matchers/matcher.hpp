@@ -1,11 +1,9 @@
-#ifndef KKTEST_EXTENSIONS_MATCHERS_INCLUDE_KKTEST_EXT_MATCHERS_MATCHER_HPP_
-#define KKTEST_EXTENSIONS_MATCHERS_INCLUDE_KKTEST_EXT_MATCHERS_MATCHER_HPP_
+#pragma once
 
 #include <kktest.hpp>
 #include <kktest_ext/matchers/detail/streamer.hpp>
 
-namespace kktest {
-namespace matchers {
+namespace kktest::matchers {
 
 class Description {
  public:
@@ -72,6 +70,3 @@ void expect(const T& object, M matcher) {
 }
 
 }
-}
-
-#endif

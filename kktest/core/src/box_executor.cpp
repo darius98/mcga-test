@@ -1,3 +1,5 @@
+#include <memory>
+
 #include "kktest/core/src/box_executor.hpp"
 
 #include "common/interproc/src/pipe.hpp"
@@ -7,7 +9,6 @@
 using namespace kktest::interproc;
 using namespace kktest::utils;
 using namespace std;
-using namespace std::placeholders;
 
 namespace kktest {
 
@@ -22,9 +23,9 @@ void RunningTest::startExecution(Executor* executor) {
     double timeLimitMs = test.getTimeTicksLimit()
                              * Executor::GetTimeTickLengthMs()
                          + 100.0;
-    currentExecution.reset(new WorkerSubprocess(
-            Duration::FromMs(timeLimitMs),
-        bind(&RunningTest::executeBoxed, this, executor, _1)));
+    currentExecution = make_unique<WorkerSubprocess>(
+        Duration::FromMs(timeLimitMs),
+        bind(&RunningTest::executeBoxed, this, executor, placeholders::_1));
 }
 
 void RunningTest::executeBoxed(Executor *executor, PipeWriter *pipe) const {

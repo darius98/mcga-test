@@ -8,12 +8,11 @@ using namespace kktest::interproc;
 using namespace kktest::utils;
 using namespace std;
 
-namespace kktest {
-namespace death {
+namespace kktest::death {
 
 DeathStatus checkDeath(const Executable& func, double timeTicksLimit) {
     WorkerSubprocess proc(
-            Duration::FromMs(timeTicksLimit * Executor::GetTimeTickLengthMs()),
+        Duration::FromMs(timeTicksLimit * Executor::GetTimeTickLengthMs()),
         [func](PipeWriter* writer) {
             func();
             writer->sendMessage(1);
@@ -31,5 +30,4 @@ DeathStatus checkDeath(const Executable& func, double timeTicksLimit) {
     return DeathStatus(-1, 0, proc.getOutput());
 }
 
-}
 }

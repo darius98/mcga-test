@@ -3,8 +3,7 @@
 using namespace kktest::utils;
 using namespace std;
 
-namespace kktest {
-namespace interproc {
+namespace kktest::interproc {
 
 WorkerSubprocess::WorkerSubprocess(Duration timeLimit, Work run):
 // TODO(darius98): I am not sure exactly what I want here.
@@ -108,5 +107,4 @@ void WorkerSubprocess::updateOutput() {
     output += string(newBytes.begin(), newBytes.end());
 }
 
-}
 }

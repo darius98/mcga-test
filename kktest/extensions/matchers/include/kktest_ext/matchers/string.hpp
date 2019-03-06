@@ -1,13 +1,11 @@
-#ifndef KKTEST_EXTENSIONS_MATCHERS_INCLUDE_KKTEST_EXT_MATCHERS_STRING_HPP_
-#define KKTEST_EXTENSIONS_MATCHERS_INCLUDE_KKTEST_EXT_MATCHERS_STRING_HPP_
+#pragma once
 
 #include <string>
 
 #include <kktest_ext/matchers/matcher.hpp>
 #include <kktest_ext/matchers/detail/decl.hpp>
 
-namespace kktest {
-namespace matchers {
+namespace kktest::matchers {
 
 namespace detail {
 
@@ -94,6 +92,3 @@ static detail::IsSubstringMatcher isSubstringOf(const std::string& s) {
 }
 
 }
-}
-
-#endif

@@ -1,8 +1,6 @@
-#ifndef KKTEST_COMMON_UTILS_SRC_TIME_HPP_
-#define KKTEST_COMMON_UTILS_SRC_TIME_HPP_
+#pragma once
 
-namespace kktest {
-namespace utils {
+namespace kktest::utils {
 
 class Duration {
  public:
@@ -71,6 +69,3 @@ void sleepForDuration(const Duration& duration);
 void spinForDuration(const Duration& duration);
 
 }
-}
-
-#endif

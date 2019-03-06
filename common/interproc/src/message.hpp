@@ -1,10 +1,8 @@
-#ifndef KKTEST_COMMON_INTERPROC_SRC_MESSAGE_HPP_
-#define KKTEST_COMMON_INTERPROC_SRC_MESSAGE_HPP_
+#pragma once
 
 #include <string>
 
-namespace kktest {
-namespace interproc {
+namespace kktest::interproc {
 
 class Message {
  public:
@@ -124,6 +122,3 @@ template<>
 Message::BytesConsumer& Message::BytesConsumer::add(const Message& obj);
 
 }
-}
-
-#endif

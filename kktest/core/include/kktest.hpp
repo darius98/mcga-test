@@ -1,5 +1,4 @@
-#ifndef KKTEST_CORE_INCLUDE_KKTEST_HPP_
-#define KKTEST_CORE_INCLUDE_KKTEST_HPP_
+#pragma once
 
 #include <functional>
 #include <string>
@@ -165,5 +164,3 @@ KKTEST_EXPORT int initAndRun(int argc, char** argv,
                              std::vector<TestCase> tests);
 
 }
-
-#endif

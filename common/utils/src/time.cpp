@@ -4,8 +4,7 @@
 
 using namespace std;
 
-namespace kktest {
-namespace utils {
+namespace kktest::utils {
 
 Duration Duration::FromMs(long double ms) {
     return {
@@ -107,5 +106,4 @@ void spinForDuration(const Duration& duration) {
     }
 }
 
-}
 }

@@ -1,5 +1,4 @@
-#ifndef KKTEST_CORE_SRC_EXECUTOR_HPP_
-#define KKTEST_CORE_SRC_EXECUTOR_HPP_
+#pragma once
 
 #include "kktest/core/src/executed_test.hpp"
 
@@ -36,5 +35,3 @@ class Executor {
 };
 
 }
-
-#endif

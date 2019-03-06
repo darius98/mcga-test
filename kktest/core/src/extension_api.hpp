@@ -1,5 +1,4 @@
-#ifndef KKTEST_CORE_SRC_EXTENSION_API_HPP_
-#define KKTEST_CORE_SRC_EXTENSION_API_HPP_
+#pragma once
 
 #include <functional>
 #include <stdexcept>
@@ -67,5 +66,3 @@ class Extension {
 };
 
 }
-
-#endif

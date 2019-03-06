@@ -13,8 +13,7 @@
 
 using namespace std;
 
-namespace kktest {
-namespace interproc {
+namespace kktest::interproc {
 
 class PosixSubprocessHandler: public Subprocess {
  public:
@@ -108,5 +107,4 @@ Subprocess* Subprocess::Fork(const function<void()>& func) {
     return new PosixSubprocessHandler(forkPid);
 }
 
-}
 }

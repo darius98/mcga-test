@@ -4,8 +4,7 @@
 
 using namespace std;
 
-namespace kktest {
-namespace utils {
+namespace kktest::utils {
 
 Timestamp realNow() {
     timespec now{};
@@ -25,5 +24,4 @@ void sleepForDuration(const Duration& duration) {
     } while (true);
 }
 
-}
 }

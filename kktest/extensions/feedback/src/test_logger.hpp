@@ -1,5 +1,4 @@
-#ifndef KKTEST_EXTENSIONS_FEEDBACK_SRC_TEST_LOGGER_HPP_
-#define KKTEST_EXTENSIONS_FEEDBACK_SRC_TEST_LOGGER_HPP_
+#pragma once
 
 #include <map>
 #include <ostream>
@@ -8,8 +7,7 @@
 
 #include "kktest/core/src/executed_test.hpp"
 
-namespace kktest {
-namespace feedback {
+namespace kktest::feedback {
 
 class TestLogger {
  public:
@@ -36,6 +34,3 @@ class TestLogger {
 };
 
 }
-}
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef KKTEST_CORE_SRC_DRIVER_HPP_
-#define KKTEST_CORE_SRC_DRIVER_HPP_
+#pragma once
 
 #include "kktest/core/src/errors.hpp"
 #include "kktest/core/src/executor.hpp"
@@ -52,5 +51,3 @@ class Driver {
 };
 
 }
-
-#endif

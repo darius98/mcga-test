@@ -2,8 +2,7 @@
 
 using namespace std;
 
-namespace kktest {
-namespace interproc {
+namespace kktest::interproc {
 
 Message PipeReader::getNextMessage() {
     return getNextMessage(-1);
@@ -21,5 +20,4 @@ void PipeWriter::sendMessage(const Message& message) {
     sendBytes(message.payload, message.getSize());
 }
 
-}
 }

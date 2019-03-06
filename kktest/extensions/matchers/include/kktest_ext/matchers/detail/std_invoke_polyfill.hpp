@@ -1,12 +1,9 @@
-#ifndef KKTEST_EXTENSIONS_MATCHERS_INCLUDE_KKTEST_EXT_MATCHERS_DETAIL_STD_INVOKE_POLYFILL_HPP_
-#define KKTEST_EXTENSIONS_MATCHERS_INCLUDE_KKTEST_EXT_MATCHERS_DETAIL_STD_INVOKE_POLYFILL_HPP_
+#pragma once
 
 #include <utility>
 #include <type_traits>
 
-namespace kktest {
-namespace matchers {
-namespace detail {
+namespace kktest::matchers::detail {
 
 template <class T>
 struct isReferenceWrapper : std::false_type {};
@@ -146,7 +143,3 @@ auto invokePolyfill(F&& f, Args&&... args)
 }
 
 }
-}
-}
-
-#endif

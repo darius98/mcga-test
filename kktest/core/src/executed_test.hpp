@@ -1,5 +1,4 @@
-#ifndef KKTEST_CORE_SRC_EXECUTED_TEST_HPP_
-#define KKTEST_CORE_SRC_EXECUTED_TEST_HPP_
+#pragma once
 
 #include <vector>
 
@@ -85,5 +84,3 @@ class ExecutedTest : public Test {
 };
 
 }
-
-#endif

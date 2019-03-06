@@ -1,10 +1,8 @@
-#ifndef KKTEST_COMMON_INTERPROC_SRC_SUBPROCESS_HPP_
-#define KKTEST_COMMON_INTERPROC_SRC_SUBPROCESS_HPP_
+#pragma once
 
 #include <functional>
 
-namespace kktest {
-namespace interproc {
+namespace kktest::interproc {
 
 class Subprocess {
  public:
@@ -41,6 +39,3 @@ class Subprocess {
 };
 
 }
-}
-
-#endif

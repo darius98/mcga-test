@@ -1,5 +1,4 @@
-#ifndef KKTEST_EXTENSIONS_MATCHERS_INCLUDE_KKTEST_EXT_MATCHERS_DETAIL_STREAMER_HPP_
-#define KKTEST_EXTENSIONS_MATCHERS_INCLUDE_KKTEST_EXT_MATCHERS_DETAIL_STREAMER_HPP_
+#pragma once
 
 #include <deque>
 #include <functional>
@@ -14,9 +13,7 @@
 #include <utility>
 #include <vector>
 
-namespace kktest {
-namespace matchers {
-namespace detail {
+namespace kktest::matchers::detail {
 
 template<class S, class = void>
 class Streamer {
@@ -102,10 +99,8 @@ class Streamer {
     }
 };
 
-template<class...> using void_t = void;
-
 template<class S>
-class Streamer<S, void_t<decltype(std::cout << std::declval<S>())>> {
+class Streamer<S, std::void_t<decltype(std::cout << std::declval<S>())>> {
  public:
     static void Send(std::stringstream& s, const S& obj) {
         s << obj;
@@ -118,10 +113,10 @@ class Streamer<S, void_t<decltype(std::cout << std::declval<S>())>> {
 
 template<>
 class Streamer<std::string,
-                void_t<decltype(std::declval<std::ostream>()
+               std::void_t<decltype(std::declval<std::ostream>()
                                        << std::declval<std::string>())
-                      >
-                > {
+                          >
+              > {
  public:
     static void Send(std::stringstream& s, const std::string& obj) {
         std::string objCopy = obj;
@@ -145,7 +140,3 @@ class Streamer<std::string,
 };
 
 }
-}
-}
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef KKTEST_EXTENSIONS_MATCHERS_INCLUDE_KKTEST_EXT_MATCHERS_FUNCTIONAL_HPP_
-#define KKTEST_EXTENSIONS_MATCHERS_INCLUDE_KKTEST_EXT_MATCHERS_FUNCTIONAL_HPP_
+#pragma once
 
 #include <functional>
 
@@ -7,8 +6,7 @@
 #include <kktest_ext/matchers/detail/decl.hpp>
 #include <kktest_ext/matchers/detail/std_invoke_polyfill.hpp>
 
-namespace kktest {
-namespace matchers {
+namespace kktest::matchers {
 
 template<class E>
 detail::ThrowsSpecificMatcher<E> throwsA() {
@@ -24,7 +22,7 @@ namespace detail {
 
 class ThrowsAnythingMatcher: public Matcher {
  public:
-    bool matches(const Executable& func) {
+    bool matches(const Executable& func) const {
         try {
             func();
             return false;
@@ -33,11 +31,11 @@ class ThrowsAnythingMatcher: public Matcher {
         }
     }
 
-    void describe(Description* description) {
+    void describe(Description* description) const {
         (*description) << "a function that throws";
     }
 
-    void describeMismatch(Description* description, const Executable& func) {
+    void describeMismatch(Description* description, const Executable& func) const {
         (*description) << "a function that did not throw";
     }
 };
@@ -78,9 +76,7 @@ class ThrowsSpecificMatcher: public Matcher {
 
 }
 
-static detail::ThrowsAnythingMatcher throws;
+constexpr detail::ThrowsAnythingMatcher throws;
 
 }
-}
 
-#endif

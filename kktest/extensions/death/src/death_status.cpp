@@ -2,8 +2,7 @@
 
 using namespace std;
 
-namespace kktest {
-namespace death {
+namespace kktest::death {
 
 DeathStatus::DeathStatus() = default;
 
@@ -39,5 +38,4 @@ ostream& operator<<(ostream& out, const DeathStatus& status) {
     return out;
 }
 
-}
 }

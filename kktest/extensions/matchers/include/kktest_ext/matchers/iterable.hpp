@@ -1,11 +1,9 @@
-#ifndef KKTEST_EXTENSIONS_MATCHERS_INCLUDE_KKTEST_EXT_MATCHERS_ITERABLE_HPP_
-#define KKTEST_EXTENSIONS_MATCHERS_INCLUDE_KKTEST_EXT_MATCHERS_ITERABLE_HPP_
+#pragma once
 
 #include <kktest_ext/matchers/comparison.hpp>
 #include <kktest_ext/matchers/detail/decl.hpp>
 
-namespace kktest {
-namespace matchers {
+namespace kktest::matchers {
 
 template<
     class T,
@@ -209,6 +207,3 @@ static detail::IsEmptyMatcher isEmpty;
 static detail::IsNotEmptyMatcher isNotEmpty;
 
 }
-}
-
-#endif

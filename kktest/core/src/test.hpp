@@ -1,5 +1,4 @@
-#ifndef KKTEST_CORE_SRC_TEST_HPP_
-#define KKTEST_CORE_SRC_TEST_HPP_
+#pragma once
 
 #include <vector>
 
@@ -24,7 +23,7 @@ class Test : private TestConfig {
  public:
     /** Default constructor from a TestConfig and the metadata received from the
      * testing Driver. */
-    Test(TestConfig&& config, Executable body, GroupPtr group, int index);
+    Test(TestConfig config, Executable body, GroupPtr group, int index);
 
     Test(Test&&) = default;
     Test& operator=(Test&&) = default;
@@ -71,5 +70,3 @@ class Test : private TestConfig {
 };
 
 }
-
-#endif

@@ -6,7 +6,7 @@ using namespace std;
 
 namespace kktest {
 
-Test::Test(TestConfig&& config, Executable body, GroupPtr group, int index):
+Test::Test(TestConfig config, Executable body, GroupPtr group, int index):
         TestConfig(move(config)),
         body(move(body)),
         group(move(group)),

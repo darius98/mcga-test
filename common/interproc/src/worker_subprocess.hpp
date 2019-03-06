@@ -1,12 +1,10 @@
-#ifndef KKTEST_COMMON_INTERPROC_SRC_WORKER_SUBPROCESS_HPP_
-#define KKTEST_COMMON_INTERPROC_SRC_WORKER_SUBPROCESS_HPP_
+#pragma once
 
 #include "common/interproc/src/subprocess.hpp"
 #include "common/interproc/src/pipe.hpp"
 #include "common/utils/src/time.hpp"
 
-namespace kktest {
-namespace interproc {
+namespace kktest::interproc {
 
 class WorkerSubprocess: public Subprocess {
  public:
@@ -49,6 +47,3 @@ class WorkerSubprocess: public Subprocess {
 };
 
 }
-}
-
-#endif

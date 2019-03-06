@@ -5,8 +5,7 @@
 
 using namespace std;
 
-namespace kktest {
-namespace interproc {
+namespace kktest::interproc {
 
 const Message Message::INVALID = Message(nullptr);
 
@@ -145,5 +144,4 @@ Message Message::Builder::build() {
     return Message(payloadBuilder);
 }
 
-}
 }
