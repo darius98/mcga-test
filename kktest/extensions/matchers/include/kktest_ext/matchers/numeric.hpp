@@ -13,107 +13,102 @@ detail::IsAlmostEqualMatcher<T> isAlmostEqualTo(const T& target,
 
 namespace detail {
 
-class IsPositiveMatcher: public Matcher {
+class IsPositiveMatcher: public StatelessMatcher {
  public:
     template<class T>
-    bool matches(const T& object) {
+    bool matches(const T& object) const {
         return object > 0;
     }
 
-    void describe(Description* description) {
+    void describe(Description* description) const override {
         (*description) << "a positive number";
     }
 
-    template<class T>
-    void describeMismatch(Description* description, const T&) {
+    void describeFailure(Description* description) const override {
         (*description) << "non-positive";
     }
 };
 
-class IsNegativeMatcher: public Matcher {
+class IsNegativeMatcher: public StatelessMatcher {
  public:
     template<class T>
-    bool matches(const T& object) {
+    bool matches(const T& object) const {
         return object < 0;
     }
 
-    void describe(Description* description) {
+    void describe(Description* description) const override {
         (*description) << "a negative number";
     }
 
-    template<class T>
-    void describeMismatch(Description* description, const T&) {
+    void describeFailure(Description* description) const override {
         (*description) << "non-negative";
     }
 };
 
-class IsEvenMatcher: public Matcher {
+class IsEvenMatcher: public StatelessMatcher {
  public:
     template<class T>
-    bool matches(const T& object) {
+    bool matches(const T& object) const {
         return object % 2 == 0;
     }
 
-    void describe(Description* description) {
+    void describe(Description* description) const override {
         (*description) << "an even number";
     }
 
-    template<class T>
-    void describeMismatch(Description* description, const T&) {
+    void describeFailure(Description* description) const override {
         (*description) << "odd";
     }
 };
 
-class IsOddMatcher: public Matcher {
+class IsOddMatcher: public StatelessMatcher {
  public:
     template<class T>
-    bool matches(const T& object) {
+    bool matches(const T& object) const {
         return object % 2 == 1 || object % 2 == -1;
     }
 
-    void describe(Description* description) {
+    void describe(Description* description) const override {
         (*description) << "an odd number";
     }
 
-    template<class T>
-    void describeMismatch(Description* description, const T&) {
+    void describeFailure(Description* description) const override {
         (*description) << "even";
     }
 };
 
-class IsZeroMatcher: public Matcher {
+class IsZeroMatcher: public StatelessMatcher {
  public:
     template<class T>
-    bool matches(const T& object) {
+    bool matches(const T& object) const {
         return object == 0;
     }
 
-    void describe(Description* description) {
+    void describe(Description* description) const override {
         (*description) << "zero";
     }
 
-    template<class T>
-    void describeMismatch(Description* description, const T&) {
+    void describeFailure(Description* description) const override {
         (*description) << "non-zero";
     }
 };
 
 template<class T>
-class IsAlmostEqualMatcher: public Matcher {
+class IsAlmostEqualMatcher: public StatelessMatcher {
  public:
     explicit IsAlmostEqualMatcher(const T& target, const double& eps):
             target(target), eps(eps) {}
 
-    bool matches(const T& object) {
+    bool matches(const T& object) const {
         T delta = object - target;
         return -eps < delta && delta < eps;
     }
 
-    void describe(Description* description) {
+    void describe(Description* description) const override {
         (*description) << "a number within " << eps << " of " << target;
     }
 
-    void describeMismatch(Description* description, const T&) {
+    void describeFailure(Description* description) const override {
         (*description) << "a number not within " << eps << " of " << target;
     }
 
@@ -124,14 +119,14 @@ class IsAlmostEqualMatcher: public Matcher {
 
 }
 
-static detail::IsPositiveMatcher isPositive;
+constexpr detail::IsPositiveMatcher isPositive;
 
-static detail::IsNegativeMatcher isNegative;
+constexpr detail::IsNegativeMatcher isNegative;
 
-static detail::IsEvenMatcher isEven;
+constexpr detail::IsEvenMatcher isEven;
 
-static detail::IsOddMatcher isOdd;
+constexpr detail::IsOddMatcher isOdd;
 
-static detail::IsZeroMatcher isZero;
+constexpr detail::IsZeroMatcher isZero;
 
 }

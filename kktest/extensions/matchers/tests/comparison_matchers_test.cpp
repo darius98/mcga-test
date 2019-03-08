@@ -9,6 +9,7 @@ using namespace std;
 void comparisonMatchersTest() {
     group("Equality", [&] {
         test("isEqualTo matches equal values", [&] {
+
             expect(isEqualTo(3).matches(3));
             expect(isEqualTo(vector<int>{1, 2}).matches(vector<int>{1, 2}));
             expect(isEqualTo(string("abc")).matches("abc"));

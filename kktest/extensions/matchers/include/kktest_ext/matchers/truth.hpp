@@ -7,40 +7,44 @@ namespace kktest::matchers {
 
 namespace detail {
 
-class IsTrueMatcher: public Matcher {
+class IsTrueMatcher: public StatelessMatcher {
  public:
-    bool matches(const bool& object) {
+    constexpr IsTrueMatcher() = default;
+
+    bool matches(const bool& object) const {
         return object;
     }
 
-    void describe(Description* description) {
+    void describe(Description* description) const override {
         (*description) << "true";
     }
 
-    void describeMismatch(Description* description, const bool&) {
+    void describeFailure(Description* description) const override {
         (*description) << "false";
     }
 };
 
-class IsFalseMatcher: public Matcher {
+class IsFalseMatcher: public StatelessMatcher {
  public:
-    bool matches(const bool& object) {
+    constexpr IsFalseMatcher() = default;
+
+    bool matches(const bool& object) const {
         return !object;
     }
 
-    void describe(Description* description) {
+    void describe(Description* description) const override {
         (*description) << "false";
     }
 
-    void describeMismatch(Description* description, const bool&) {
+    void describeFailure(Description* description) const override {
         (*description) << "true";
     }
 };
 
 }
 
-static detail::IsTrueMatcher isTrue;
+constexpr detail::IsTrueMatcher isTrue;
 
-static detail::IsFalseMatcher isFalse;
+constexpr detail::IsFalseMatcher isFalse;
 
 }

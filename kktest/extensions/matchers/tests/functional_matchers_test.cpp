@@ -6,35 +6,6 @@ using namespace kktest;
 using namespace kktest::matchers;
 using namespace std;
 
-class BasicClass {
- public:
-    int x;
-
-    explicit BasicClass(int x): x(x) {}
-
-    int addWith(int y) { return x + y; }
-
-    int addWithThrow(int y) {
-        throw runtime_error("Some error.");
-    }
-
-    int addWithThrow5(int y) {
-        throw 5;
-    }
-};
-
-int add(int x, int y) {
-    return x + y;
-}
-
-int addThrow(int, int) {
-    throw runtime_error("Some error.");
-}
-
-int addThrow5(int, int) {
-    throw 5;
-}
-
 void simpleFunction() {}
 
 void simpleFunctionThrow() {
@@ -115,83 +86,6 @@ void functionalMatchersTest() {
         test("throwsA matcher does not match function not throwing", [] {
             expect(!throwsA<runtime_error>().matches(simpleFunction));
             expect(!throwsA<int>().matches(simpleFunction));
-        });
-    });
-
-    group("Wrapped global functions", [] {
-        test("throws matcher matches wrapped function throwing an exception",
-             [] {
-            expect(throws.matches(wrapFunc(addThrow, 1, 1)));
-        });
-
-        test("throws matcher matches wrapped function throwing 5", [] {
-            expect(throws.matches(wrapFunc(addThrow5, 1, 1)));
-        });
-
-        test("throws matcher does not match wrapped function not throwing", [] {
-            expect(!throws.matches(wrapFunc(add, 1, 1)));
-        });
-
-        test("throwsA matcher matches wrapped function throwing specific type",
-             [] {
-            expect(throwsA<runtime_error>().matches(wrapFunc(addThrow, 1, 1)));
-            expect(throwsA<int>().matches(wrapFunc(addThrow5, 1, 1)));
-        });
-
-        test("throwsA matcher does not match wrapped function throwing "
-             "different type", [] {
-            expect(!throwsA<runtime_error>()
-                       .matches(wrapFunc(addThrow5, 1, 1)));
-            expect(!throwsA<int>().matches(wrapFunc(addThrow, 1, 1)));
-        });
-
-        test("throwsA matcher does not match wrapped function not throwing",
-             [] {
-            expect(!throwsA<runtime_error>().matches(wrapFunc(add, 1, 1)));
-            expect(!throwsA<int>().matches(wrapFunc(add, 1, 1)));
-        });
-    });
-
-    group("Wrapped methods", [] {
-        BasicClass* c = nullptr;
-
-        setUp([&] { c = new BasicClass(1); });
-        tearDown([&] { delete c; c = nullptr; });
-
-        test("throws matcher matches wrapped method throwing an exception",
-             [&] {
-            expect(throws.matches(wrapFunc(&BasicClass::addWithThrow, c, 1)));
-        });
-
-        test("throws matcher matches wrapped method throwing 5", [&] {
-            expect(throws.matches(wrapFunc(&BasicClass::addWithThrow5, c, 1)));
-        });
-
-        test("throws matcher does not match wrapped method not throwing", [&] {
-            expect(!throws.matches(wrapFunc(&BasicClass::addWith, c, 1)));
-        });
-
-        test("throwsA matcher matches wrapped method throwing specific type",
-             [&] {
-            expect(throwsA<runtime_error>()
-                       .matches(wrapFunc(&BasicClass::addWithThrow, c, 1)));
-            expect(throwsA<int>()
-                       .matches(wrapFunc(&BasicClass::addWithThrow5, c, 1)));
-        });
-
-        test("throwsA matcher does not match wrapped method throwing different "
-             "type", [&] {
-            expect(!throwsA<runtime_error>()
-                       .matches(wrapFunc(&BasicClass::addWithThrow5, c, 1)));
-            expect(!throwsA<int>()
-                       .matches(wrapFunc(&BasicClass::addWithThrow, c, 1)));
-        });
-
-        test("throwsA matcher does not match wrapped method not throwing", [&] {
-            expect(!throwsA<runtime_error>()
-                       .matches(wrapFunc(&BasicClass::addWith, c, 1)));
-            expect(!throwsA<int>()
-                       .matches(wrapFunc(&BasicClass::addWith, c, 1)));
         });
     });
 }

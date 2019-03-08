@@ -9,17 +9,17 @@ namespace kktest::matchers {
 
 namespace detail {
 
-class CharInStringMatcher: public Matcher {
+class CharInStringMatcher: public StatelessMatcher {
  public:
-    explicit CharInStringMatcher(const char* container,
-                                 const char* expectation = nullptr) noexcept:
+    constexpr explicit CharInStringMatcher(const char* container,
+                                           const char* expectation = nullptr):
             container(container), expectation(expectation) {}
 
-    bool matches(const char& ch) {
+    bool matches(const char& ch) const {
         return strchr(container, ch) != nullptr;
     }
 
-    void describe(Description* description) {
+    void describe(Description* description) const override {
         if (expectation != nullptr) {
             (*description) << expectation;
         } else {
@@ -27,7 +27,7 @@ class CharInStringMatcher: public Matcher {
         }
     }
 
-    void describeMismatch(Description* description, const char& ch) {
+    void describeFailure(Description* description) const override {
         if (expectation != nullptr) {
             (*description) << "not " << expectation;
         } else {
@@ -40,20 +40,20 @@ class CharInStringMatcher: public Matcher {
     const char* expectation;
 };
 
-class IsSubstringMatcher: public Matcher {
+class IsSubstringMatcher: public StatelessMatcher {
  public:
     explicit IsSubstringMatcher(std::string container):
             container(std::move(container)) {}
 
-    bool matches(const std::string& object) {
+    bool matches(const std::string& object) const {
         return container.find(object) != std::string::npos;
     }
 
-    void describe(Description* description) {
+    void describe(Description* description) const override {
         (*description) << "a substring of '" << container << "'";
     }
 
-    void describeMismatch(Description* description, const std::string& object) {
+    void describeFailure(Description* description) const override {
         (*description) << "not a substring";
     }
 
@@ -63,31 +63,31 @@ class IsSubstringMatcher: public Matcher {
 
 }
 
-static detail::CharInStringMatcher isLetter(
+constexpr detail::CharInStringMatcher isLetter(
         "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", "a letter");
 
-static detail::CharInStringMatcher isDigit(
+constexpr detail::CharInStringMatcher isDigit(
         "0123456789", "a digit");
 
-static detail::CharInStringMatcher isLowercaseLetter(
+constexpr detail::CharInStringMatcher isLowercaseLetter(
         "abcdefghijklmnopqrstuvwxyz", "a lowercase letter");
 
-static detail::CharInStringMatcher isUppercaseLetter(
+constexpr detail::CharInStringMatcher isUppercaseLetter(
         "ABCDEFGHIJKLMNOPQRSTUVWXYZ", "an uppercase letter");
 
-static detail::CharInStringMatcher isBinaryDigit(
+constexpr detail::CharInStringMatcher isBinaryDigit(
         "01", "a binary digit");
 
-static detail::CharInStringMatcher isOctDigit(
+constexpr detail::CharInStringMatcher isOctDigit(
         "01234567", "an oct digit");
 
-static detail::CharInStringMatcher isHexDigit(
+constexpr detail::CharInStringMatcher isHexDigit(
         "0123456789ABCDEFabcdef", "a hex digit");
 
-static detail::CharInStringMatcher isWhitespace(
+constexpr detail::CharInStringMatcher isWhitespace(
         " \t\r\n\f\v", "a whitespace character");
 
-static detail::IsSubstringMatcher isSubstringOf(const std::string& s) {
+inline detail::IsSubstringMatcher isSubstringOf(const std::string& s) {
     return detail::IsSubstringMatcher(s);
 }
 

@@ -5,91 +5,73 @@
 
 namespace kktest::matchers {
 
-template<
-    class T,
-    class=typename std::enable_if<std::is_base_of<Matcher, T>::value>::type>
-detail::IterableSizeMatcher<T> hasSize(const T& size) {
-    return detail::IterableSizeMatcher<T>(size);
+template<class T>
+auto hasSize(const T& size) {
+    if constexpr (std::is_base_of_v<Matcher, T>) {
+        return detail::IterableSizeMatcher(size);
+    } else {
+        return detail::IterableSizeMatcher(isEqualTo(size));
+    }
 }
 
-template<
-    class T,
-    class=typename std::enable_if<!std::is_base_of<Matcher, T>::value>::type>
-detail::IterableSizeMatcher<detail::EqualityMatcher<T>> hasSize(const T& size) {
-    return detail::IterableSizeMatcher
-            <detail::EqualityMatcher<T>>(isEqualTo(size));
+template<class T>
+auto eachElement(const T& each) {
+    if constexpr (std::is_base_of_v<Matcher, T>) {
+        return detail::IterableEachMatcher(each);
+    } else {
+        return detail::IterableEachMatcher(isEqualTo(each));
+    }
 }
 
-template<
-    class T,
-    class=typename std::enable_if<std::is_base_of<Matcher, T>::value>::type>
-detail::IterableEachMatcher<T> eachElement(const T& size) {
-    return detail::IterableEachMatcher<T>(size);
-}
-
-template<
-    class T,
-    class=typename std::enable_if<!std::is_base_of<Matcher, T>::value>::type>
-detail::IterableEachMatcher<detail::EqualityMatcher<T>> eachElement(
-        const T& size) {
-    return detail::IterableEachMatcher
-            <detail::EqualityMatcher<T>>(isEqualTo(size));
-}
-
-template<
-    class T,
-    class=typename std::enable_if<std::is_base_of<Matcher, T>::value>::type>
-detail::IterableAnyMatcher<T> anyElement(const T& size) {
-    return detail::IterableAnyMatcher<T>(size);
-}
-
-template<
-    class T,
-    class=typename std::enable_if<!std::is_base_of<Matcher, T>::value>::type>
-detail::IterableAnyMatcher<detail::EqualityMatcher<T>> anyElement(
-        const T& size) {
-    return detail::IterableAnyMatcher
-            <detail::EqualityMatcher<T>>(isEqualTo(size));
+template<class T>
+auto anyElement(const T& any) {
+    if constexpr (std::is_base_of_v<Matcher, T>) {
+        return detail::IterableAnyMatcher(any);
+    } else {
+        return detail::IterableAnyMatcher(isEqualTo(any));
+    }
 }
 
 namespace detail {
 
-class IsEmptyMatcher: public Matcher {
+class IsEmptyMatcher: public StatelessMatcher {
  public:
+    constexpr IsEmptyMatcher() = default;
+
     template<class T>
-    bool matches(const T& object) {
+    bool matches(const T& object) const {
         return object.empty();
     }
 
-    void describe(Description* description) {
+    void describe(Description* description) const override {
         (*description) << "empty iterable";
     }
 
-    template<class T>
-    void describeMismatch(Description* description, const T&) {
+    void describeFailure(Description* description) const override {
         (*description) << "a non-empty iterable";
     }
 };
 
-class IsNotEmptyMatcher: public Matcher {
+class IsNotEmptyMatcher: public StatelessMatcher {
  public:
+    constexpr IsNotEmptyMatcher() = default;
+
     template<class T>
-    bool matches(const T& object) {
+    bool matches(const T& object) const {
         return !object.empty();
     }
 
-    void describe(Description* description) {
+    void describe(Description* description) const override {
         (*description) << "non-empty iterable";
     }
 
-    template<class T>
-    void describeMismatch(Description* description, const T&) {
+    void describeFailure(Description* description) const override {
         (*description) << "empty iterable";
     }
 };
 
 template<class M>
-class IterableSizeMatcher: public Matcher {
+class IterableSizeMatcher: public StatefulMatcher<typename M::State> {
     static_assert(std::is_base_of<Matcher, M>::value,
                   "SizeMatcher only supports other matchers as template args.");
 
@@ -98,19 +80,23 @@ class IterableSizeMatcher: public Matcher {
             sizeMatcher(sizeMatcher) {}
 
     template<class T>
-    bool matches(const T& object) {
-        return sizeMatcher.matches(object.size());
+    bool matches(const T& obj, typename M::State* state) const {
+        if constexpr (M::HasState) {
+            return sizeMatcher.matches(obj.size(), state);
+        } else {
+            return sizeMatcher.matches(obj.size());
+        }
     }
 
-    void describe(Description* description) {
+    void describe(Description* description) const override {
         (*description) << "iterable where size is ";
         sizeMatcher.describe(description);
     }
 
-    template<class T>
-    void describeMismatch(Description* description, const T& obj) {
+    void describeFailure(Description* description,
+                         typename M::State* state) const override {
         (*description) << "iterable where size is ";
-        sizeMatcher.describeMismatch(description, obj);
+        sizeMatcher.describeFailure(description, state);
     }
 
  private:
@@ -118,7 +104,13 @@ class IterableSizeMatcher: public Matcher {
 };
 
 template<class M>
-class IterableEachMatcher: public Matcher {
+struct IterableEachState {
+    int index = -1;
+    typename M::State elementState;
+};
+
+template<class M>
+class IterableEachMatcher: public StatefulMatcher<IterableEachState<M>> {
     static_assert(std::is_base_of<Matcher, M>::value,
                   "EachMatcher only supports other matchers as template args.");
 
@@ -126,46 +118,43 @@ class IterableEachMatcher: public Matcher {
     explicit IterableEachMatcher(M elementMatcher):
             elementMatcher(elementMatcher) {}
 
-    IterableEachMatcher(const IterableEachMatcher& other):
-            elementMatcher(other.elementMatcher),
-            elementFailureDescription(other.elementFailureDescription),
-            index(other.index) {}
-
     template<class T>
-    bool matches(const T& iterable) {
-        index = -1;
+    bool matches(const T& iterable, IterableEachState<M>* state) const {
+        state->index = -1;
         for (const auto& obj : iterable) {
-            index += 1;
-            if (!elementMatcher.matches(obj)) {
-                elementMatcher.describeMismatch(&elementFailureDescription,
-                                                obj);
+            state->index += 1;
+            bool match;
+            if constexpr (M::HasState) {
+                match = elementMatcher.matches(obj, &state->elementState);
+            } else {
+                match = elementMatcher.matches(obj);
+            }
+            if (!match) {
                 return false;
             }
         }
         return true;
     }
 
-    void describe(Description* description) {
+    void describe(Description* description) const override {
         (*description) << "an iterable where each element is ";
         elementMatcher.describe(description);
     }
 
-    template<class T>
-    void describeMismatch(Description* description, const T&) {
+    void describeFailure(Description* description,
+                         IterableEachState<M>* state) const override {
         (*description) << "an iterable where at index "
                        << index
-                       << " the element is "
-                       << elementFailureDescription.toString();
+                       << " the element is ";
+        elementMatcher.describeFailure(description, state->elementState);
     }
 
  private:
     M elementMatcher;
-    Description elementFailureDescription;
-    int index = -1;
 };
 
 template<class M>
-class IterableAnyMatcher: public Matcher {
+class IterableAnyMatcher: public StatelessMatcher {
  public:
     explicit IterableAnyMatcher(M elementMatcher):
             elementMatcher(elementMatcher) {}
@@ -173,37 +162,40 @@ class IterableAnyMatcher: public Matcher {
             elementMatcher(other.elementMatcher) {}
 
     template<class T>
-    bool matches(const T& collection) {
-        index = -1;
+    bool matches(const T& collection) const {
         for (const auto& obj : collection) {
-            index += 1;
-            if (elementMatcher.matches(obj)) {
-                return true;
+            if constexpr (M::HasState) {
+                typename M::State state;
+                if (elementMatcher.matches(obj, &state)) {
+                    return true;
+                }
+            } else {
+                if (elementMatcher.matches(obj)) {
+                    return true;
+                }
             }
         }
         return false;
     }
 
-    void describe(Description* description) {
+    void describe(Description* description) const override {
         (*description) << "an iterable where at least one element is ";
         elementMatcher.describe(description);
     }
 
-    template<class T>
-    void describeMismatch(Description* description, const T&) {
+    void describeFailure(Description* description) const override {
         (*description) << "an iterable where no element is ";
         elementMatcher.describe(description);
     }
 
  private:
     M elementMatcher;
-    int index = -1;
 };
 
 }
 
-static detail::IsEmptyMatcher isEmpty;
+constexpr detail::IsEmptyMatcher isEmpty;
 
-static detail::IsNotEmptyMatcher isNotEmpty;
+constexpr detail::IsNotEmptyMatcher isNotEmpty;
 
 }

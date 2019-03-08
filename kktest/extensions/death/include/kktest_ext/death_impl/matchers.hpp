@@ -74,14 +74,14 @@ class ExitsWithCodeAndOutputMatcher: public matchers::Matcher {
         outputMatcher.describe(description);
     }
 
-    void describeMismatch(matchers::Description* description,
+    void describeFailure(matchers::Description* description,
                           const Executable& func) {
         if (!codeMatcherMatched) {
             describeStatus(description, status);
         } else {
             (*description) << "the program's end with valid return code,"
                               " but output is ";
-            outputMatcher.describeMismatch(description, status.getOutput());
+            outputMatcher.describeFailure(description, status.getOutput());
         }
     }
 
@@ -111,7 +111,7 @@ class ExitsWithCodeMatcher: public matchers::Matcher {
         codeMatcher.describe(description);
     }
 
-    void describeMismatch(matchers::Description* description,
+    void describeFailure(matchers::Description* description,
                           const Executable& func) {
         describeStatus(description, status);
     }
@@ -159,9 +159,9 @@ class ExitsWithOutputMatcher: public matchers::Matcher {
         outputMatcher.describe(description);
     }
 
-    void describeMismatch(matchers::Description* description,
+    void describeFailure(matchers::Description* description,
                           const Executable& func) {
-        outputMatcher.describeMismatch(description, status.getOutput());
+        outputMatcher.describeFailure(description, status.getOutput());
     }
 
     template<class T,
@@ -202,7 +202,7 @@ class ExitsMatcher: public matchers::Matcher {
         (*description) << "the program's end";
     }
 
-    void describeMismatch(matchers::Description* description,
+    void describeFailure(matchers::Description* description,
                           const Executable& func) {
         describeStatus(description, status);
     }
@@ -262,7 +262,7 @@ class HasExitedMatcher: public matchers::Matcher {
         (*description) << "the program's end";
     }
 
-    void describeMismatch(matchers::Description* description,
+    void describeFailure(matchers::Description* description,
                           const DeathStatus& status) {
         describeStatus(description, status);
     }
@@ -286,7 +286,7 @@ class HasExitedWithCodeMatcher: public matchers::Matcher {
         exitCodeMatcher.describe(description);
     }
 
-    void describeMismatch(matchers::Description* description,
+    void describeFailure(matchers::Description* description,
                           const DeathStatus& status) {
         describeStatus(description, status);
     }
@@ -314,9 +314,9 @@ class HasOutputMatcher: public matchers::Matcher {
         outputMatcher.describe(description);
     }
 
-    void describeMismatch(matchers::Description* description,
+    void describeFailure(matchers::Description* description,
                           const DeathStatus& status) {
-        outputMatcher.describeMismatch(description, status.getOutput());
+        outputMatcher.describeFailure(description, status.getOutput());
     }
 
  private:

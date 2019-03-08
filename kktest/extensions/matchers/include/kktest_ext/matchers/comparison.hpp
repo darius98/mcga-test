@@ -10,57 +10,56 @@ namespace kktest::matchers {
 
 template<class T>
 detail::EqualityMatcher<T> isEqualTo(const T& object) {
-    return detail::EqualityMatcher<T>(object);
+    return detail::EqualityMatcher(object);
 }
 
 template<class T>
 detail::NonEqualityMatcher<T> isNotEqualTo(const T& object) {
-    return detail::NonEqualityMatcher<T>(object);
+    return detail::NonEqualityMatcher(object);
 }
 
 template<class T>
 detail::IsLessThanMatcher<T> isLessThan(const T& object) {
-    return detail::IsLessThanMatcher<T>(object);
+    return detail::IsLessThanMatcher(object);
 }
 
 template<class T>
 detail::IsLessThanEqualMatcher<T> isLessThanEqual(const T& object) {
-    return detail::IsLessThanEqualMatcher<T>(object);
+    return detail::IsLessThanEqualMatcher(object);
 }
 
 template<class T>
 detail::IsGreaterThanMatcher<T> isGreaterThan(const T& object) {
-    return detail::IsGreaterThanMatcher<T>(object);
+    return detail::IsGreaterThanMatcher(object);
 }
 
 template<class T>
 detail::IsGreaterThanEqualMatcher<T> isGreaterThanEqual(const T& object) {
-    return detail::IsGreaterThanEqualMatcher<T>(object);
+    return detail::IsGreaterThanEqualMatcher(object);
 }
 
 template<class T>
 detail::IdentityMatcher<T> isIdenticalTo(const T& object) {
-    return detail::IdentityMatcher<T>(object);
+    return detail::IdentityMatcher(object);
 }
 
 namespace detail {
 
 template<class T>
-class EqualityMatcher: public Matcher {
+class EqualityMatcher: public StatelessMatcher {
  public:
     explicit EqualityMatcher(const T& target): target(target) {}
 
     template<class O>
-    bool matches(const O& obj) {
+    bool matches(const O& obj) const {
         return obj == target;
     }
 
-    void describe(Description* description) {
+    void describe(Description* description) const override {
         (*description) << "'" << target << "'";
     }
 
-    template<class O>
-    void describeMismatch(Description* description, const O&) {
+    void describeFailure(Description* description) const override {
         (*description) << "not '" << target << "'";
     }
 
@@ -69,21 +68,20 @@ class EqualityMatcher: public Matcher {
 };
 
 template<class T>
-class NonEqualityMatcher: public Matcher {
+class NonEqualityMatcher: public StatelessMatcher {
  public:
     explicit NonEqualityMatcher(const T& target): target(target) {}
 
     template<class O>
-    bool matches(const O& obj) {
+    bool matches(const O& obj) const {
         return obj != target;
     }
 
-    void describe(Description* description) {
+    void describe(Description* description) const override {
         (*description) << "not '" << target << "'";
     }
 
-    template<class O>
-    void describeMismatch(Description* description, const O&) {
+    void describeFailure(Description* description) const override {
         (*description) << "'" << target << "'";
     }
 
@@ -92,21 +90,20 @@ class NonEqualityMatcher: public Matcher {
 };
 
 template<class T>
-class IsLessThanMatcher: public Matcher {
+class IsLessThanMatcher: public StatelessMatcher {
  public:
     explicit IsLessThanMatcher(const T& target): target(target) {}
 
     template<class O>
-    bool matches(const O& object) {
+    bool matches(const O& object) const {
         return object < target;
     }
 
-    void describe(Description* description) {
+    void describe(Description* description) const override {
         (*description) << "< '" << target << "'";
     }
 
-    template<class O>
-    void describeMismatch(Description* description, const O&) {
+    void describeFailure(Description* description) const override {
         (*description) << ">= '" << target << "'";
     }
 
@@ -115,21 +112,20 @@ class IsLessThanMatcher: public Matcher {
 };
 
 template<class T>
-class IsLessThanEqualMatcher: public Matcher {
+class IsLessThanEqualMatcher: public StatelessMatcher {
  public:
     explicit IsLessThanEqualMatcher(const T& target): target(target) {}
 
     template<class O>
-    bool matches(const O& object) {
+    bool matches(const O& object) const {
         return object <= target;
     }
 
-    void describe(Description* description) {
+    void describe(Description* description) const override {
         (*description) << "<= '" << target << "'";
     }
 
-    template<class O>
-    void describeMismatch(Description* description, const O&) {
+    void describeFailure(Description* description) const override {
         (*description) << "> '" << target << "'";
     }
 
@@ -138,21 +134,20 @@ class IsLessThanEqualMatcher: public Matcher {
 };
 
 template<class T>
-class IsGreaterThanMatcher: public Matcher {
+class IsGreaterThanMatcher: public StatelessMatcher {
  public:
     explicit IsGreaterThanMatcher(const T& target): target(target) {}
 
     template<class O>
-    bool matches(const O& object) {
+    bool matches(const O& object) const {
         return object > target;
     }
 
-    void describe(Description* description) {
+    void describe(Description* description) const override {
         (*description) << "> '" << target << "'";
     }
 
-    template<class O>
-    void describeMismatch(Description* description, const O&) {
+    void describeFailure(Description* description) const override {
         (*description) << "<= '" << target << "'";
     }
 
@@ -161,21 +156,20 @@ class IsGreaterThanMatcher: public Matcher {
 };
 
 template<class T>
-class IsGreaterThanEqualMatcher: public Matcher {
+class IsGreaterThanEqualMatcher: public StatelessMatcher {
  public:
     explicit IsGreaterThanEqualMatcher(const T& target): target(target) {}
 
     template<class O>
-    bool matches(const O& object) {
+    bool matches(const O& object) const {
         return object >= target;
     }
 
-    void describe(Description* description) {
+    void describe(Description* description) const override {
         (*description) << ">= '" << target << "'";
     }
 
-    template<class O>
-    void describeMismatch(Description* description, const O&) {
+    void describeFailure(Description* description) const override {
         (*description) << "< '" << target << "'";
     }
 
@@ -184,24 +178,25 @@ class IsGreaterThanEqualMatcher: public Matcher {
 };
 
 template<class T>
-class IdentityMatcher: public Matcher {
+class IdentityMatcher: public StatefulMatcher<const void*> {
  public:
     explicit IdentityMatcher(const T& target):
             address(static_cast<const void*>(&target)) {}
     IdentityMatcher(const IdentityMatcher& other) = default;
 
     template<class S>
-    bool matches(const S& object) {
+    bool matches(const S& object, const void** state) const {
+        *state = &object;
         return &object == address;
     }
 
-    void describe(Description* description) {
+    void describe(Description* description) const override {
         (*description) << "variable at address '" << address << "'";
     }
 
-    template<class S>
-    void describeMismatch(Description* description, const S& object) {
-        (*description) << "variable at address '" << &object << "'";
+    void describeFailure(Description* description,
+                         const void** state) const override {
+        (*description) << "variable at address '" << *state << "'";
     }
 
  private:
@@ -211,23 +206,27 @@ class IdentityMatcher: public Matcher {
 constexpr const std::size_t relevantRange = 20;
 
 template<>
-class EqualityMatcher<std::string>: public Matcher {
+class EqualityMatcher<std::string>: public StatefulMatcher<std::string> {
  public:
     explicit EqualityMatcher(std::string target) : target(std::move(target)) {}
 
-    bool matches(const std::string& obj) {
+    bool matches(const std::string& obj, std::string* state) const {
+        *state = obj;
         return obj == target;
     }
 
-    bool matches(const char* obj) {
+    bool matches(const char* obj, std::string* state) const {
+        *state = obj;
         return obj == target;
     }
 
-    void describe(Description* description) {
+    void describe(Description* description) const override {
         (*description) << "'" << target << "'";
     }
 
-    void describeMismatch(Description* description, const std::string& obj) {
+    void describeFailure(Description* description,
+                         std::string* state) const override {
+        const std::string& obj = *state;
         std::size_t mismatchIndex = 0;
         while (mismatchIndex < std::min(target.size(), obj.size())
                && target[mismatchIndex] == obj[mismatchIndex]) {
@@ -269,7 +268,7 @@ class EqualityMatcher<std::string>: public Matcher {
     }
 
     template<int n>
-    operator EqualityMatcher<char[n]>() const;
+    operator EqualityMatcher<char[n]>() const; // NOLINT
 
  protected:
     std::string target;
@@ -303,29 +302,29 @@ EqualityMatcher<std::string>::operator EqualityMatcher<char[n]>() const {
 }
 
 template<>
-class NonEqualityMatcher<std::string>: public Matcher {
+class NonEqualityMatcher<std::string>: public StatelessMatcher {
  public:
     explicit NonEqualityMatcher(std::string target):
             target(std::move(target)) {}
 
-    bool matches(const std::string& obj) {
+    bool matches(const std::string& obj) const {
         return obj != target;
     }
 
-    bool matches(const char* obj) {
+    bool matches(const char* obj) const {
         return obj != target;
     }
 
-    void describe(Description* description) {
+    void describe(Description* description) const override {
         (*description) << "not '" << target << "'";
     }
 
-    void describeMismatch(Description* description, const std::string& obj) {
+    void describeFailure(Description* description) const override {
         (*description) << "'" << target << "'";
     }
 
     template<int n>
-    operator NonEqualityMatcher<char[n]>() const;
+    operator NonEqualityMatcher<char[n]>() const; // NOLINT
 
  protected:
     std::string target;
@@ -343,29 +342,29 @@ NonEqualityMatcher<std::string>::operator NonEqualityMatcher<char[n]>() const {
 }
 
 template<>
-class IsLessThanMatcher<std::string>: public Matcher {
+class IsLessThanMatcher<std::string>: public StatelessMatcher {
  public:
     explicit IsLessThanMatcher(std::string target):
             target(std::move(target)) {}
 
-    bool matches(const std::string& obj) {
+    bool matches(const std::string& obj) const {
         return obj < target;
     }
 
-    bool matches(const char* obj) {
+    bool matches(const char* obj) const {
         return obj < target;
     }
 
-    void describe(Description* description) {
+    void describe(Description* description) const override {
         (*description) << "< '" << target << "'";
     }
 
-    void describeMismatch(Description* description, const std::string& obj) {
+    void describeFailure(Description* description) const override {
         (*description) << ">= '" << target << "'";
     }
 
     template<int n>
-    operator IsLessThanMatcher<char[n]>() const;
+    operator IsLessThanMatcher<char[n]>() const; // NOLINT
 
  protected:
     std::string target;
@@ -383,29 +382,29 @@ IsLessThanMatcher<std::string>::operator IsLessThanMatcher<char[n]>() const {
 }
 
 template<>
-class IsLessThanEqualMatcher<std::string>: public Matcher {
+class IsLessThanEqualMatcher<std::string>: public StatelessMatcher {
  public:
     explicit IsLessThanEqualMatcher(std::string target):
             target(std::move(target)) {}
 
-    bool matches(const std::string& obj) {
+    bool matches(const std::string& obj) const {
         return obj <= target;
     }
 
-    bool matches(const char* obj) {
+    bool matches(const char* obj) const {
         return obj <= target;
     }
 
-    void describe(Description* description) {
+    void describe(Description* description) const override {
         (*description) << "<= '" << target << "'";
     }
 
-    void describeMismatch(Description* description, const std::string& obj) {
+    void describeFailure(Description* description) const override {
         (*description) << "> '" << target << "'";
     }
 
     template<int n>
-    operator IsLessThanEqualMatcher<char[n]>() const;
+    operator IsLessThanEqualMatcher<char[n]>() const; // NOLINT
 
  protected:
     std::string target;
@@ -425,29 +424,29 @@ IsLessThanEqualMatcher<std::string>::
 }
 
 template<>
-class IsGreaterThanMatcher<std::string>: public Matcher {
+class IsGreaterThanMatcher<std::string>: public StatelessMatcher {
  public:
     explicit IsGreaterThanMatcher(std::string target):
             target(std::move(target)) {}
 
-    bool matches(const std::string& obj) {
+    bool matches(const std::string& obj) const {
         return obj > target;
     }
 
-    bool matches(const char* obj) {
+    bool matches(const char* obj) const {
         return std::string(obj) > target;
     }
 
-    void describe(Description* description) {
+    void describe(Description* description) const override {
         (*description) << "> '" << target << "'";
     }
 
-    void describeMismatch(Description* description, const std::string& obj) {
+    void describeFailure(Description* description) const override {
         (*description) << "<= '" << target << "'";
     }
 
     template<int n>
-    operator IsGreaterThanMatcher<char[n]>() const;
+    operator IsGreaterThanMatcher<char[n]>() const; // NOLINT
 
  protected:
     std::string target;
@@ -466,29 +465,29 @@ IsGreaterThanMatcher<std::string>::
 }
 
 template<>
-class IsGreaterThanEqualMatcher<std::string>: public Matcher {
+class IsGreaterThanEqualMatcher<std::string>: public StatelessMatcher {
  public:
     explicit IsGreaterThanEqualMatcher(std::string target):
             target(std::move(target)) {}
 
-    bool matches(const std::string& obj) {
+    bool matches(const std::string& obj) const {
         return obj >= target;
     }
 
-    bool matches(const char* obj) {
+    bool matches(const char* obj) const {
         return obj >= target;
     }
 
-    void describe(Description* description) {
+    void describe(Description* description) const override {
         (*description) << ">= '" << target << "'";
     }
 
-    void describeMismatch(Description* description, const std::string& obj) {
+    void describeFailure(Description* description) const override {
         (*description) << "< '" << target << "'";
     }
 
     template<int n>
-    operator IsGreaterThanEqualMatcher<char[n]>() const;
+    operator IsGreaterThanEqualMatcher<char[n]>() const; // NOLINT
 
  protected:
     std::string target;

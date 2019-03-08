@@ -1,5 +1,7 @@
 #pragma once
 
+#include <any>
+
 #include <kktest.hpp>
 #include <kktest_ext/matchers/detail/streamer.hpp>
 
@@ -35,17 +37,47 @@ class Description {
     std::stringstream stream;
 };
 
-class Matcher {
-    // template<class T>
-    // virtual bool matches(const T& object) = 0;
 
-    // virtual void describe(Description* description) = 0;
+class Matcher {};
 
-    // ** Will only be called with the same type as `matches` was called. **
-    //
+template<class S>
+class StatefulMatcher : public Matcher {
+ public:
+    static constexpr bool HasState = true;
+
+    typedef S State;
+
+    static_assert(std::is_default_constructible_v<State>);
+
     // template<class T>
-    // virtual void describeMismatch(Description* description,
-    //                               const T& object) = 0;
+    // virtual bool matches(const T& obj, S* state) const = 0;
+
+    virtual void describe(Description* description) const = 0;
+
+    virtual void describeFailure(Description* description, S* state) const = 0;
+};
+
+class StatelessMatcher : public Matcher {
+ public:
+    static constexpr bool HasState = false;
+
+    typedef int State; // for easier usage of nested matchers.
+
+    // template<class T>
+    // virtual bool matches(const T& obj) const = 0;
+
+    template<class T>
+    inline bool matches(const T& obj, State*) {
+        return matches(obj);
+    }
+
+    virtual void describe(Description* description) const = 0;
+
+    virtual void describeFailure(Description* description) const = 0;
+
+    inline void describeFailure(Description* description, State*) {
+        describeFailure(description);
+    }
 };
 
 template<
@@ -56,17 +88,32 @@ template<
         >
 >
 void expect(const T& object, M matcher) {
-    if (matcher.matches(object)) {
-        return;
+    if constexpr (M::HasState) {
+        typename M::State state;
+        if (matcher.matches(object, &state)) {
+            return;
+        }
+        Description description;
+        description << "Expected ";
+        matcher.describe(&description);
+        description << "\n\tGot      '";
+        description << object;
+        description << "'\n";
+        matcher.describeFailure(&description, &state);
+        fail("Expectation failed:\n\t" + description.toString());
+    } else {
+        if (matcher.matches(object)) {
+            return;
+        }
+        Description description;
+        description << "Expected ";
+        matcher.describe(&description);
+        description << "\n\tGot      '";
+        description << object;
+        description << "'\n";
+        matcher.describeFailure(&description);
+        fail("Expectation failed:\n\t" + description.toString());
     }
-    matchers::Description description;
-    description << "Expected ";
-    matcher.describe(&description);
-    description << "\n\tGot      '";
-    description << object;
-    description << "'\n";
-    matcher.describeMismatch(&description, object);
-    fail("Expectation failed:\n\t" + description.toString());
 }
 
 }

@@ -7,40 +7,40 @@ namespace kktest::matchers {
 
 namespace detail {
 
-class IsNullptrMatcher: public Matcher {
+class IsNullptrMatcher: public StatelessMatcher {
  public:
-    bool matches(void*const& obj) {
+    bool matches(void*const& obj) const {
         return obj == nullptr;
     }
 
-    void describe(Description* description) {
+    void describe(Description* description) const override {
         (*description) << "nullptr";
     }
 
-    void describeMismatch(Description* description, void*const&) {
+    void describeFailure(Description* description) const override {
         (*description) << "non-null pointer";
     }
 };
 
-class IsNotNullptrMatcher: public Matcher {
+class IsNotNullptrMatcher: public StatelessMatcher {
  public:
-    bool matches(void*const& obj) {
+    bool matches(void*const& obj) const {
         return obj != nullptr;
     }
 
-    void describe(Description* description) {
+    void describe(Description* description) const override {
         (*description) << "non-null pointer";
     }
 
-    void describeMismatch(Description* description, void*const&) {
+    void describeFailure(Description* description) const override {
         (*description) << "nullptr";
     }
 };
 
 }
 
-static detail::IsNullptrMatcher isNull;
+constexpr detail::IsNullptrMatcher isNull;
 
-static detail::IsNotNullptrMatcher isNotNull;
+constexpr detail::IsNotNullptrMatcher isNotNull;
 
 }
