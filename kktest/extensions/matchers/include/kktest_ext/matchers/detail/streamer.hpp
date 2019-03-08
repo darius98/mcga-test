@@ -105,10 +105,6 @@ class Streamer<S, std::void_t<decltype(std::cout << std::declval<S>())>> {
     static void Send(std::stringstream& s, const S& obj) {
         s << obj;
     }
-
-    static void Send(std::stringstream& s, const S* obj) {
-        s << obj;
-    }
 };
 
 template<>

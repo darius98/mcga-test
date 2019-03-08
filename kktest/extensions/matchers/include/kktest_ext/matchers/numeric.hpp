@@ -1,123 +1,8 @@
 #pragma once
 
-#include <kktest_ext/matchers/matcher.hpp>
-#include <kktest_ext/matchers/detail/decl.hpp>
+#include <kktest_ext/matchers/detail/numeric.hpp>
 
 namespace kktest::matchers {
-
-template<class T>
-detail::IsAlmostEqualMatcher<T> isAlmostEqualTo(const T& target,
-                                                const double& eps) {
-    return detail::IsAlmostEqualMatcher<T>(target, eps);
-}
-
-namespace detail {
-
-class IsPositiveMatcher: public StatelessMatcher {
- public:
-    template<class T>
-    bool matches(const T& object) const {
-        return object > 0;
-    }
-
-    void describe(Description* description) const override {
-        (*description) << "a positive number";
-    }
-
-    void describeFailure(Description* description) const override {
-        (*description) << "non-positive";
-    }
-};
-
-class IsNegativeMatcher: public StatelessMatcher {
- public:
-    template<class T>
-    bool matches(const T& object) const {
-        return object < 0;
-    }
-
-    void describe(Description* description) const override {
-        (*description) << "a negative number";
-    }
-
-    void describeFailure(Description* description) const override {
-        (*description) << "non-negative";
-    }
-};
-
-class IsEvenMatcher: public StatelessMatcher {
- public:
-    template<class T>
-    bool matches(const T& object) const {
-        return object % 2 == 0;
-    }
-
-    void describe(Description* description) const override {
-        (*description) << "an even number";
-    }
-
-    void describeFailure(Description* description) const override {
-        (*description) << "odd";
-    }
-};
-
-class IsOddMatcher: public StatelessMatcher {
- public:
-    template<class T>
-    bool matches(const T& object) const {
-        return object % 2 == 1 || object % 2 == -1;
-    }
-
-    void describe(Description* description) const override {
-        (*description) << "an odd number";
-    }
-
-    void describeFailure(Description* description) const override {
-        (*description) << "even";
-    }
-};
-
-class IsZeroMatcher: public StatelessMatcher {
- public:
-    template<class T>
-    bool matches(const T& object) const {
-        return object == 0;
-    }
-
-    void describe(Description* description) const override {
-        (*description) << "zero";
-    }
-
-    void describeFailure(Description* description) const override {
-        (*description) << "non-zero";
-    }
-};
-
-template<class T>
-class IsAlmostEqualMatcher: public StatelessMatcher {
- public:
-    explicit IsAlmostEqualMatcher(const T& target, const double& eps):
-            target(target), eps(eps) {}
-
-    bool matches(const T& object) const {
-        T delta = object - target;
-        return -eps < delta && delta < eps;
-    }
-
-    void describe(Description* description) const override {
-        (*description) << "a number within " << eps << " of " << target;
-    }
-
-    void describeFailure(Description* description) const override {
-        (*description) << "a number not within " << eps << " of " << target;
-    }
-
- private:
-    const T& target;
-    double eps;
-};
-
-}
 
 constexpr detail::IsPositiveMatcher isPositive;
 
@@ -128,5 +13,9 @@ constexpr detail::IsEvenMatcher isEven;
 constexpr detail::IsOddMatcher isOdd;
 
 constexpr detail::IsZeroMatcher isZero;
+
+template<class T> auto isAlmostEqualTo(const T& target, const double& eps) {
+    return detail::IsAlmostEqualMatcher(target, eps);
+}
 
 }

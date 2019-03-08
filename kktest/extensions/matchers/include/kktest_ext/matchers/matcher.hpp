@@ -1,7 +1,5 @@
 #pragma once
 
-#include <any>
-
 #include <kktest.hpp>
 #include <kktest_ext/matchers/detail/streamer.hpp>
 
@@ -20,7 +18,7 @@ class Description {
 
     template<class T>
     Description& operator<<(const T* obj) {
-        detail::Streamer<T>::Send(stream, obj);
+        stream << obj;
         return *this;
     }
 
@@ -66,28 +64,14 @@ class StatelessMatcher : public Matcher {
     // template<class T>
     // virtual bool matches(const T& obj) const = 0;
 
-    template<class T>
-    inline bool matches(const T& obj, State*) {
-        return matches(obj);
-    }
-
     virtual void describe(Description* description) const = 0;
 
     virtual void describeFailure(Description* description) const = 0;
-
-    inline void describeFailure(Description* description, State*) {
-        describeFailure(description);
-    }
 };
 
-template<
-        class T,
-        class M,
-        class = typename std::enable_if<
-                std::is_base_of<matchers::Matcher, M>::value
-        >
->
+template<class T, class M>
 void expect(const T& object, M matcher) {
+    static_assert(std::is_base_of_v<matchers::Matcher, M>);
     if constexpr (M::HasState) {
         typename M::State state;
         if (matcher.matches(object, &state)) {
@@ -98,7 +82,7 @@ void expect(const T& object, M matcher) {
         matcher.describe(&description);
         description << "\n\tGot      '";
         description << object;
-        description << "'\n";
+        description << "'\n\tWhich is ";
         matcher.describeFailure(&description, &state);
         fail("Expectation failed:\n\t" + description.toString());
     } else {
@@ -110,7 +94,7 @@ void expect(const T& object, M matcher) {
         matcher.describe(&description);
         description << "\n\tGot      '";
         description << object;
-        description << "'\n";
+        description << "'\n\tWhich is ";
         matcher.describeFailure(&description);
         fail("Expectation failed:\n\t" + description.toString());
     }

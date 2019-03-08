@@ -2,6 +2,8 @@
 
 #include "kktest/extensions/matchers/include/kktest_ext/matchers/pointer.hpp"
 
+#include "helpers/helpers.hpp"
+
 using namespace kktest;
 using namespace kktest::matchers;
 
@@ -17,34 +19,31 @@ double globalDouble;
 void pointerMatchersTest() {
     group("Null pointers", [] {
         int* intNullPtr = nullptr;
-        char* charNullPtr = nullptr;
         BasicClass* classNullPtr = nullptr;
         BasicStruct* structNullPtr = nullptr;
         double* doubleNullPtr = nullptr;
 
         test("isNull matcher matches nullptr", [] {
-            expect(isNull.matches(nullptr));
+            EXPECT_MATCHER_MATCHES(nullptr, isNull);
         });
 
         test("isNull matcher matches null pointer of different types", [&] {
-            expect(isNull.matches(intNullPtr));
-            expect(isNull.matches(charNullPtr));
-            expect(isNull.matches(classNullPtr));
-            expect(isNull.matches(structNullPtr));
-            expect(isNull.matches(doubleNullPtr));
+            EXPECT_MATCHER_MATCHES(intNullPtr, isNull);
+            EXPECT_MATCHER_MATCHES(classNullPtr, isNull);
+            EXPECT_MATCHER_MATCHES(structNullPtr, isNull);
+            EXPECT_MATCHER_MATCHES(doubleNullPtr, isNull);
         });
 
         test("isNotNull matcher does not match nullptr", [&] {
-            expect(!isNotNull.matches(nullptr));
+            EXPECT_MATCHER_FAILS(nullptr, isNotNull);
         });
 
         test("isNotNull matcher does not match null pointer of different types",
              [&] {
-            expect(!isNotNull.matches(intNullPtr));
-            expect(!isNotNull.matches(charNullPtr));
-            expect(!isNotNull.matches(classNullPtr));
-            expect(!isNotNull.matches(structNullPtr));
-            expect(!isNotNull.matches(doubleNullPtr));
+            EXPECT_MATCHER_FAILS(intNullPtr, isNotNull);
+            EXPECT_MATCHER_FAILS(classNullPtr, isNotNull);
+            EXPECT_MATCHER_FAILS(structNullPtr, isNotNull);
+            EXPECT_MATCHER_FAILS(doubleNullPtr, isNotNull);
         });
     });
 
@@ -78,51 +77,51 @@ void pointerMatchersTest() {
         });
 
         test("isNull does not match non-null heap pointers", [&] {
-            expect(!isNull.matches(intHeapPtr));
-            expect(!isNull.matches(charHeapPtr));
-            expect(!isNull.matches(classHeapPtr));
-            expect(!isNull.matches(structHeapPtr));
-            expect(!isNull.matches(doubleHeapPtr));
+            EXPECT_MATCHER_FAILS(intHeapPtr, isNull);
+            EXPECT_MATCHER_FAILS(charHeapPtr, isNull);
+            EXPECT_MATCHER_FAILS(classHeapPtr, isNull);
+            EXPECT_MATCHER_FAILS(structHeapPtr, isNull);
+            EXPECT_MATCHER_FAILS(doubleHeapPtr, isNull);
         });
 
         test("isNotNull matches non-null heap pointers", [&] {
-            expect(isNotNull.matches(intHeapPtr));
-            expect(isNotNull.matches(charHeapPtr));
-            expect(isNotNull.matches(classHeapPtr));
-            expect(isNotNull.matches(structHeapPtr));
-            expect(isNotNull.matches(doubleHeapPtr));
+            EXPECT_MATCHER_MATCHES(intHeapPtr, isNotNull);
+            EXPECT_MATCHER_MATCHES(charHeapPtr, isNotNull);
+            EXPECT_MATCHER_MATCHES(classHeapPtr, isNotNull);
+            EXPECT_MATCHER_MATCHES(structHeapPtr, isNotNull);
+            EXPECT_MATCHER_MATCHES(doubleHeapPtr, isNotNull);
         });
 
         test("isNull does not match non-null stack pointers", [&] {
-            expect(!isNull.matches(&stackInt));
-            expect(!isNull.matches(&stackChar));
-            expect(!isNull.matches(&stackClass));
-            expect(!isNull.matches(&stackStruct));
-            expect(!isNull.matches(&stackDouble));
+            EXPECT_MATCHER_FAILS(&stackInt, isNull);
+            EXPECT_MATCHER_FAILS(&stackChar, isNull);
+            EXPECT_MATCHER_FAILS(&stackClass, isNull);
+            EXPECT_MATCHER_FAILS(&stackStruct, isNull);
+            EXPECT_MATCHER_FAILS(&stackDouble, isNull);
         });
 
         test("isNotNull matches non-null stack pointers", [&] {
-            expect(isNotNull.matches(&stackInt));
-            expect(isNotNull.matches(&stackChar));
-            expect(isNotNull.matches(&stackClass));
-            expect(isNotNull.matches(&stackStruct));
-            expect(isNotNull.matches(&stackDouble));
+            EXPECT_MATCHER_MATCHES(&stackInt, isNotNull);
+            EXPECT_MATCHER_MATCHES(&stackChar, isNotNull);
+            EXPECT_MATCHER_MATCHES(&stackClass, isNotNull);
+            EXPECT_MATCHER_MATCHES(&stackStruct, isNotNull);
+            EXPECT_MATCHER_MATCHES(&stackDouble, isNotNull);
         });
 
         test("isNull does not match non-null stack pointers", [&] {
-            expect(!isNull.matches(&globalInt));
-            expect(!isNull.matches(&globalChar));
-            expect(!isNull.matches(&globalClass));
-            expect(!isNull.matches(&globalStruct));
-            expect(!isNull.matches(&globalDouble));
+            EXPECT_MATCHER_FAILS(&globalInt, isNull);
+            EXPECT_MATCHER_FAILS(&globalChar, isNull);
+            EXPECT_MATCHER_FAILS(&globalClass, isNull);
+            EXPECT_MATCHER_FAILS(&globalStruct, isNull);
+            EXPECT_MATCHER_FAILS(&globalDouble, isNull);
         });
 
         test("isNotNull matches non-null data segment pointers", [&] {
-            expect(isNotNull.matches(&globalInt));
-            expect(isNotNull.matches(&globalChar));
-            expect(isNotNull.matches(&globalClass));
-            expect(isNotNull.matches(&globalStruct));
-            expect(isNotNull.matches(&globalDouble));
+            EXPECT_MATCHER_MATCHES(&globalInt, isNotNull);
+            EXPECT_MATCHER_MATCHES(&globalChar, isNotNull);
+            EXPECT_MATCHER_MATCHES(&globalClass, isNotNull);
+            EXPECT_MATCHER_MATCHES(&globalStruct, isNotNull);
+            EXPECT_MATCHER_MATCHES(&globalDouble, isNotNull);
         });
     });
 }

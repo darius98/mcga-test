@@ -2,6 +2,8 @@
 
 #include "kktest/extensions/matchers/include/kktest_ext/matchers/comparison.hpp"
 
+#include "helpers/helpers.hpp"
+
 using namespace kktest;
 using namespace kktest::matchers;
 using namespace std;
@@ -9,175 +11,249 @@ using namespace std;
 void comparisonMatchersTest() {
     group("Equality", [&] {
         test("isEqualTo matches equal values", [&] {
-
-            expect(isEqualTo(3).matches(3));
-            expect(isEqualTo(vector<int>{1, 2}).matches(vector<int>{1, 2}));
-            expect(isEqualTo(string("abc")).matches("abc"));
-            expect(isEqualTo("abc").matches(string("abc")));
-            expect(isEqualTo("abc").matches("abc"));
+            EXPECT_MATCHER_MATCHES(3, isEqualTo(3));
+            EXPECT_MATCHER_MATCHES(vector<int>{1, 2},
+                                   isEqualTo(vector<int>{1, 2}));
+            EXPECT_MATCHER_MATCHES("abc", isEqualTo("abc"));
+            EXPECT_MATCHER_MATCHES("abc", isEqualTo(string("abc")));
+            EXPECT_MATCHER_MATCHES(string("abc"), isEqualTo("abc"));
+            EXPECT_MATCHER_MATCHES(string("abc"), isEqualTo(string("abc")));
+            EXPECT_MATCHER_MATCHES(vector<int>{1, 2},
+                                   isEqualTo(vector<int>{1, 2}));
         });
 
-        test("isEqualTo fails for different values", [&] {
-            expect(!isEqualTo(3).matches(2));
-            expect(!isEqualTo(2).matches(3));
-            expect(!isEqualTo(vector<int>{1, 3}).matches(vector<int>{2, 3}));
+        test("isEqualTo fails for different integer values", [&] {
+            try {
+                expect(3, isEqualTo(2));
+                fail("did not fail!");
+            } catch (const exception& exc) {
+                expect(string(exc.what()) ==
+                    "Expectation failed:\n"
+                    "\tExpected '2'\n"
+                    "\tGot      '3'\n"
+                    "\tWhich is not '2'");
+            }
+        });
+
+        test("isEqualTo fails for different string values", [&] {
+            try {
+                expect("Hello, World!", isEqualTo("Hello, world!"));
+                fail("did not fail!");
+            } catch (const exception& exc) {
+                expect(string(exc.what()) ==
+                    "Expectation failed:\n"
+                    "\tExpected 'Hello, world!'\n"
+                    "\tGot      'Hello, World!'\n"
+                    "\tWhich is different at index 7:\n"
+                    "\tExpected: 'Hello, world!'\n"
+                    "\t     Got: 'Hello, World!'\n"
+                    "\t                  ^");
+            }
+        });
+
+        // weird formatting, but good for readability in the case of this test.
+        test("isEqualTo description for longer strings", [&] {
+            try {
+                expect("This is a long text that differs at a large position",
+             isEqualTo("This is a long text that differs at a laRge position"));
+                fail("did not fail!");
+            } catch (const exception& exc) {
+                expect(string(exc.what()) ==
+                    "Expectation failed:\n"
+                    "\tExpected 'This is a long text that differs at a laRge position'\n"
+                    "\tGot      'This is a long text that differs at a large position'\n"
+                    "\tWhich is different at index 40:\n"
+                    "\tExpected: '...that differs at a laRge position'\n"
+                    "\t     Got: '...that differs at a large position'\n"
+                    "\t                                  ^");
+            }
+
+            try {
+                expect("This is a long text that differs at a small position",
+             isEqualTo("This is a long tExt that differs at a small position"));
+                fail("did not fail!");
+            } catch (const exception& exc) {
+                expect(string(exc.what()) ==
+                    "Expectation failed:\n"
+                    "\tExpected 'This is a long tExt that differs at a small position'\n"
+                    "\tGot      'This is a long text that differs at a small position'\n"
+                    "\tWhich is different at index 16:\n"
+                    "\tExpected: 'This is a long tExt that differs at a...'\n"
+                    "\t     Got: 'This is a long text that differs at a...'\n"
+                    "\t                           ^");
+            }
+
+            try {
+                expect("This is a very very very very long text that differs at a medium-placed position",
+             isEqualTo("This is a very very very very long teXt that differs at a medium-placed position"));
+                fail("did not fail!");
+            } catch (const exception& exc) {
+                expect(string(exc.what()) ==
+                    "Expectation failed:\n"
+                    "\tExpected 'This is a very very very very long teXt that differs at a medium-placed position'\n"
+                    "\tGot      'This is a very very very very long text that differs at a medium-placed position'\n"
+                    "\tWhich is different at index 37:\n"
+                    "\tExpected: '...ry very very long teXt that differs at a ...'\n"
+                    "\t     Got: '...ry very very long text that differs at a ...'\n"
+                    "\t                                  ^");
+            }
+        });
+
+        test("isNotEqualTo matches different values", [&] {
+            EXPECT_MATCHER_MATCHES(2, isNotEqualTo(3));
+            EXPECT_MATCHER_MATCHES(vector<int>{2, 3},
+                                   isNotEqualTo(vector<int>{1, 3}));
+            EXPECT_MATCHER_MATCHES("abc", isNotEqualTo("abd"));
+            EXPECT_MATCHER_MATCHES("abc", isNotEqualTo(string("abd")));
+            EXPECT_MATCHER_MATCHES(string("abc"), isNotEqualTo("abd"));
+            EXPECT_MATCHER_MATCHES(string("abc"), isNotEqualTo(string("abd")));
         });
 
         test("isNotEqualTo does not match equal values", [&] {
-            expect(!isNotEqualTo(3).matches(3));
-            expect(!isNotEqualTo(vector<int>{1, 2}).matches(vector<int>{1, 2}));
-            expect(!isNotEqualTo(string("abc")).matches("abc"));
-            expect(!isNotEqualTo("abc").matches(string("abc")));
-            expect(!isNotEqualTo("abc").matches("abc"));
-        });
-
-        test("isNotEqualTo matches for different values", [&] {
-            expect(isNotEqualTo(3).matches(2));
-            expect(isNotEqualTo(2).matches(3));
-            expect(isNotEqualTo(vector<int>{1, 3}).matches(vector<int>{2, 3}));
+            EXPECT_MATCHER_FAILS(3, isNotEqualTo(3));
+            EXPECT_MATCHER_FAILS(vector<int>{1, 2},
+                                 isNotEqualTo(vector<int>{1, 2}));
         });
     });
 
     group("Identity", [&] {
         test("isIdenticalTo matches identical variables", [&] {
             int x = 4;
-            expect(isIdenticalTo(x).matches(x));
+            EXPECT_MATCHER_MATCHES(x, isIdenticalTo(x));
         });
 
         test("isIdenticalTo fails for equal values", [&] {
             int x = 3, y = 3;
-            expect(!isIdenticalTo(x).matches(y));
-            expect(!isIdenticalTo(y).matches(x));
+            EXPECT_MATCHER_FAILS(y, isIdenticalTo(x));
         });
 
         test("isIdenticalTo fails for different values", [&] {
             int x = 3, y = 5;
-            expect(!isIdenticalTo(x).matches(y));
-            expect(!isIdenticalTo(y).matches(x));
+            EXPECT_MATCHER_FAILS(y, isIdenticalTo(x));
         });
     });
 
     group("Less than", [&] {
         test("isLessThan matches smaller values", [&] {
-            expect(isLessThan(5).matches(3));
-            expect(isLessThan(17).matches(-20));
-            expect(isLessThan('c').matches('a'));
-            expect(isLessThan(string("cadabra")).matches("abra"));
-            expect(isLessThan("cadabra").matches("abra"));
-            expect(isLessThan("cadabra").matches(string("abra")));
-            expect(isLessThan(vector<int>{2, 1, 3})
-                       .matches(vector<int>{1, 2, 3}));
+            EXPECT_MATCHER_MATCHES(3, isLessThan(5));
+            EXPECT_MATCHER_MATCHES(-20, isLessThan(17));
+            EXPECT_MATCHER_MATCHES('a', isLessThan('c'));
+            EXPECT_MATCHER_MATCHES("abra", isLessThan(string("cadabra")));
+            EXPECT_MATCHER_MATCHES("abra", isLessThan("cadabra"));
+            EXPECT_MATCHER_MATCHES(string("abra"), isLessThan("cadabra"));
+            EXPECT_MATCHER_MATCHES(vector<int>{1, 2, 3},
+                                   isLessThan(vector<int>{2, 1, 3}));
         });
 
         test("isLessThan does not match equal values", [&] {
-            expect(!isLessThan(3).matches(3));
-            expect(!isLessThan(-17).matches(-17));
-            expect(!isLessThan('c').matches('c'));
-            expect(!isLessThan(string("cadabra")).matches("cadabra"));
-            expect(!isLessThan(vector<int>{2, 1, 3})
-                       .matches(vector<int>{2, 1, 3}));
+            EXPECT_MATCHER_FAILS(3, isLessThan(3));
+            EXPECT_MATCHER_FAILS(-17, isLessThan(-17));
+            EXPECT_MATCHER_FAILS('c', isLessThan('c'));
+            EXPECT_MATCHER_FAILS("cadabra", isLessThan(string("cadabra")));
+            EXPECT_MATCHER_FAILS(vector<int>{2, 1, 3},
+                                 isLessThan(vector<int>{2, 1, 3}));
         });
 
         test("isLessThan does not match greater values", [&] {
-            expect(!isLessThan(3).matches(5));
-            expect(!isLessThan(-20).matches(17));
-            expect(!isLessThan('a').matches('c'));
-            expect(!isLessThan(string("abra")).matches("cadabra"));
-            expect(!isLessThan(vector<int>{1, 2, 3})
-                       .matches(vector<int>{2, 1, 3}));
+            EXPECT_MATCHER_FAILS(5, isLessThan(3));
+            EXPECT_MATCHER_FAILS(17, isLessThan(-20));
+            EXPECT_MATCHER_FAILS('c', isLessThan('a'));
+            EXPECT_MATCHER_FAILS("cadabra", isLessThan(string("abra")));
+            EXPECT_MATCHER_FAILS(vector<int>{2, 1, 3},
+                                 isLessThan(vector<int>{1, 2, 3}));
         });
     });
 
     group("Less than or equal to", [&] {
         test("isLessThanEqual matches smaller values", [&] {
-            expect(isLessThanEqual(5).matches(3));
-            expect(isLessThanEqual(17).matches(-20));
-            expect(isLessThanEqual('c').matches('a'));
-            expect(isLessThanEqual(string("cada")).matches("abra"));
-            expect(isLessThanEqual("cada").matches("abra"));
-            expect(isLessThanEqual("cada").matches(string("abra")));
-            expect(isLessThanEqual(vector<int>{2, 1, 3})
-                       .matches(vector<int>{1, 2, 3}));
+            EXPECT_MATCHER_MATCHES(3, isLessThanEqual(5));
+            EXPECT_MATCHER_MATCHES(-20, isLessThanEqual(17));
+            EXPECT_MATCHER_MATCHES('a', isLessThanEqual('c'));
+            EXPECT_MATCHER_MATCHES("abra", isLessThanEqual(string("cada")));
+            EXPECT_MATCHER_MATCHES("abra", isLessThanEqual("cada"));
+            EXPECT_MATCHER_MATCHES(string("abra"), isLessThanEqual("cada"));
+            EXPECT_MATCHER_MATCHES(vector<int>{1, 2, 3},
+                                   isLessThanEqual(vector<int>{2, 1, 3}));
         });
 
         test("isLessThanEqual matches equal values", [&] {
-            expect(isLessThanEqual(3).matches(3));
-            expect(isLessThanEqual(-17).matches(-17));
-            expect(isLessThanEqual('c').matches('c'));
-            expect(isLessThanEqual(string("cada")).matches("cada"));
-            expect(isLessThanEqual(vector<int>{2, 1, 3})
-                       .matches(vector<int>{2, 1, 3}));
+            EXPECT_MATCHER_MATCHES(3, isLessThanEqual(3));
+            EXPECT_MATCHER_MATCHES(-17, isLessThanEqual(-17));
+            EXPECT_MATCHER_MATCHES('c', isLessThanEqual('c'));
+            EXPECT_MATCHER_MATCHES("cada", isLessThanEqual(string("cada")));
+            EXPECT_MATCHER_MATCHES(vector<int>{2, 1, 3},
+                                   isLessThanEqual(vector<int>{2, 1, 3}));
         });
 
         test("isLessThanEqual does not match greater values", [&] {
-            expect(!isLessThanEqual(3).matches(5));
-            expect(!isLessThanEqual(-20).matches(17));
-            expect(!isLessThanEqual('a').matches('c'));
-            expect(!isLessThanEqual(string("abra")).matches("cada"));
-            expect(!isLessThanEqual(vector<int>{1, 2, 3})
-                       .matches(vector<int>{2, 1, 3}));
+            EXPECT_MATCHER_FAILS(5, isLessThanEqual(3));
+            EXPECT_MATCHER_FAILS(17, isLessThanEqual(-20));
+            EXPECT_MATCHER_FAILS('c', isLessThanEqual('a'));
+            EXPECT_MATCHER_FAILS("cada", isLessThanEqual(string("abra")));
+            EXPECT_MATCHER_FAILS(vector<int>{2, 1},
+                                 isLessThanEqual(vector<int>{1, 2}));
         });
     });
 
     group("Greater than", [&] {
         test("isGreaterThan does not match smaller values", [&] {
-            expect(!isGreaterThan(5).matches(3));
-            expect(!isGreaterThan(17).matches(-20));
-            expect(!isGreaterThan('c').matches('a'));
-            expect(!isGreaterThan(string("cadabra")).matches("abra"));
-            expect(!isGreaterThan("cadabra").matches(string("abra")));
-            expect(!isGreaterThan("cadabra").matches("abra"));
-            expect(!isGreaterThan(vector<int>{2, 1, 3})
-                       .matches(vector<int>{1, 2, 3}));
+            EXPECT_MATCHER_FAILS(3, isGreaterThan(5));
+            EXPECT_MATCHER_FAILS(-20, isGreaterThan(17));
+            EXPECT_MATCHER_FAILS('a', isGreaterThan('c'));
+            EXPECT_MATCHER_FAILS("abra", isGreaterThan(string("cadabra")));
+            EXPECT_MATCHER_FAILS(string("abra"), isGreaterThan("cadabra"));
+            EXPECT_MATCHER_FAILS("abra", isGreaterThan("cadabra"));
+            EXPECT_MATCHER_FAILS(vector<int>{1, 2},
+                                 isGreaterThan(vector<int>{2, 1}));
         });
 
         test("isGreaterThan does not match equal values", [&] {
-            expect(!isGreaterThan(3).matches(3));
-            expect(!isGreaterThan(-17).matches(-17));
-            expect(!isGreaterThan('c').matches('c'));
-            expect(!isGreaterThan(string("cadabra")).matches("cadabra"));
-            expect(!isGreaterThan(vector<int>{2, 1, 3})
-                       .matches(vector<int>{2, 1, 3}));
+            EXPECT_MATCHER_FAILS(3, isGreaterThan(3));
+            EXPECT_MATCHER_FAILS(-17, isGreaterThan(-17));
+            EXPECT_MATCHER_FAILS('c', isGreaterThan('c'));
+            EXPECT_MATCHER_FAILS("cadabra", isGreaterThan(string("cadabra")));
+            EXPECT_MATCHER_FAILS(vector<int>{2, 1},
+                                 isGreaterThan(vector<int>{2, 1}));
         });
 
         test("isGreaterThan matches greater values", [&] {
-            expect(isGreaterThan(3).matches(5));
-            expect(isGreaterThan(-20).matches(17));
-            expect(isGreaterThan('a').matches('c'));
-            expect(isGreaterThan(string("abra")).matches("cadabra"));
-            expect(isGreaterThan(vector<int>{1, 2, 3})
-                       .matches(vector<int>{2, 1, 3}));
+            EXPECT_MATCHER_MATCHES(5, isGreaterThan(3));
+            EXPECT_MATCHER_MATCHES(17, isGreaterThan(-20));
+            EXPECT_MATCHER_MATCHES('c', isGreaterThan('a'));
+            EXPECT_MATCHER_MATCHES("cadabra", isGreaterThan(string("abra")));
+            EXPECT_MATCHER_MATCHES(vector<int>{2, 1, 3},
+                                   isGreaterThan(vector<int>{1, 2, 3}));
         });
     });
 
     group("Greater than or equal to", [&] {
         test("isGreaterThanEqual does not match smaller values", [&] {
-            expect(!isGreaterThanEqual(5).matches(3));
-            expect(!isGreaterThanEqual(17).matches(-20));
-            expect(!isGreaterThanEqual('c').matches('a'));
-            expect(!isGreaterThanEqual(string("cada")).matches("abra"));
-            expect(!isGreaterThanEqual("cada").matches(string("abra")));
-            expect(!isGreaterThanEqual("cada").matches("abra"));
-            expect(!isGreaterThanEqual(vector<int>{2, 1, 3})
-                       .matches(vector<int>{1, 2, 3}));
+            EXPECT_MATCHER_FAILS(3, isGreaterThanEqual(5));
+            EXPECT_MATCHER_FAILS(-20, isGreaterThanEqual(17));
+            EXPECT_MATCHER_FAILS('a', isGreaterThanEqual('c'));
+            EXPECT_MATCHER_FAILS("abra", isGreaterThanEqual(string("cada")));
+            EXPECT_MATCHER_FAILS(string("abra"), isGreaterThanEqual("cada"));
+            EXPECT_MATCHER_FAILS("abra", isGreaterThanEqual("cada"));
+            EXPECT_MATCHER_FAILS(vector<int>{1, 2},
+                                 isGreaterThanEqual(vector<int>{2, 1}));
         });
 
         test("isGreaterThanEqual matches equal values", [&] {
-            expect(isGreaterThanEqual(3).matches(3));
-            expect(isGreaterThanEqual(-17).matches(-17));
-            expect(isGreaterThanEqual('c').matches('c'));
-            expect(isGreaterThanEqual(string("cada")).matches("cada"));
-            expect(isGreaterThanEqual(vector<int>{2, 1, 3})
-                       .matches(vector<int>{2, 1, 3}));
+            EXPECT_MATCHER_MATCHES(3, isGreaterThanEqual(3));
+            EXPECT_MATCHER_MATCHES(-17, isGreaterThanEqual(-17));
+            EXPECT_MATCHER_MATCHES('c', isGreaterThanEqual('c'));
+            EXPECT_MATCHER_MATCHES("cada", isGreaterThanEqual(string("cada")));
+            EXPECT_MATCHER_MATCHES(vector<int>{2, 1},
+                                   isGreaterThanEqual(vector<int>{2, 1}));
         });
 
         test("isGreaterThanEqual matches greater values", [&] {
-            expect(isGreaterThanEqual(3).matches(5));
-            expect(isGreaterThanEqual(-20).matches(17));
-            expect(isGreaterThanEqual('a').matches('c'));
-            expect(isGreaterThanEqual(string("abra")).matches("cada"));
-            expect(isGreaterThanEqual(vector<int>{1, 2, 3})
-                       .matches(vector<int>{2, 1, 3}));
+            EXPECT_MATCHER_MATCHES(5, isGreaterThanEqual(3));
+            EXPECT_MATCHER_MATCHES(17, isGreaterThanEqual(-20));
+            EXPECT_MATCHER_MATCHES('c', isGreaterThanEqual('a'));
+            EXPECT_MATCHER_MATCHES("cada", isGreaterThanEqual(string("abra")));
+            EXPECT_MATCHER_MATCHES(vector<int>{2, 1},
+                                   isGreaterThanEqual(vector<int>{1, 2}));
         });
     });
 }
