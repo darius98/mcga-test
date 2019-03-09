@@ -24,8 +24,10 @@ class Description {
             appendTuple(obj);
         } else if constexpr (tp::IsNullptrT<T>) {
             stream << (int*)obj;
-        } else {
+        } else if constexpr (tp::IsSstreamable<T>) {
             stream << obj;
+        } else {
+            stream << "[OBJECT]";
         }
         return *this;
     }

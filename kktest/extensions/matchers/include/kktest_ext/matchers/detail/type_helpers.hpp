@@ -2,6 +2,7 @@
 
 #include <type_traits>
 
+#include <sstream>
 #include <string>
 #include <tuple>
 #include <utility>
@@ -29,7 +30,7 @@ decltype(Begin<T>() != End<T>(),
 
 template <class T>
 std::false_type IsIterableImpl(...) {
-    return std::false_type{};
+    return std::false_type();
 }
 
 template<class T>
@@ -43,6 +44,17 @@ struct IsTupleImpl : std::false_type {};
 
 template<class... Items>
 struct IsTupleImpl<std::tuple<Items...>> : std::true_type {};
+
+template<class T>
+decltype(Ref(std::declval<std::stringstream>()) << std::declval<T>(),
+         std::true_type()) IsSstreamableImpl(int) {
+    return std::true_type();
+}
+
+template<class T>
+std::false_type IsSstreamableImpl(...) {
+    return std::false_type();
+}
 
 }
 
@@ -66,6 +78,9 @@ constexpr bool IsTuple = detail::IsTupleImpl<T>::value;
 
 template<class T>
 constexpr bool IsNullptrT = std::is_same_v<T, std::nullptr_t>;
+
+template<class T>
+constexpr bool IsSstreamable = decltype(detail::IsSstreamableImpl<T>(0))::value;
 
 template<class S, std::size_t I = 0, class... Items>
 typename std::enable_if<I == sizeof...(Items), void>::type
