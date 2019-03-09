@@ -4,8 +4,7 @@
 
 namespace kktest::matchers::detail {
 
-class IsTrueMatcher: public StatelessMatcher {
- public:
+struct IsTrueMatcher: StatelessMatcher {
     bool matches(const bool& object) const {
         return object;
     }
@@ -19,8 +18,7 @@ class IsTrueMatcher: public StatelessMatcher {
     }
 };
 
-class IsFalseMatcher: public StatelessMatcher {
- public:
+struct IsFalseMatcher: StatelessMatcher {
     bool matches(const bool& object) const {
         return !object;
     }

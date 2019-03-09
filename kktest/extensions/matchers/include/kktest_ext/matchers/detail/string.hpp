@@ -6,8 +6,7 @@
 
 namespace kktest::matchers::detail {
 
-class CharInStringMatcher: public StatelessMatcher {
- public:
+struct CharInStringMatcher: StatelessMatcher {
     constexpr CharInStringMatcher(const char* container,
                                   const char* expectation):
             container(container), expectation(expectation) {}
@@ -37,7 +36,7 @@ class CharInStringMatcher: public StatelessMatcher {
     const char* expectation;
 };
 
-class IsSubstringMatcher: public StatelessMatcher {
+struct IsSubstringMatcher: StatelessMatcher {
  public:
     explicit IsSubstringMatcher(std::string container):
             container(std::move(container)) {}

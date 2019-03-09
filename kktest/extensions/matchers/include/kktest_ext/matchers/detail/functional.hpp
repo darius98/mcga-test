@@ -6,8 +6,7 @@
 
 namespace kktest::matchers::detail {
 
-class ThrowsAnythingMatcher: public StatelessMatcher {
- public:
+struct ThrowsAnythingMatcher: StatelessMatcher {
     bool matches(const Executable& func) const {
         try {
             func();
@@ -33,8 +32,7 @@ enum ThrowsSpecificState {
 };
 
 template<class E>
-class ThrowsSpecificMatcher: public StatefulMatcher<ThrowsSpecificState> {
- public:
+struct ThrowsSpecificMatcher: StatefulMatcher<ThrowsSpecificState> {
     bool matches(const Executable& func, ThrowsSpecificState* state) const {
         try {
             func();

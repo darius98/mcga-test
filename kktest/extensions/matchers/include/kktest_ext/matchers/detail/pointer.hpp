@@ -4,8 +4,7 @@
 
 namespace kktest::matchers::detail {
 
-class IsNullptrMatcher: public StatelessMatcher {
- public:
+struct IsNullptrMatcher: StatelessMatcher {
     bool matches(void*const& obj) const {
         return obj == nullptr;
     }
@@ -19,8 +18,7 @@ class IsNullptrMatcher: public StatelessMatcher {
     }
 };
 
-class IsNotNullptrMatcher: public StatelessMatcher {
- public:
+struct IsNotNullptrMatcher: StatelessMatcher {
     bool matches(void*const& obj) const {
         return obj != nullptr;
     }

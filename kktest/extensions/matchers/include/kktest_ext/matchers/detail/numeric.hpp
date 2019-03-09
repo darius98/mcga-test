@@ -4,8 +4,7 @@
 
 namespace kktest::matchers::detail {
 
-class IsPositiveMatcher: public StatelessMatcher {
- public:
+struct IsPositiveMatcher: StatelessMatcher {
     template<class T>
     bool matches(const T& object) const {
         return object > 0;
@@ -20,8 +19,7 @@ class IsPositiveMatcher: public StatelessMatcher {
     }
 };
 
-class IsNegativeMatcher: public StatelessMatcher {
- public:
+struct IsNegativeMatcher: StatelessMatcher {
     template<class T>
     bool matches(const T& object) const {
         return object < 0;
@@ -36,8 +34,7 @@ class IsNegativeMatcher: public StatelessMatcher {
     }
 };
 
-class IsEvenMatcher: public StatelessMatcher {
- public:
+struct IsEvenMatcher: StatelessMatcher {
     template<class T>
     bool matches(const T& object) const {
         return object % 2 == 0;
@@ -52,8 +49,7 @@ class IsEvenMatcher: public StatelessMatcher {
     }
 };
 
-class IsOddMatcher: public StatelessMatcher {
- public:
+struct IsOddMatcher: StatelessMatcher {
     template<class T>
     bool matches(const T& object) const {
         return object % 2 == 1 || object % 2 == -1;
@@ -68,8 +64,7 @@ class IsOddMatcher: public StatelessMatcher {
     }
 };
 
-class IsZeroMatcher: public StatelessMatcher {
- public:
+struct IsZeroMatcher: StatelessMatcher {
     template<class T>
     bool matches(const T& object) const {
         return object == 0;
@@ -84,8 +79,7 @@ class IsZeroMatcher: public StatelessMatcher {
     }
 };
 
-class IsNotZeroMatcher: public StatelessMatcher {
- public:
+struct IsNotZeroMatcher: StatelessMatcher {
     template<class T>
     bool matches(const T& object) const {
         return object != 0;
@@ -101,8 +95,7 @@ class IsNotZeroMatcher: public StatelessMatcher {
 };
 
 template<class T>
-class IsAlmostEqualMatcher: public StatelessMatcher {
- public:
+struct IsAlmostEqualMatcher: StatelessMatcher {
     constexpr IsAlmostEqualMatcher(const T& target, const double& eps):
             target(target), eps(eps) {}
 

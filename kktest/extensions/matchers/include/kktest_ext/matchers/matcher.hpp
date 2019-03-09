@@ -92,11 +92,10 @@ class Description {
 };
 
 
-class Matcher {};
+struct Matcher {};
 
 template<class S>
-class StatefulMatcher : public Matcher {
- public:
+struct StatefulMatcher : public Matcher {
     static constexpr bool HasState = true;
 
     typedef S State;
@@ -106,11 +105,11 @@ class StatefulMatcher : public Matcher {
 //
 //    virtual void describe(Description* description) const = 0;
 //
-//    virtual void describeFailure(Description* description, S* state) const = 0;
+//    virtual void describeFailure(Description* description,
+//                                 State* state) const = 0;
 };
 
-class StatelessMatcher : public Matcher {
- public:
+struct StatelessMatcher : public Matcher {
     static constexpr bool HasState = false;
 
     typedef int State; // for easier usage of nested matchers.
