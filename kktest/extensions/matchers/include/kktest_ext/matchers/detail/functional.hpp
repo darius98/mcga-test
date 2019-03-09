@@ -35,8 +35,6 @@ enum ThrowsSpecificState {
 template<class E>
 class ThrowsSpecificMatcher: public StatefulMatcher<ThrowsSpecificState> {
  public:
-    constexpr ThrowsSpecificMatcher() = default;
-
     bool matches(const Executable& func, ThrowsSpecificState* state) const {
         try {
             func();

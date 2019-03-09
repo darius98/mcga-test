@@ -4,32 +4,32 @@
 
 namespace kktest::matchers {
 
-template<class T> auto isEqualTo(const T& object) {
-    return detail::EqualityMatcher(object);
+template<class T> constexpr auto isEqualTo(const T& object) {
+    return detail::EqualityMatcher<T>(object);
 }
 
-template<class T> auto isNotEqualTo(const T& object) {
-    return detail::NonEqualityMatcher(object);
+template<class T> constexpr auto isNotEqualTo(const T& object) {
+    return detail::NonEqualityMatcher<T>(object);
 }
 
-template<class T> auto isLessThan(const T& object) {
-    return detail::IsLessThanMatcher(object);
+template<class T> constexpr auto isLessThan(const T& object) {
+    return detail::IsLessThanMatcher<T>(object);
 }
 
-template<class T> auto isLessThanEqual(const T& object) {
-    return detail::IsLessThanEqualMatcher(object);
+template<class T> constexpr auto isLessThanEqual(const T& object) {
+    return detail::IsLessThanEqualMatcher<T>(object);
 }
 
-template<class T> auto isGreaterThan(const T& object) {
-    return detail::IsGreaterThanMatcher(object);
+template<class T> constexpr auto isGreaterThan(const T& object) {
+    return detail::IsGreaterThanMatcher<T>(object);
 }
 
-template<class T> auto isGreaterThanEqual(const T& object) {
-    return detail::IsGreaterThanEqualMatcher(object);
+template<class T> constexpr auto isGreaterThanEqual(const T& object) {
+    return detail::IsGreaterThanEqualMatcher<T>(object);
 }
 
-template<class T> auto isIdenticalTo(const T& object) {
-    return detail::IdentityMatcher(object);
+template<class T> constexpr auto isIdenticalTo(const T& object) {
+    return detail::IdentityMatcher<T>(object);
 }
 
 }

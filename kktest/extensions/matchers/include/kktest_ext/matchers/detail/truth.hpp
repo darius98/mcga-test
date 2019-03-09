@@ -6,8 +6,6 @@ namespace kktest::matchers::detail {
 
 class IsTrueMatcher: public StatelessMatcher {
  public:
-    constexpr IsTrueMatcher() = default;
-
     bool matches(const bool& object) const {
         return object;
     }
@@ -23,8 +21,6 @@ class IsTrueMatcher: public StatelessMatcher {
 
 class IsFalseMatcher: public StatelessMatcher {
  public:
-    constexpr IsFalseMatcher() = default;
-
     bool matches(const bool& object) const {
         return !object;
     }

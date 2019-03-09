@@ -8,8 +8,8 @@ namespace kktest::matchers::detail {
 
 class CharInStringMatcher: public StatelessMatcher {
  public:
-    constexpr explicit CharInStringMatcher(const char* container,
-                                           const char* expectation = nullptr):
+    constexpr CharInStringMatcher(const char* container,
+                                  const char* expectation):
             container(container), expectation(expectation) {}
 
     bool matches(const char& ch) const {

@@ -7,9 +7,6 @@ namespace kktest::matchers {
 
 class Description {
  public:
-    Description() = default;
-    Description(const Description& other): stream(other.stream.str()) {}
-
     template<class T>
     Description& operator<<(const T& obj) {
         if constexpr (tp::IsStringLike<T>) {
@@ -35,11 +32,6 @@ class Description {
         return *this;
     }
 
-    std::string toString() const {
-        return stream.str();
-    }
-
- private:
     void appendString(std::string obj) {
         std::size_t pos = 0;
         while ((pos = obj.find('\n', pos)) != std::string::npos) {
@@ -91,6 +83,11 @@ class Description {
         stream << ')';
     }
 
+    std::string toString() const {
+        return stream.str();
+    }
+
+ private:
     std::stringstream stream;
 };
 
@@ -126,8 +123,6 @@ class StatelessMatcher : public Matcher {
 //    virtual void describeFailure(Description* description) const = 0;
 };
 
-namespace detail {
-
 template<class T, class M>
 bool __matches(const M& matcher, typename M::State* state, const T& obj) {
     if constexpr (M::HasState) {
@@ -148,13 +143,11 @@ void __describeFailure(Description* description,
     }
 }
 
-}
-
 template<class T, class M>
 void expect(const T& obj, M matcher) {
-    static_assert(std::is_base_of_v<matchers::Matcher, M>);
+    static_assert(std::is_base_of_v<Matcher, M>);
     typename M::State state;
-    if (detail::__matches(matcher, &state, obj)) {
+    if (__matches(matcher, &state, obj)) {
         return;
     }
     Description description;
@@ -163,7 +156,7 @@ void expect(const T& obj, M matcher) {
     description.appendRawString("\n\tGot      '");
     description << obj;
     description.appendRawString("'\n\tWhich is ");
-    detail::__describeFailure(&description, matcher, &state);
+    __describeFailure(&description, matcher, &state);
     fail("Expectation failed:\n\t" + description.toString());
 }
 

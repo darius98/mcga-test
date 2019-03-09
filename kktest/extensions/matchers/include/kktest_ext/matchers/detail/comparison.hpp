@@ -10,7 +10,7 @@ namespace kktest::matchers::detail {
 template<class T>
 class EqualityMatcher: public StatelessMatcher {
  public:
-    explicit EqualityMatcher(const T& target): target(target) {}
+    explicit constexpr EqualityMatcher(const T& target): target(target) {}
 
     template<class O>
     bool matches(const O& obj) const {
@@ -32,7 +32,7 @@ class EqualityMatcher: public StatelessMatcher {
 template<class T>
 class NonEqualityMatcher: public StatelessMatcher {
  public:
-    explicit NonEqualityMatcher(const T& target): target(target) {}
+    explicit constexpr NonEqualityMatcher(const T& target): target(target) {}
 
     template<class O>
     bool matches(const O& obj) const {
@@ -54,7 +54,7 @@ class NonEqualityMatcher: public StatelessMatcher {
 template<class T>
 class IsLessThanMatcher: public StatelessMatcher {
  public:
-    explicit IsLessThanMatcher(const T& target): target(target) {}
+    explicit constexpr IsLessThanMatcher(const T& target): target(target) {}
 
     template<class O>
     bool matches(const O& object) const {
@@ -76,7 +76,8 @@ class IsLessThanMatcher: public StatelessMatcher {
 template<class T>
 class IsLessThanEqualMatcher: public StatelessMatcher {
  public:
-    explicit IsLessThanEqualMatcher(const T& target): target(target) {}
+    explicit constexpr IsLessThanEqualMatcher(const T& target):
+            target(target) {}
 
     template<class O>
     bool matches(const O& object) const {
@@ -98,7 +99,7 @@ class IsLessThanEqualMatcher: public StatelessMatcher {
 template<class T>
 class IsGreaterThanMatcher: public StatelessMatcher {
  public:
-    explicit IsGreaterThanMatcher(const T& target): target(target) {}
+    explicit constexpr IsGreaterThanMatcher(const T& target): target(target) {}
 
     template<class O>
     bool matches(const O& object) const {
@@ -120,7 +121,8 @@ class IsGreaterThanMatcher: public StatelessMatcher {
 template<class T>
 class IsGreaterThanEqualMatcher: public StatelessMatcher {
  public:
-    explicit IsGreaterThanEqualMatcher(const T& target): target(target) {}
+    explicit constexpr IsGreaterThanEqualMatcher(const T& target):
+            target(target) {}
 
     template<class O>
     bool matches(const O& object) const {
@@ -142,7 +144,7 @@ class IsGreaterThanEqualMatcher: public StatelessMatcher {
 template<class T>
 class IdentityMatcher: public StatefulMatcher<const void*> {
  public:
-    explicit IdentityMatcher(const T& target):
+    explicit constexpr IdentityMatcher(const T& target):
             address(static_cast<const void*>(&target)) {}
     IdentityMatcher(const IdentityMatcher& other) = default;
 

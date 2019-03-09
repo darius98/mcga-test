@@ -6,8 +6,6 @@ namespace kktest::matchers::detail {
 
 class IsEmptyMatcher: public StatelessMatcher {
  public:
-    constexpr IsEmptyMatcher() = default;
-
     template<class T>
     bool matches(const T& object) const {
         return object.empty();
@@ -24,8 +22,6 @@ class IsEmptyMatcher: public StatelessMatcher {
 
 class IsNotEmptyMatcher: public StatelessMatcher {
  public:
-    constexpr IsNotEmptyMatcher() = default;
-
     template<class T>
     bool matches(const T& object) const {
         return !object.empty();
@@ -42,9 +38,6 @@ class IsNotEmptyMatcher: public StatelessMatcher {
 
 template<class M>
 class IterableSizeMatcher: public StatefulMatcher<typename M::State> {
-    static_assert(std::is_base_of<Matcher, M>::value,
-                  "SizeMatcher only supports other matchers as template args.");
-
  public:
     explicit constexpr IterableSizeMatcher(M sizeMatcher):
             sizeMatcher(std::move(sizeMatcher)) {}
@@ -77,9 +70,6 @@ struct IterableEachState {
 
 template<class M>
 class IterableEachMatcher: public StatefulMatcher<IterableEachState<M>> {
-    static_assert(std::is_base_of<Matcher, M>::value,
-                  "EachMatcher only supports other matchers as template args.");
-
  public:
     explicit constexpr IterableEachMatcher(M elementMatcher):
             elementMatcher(std::move(elementMatcher)) {}

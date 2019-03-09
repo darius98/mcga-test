@@ -15,7 +15,7 @@ template<class T> class HasExitedWithCodeMatcher;
 template<class T> class HasExitedWithOutputMatcher;
 }
 
-template<class T> auto hasExitedWithCode(const T& exitCode) {
+template<class T> constexpr auto hasExitedWithCode(const T& exitCode) {
     if constexpr (std::is_base_of_v<matchers::Matcher, T>) {
         return detail::HasExitedWithCodeMatcher<T>(exitCode);
     } else {
@@ -23,7 +23,7 @@ template<class T> auto hasExitedWithCode(const T& exitCode) {
     }
 }
 
-template<class T> auto hasExitedWithOutput(const T& output) {
+template<class T> constexpr auto hasExitedWithOutput(const T& output) {
     if constexpr (std::is_base_of_v<matchers::Matcher, T>) {
         return detail::HasExitedWithOutputMatcher<T>(output);
     } else {
@@ -74,11 +74,11 @@ class ExitsWithCodeAndOutputMatcher: public matchers::StatefulMatcher<
     bool matches(const Executable& func,
                  ExitsWithCodeAndOutputState<CM, OM>* state) const {
         state->status = checkDeath(func);
-        state->codeMatcherMatches = matchers::detail::__matches(
+        state->codeMatcherMatches = matchers::__matches(
                 codeMatcher,
                 &state->codeMatcherState,
                 state->status.getExitCode());
-        state->outputMatcherMatches = matchers::detail::__matches(
+        state->outputMatcherMatches = matchers::__matches(
                 outputMatcher,
                 &state->outputMatcherState,
                 state->status.getOutput());
@@ -99,7 +99,7 @@ class ExitsWithCodeAndOutputMatcher: public matchers::StatefulMatcher<
         } else {
             (*description) << "the program's end with valid return code,"
                               " but output is ";
-            matchers::detail::__describeFailure(
+            matchers::__describeFailure(
                     description, outputMatcher, &state->outputMatcherState);
         }
     }
@@ -127,7 +127,7 @@ class ExitsWithCodeMatcher:
 
     bool matches(const Executable& func, ExitsWithCodeState<M>* state) const {
         state->status = checkDeath(func);
-        return matchers::detail::__matches(
+        return matchers::__matches(
                 codeMatcher,
                 &state->codeMatcherState,
                 state->status.getExitCode());
@@ -175,7 +175,7 @@ class ExitsWithOutputMatcher:
 
     bool matches(const Executable& func, ExitsWithOutputState<M>* state) const {
         state->status = checkDeath(func);
-        return matchers::detail::__matches(
+        return matchers::__matches(
                 outputMatcher,
                 &state->outputMatcherState,
                 state->status.getOutput());
@@ -188,7 +188,7 @@ class ExitsWithOutputMatcher:
 
     void describeFailure(matchers::Description* description,
                          ExitsWithOutputState<M>* state) const {
-        matchers::detail::__describeFailure(
+        matchers::__describeFailure(
                 description, outputMatcher, &state->outputMatcherState);
     }
 
@@ -277,7 +277,7 @@ class HasExitedWithCodeMatcher:
     bool matches(const DeathStatus& status, const DeathStatus** state) const {
         *state = &status;
         typename M::State codeMatcherState;
-        return status.exited() && matchers::detail::__matches(
+        return status.exited() && matchers::__matches(
                 exitCodeMatcher, &codeMatcherState, status.getExitCode());
     }
 
@@ -307,8 +307,7 @@ class HasExitedWithOutputMatcher:
             outputMatcher(std::move(outputMatcher)) {}
 
     bool matches(const DeathStatus& status, typename M::State* state) const {
-        return matchers::detail::__matches(
-                outputMatcher, state, status.getOutput());
+        return matchers::__matches(outputMatcher, state, status.getOutput());
     }
 
     void describe(matchers::Description* description) const {
@@ -318,7 +317,7 @@ class HasExitedWithOutputMatcher:
 
     void describeFailure(matchers::Description* description,
                          typename M::State* state) const {
-        matchers::detail::__describeFailure(description, outputMatcher, state);
+        matchers::__describeFailure(description, outputMatcher, state);
     }
 
  private:
@@ -331,10 +330,10 @@ constexpr detail::ExitsMatcher exits;
 
 constexpr detail::HasExitedMatcher hasExited;
 
-constexpr detail::HasExitedWithCodeMatcher<matchers::detail::IsZeroMatcher>
+constexpr detail::HasExitedWithCodeMatcher
         hasExitedWithCodeZero(matchers::isZero);
 
-constexpr detail::HasExitedWithCodeMatcher<matchers::detail::IsNotZeroMatcher>
+constexpr detail::HasExitedWithCodeMatcher
         hasExitedWithNonZeroCode(matchers::isNotZero);
 
 }

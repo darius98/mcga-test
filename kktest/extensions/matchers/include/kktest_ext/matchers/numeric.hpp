@@ -16,7 +16,8 @@ constexpr detail::IsZeroMatcher isZero;
 
 constexpr detail::IsNotZeroMatcher isNotZero;
 
-template<class T> auto isAlmostEqualTo(const T& target, const double& eps) {
+template<class T> constexpr auto isAlmostEqualTo(const T& target,
+                                                 const double& eps) {
     return detail::IsAlmostEqualMatcher(target, eps);
 }
 

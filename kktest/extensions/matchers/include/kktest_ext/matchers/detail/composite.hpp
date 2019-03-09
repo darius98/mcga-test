@@ -14,12 +14,8 @@ struct AndMatcherState {
 
 template<class M1, class M2>
 class AndMatcher: public StatefulMatcher<AndMatcherState<M1, M2>> {
-    static_assert(std::is_base_of_v<Matcher, M1>,
-                  "AndMatcher only supports other matchers as template args.");
-    static_assert(std::is_base_of_v<Matcher, M2>,
-                  "AndMatcher only supports other matchers as template args.");
  public:
-    constexpr AndMatcher(const M1& m1, const M2& m2): m1(m1), m2(m2) {}
+    constexpr AndMatcher(M1 m1, M2 m2): m1(std::move(m1)), m2(std::move(m2)) {}
 
     template<class T>
     bool matches(const T& obj, AndMatcherState<M1, M2>* state) const {
@@ -58,12 +54,8 @@ struct OrMatcherState {
 
 template<class M1, class M2>
 class OrMatcher: public StatefulMatcher<OrMatcherState<M1, M2>> {
-    static_assert(std::is_base_of<Matcher, M1>::value,
-                  "OrMatcher only supports other matchers as template args.");
-    static_assert(std::is_base_of<Matcher, M2>::value,
-                  "OrMatcher only supports other matchers as template args.");
  public:
-    constexpr OrMatcher(const M1& m1, const M2& m2): m1(m1), m2(m2) {}
+    constexpr OrMatcher(M1 m1, M2 m2): m1(std::move(m1)), m2(std::move(m2)) {}
 
     template<class T>
     bool matches(const T& obj, OrMatcherState<M1, M2>* state) const {
@@ -92,11 +84,8 @@ class OrMatcher: public StatefulMatcher<OrMatcherState<M1, M2>> {
 
 template<class M>
 class NotMatcher: public StatelessMatcher {
-    static_assert(std::is_base_of<Matcher, M>::value,
-                  "NotMatcher only supports other matchers as template args.");
-
  public:
-    constexpr explicit NotMatcher(const M& matcher): matcher(matcher) {}
+    constexpr explicit NotMatcher(M matcher): matcher(std::move(matcher)) {}
 
     template<class T>
     bool matches(const T& obj) const {
