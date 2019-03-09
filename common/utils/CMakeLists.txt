@@ -10,6 +10,7 @@ endif ()
 add_library(common_utils_obj OBJECT ${common_utils_src})
 
 add_kktest(common_utils_test
+    $<TARGET_OBJECTS:common_utils_obj>
     tests/main.cpp
     tests/time_test.cpp
 )
