@@ -1,5 +1,6 @@
 #include <kktest.hpp>
 
+#include "kktest/extensions/matchers/include/kktest_ext/matchers/testing_helpers.hpp"
 #include "kktest/extensions/matchers/include/kktest_ext/matchers/truth.hpp"
 
 using namespace kktest;
@@ -7,18 +8,18 @@ using namespace kktest::matchers;
 
 void truthMatchersTest() {
     test("isTrue matcher matches true", [] {
-        expect(isTrue.matches(true));
+        EXPECT_MATCHER_MATCHES(true, isTrue);
     });
 
     test("isTrue matcher does not match false", [] {
-        expect(!isTrue.matches(false));
+        EXPECT_MATCHER_FAILS(false, isTrue);
     });
 
     test("isFalse matcher does not match true", [] {
-        expect(!isFalse.matches(true));
+        EXPECT_MATCHER_FAILS(true, isFalse);
     });
 
     test("isFalse matcher matches false", [] {
-        expect(isFalse.matches(false));
+        EXPECT_MATCHER_MATCHES(false, isFalse);
     });
 }

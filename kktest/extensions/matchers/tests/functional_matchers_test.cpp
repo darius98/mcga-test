@@ -1,8 +1,7 @@
 #include <kktest.hpp>
 
 #include "kktest/extensions/matchers/include/kktest_ext/matchers/functional.hpp"
-
-#include "helpers/helpers.hpp"
+#include "kktest/extensions/matchers/include/kktest_ext/matchers/testing_helpers.hpp"
 
 using namespace kktest;
 using namespace kktest::matchers;

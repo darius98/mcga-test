@@ -4,6 +4,7 @@
 #include <kktest_ext/matchers/iterable.hpp>
 #include <kktest_ext/matchers/numeric.hpp>
 #include <kktest_ext/matchers/string.hpp>
+#include <kktest_ext/matchers/testing_helpers.hpp>
 
 #include "kktest/extensions/death/include/kktest_ext/death_impl/matchers.hpp"
 
@@ -28,248 +29,266 @@ void matchersTest() {
 
     group("exits matcher", [&] {
         test("matches exiting function without output", [&] {
-            expect(exits.matches(funcExit0));
+            EXPECT_MATCHER_MATCHES(funcExit0, exits);
         });
 
         test("matches exiting function with output", [&] {
-            expect(exits.matches(funcOutputExit17));
+            EXPECT_MATCHER_MATCHES(funcOutputExit17, exits);
         });
 
         test("does not match non-exiting function without output", [&] {
-            expect(!exits.matches(funcNoExit));
+            EXPECT_MATCHER_FAILS(funcNoExit, exits);
         });
 
         test("does not match non-exiting function with output", [&] {
-            expect(!exits.matches(funcOutputNoExit));
+            EXPECT_MATCHER_FAILS(funcOutputNoExit, exits);
         });
 
         test(".zero matches function with exit code 0", [&] {
-            expect(exits.zero.matches(funcExit0));
+            EXPECT_MATCHER_MATCHES(funcExit0, exits.zero);
         });
 
         test(".zero does not match function with exit code 17", [&] {
-            expect(!exits.zero.matches(funcOutputExit17));
+            EXPECT_MATCHER_FAILS(funcOutputExit17, exits.zero);
         });
 
         test(".nonZero matches function with exit code 17", [&] {
-            expect(exits.nonZero.matches(funcOutputExit17));
+            EXPECT_MATCHER_MATCHES(funcOutputExit17, exits.nonZero);
         });
 
         test(".nonZero does not match function with exit code 0", [&] {
-            expect(!exits.nonZero.matches(funcExit0));
+            EXPECT_MATCHER_FAILS(funcExit0, exits.nonZero);
         });
 
         test(".withOutput(char[]) matches function with same output", [&] {
-            expect(exits.withOutput("Hello, World!").matches(funcOutputExit17));
+            EXPECT_MATCHER_MATCHES(funcOutputExit17,
+                                   exits.withOutput("Hello, World!"));
         });
 
         test(".withOutput(string) matches function with same output", [&] {
-            expect(exits.withOutput(string("Hello, World!"))
-                   .matches(funcOutputExit17));
+            EXPECT_MATCHER_MATCHES(funcOutputExit17,
+                                   exits.withOutput(string("Hello, World!")));
         });
 
         test(".withOutput(char[]) does not match function with different "
              "output", [&] {
-            expect(!exits.withOutput("Hello, World!").matches(funcExit0));
+            EXPECT_MATCHER_FAILS(funcExit0, exits.withOutput("Hello, World!"));
         });
 
         test(".withOutput(string) does not match function with different "
              "output", [&] {
-            expect(!exits.withOutput(string("Hello, World!"))
-                   .matches(funcExit0));
+            EXPECT_MATCHER_FAILS(funcExit0,
+                                 exits.withOutput(string("Hello, World!")));
         });
 
         test(".withOutput(matcher) matches function with valid output", [&] {
-            expect(exits.withOutput(isSubstringOf("HHHello, World!!!"))
-                   .matches(funcOutputExit17));
+            EXPECT_MATCHER_MATCHES(funcOutputExit17, exits.withOutput(
+                    isSubstringOf("HHHello, World!!!")));
         });
 
         test(".withOutput(matcher) does not match function with invalid output",
              [&] {
-            expect(!exits.withOutput(hasSize(isZero))
-                   .matches(funcOutputExit17));
+            EXPECT_MATCHER_FAILS(funcOutputExit17,
+                                 exits.withOutput(hasSize(isZero)));
         });
 
         test(".withCode(0) matches function that exits with code 0", [&] {
-            expect(exits.withCode(0).matches(funcExit0));
+            EXPECT_MATCHER_MATCHES(funcExit0, exits.withCode(0));
         });
 
         test(".withCode(matcher) matches function that exits with valid code",
              [&] {
-            expect(exits.withCode(isZero).matches(funcExit0));
+            EXPECT_MATCHER_MATCHES(funcExit0, exits.withCode(isZero));
         });
 
         test(".withCode(0) does not match function that exits with non-zero "
              "exit code", [&] {
-            expect(!exits.withCode(0).matches(funcOutputExit17));
+            EXPECT_MATCHER_FAILS(funcOutputExit17, exits.withCode(0));
         });
 
         test(".withCode(matcher) does not match function that exits with "
              "invalid exit code", [&] {
-            expect(!exits.withCode(isOdd).matches(funcExit0));
+            EXPECT_MATCHER_FAILS(funcExit0, exits.withCode(isOdd));
         });
 
         test(".withCode(0) does not match non-exiting function", [&] {
-            expect(!exits.withCode(0).matches(funcNoExit));
+            EXPECT_MATCHER_FAILS(funcNoExit, exits.withCode(0));
         });
 
         test(".withOutput(char[]) does not match non-exiting function", [&] {
-            expect(!exits.withOutput("Hello, World!")
-                   .matches(funcOutputNoExit));
+            EXPECT_MATCHER_FAILS(funcOutputNoExit,
+                                 exits.withOutput("Hello, World!"));
         });
 
         test(".withOutput().withCode() matches valid function", [&] {
-            expect(exits.withOutput("Hello, World!").withCode(17)
-                   .matches(funcOutputExit17));
+            EXPECT_MATCHER_MATCHES(funcOutputExit17,
+                                   exits.withOutput("Hello, World!")
+                                        .withCode(17));
         });
 
         test(".withOutput().withCode() does not match function with invalid "
              "exit code", [&] {
-            expect(!exits.withOutput("Hello, World!").withCode(19)
-                   .matches(funcOutputExit17));
+            EXPECT_MATCHER_FAILS(funcOutputExit17,
+                                 exits.withOutput("Hello, World!")
+                                      .withCode(19));
         });
 
         test(".withOutput().withCode() does not match function with invalid "
              "output", [&] {
-            expect(!exits.withOutput("Hello World").withCode(17)
-                   .matches(funcOutputExit17));
+            EXPECT_MATCHER_FAILS(funcOutputExit17,
+                                 exits.withOutput("Hello World").withCode(17));
         });
 
         test(".withOutput().withCode() does not match non-exiting function",
              [&] {
-            expect(!exits.withOutput("Hello, World!").withCode(17)
-                   .matches(funcNoExit));
+            EXPECT_MATCHER_FAILS(funcNoExit,
+                                 exits.withOutput("Hello, World!")
+                                      .withCode(17));
         });
 
         test(".withOutput & .withCode in different orders and with different"
              " parameter types still compiles", [&] {
-            expect(exits.withCode(0).withOutput("").matches(funcExit0));
-            expect(exits.withCode(0).withOutput(string("")).matches(funcExit0));
-            expect(exits.withCode(isZero).withOutput("").matches(funcExit0));
-            expect(exits.withCode(isZero).withOutput(string(""))
-                   .matches(funcExit0));
-            expect(exits.withCode(0).withOutput(isEmpty).matches(funcExit0));
-            expect(exits.withCode(isZero).withOutput(isEmpty)
-                   .matches(funcExit0));
-            expect(exits.withOutput("").withCode(0).matches(funcExit0));
-            expect(exits.withOutput(string("")).withCode(0).matches(funcExit0));
-            expect(exits.withOutput("").withCode(isZero).matches(funcExit0));
-            expect(exits.withOutput(string("")).withCode(isZero)
-                   .matches(funcExit0));
-            expect(exits.withOutput(isEmpty).withCode(0).matches(funcExit0));
-            expect(exits.withOutput(isEmpty).withCode(isZero)
-                   .matches(funcExit0));
+            EXPECT_MATCHER_MATCHES(funcExit0, exits.withCode(0).withOutput(""));
+            EXPECT_MATCHER_MATCHES(funcExit0, exits.withCode(0)
+                                                   .withOutput(string("")));
+            EXPECT_MATCHER_MATCHES(funcExit0, exits.withCode(isZero)
+                                                   .withOutput(""));
+            EXPECT_MATCHER_MATCHES(funcExit0, exits.withCode(isZero)
+                                                   .withOutput(string("")));
+            EXPECT_MATCHER_MATCHES(funcExit0, exits.withCode(0)
+                                                   .withOutput(isEmpty));
+            EXPECT_MATCHER_MATCHES(funcExit0, exits.withCode(isZero)
+                                                   .withOutput(isEmpty));
+            EXPECT_MATCHER_MATCHES(funcExit0, exits.withOutput("").withCode(0));
+            EXPECT_MATCHER_MATCHES(funcExit0, exits.withOutput(string(""))
+                                                   .withCode(0));
+            EXPECT_MATCHER_MATCHES(funcExit0, exits.withOutput("")
+                                                   .withCode(isZero));
+            EXPECT_MATCHER_MATCHES(funcExit0, exits.withOutput(string(""))
+                                                   .withCode(isZero));
+            EXPECT_MATCHER_MATCHES(funcExit0, exits.withOutput(isEmpty)
+                                                   .withCode(0));
+            EXPECT_MATCHER_MATCHES(funcExit0, exits.withOutput(isEmpty)
+                                                   .withCode(isZero));
         });
     });
 
     group("hasExited variants", [&] {
         test("hasExited matches status of zero exiting function", [&] {
             auto status = checkDeath(funcExit0);
-            expect(hasExited.matches(status));
+            EXPECT_MATCHER_MATCHES(status, hasExited);
         });
 
         test("hasExited matches status of non-zero exiting function", [&] {
             auto status = checkDeath(funcOutputExit17);
-            expect(hasExited.matches(status));
+            EXPECT_MATCHER_MATCHES(status, hasExited);
         });
 
         test("hasExited does not match status of non-exiting function", [&] {
             auto status = checkDeath(funcNoExit);
-            expect(!hasExited.matches(status));
+            EXPECT_MATCHER_FAILS(status, hasExited);
         });
 
         test("hasExitedWithCode(0) matches status of zero exiting function",
              [&] {
             auto status = checkDeath(funcExit0);
-            expect(hasExitedWithCode(0).matches(status));
+            EXPECT_MATCHER_MATCHES(status, hasExitedWithCode(0));
         });
 
         test("hasExitedWithCode(matcher) matches status of valid exiting "
              "function", [&] {
             auto status = checkDeath(funcExit0);
-            expect(hasExitedWithCode(isZero).matches(status));
+            EXPECT_MATCHER_MATCHES(status, hasExitedWithCode(isZero));
         });
 
         test("hasExitedWithCode(0) does not match status of non-zero exiting "
              "function", [&] {
             auto status = checkDeath(funcOutputExit17);
-            expect(!hasExitedWithCode(0).matches(status));
+            EXPECT_MATCHER_FAILS(status, hasExitedWithCode(0));
         });
 
         test("hasExitedWithCode(matcher) does not match status of invalid "
              "exiting function", [&] {
             auto status = checkDeath(funcOutputExit17);
-            expect(!hasExitedWithCode(isZero).matches(status));
+            EXPECT_MATCHER_FAILS(status, hasExitedWithCode(isZero));
         });
 
         test("hasExitedWithCodeZero matches zero-exiting function", [&] {
             auto status = checkDeath(funcExit0);
-            expect(hasExitedWithCodeZero.matches(status));
+            EXPECT_MATCHER_MATCHES(status, hasExitedWithCodeZero);
         });
 
         test("hasExitedWithNonZeroCode matches non-zero exiting function", [&] {
             auto status = checkDeath(funcOutputExit17);
-            expect(hasExitedWithNonZeroCode.matches(status));
+            EXPECT_MATCHER_MATCHES(status, hasExitedWithNonZeroCode);
         });
 
         test("hasExitedWithCodeZero does not match non-zero exiting function",
              [&] {
             auto status = checkDeath(funcOutputExit17);
-            expect(!hasExitedWithCodeZero.matches(status));
+            EXPECT_MATCHER_FAILS(status, hasExitedWithCodeZero);
         });
 
         test("hasExitedWithNonZeroCode does not match zero exiting function",
              [&] {
             auto status = checkDeath(funcExit0);
-            expect(!hasExitedWithNonZeroCode.matches(status));
+            EXPECT_MATCHER_FAILS(status, hasExitedWithNonZeroCode);
         });
     });
 
-    group("hasOutput", [&] {
+    group("hasExitedWithOutput", [&] {
         test("(\"\") matches exiting function with empty output", [&] {
-            expect(hasOutput("").matches(checkDeath(funcExit0)));
+            EXPECT_MATCHER_MATCHES(checkDeath(funcExit0),
+                                   hasExitedWithOutput(""));
         });
 
         test("(string(\"\")) matches exiting function with final output", [&] {
-            expect(hasOutput(string("")).matches(checkDeath(funcExit0)));
+            EXPECT_MATCHER_MATCHES(checkDeath(funcExit0),
+                                   hasExitedWithOutput(string("")));
         });
 
         test("(isEmpty) matches exiting function with empty output", [&] {
-            expect(hasOutput(isEmpty).matches(checkDeath(funcExit0)));
+            EXPECT_MATCHER_MATCHES(checkDeath(funcExit0),
+                                   hasExitedWithOutput(isEmpty));
         });
 
         test("(char[]) matches exiting function with same output", [&] {
-            expect(hasOutput("Hello, World!")
-                   .matches(checkDeath(funcOutputExit17)));
+            EXPECT_MATCHER_MATCHES(checkDeath(funcOutputExit17),
+                                   hasExitedWithOutput("Hello, World!"));
         });
 
         test("(string) matches exiting function with same output", [&] {
-            expect(hasOutput(string("Hello, World!"))
-                   .matches(checkDeath(funcOutputExit17)));
+            EXPECT_MATCHER_MATCHES(
+                    checkDeath(funcOutputExit17),
+                    hasExitedWithOutput(string("Hello, World!")));
         });
 
         test("(matcher) matches exiting function with valid output", [&] {
-            expect(hasOutput(isSubstringOf("HHello, World!!"))
-                   .matches(checkDeath(funcOutputExit17)));
+            EXPECT_MATCHER_MATCHES(
+                    checkDeath(funcOutputExit17),
+                    hasExitedWithOutput(isSubstringOf("HHello, World!!")));
         });
 
         test("(char[]) does not match exiting function with different output",
              [&] {
-            expect(!hasOutput("Not Hello World")
-                   .matches(checkDeath(funcOutputExit17)));
+            EXPECT_MATCHER_FAILS(checkDeath(funcOutputExit17),
+                                 hasExitedWithOutput("Not Hello World"));
         });
 
         test("(matcher) does not match exiting function with invalid output",
              [&] {
-            expect(!hasOutput(isEmpty).matches(checkDeath(funcOutputExit17)));
+            EXPECT_MATCHER_FAILS(checkDeath(funcOutputExit17),
+                                 hasExitedWithOutput(isEmpty));
         });
 
         test("matches non-exiting function if output is valid", [&] {
-            expect(hasOutput(isEmpty).matches(checkDeath(funcNoExit)));
+            EXPECT_MATCHER_MATCHES(checkDeath(funcNoExit),
+                                   hasExitedWithOutput(isEmpty));
         });
 
         test("does not match non-exiting function if output is invalid", [&] {
-            expect(!hasOutput(isNotEmpty).matches(checkDeath(funcNoExit)));
+            EXPECT_MATCHER_FAILS(checkDeath(funcNoExit),
+                                 hasExitedWithOutput(isNotEmpty));
         });
     });
 }

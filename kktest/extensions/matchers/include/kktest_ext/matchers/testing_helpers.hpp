@@ -1,7 +1,11 @@
 #pragma once
 
+#include <stdexcept>
+
 #include <kktest.hpp>
-#include <kktest_ext/matchers.hpp>
+#include <kktest_ext/matchers/matcher.hpp>
+
+// Helpers for testing the matchers themselves.
 
 #define EXPECT_MATCHER_FAILS(...)                       \
     try {                                               \

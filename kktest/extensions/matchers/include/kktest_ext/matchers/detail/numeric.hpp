@@ -84,6 +84,22 @@ class IsZeroMatcher: public StatelessMatcher {
     }
 };
 
+class IsNotZeroMatcher: public StatelessMatcher {
+ public:
+    template<class T>
+    bool matches(const T& object) const {
+        return object != 0;
+    }
+
+    void describe(Description* description) const override {
+        (*description) << "non-zero";
+    }
+
+    void describeFailure(Description* description) const override {
+        (*description) << "zero";
+    }
+};
+
 template<class T>
 class IsAlmostEqualMatcher: public StatelessMatcher {
  public:
