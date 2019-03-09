@@ -17,11 +17,11 @@ class EqualityMatcher: public StatelessMatcher {
         return obj == target;
     }
 
-    void describe(Description* description) const override {
+    void describe(Description* description) const {
         (*description) << "'" << target << "'";
     }
 
-    void describeFailure(Description* description) const override {
+    void describeFailure(Description* description) const {
         (*description) << "not '" << target << "'";
     }
 
@@ -39,11 +39,11 @@ class NonEqualityMatcher: public StatelessMatcher {
         return obj != target;
     }
 
-    void describe(Description* description) const override {
+    void describe(Description* description) const {
         (*description) << "not '" << target << "'";
     }
 
-    void describeFailure(Description* description) const override {
+    void describeFailure(Description* description) const {
         (*description) << "'" << target << "'";
     }
 
@@ -61,11 +61,11 @@ class IsLessThanMatcher: public StatelessMatcher {
         return object < target;
     }
 
-    void describe(Description* description) const override {
+    void describe(Description* description) const {
         (*description) << "< '" << target << "'";
     }
 
-    void describeFailure(Description* description) const override {
+    void describeFailure(Description* description) const {
         (*description) << ">= '" << target << "'";
     }
 
@@ -83,11 +83,11 @@ class IsLessThanEqualMatcher: public StatelessMatcher {
         return object <= target;
     }
 
-    void describe(Description* description) const override {
+    void describe(Description* description) const {
         (*description) << "<= '" << target << "'";
     }
 
-    void describeFailure(Description* description) const override {
+    void describeFailure(Description* description) const {
         (*description) << "> '" << target << "'";
     }
 
@@ -105,11 +105,11 @@ class IsGreaterThanMatcher: public StatelessMatcher {
         return object > target;
     }
 
-    void describe(Description* description) const override {
+    void describe(Description* description) const {
         (*description) << "> '" << target << "'";
     }
 
-    void describeFailure(Description* description) const override {
+    void describeFailure(Description* description) const {
         (*description) << "<= '" << target << "'";
     }
 
@@ -127,11 +127,11 @@ class IsGreaterThanEqualMatcher: public StatelessMatcher {
         return object >= target;
     }
 
-    void describe(Description* description) const override {
+    void describe(Description* description) const {
         (*description) << ">= '" << target << "'";
     }
 
-    void describeFailure(Description* description) const override {
+    void describeFailure(Description* description) const {
         (*description) << "< '" << target << "'";
     }
 
@@ -152,12 +152,12 @@ class IdentityMatcher: public StatefulMatcher<const void*> {
         return &object == address;
     }
 
-    void describe(Description* description) const override {
+    void describe(Description* description) const {
         (*description) << "variable at address '" << address << "'";
     }
 
     void describeFailure(Description* description,
-                         const void** state) const override {
+                         const void** state) const {
         (*description) << "variable at address '" << *state << "'";
     }
 
@@ -182,12 +182,11 @@ class EqualityMatcher<std::string>: public StatefulMatcher<std::string> {
         return obj == target;
     }
 
-    void describe(Description* description) const override {
+    void describe(Description* description) const {
         (*description) << "'" << target << "'";
     }
 
-    void describeFailure(Description* description,
-                         std::string* state) const override {
+    void describeFailure(Description* description, std::string* state) const {
         const std::string& obj = *state;
         std::size_t mismatchIndex = 0;
         while (mismatchIndex < std::min(target.size(), obj.size())
@@ -277,11 +276,11 @@ class NonEqualityMatcher<std::string>: public StatelessMatcher {
         return obj != target;
     }
 
-    void describe(Description* description) const override {
+    void describe(Description* description) const {
         (*description) << "not '" << target << "'";
     }
 
-    void describeFailure(Description* description) const override {
+    void describeFailure(Description* description) const {
         (*description) << "'" << target << "'";
     }
 
@@ -317,11 +316,11 @@ class IsLessThanMatcher<std::string>: public StatelessMatcher {
         return obj < target;
     }
 
-    void describe(Description* description) const override {
+    void describe(Description* description) const {
         (*description) << "< '" << target << "'";
     }
 
-    void describeFailure(Description* description) const override {
+    void describeFailure(Description* description) const {
         (*description) << ">= '" << target << "'";
     }
 
@@ -357,11 +356,11 @@ class IsLessThanEqualMatcher<std::string>: public StatelessMatcher {
         return obj <= target;
     }
 
-    void describe(Description* description) const override {
+    void describe(Description* description) const {
         (*description) << "<= '" << target << "'";
     }
 
-    void describeFailure(Description* description) const override {
+    void describeFailure(Description* description) const {
         (*description) << "> '" << target << "'";
     }
 
@@ -399,11 +398,11 @@ class IsGreaterThanMatcher<std::string>: public StatelessMatcher {
         return std::string(obj) > target;
     }
 
-    void describe(Description* description) const override {
+    void describe(Description* description) const {
         (*description) << "> '" << target << "'";
     }
 
-    void describeFailure(Description* description) const override {
+    void describeFailure(Description* description) const {
         (*description) << "<= '" << target << "'";
     }
 
@@ -440,11 +439,11 @@ class IsGreaterThanEqualMatcher<std::string>: public StatelessMatcher {
         return obj >= target;
     }
 
-    void describe(Description* description) const override {
+    void describe(Description* description) const {
         (*description) << ">= '" << target << "'";
     }
 
-    void describeFailure(Description* description) const override {
+    void describeFailure(Description* description) const {
         (*description) << "< '" << target << "'";
     }
 

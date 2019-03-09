@@ -17,11 +17,11 @@ class ThrowsAnythingMatcher: public StatelessMatcher {
         }
     }
 
-    void describe(Description* description) const override {
+    void describe(Description* description) const {
         (*description) << "a function that throws";
     }
 
-    void describeFailure(Description* description) const override {
+    void describeFailure(Description* description) const {
         (*description) << "a function that did not throw";
     }
 };
@@ -51,12 +51,12 @@ class ThrowsSpecificMatcher: public StatefulMatcher<ThrowsSpecificState> {
         }
     }
 
-    void describe(Description* description) const override {
+    void describe(Description* description) const {
         (*description) << "a function that throws " << typeid(E).name();
     }
 
     void describeFailure(Description* description,
-                         ThrowsSpecificState* state) const override {
+                         const ThrowsSpecificState* state) const {
         if (*state == DOESNT_THROW) {
             (*description) << "a function that did not throw";
         }

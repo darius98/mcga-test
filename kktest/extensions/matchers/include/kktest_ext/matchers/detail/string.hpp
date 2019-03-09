@@ -16,7 +16,7 @@ class CharInStringMatcher: public StatelessMatcher {
         return strchr(container, ch) != nullptr;
     }
 
-    void describe(Description* description) const override {
+    void describe(Description* description) const {
         if (expectation != nullptr) {
             (*description) << expectation;
         } else {
@@ -24,7 +24,7 @@ class CharInStringMatcher: public StatelessMatcher {
         }
     }
 
-    void describeFailure(Description* description) const override {
+    void describeFailure(Description* description) const {
         if (expectation != nullptr) {
             (*description) << "not " << expectation;
         } else {
@@ -46,11 +46,11 @@ class IsSubstringMatcher: public StatelessMatcher {
         return container.find(object) != std::string::npos;
     }
 
-    void describe(Description* description) const override {
+    void describe(Description* description) const {
         (*description) << "a substring of '" << container << "'";
     }
 
-    void describeFailure(Description* description) const override {
+    void describeFailure(Description* description) const {
         (*description) << "not a substring";
     }
 

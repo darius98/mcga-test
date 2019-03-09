@@ -28,14 +28,14 @@ class AndMatcher: public StatefulMatcher<AndMatcherState<M1, M2>> {
         return state->m1Matches && state->m2Matches;
     }
 
-    void describe(Description* description) const override {
+    void describe(Description* description) const {
         m1.describe(description);
         (*description) << " and ";
         m2.describe(description);
     }
 
     void describeFailure(Description* description,
-                         AndMatcherState<M1, M2>* state) const override {
+                         AndMatcherState<M1, M2>* state) const {
         if (state->m1Matches) {
             __describeFailure(description, m2, &state->m2State);
         } else {
@@ -72,14 +72,14 @@ class OrMatcher: public StatefulMatcher<OrMatcherState<M1, M2>> {
         return state->m1Matches || state->m2Matches;
     }
 
-    void describe(Description* description) const override {
+    void describe(Description* description) const {
         m1.describe(description);
         (*description) << " or ";
         m2.describe(description);
     }
 
     void describeFailure(Description* description,
-                         OrMatcherState<M1, M2>* state) const override {
+                         OrMatcherState<M1, M2>* state) const {
         __describeFailure(description, m1, &state->m1State);
         (*description) << " and ";
         __describeFailure(description, m2, &state->m2State);
@@ -104,12 +104,12 @@ class NotMatcher: public StatelessMatcher {
         return !__matches(matcher, &state, obj);
     }
 
-    void describe(Description* description) const override {
+    void describe(Description* description) const {
         (*description) << "not ";
         matcher.describe(description);
     }
 
-    void describeFailure(Description* description) const override {
+    void describeFailure(Description* description) const {
         matcher.describe(description);
     }
  private:

@@ -10,11 +10,11 @@ class IsNullptrMatcher: public StatelessMatcher {
         return obj == nullptr;
     }
 
-    void describe(Description* description) const override {
+    void describe(Description* description) const {
         (*description) << "nullptr";
     }
 
-    void describeFailure(Description* description) const override {
+    void describeFailure(Description* description) const {
         (*description) << "non-null pointer";
     }
 };
@@ -25,11 +25,11 @@ class IsNotNullptrMatcher: public StatelessMatcher {
         return obj != nullptr;
     }
 
-    void describe(Description* description) const override {
+    void describe(Description* description) const {
         (*description) << "non-null pointer";
     }
 
-    void describeFailure(Description* description) const override {
+    void describeFailure(Description* description) const {
         (*description) << "nullptr";
     }
 };

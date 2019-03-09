@@ -12,11 +12,11 @@ class IsTrueMatcher: public StatelessMatcher {
         return object;
     }
 
-    void describe(Description* description) const override {
+    void describe(Description* description) const {
         (*description) << "true";
     }
 
-    void describeFailure(Description* description) const override {
+    void describeFailure(Description* description) const {
         (*description) << "false";
     }
 };
@@ -29,11 +29,11 @@ class IsFalseMatcher: public StatelessMatcher {
         return !object;
     }
 
-    void describe(Description* description) const override {
+    void describe(Description* description) const {
         (*description) << "false";
     }
 
-    void describeFailure(Description* description) const override {
+    void describeFailure(Description* description) const {
         (*description) << "true";
     }
 };

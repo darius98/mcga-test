@@ -45,14 +45,12 @@ class StatefulMatcher : public Matcher {
 
     typedef S State;
 
-    static_assert(std::is_default_constructible_v<State>);
-
-    // template<class T>
-    // virtual bool matches(const T& obj, S* state) const = 0;
-
-    virtual void describe(Description* description) const = 0;
-
-    virtual void describeFailure(Description* description, S* state) const = 0;
+//    template<class T>
+//    virtual bool matches(const T& obj, S* state) const = 0;
+//
+//    virtual void describe(Description* description) const = 0;
+//
+//    virtual void describeFailure(Description* description, S* state) const = 0;
 };
 
 class StatelessMatcher : public Matcher {
@@ -61,12 +59,12 @@ class StatelessMatcher : public Matcher {
 
     typedef int State; // for easier usage of nested matchers.
 
-    // template<class T>
-    // virtual bool matches(const T& obj) const = 0;
-
-    virtual void describe(Description* description) const = 0;
-
-    virtual void describeFailure(Description* description) const = 0;
+//    template<class T>
+//    virtual bool matches(const T& obj) const = 0;
+//
+//    virtual void describe(Description* description) const = 0;
+//
+//    virtual void describeFailure(Description* description) const = 0;
 };
 
 namespace detail {

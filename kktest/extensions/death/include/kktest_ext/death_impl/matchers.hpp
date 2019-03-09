@@ -85,16 +85,15 @@ class ExitsWithCodeAndOutputMatcher: public matchers::StatefulMatcher<
         return state->codeMatcherMatches && state->outputMatcherMatches;
     }
 
-    void describe(matchers::Description* description) const override {
+    void describe(matchers::Description* description) const {
         (*description) << "the program's end with code that is ";
         codeMatcher.describe(description);
         (*description) << " and where the final output is ";
         outputMatcher.describe(description);
     }
 
-    void describeFailure(
-            matchers::Description* description,
-            ExitsWithCodeAndOutputState<CM, OM>* state) const override {
+    void describeFailure(matchers::Description* description,
+                         ExitsWithCodeAndOutputState<CM, OM>* state) const {
         if (!state->codeMatcherMatches) {
             describeStatus(description, state->status);
         } else {
@@ -134,13 +133,13 @@ class ExitsWithCodeMatcher:
                 state->status.getExitCode());
     }
 
-    void describe(matchers::Description* description) const override {
+    void describe(matchers::Description* description) const {
         (*description) << "the program's end with code that is ";
         codeMatcher.describe(description);
     }
 
     void describeFailure(matchers::Description* description,
-                         ExitsWithCodeState<M>* state) const override {
+                         ExitsWithCodeState<M>* state) const {
         describeStatus(description, state->status);
     }
 
@@ -182,13 +181,13 @@ class ExitsWithOutputMatcher:
                 state->status.getOutput());
     }
 
-    void describe(matchers::Description* description) const override {
+    void describe(matchers::Description* description) const {
         (*description) << "the program's end, where the final output is ";
         outputMatcher.describe(description);
     }
 
     void describeFailure(matchers::Description* description,
-                         ExitsWithOutputState<M>* state) const override {
+                         ExitsWithOutputState<M>* state) const {
         matchers::detail::__describeFailure(
                 description, outputMatcher, &state->outputMatcherState);
     }
@@ -217,12 +216,12 @@ class ExitsMatcher: public matchers::StatefulMatcher<DeathStatus> {
         return state->exited();
     }
 
-    void describe(matchers::Description* description) const override {
+    void describe(matchers::Description* description) const {
         (*description) << "the program's end";
     }
 
     void describeFailure(matchers::Description* description,
-                         DeathStatus* state) const override {
+                         DeathStatus* state) const {
         describeStatus(description, *state);
     }
 
@@ -255,12 +254,12 @@ class HasExitedMatcher: public matchers::StatefulMatcher<const DeathStatus*> {
         return status.exited();
     }
 
-    void describe(matchers::Description* description) const override {
+    void describe(matchers::Description* description) const {
         (*description) << "the program's end";
     }
 
     void describeFailure(matchers::Description* description,
-                         const DeathStatus** state) const override {
+                         const DeathStatus** state) const {
         describeStatus(description, **state);
     }
 };
@@ -282,13 +281,13 @@ class HasExitedWithCodeMatcher:
                 exitCodeMatcher, &codeMatcherState, status.getExitCode());
     }
 
-    void describe(matchers::Description* description) const override {
+    void describe(matchers::Description* description) const {
         (*description) << "the program's end with code that is ";
         exitCodeMatcher.describe(description);
     }
 
     void describeFailure(matchers::Description* description,
-                          const DeathStatus** status) const override {
+                         const DeathStatus** status) const {
         describeStatus(description, **status);
     }
 
@@ -312,13 +311,13 @@ class HasExitedWithOutputMatcher:
                 outputMatcher, state, status.getOutput());
     }
 
-    void describe(matchers::Description* description) const override {
+    void describe(matchers::Description* description) const {
         (*description) << "the program's end, where the final output is ";
         outputMatcher.describe(description);
     }
 
     void describeFailure(matchers::Description* description,
-                         typename M::State* state) const override {
+                         typename M::State* state) const {
         matchers::detail::__describeFailure(description, outputMatcher, state);
     }
 
