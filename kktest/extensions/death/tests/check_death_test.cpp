@@ -1,4 +1,5 @@
 #include <csignal>
+#include <iostream>
 
 #include <kktest.hpp>
 #include <kktest_ext/matchers/comparison.hpp>

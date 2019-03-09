@@ -1,7 +1,5 @@
 #pragma once
 
-#include <sstream>
-
 #include <kktest.hpp>
 #include <kktest_ext/matchers/detail/type_helpers.hpp>
 
