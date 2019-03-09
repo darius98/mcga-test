@@ -3,35 +3,53 @@
 #include <ostream>
 #include <string>
 
-#include <kktest.hpp>
-
 namespace kktest::death {
 
-class KKTEST_EXPORT DeathStatus {
+class DeathStatus {
  public:
-    DeathStatus();
+    DeathStatus() = default;
+    DeathStatus(int exitCode, int signal, std::string output):
+            exitCode(exitCode), signal(signal), output(std::move(output)) {}
 
-    bool exitedOrKilled() const;
+    bool exitedOrKilled() const {
+        return exitCode >= 0 || killedBySignal();
+    }
 
-    bool exited() const;
+    bool exited() const {
+        return exitCode >= 0 && !killedBySignal();
+    }
 
-    bool killedBySignal() const;
+    bool killedBySignal() const {
+        return signal > 0;
+    }
 
-    int getExitCode() const;
+    int getExitCode() const {
+        return exitCode;
+    }
 
-    int getSignal() const;
+    int getSignal() const {
+        return signal;
+    }
 
-    std::string getOutput() const;
+    std::string getOutput() const {
+        return output;
+    }
 
  private:
-    DeathStatus(int exitCode, int signal, std::string output);
 
-    int exitCode;
-    int signal;
-    std::string output;
+    int exitCode = -1;
+    int signal = -1;
+    std::string output = "";
 
-friend DeathStatus checkDeath(const Executable& func, double timeTicksLimit);
-friend std::ostream& operator<<(std::ostream& out, const DeathStatus& status);
+    friend std::ostream& operator<<(std::ostream& out,
+                                    const DeathStatus& status) {
+        out << "(code="
+            << status.exitCode
+            << ", signal="
+            << status.signal
+            << ")";
+        return out;
+    }
 };
 
 }
