@@ -46,16 +46,12 @@ class IterableSizeMatcher: public StatefulMatcher<typename M::State> {
                   "SizeMatcher only supports other matchers as template args.");
 
  public:
-    explicit IterableSizeMatcher(const M& sizeMatcher):
-            sizeMatcher(sizeMatcher) {}
+    explicit constexpr IterableSizeMatcher(M sizeMatcher):
+            sizeMatcher(std::move(sizeMatcher)) {}
 
     template<class T>
     bool matches(const T& obj, typename M::State* state) const {
-        if constexpr (M::HasState) {
-            return sizeMatcher.matches(obj.size(), state);
-        } else {
-            return sizeMatcher.matches(obj.size());
-        }
+        return __matches(sizeMatcher, state, obj.size());
     }
 
     void describe(Description* description) const override {
@@ -66,11 +62,7 @@ class IterableSizeMatcher: public StatefulMatcher<typename M::State> {
     void describeFailure(Description* description,
                          typename M::State* state) const override {
         (*description) << "iterable where size is ";
-        if constexpr (M::HasState) {
-            sizeMatcher.describeFailure(description, state);
-        } else {
-            sizeMatcher.describeFailure(description);
-        }
+        __describeFailure(description, sizeMatcher, state);
     }
 
  private:
@@ -89,21 +81,15 @@ class IterableEachMatcher: public StatefulMatcher<IterableEachState<M>> {
                   "EachMatcher only supports other matchers as template args.");
 
  public:
-    explicit IterableEachMatcher(M elementMatcher):
-            elementMatcher(elementMatcher) {}
+    explicit constexpr IterableEachMatcher(M elementMatcher):
+            elementMatcher(std::move(elementMatcher)) {}
 
     template<class T>
     bool matches(const T& iterable, IterableEachState<M>* state) const {
         state->index = -1;
         for (const auto& obj : iterable) {
             state->index += 1;
-            bool match;
-            if constexpr (M::HasState) {
-                match = elementMatcher.matches(obj, &state->elementState);
-            } else {
-                match = elementMatcher.matches(obj);
-            }
-            if (!match) {
+            if (!__matches(elementMatcher, &state->elementState, obj)) {
                 return false;
             }
         }
@@ -120,11 +106,7 @@ class IterableEachMatcher: public StatefulMatcher<IterableEachState<M>> {
         (*description) << "an iterable where at index "
                        << index
                        << " the element is ";
-        if constexpr (M::HasState) {
-            elementMatcher.describeFailure(description, &state->elementState);
-        } else {
-            elementMatcher.describeFailure(description);
-        }
+        __describeFailure(description, elementMatcher, &state->elementState);
     }
 
  private:
@@ -134,23 +116,15 @@ class IterableEachMatcher: public StatefulMatcher<IterableEachState<M>> {
 template<class M>
 class IterableAnyMatcher: public StatelessMatcher {
  public:
-    explicit IterableAnyMatcher(M elementMatcher):
-            elementMatcher(elementMatcher) {}
-    IterableAnyMatcher(const IterableAnyMatcher& other):
-            elementMatcher(other.elementMatcher) {}
+    explicit constexpr IterableAnyMatcher(M elementMatcher):
+            elementMatcher(std::move(elementMatcher)) {}
 
     template<class T>
     bool matches(const T& collection) const {
+        typename M::State state;
         for (const auto& obj : collection) {
-            if constexpr (M::HasState) {
-                typename M::State state;
-                if (elementMatcher.matches(obj, &state)) {
-                    return true;
-                }
-            } else {
-                if (elementMatcher.matches(obj)) {
-                    return true;
-                }
+            if (__matches(elementMatcher, &state, obj)) {
+                return true;
             }
         }
         return false;

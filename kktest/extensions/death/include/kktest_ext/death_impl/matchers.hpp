@@ -74,20 +74,14 @@ class ExitsWithCodeAndOutputMatcher: public matchers::StatefulMatcher<
     bool matches(const Executable& func,
                  ExitsWithCodeAndOutputState<CM, OM>* state) const {
         state->status = checkDeath(func);
-        if constexpr (CM::HasState) {
-            state->codeMatcherMatches = codeMatcher.matches(
-                    state->status.getExitCode(), &state->codeMatcherState);
-        } else {
-            state->codeMatcherMatches= codeMatcher.matches(
-                    state->status.getExitCode());
-        }
-        if constexpr (OM::HasState) {
-            state->outputMatcherMatches = outputMatcher.matches(
-                    state->status.getOutput(), &state->outputMatcherState);
-        } else {
-            state->outputMatcherMatches = outputMatcher.matches(
-                    state->status.getOutput());
-        }
+        state->codeMatcherMatches = matchers::detail::__matches(
+                codeMatcher,
+                &state->codeMatcherState,
+                state->status.getExitCode());
+        state->outputMatcherMatches = matchers::detail::__matches(
+                outputMatcher,
+                &state->outputMatcherState,
+                state->status.getOutput());
         return state->codeMatcherMatches && state->outputMatcherMatches;
     }
 
@@ -106,12 +100,8 @@ class ExitsWithCodeAndOutputMatcher: public matchers::StatefulMatcher<
         } else {
             (*description) << "the program's end with valid return code,"
                               " but output is ";
-            if constexpr (OM::HasState) {
-                outputMatcher.describeFailure(
-                        description, &state->outputMatcherState);
-            } else {
-                outputMatcher.describeFailure(description);
-            }
+            matchers::detail::__describeFailure(
+                    description, outputMatcher, &state->outputMatcherState);
         }
     }
 
@@ -133,17 +123,15 @@ class ExitsWithCodeMatcher:
                   "ExitsWithCodeMatcher only supports matchers as template "
                   "arguments.");
  public:
-    explicit constexpr ExitsWithCodeMatcher(const M& codeMatcher):
-            codeMatcher(codeMatcher) {}
+    explicit constexpr ExitsWithCodeMatcher(M codeMatcher):
+            codeMatcher(std::move(codeMatcher)) {}
 
     bool matches(const Executable& func, ExitsWithCodeState<M>* state) const {
         state->status = checkDeath(func);
-        if constexpr (M::HasState) {
-            return codeMatcher.matches(
-                    state->status.getExitCode(), &state->codeMatcherState);
-        } else {
-            return codeMatcher.matches(state->status.getExitCode());
-        }
+        return matchers::detail::__matches(
+                codeMatcher,
+                &state->codeMatcherState,
+                state->status.getExitCode());
     }
 
     void describe(matchers::Description* description) const override {
@@ -188,12 +176,10 @@ class ExitsWithOutputMatcher:
 
     bool matches(const Executable& func, ExitsWithOutputState<M>* state) const {
         state->status = checkDeath(func);
-        if constexpr (M::HasState) {
-            return outputMatcher.matches(
-                    state->status.getOutput(), &state->outputMatcherState);
-        } else {
-            return outputMatcher.matches(state->status.getOutput());
-        }
+        return matchers::detail::__matches(
+                outputMatcher,
+                &state->outputMatcherState,
+                state->status.getOutput());
     }
 
     void describe(matchers::Description* description) const override {
@@ -203,12 +189,8 @@ class ExitsWithOutputMatcher:
 
     void describeFailure(matchers::Description* description,
                          ExitsWithOutputState<M>* state) const override {
-        if constexpr (M::HasState) {
-            outputMatcher.describeFailure(
-                    description, &state->outputMatcherState);
-        } else {
-            outputMatcher.describeFailure(description);
-        }
+        matchers::detail::__describeFailure(
+                description, outputMatcher, &state->outputMatcherState);
     }
 
     template<class T>
@@ -290,19 +272,14 @@ class HasExitedWithCodeMatcher:
                   "HasExitedWithCodeMatcher only supports matchers as template "
                   "arguments.");
  public:
-    explicit constexpr HasExitedWithCodeMatcher(const M& exitCodeMatcher):
-            exitCodeMatcher(exitCodeMatcher) {}
+    explicit constexpr HasExitedWithCodeMatcher(M exitCodeMatcher):
+            exitCodeMatcher(std::move(exitCodeMatcher)) {}
 
     bool matches(const DeathStatus& status, const DeathStatus** state) const {
         *state = &status;
-        if constexpr (M::HasState) {
-            typename M::State codeMatcherState;
-            return status.exited() && exitCodeMatcher.matches(
-                    status.getExitCode(), &codeMatcherState);
-        } else {
-            return status.exited() && exitCodeMatcher.matches(
-                    status.getExitCode());
-        }
+        typename M::State codeMatcherState;
+        return status.exited() && matchers::detail::__matches(
+                exitCodeMatcher, &codeMatcherState, status.getExitCode());
     }
 
     void describe(matchers::Description* description) const override {
@@ -331,11 +308,8 @@ class HasExitedWithOutputMatcher:
             outputMatcher(std::move(outputMatcher)) {}
 
     bool matches(const DeathStatus& status, typename M::State* state) const {
-        if constexpr (M::HasState) {
-            return outputMatcher.matches(status.getOutput(), state);
-        } else {
-            return outputMatcher.matches(status.getOutput());
-        }
+        return matchers::detail::__matches(
+                outputMatcher, state, status.getOutput());
     }
 
     void describe(matchers::Description* description) const override {
@@ -345,11 +319,7 @@ class HasExitedWithOutputMatcher:
 
     void describeFailure(matchers::Description* description,
                          typename M::State* state) const override {
-        if constexpr (M::HasState) {
-            outputMatcher.describeFailure(description, state);
-        } else {
-            outputMatcher.describeFailure(description);
-        }
+        matchers::detail::__describeFailure(description, outputMatcher, state);
     }
 
  private:

@@ -69,35 +69,45 @@ class StatelessMatcher : public Matcher {
     virtual void describeFailure(Description* description) const = 0;
 };
 
+namespace detail {
+
 template<class T, class M>
-void expect(const T& object, M matcher) {
-    static_assert(std::is_base_of_v<matchers::Matcher, M>);
+bool __matches(const M& matcher, typename M::State* state, const T& obj) {
     if constexpr (M::HasState) {
-        typename M::State state;
-        if (matcher.matches(object, &state)) {
-            return;
-        }
-        Description description;
-        description << "Expected ";
-        matcher.describe(&description);
-        description << "\n\tGot      '";
-        description << object;
-        description << "'\n\tWhich is ";
-        matcher.describeFailure(&description, &state);
-        fail("Expectation failed:\n\t" + description.toString());
+        return matcher.matches(obj, state);
     } else {
-        if (matcher.matches(object)) {
-            return;
-        }
-        Description description;
-        description << "Expected ";
-        matcher.describe(&description);
-        description << "\n\tGot      '";
-        description << object;
-        description << "'\n\tWhich is ";
-        matcher.describeFailure(&description);
-        fail("Expectation failed:\n\t" + description.toString());
+        return matcher.matches(obj);
     }
+}
+
+template<class M>
+void __describeFailure(Description* description,
+                       const M& matcher,
+                       typename M::State* state) {
+    if constexpr (M::HasState) {
+        matcher.describeFailure(description, state);
+    } else {
+        matcher.describeFailure(description);
+    }
+}
+
+}
+
+template<class T, class M>
+void expect(const T& obj, M matcher) {
+    static_assert(std::is_base_of_v<matchers::Matcher, M>);
+    typename M::State state;
+    if (detail::__matches(matcher, &state, obj)) {
+        return;
+    }
+    Description description;
+    description << "Expected ";
+    matcher.describe(&description);
+    description << "\n\tGot      '";
+    description << obj;
+    description << "'\n\tWhich is ";
+    detail::__describeFailure(&description, matcher, &state);
+    fail("Expectation failed:\n\t" + description.toString());
 }
 
 }

@@ -23,16 +23,8 @@ class AndMatcher: public StatefulMatcher<AndMatcherState<M1, M2>> {
 
     template<class T>
     bool matches(const T& obj, AndMatcherState<M1, M2>* state) const {
-        if constexpr (M1::HasState) {
-            state->m1Matches = m1.matches(obj, &state->m1State);
-        } else {
-            state->m1Matches = m1.matches(obj);
-        }
-        if constexpr (M2::HasState) {
-            state->m2Matches = m2.matches(obj, &state->m2State);
-        } else {
-            state->m2Matches = m2.matches(obj);
-        }
+        state->m1Matches = __matches(m1, &state->m1State, obj);
+        state->m2Matches = __matches(m2, &state->m2State, obj);
         return state->m1Matches && state->m2Matches;
     }
 
@@ -45,17 +37,9 @@ class AndMatcher: public StatefulMatcher<AndMatcherState<M1, M2>> {
     void describeFailure(Description* description,
                          AndMatcherState<M1, M2>* state) const override {
         if (state->m1Matches) {
-            if constexpr (M2::HasState) {
-                m2.describeFailure(description, &state->m2State);
-            } else {
-                m2.describeFailure(description);
-            }
+            __describeFailure(description, m2, &state->m2State);
         } else {
-            if constexpr (M1::HasState) {
-                m1.describeFailure(description, &state->m1State);
-            } else {
-                m1.describeFailure(description);
-            }
+            __describeFailure(description, m1, &state->m1State);
         }
     }
 
@@ -83,16 +67,8 @@ class OrMatcher: public StatefulMatcher<OrMatcherState<M1, M2>> {
 
     template<class T>
     bool matches(const T& obj, OrMatcherState<M1, M2>* state) const {
-        if constexpr (M1::HasState) {
-            state->m1Matches = m1.matches(obj, &state->m1State);
-        } else {
-            state->m1Matches = m1.matches(obj);
-        }
-        if constexpr (M2::HasState) {
-            state->m2Matches = m2.matches(obj, &state->m2State);
-        } else {
-            state->m2Matches = m2.matches(obj);
-        }
+        state->m1Matches = __matches(m1, &state->m1State, obj);
+        state->m2Matches = __matches(m2, &state->m2State, obj);
         return state->m1Matches || state->m2Matches;
     }
 
@@ -104,17 +80,9 @@ class OrMatcher: public StatefulMatcher<OrMatcherState<M1, M2>> {
 
     void describeFailure(Description* description,
                          OrMatcherState<M1, M2>* state) const override {
-        if constexpr (M1::HasState) {
-            m1.describeFailure(description, &state->m1State);
-        } else {
-            m1.describeFailure(description);
-        }
+        __describeFailure(description, m1, &state->m1State);
         (*description) << " and ";
-        if constexpr (M2::HasState) {
-            m2.describeFailure(description, &state->m2State);
-        } else {
-            m2.describeFailure(description);
-        }
+        __describeFailure(description, m2, &state->m2State);
     }
 
  private:
@@ -132,12 +100,8 @@ class NotMatcher: public StatelessMatcher {
 
     template<class T>
     bool matches(const T& obj) const {
-        if constexpr (M::HasState) {
-            typename M::State state;
-            return !matcher.matches(obj, &state);
-        } else {
-            return !matcher.matches(obj);
-        }
+        typename M::State state;
+        return !__matches(matcher, &state, obj);
     }
 
     void describe(Description* description) const override {

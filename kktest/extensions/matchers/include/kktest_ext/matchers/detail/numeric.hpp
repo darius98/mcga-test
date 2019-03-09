@@ -103,7 +103,7 @@ class IsNotZeroMatcher: public StatelessMatcher {
 template<class T>
 class IsAlmostEqualMatcher: public StatelessMatcher {
  public:
-    explicit IsAlmostEqualMatcher(const T& target, const double& eps):
+    IsAlmostEqualMatcher(const T& target, const double& eps):
             target(target), eps(eps) {}
 
     bool matches(const T& object) const {
