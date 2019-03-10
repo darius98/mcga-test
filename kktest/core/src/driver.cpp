@@ -75,7 +75,7 @@ void Driver::addGroup(GroupConfig&& config, const Executable& func) {
     executor->checkIsInactive("group");
     auto group = make_shared<Group>(move(config),
                                     groupStack.back(),
-                                    ++ groupIndex);
+                                    ++ currentGroupId);
     groupStack.push_back(group);
 
     beforeGroup(group);
@@ -106,7 +106,7 @@ void Driver::addGroup(GroupConfig&& config, const Executable& func) {
 void Driver::addTest(TestConfig&& config, Executable body) {
     executor->checkIsInactive("test");
     GroupPtr parentGroup = groupStack.back();
-    Test test(move(config), move(body), parentGroup, ++ currentTestIndex);
+    Test test(move(config), move(body), parentGroup, ++ currentTestId);
     parentGroup->addStartedTest();
     beforeTest(test);
     executor->execute(move(test));

@@ -6,11 +6,11 @@ using namespace std;
 
 namespace kktest {
 
-Test::Test(TestConfig config, Executable body, GroupPtr group, int index):
+Test::Test(TestConfig config, Executable body, GroupPtr group, int id):
         TestConfig(move(config)),
         body(move(body)),
         group(move(group)),
-        index(index) {}
+        id(id) {}
 
 const string& Test::getDescription() const {
     return description;
@@ -45,8 +45,8 @@ vector<GroupPtr> Test::getGroupStack() const {
     return groupStack;
 }
 
-int Test::getIndex() const {
-    return index;
+int Test::getId() const {
+    return id;
 }
 
 void Test::run() const {

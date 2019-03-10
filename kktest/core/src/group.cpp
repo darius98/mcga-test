@@ -6,10 +6,10 @@ using namespace std;
 
 namespace kktest {
 
-Group::Group(GroupConfig config, Ptr parentGroup, int index):
+Group::Group(GroupConfig config, Ptr parentGroup, int id):
         GroupConfig(move(config)),
         parentGroup(move(parentGroup)),
-        index(index) {}
+        id(id) {}
 
 string Group::getDescription() const {
     return description;
@@ -19,8 +19,8 @@ bool Group::isOptional() const {
     return optional || (parentGroup != nullptr && parentGroup->isOptional());
 }
 
-int Group::getIndex() const {
-    return index;
+int Group::getId() const {
+    return id;
 }
 
 GroupPtr Group::getParentGroup() const {

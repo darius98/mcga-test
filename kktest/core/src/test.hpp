@@ -23,7 +23,7 @@ class Test : private TestConfig {
  public:
     /** Default constructor from a TestConfig and the metadata received from the
      * testing Driver. */
-    Test(TestConfig config, Executable body, GroupPtr group, int index);
+    Test(TestConfig config, Executable body, GroupPtr group, int id);
 
     Test(Test&&) = default;
     Test& operator=(Test&&) = default;
@@ -53,8 +53,8 @@ class Test : private TestConfig {
      * contain this test. */
     std::vector<GroupPtr> getGroupStack() const;
 
-    /** Globally unique, incremental index of the test. */
-    int getIndex() const;
+    /** Globally unique, incremental identifier of the test. */
+    int getId() const;
 
     /** Execute the test body.
      *
@@ -66,7 +66,7 @@ class Test : private TestConfig {
  private:
     Executable body;
     GroupPtr group;
-    int index;
+    int id;
 };
 
 }

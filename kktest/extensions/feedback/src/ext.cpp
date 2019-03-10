@@ -70,15 +70,15 @@ void FeedbackExtension::initPipe(ExtensionApi& api, const string& pipeName) {
 
     api.addHook<ExtensionApi::BEFORE_GROUP>([this](GroupPtr group) {
         pipe->sendMessage(PipeMessageType::GROUP,
-                          group->getParentGroup()->getIndex(),
-                          group->getIndex(),
+                          group->getParentGroup()->getId(),
+                          group->getId(),
                           group->getDescription());
     });
 
     api.addHook<ExtensionApi::AFTER_TEST>([this](const ExecutedTest& test) {
         pipe->sendMessage(PipeMessageType::TEST,
-                          test.getGroup()->getIndex(),
-                          test.getIndex(),
+                          test.getGroup()->getId(),
+                          test.getId(),
                           test.getDescription(),
                           test.isOptional(),
                           test.getNumAttempts(),

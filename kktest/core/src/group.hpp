@@ -27,7 +27,7 @@ class Group: private GroupConfig {
 
     /** Default constructor from the upgraded GroupConfig and extra metadata
      * received from the testing Driver. Very similar to Test#Test().*/
-    Group(GroupConfig config, Ptr parentGroup, int index);
+    Group(GroupConfig config, Ptr parentGroup, int id);
 
     /** See GroupConfig#description. */
     std::string getDescription() const;
@@ -35,8 +35,8 @@ class Group: private GroupConfig {
     /** See GroupConfig#optional. */
     bool isOptional() const;
 
-    /** Globally unique, incremental index of the group. */
-    int getIndex() const;
+    /** Globally unique, incremental identifier of the group. */
+    int getId() const;
 
     /** Pointer to the Group that contains this, or `nullptr` if the current
      * group represents a TestCase. */
@@ -94,7 +94,7 @@ class Group: private GroupConfig {
 
  private:
     Ptr parentGroup;
-    int index;
+    int id;
 
     int testsStarted = 0;
     bool allTestsStarted = false;
