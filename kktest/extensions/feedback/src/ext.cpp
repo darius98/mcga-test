@@ -21,10 +21,10 @@ Message::BytesConsumer& Message::BytesConsumer::add(
 namespace kktest::feedback {
 
 enum PipeMessageType : uint8_t {
-    TEST,
-    GROUP,
-    DONE,
-    ERROR
+    TEST = 0,
+    GROUP = 1,
+    DONE = 2,
+    ERROR = 3
 };
 
 void FeedbackExtension::registerCommandLineArgs(Parser& parser) {
@@ -57,12 +57,11 @@ void FeedbackExtension::initLogging(ExtensionApi& api) {
     });
 
     api.addHook<ExtensionApi::BEFORE_DESTROY>([this]() {
-        logger->logFinalInformation();
+        logger->printFinalInformation();
     });
 
-    api.addHook<ExtensionApi::BEFORE_FORCE_DESTROY>(
-            [this](const exception& error) {
-        logger->logFatalError(error.what());
+    api.addHook<ExtensionApi::BEFORE_FORCE_DESTROY>([this](const auto& err) {
+        logger->printFatalError(err.what());
     });
 }
 
@@ -91,9 +90,8 @@ void FeedbackExtension::initPipe(ExtensionApi& api, const string& pipeName) {
         pipe->sendMessage(PipeMessageType::DONE);
     });
 
-    api.addHook<ExtensionApi::BEFORE_FORCE_DESTROY>(
-            [this](const exception& error) {
-        pipe->sendMessage(PipeMessageType::ERROR, string(error.what()));
+    api.addHook<ExtensionApi::BEFORE_FORCE_DESTROY>([this](const auto& err) {
+        pipe->sendMessage(PipeMessageType::ERROR, string(err.what()));
     });
 }
 

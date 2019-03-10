@@ -60,11 +60,15 @@ class ExecutedTest : public Test {
     std::size_t getNumPassedAttempts() const;
 
     /** The average number of time ticks per execution (only counting executions
-     * where the number of time ticks is computable). */
+     * where the number of time ticks is computable).
+     *
+     * Note: If the time is not computable for any execution, returns -1. */
     double getAvgTimeTicksForExecution() const;
 
     /** The total number of time ticks used (only counting executions where the
-     * number of time ticks is computable). */
+     * number of time ticks is computable).
+     *
+     * Note: If the time is not computable for any execution, returns -1. */
     double getTotalTimeTicks() const;
 
     /** Get the error message for the last failed execution, or empty string if

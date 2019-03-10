@@ -25,4 +25,3 @@ class FeedbackExtension: public Extension {
 };
 
 }
-

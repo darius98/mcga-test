@@ -15,12 +15,21 @@ class TestLogger {
 
     void addTest(const ExecutedTest& test);
 
-    void logFatalError(const std::string& errorMessage);
+    void printFatalError(const std::string& errorMessage);
 
-    void logFinalInformation();
+    void printFinalInformation();
 
  private:
-    std::string getRecursiveGroupDescription(GroupPtr group);
+
+    void printTestPassedOrFailedToken(const ExecutedTest& test);
+
+    void printTestAndGroupsDescription(const ExecutedTest& test);
+
+    void printTestExecutionTime(const ExecutedTest& test);
+
+    void printTestAttemptsInfo(const ExecutedTest& test);
+
+    void printTestFailure(std::string failure);
 
     void printTestMessage(const ExecutedTest& test);
 

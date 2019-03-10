@@ -1,5 +1,6 @@
 #include "kktest/extensions/feedback/src/test_logger.hpp"
 
+#include <numeric>
 #include <iomanip>
 
 #include <termcolor/termcolor.hpp>
@@ -7,13 +8,16 @@
 #include "kktest/core/src/executor.hpp"
 
 using namespace std;
+using namespace termcolor;
 
 namespace kktest::feedback {
 
 TestLogger::TestLogger(ostream& stream): stream(stream) {}
 
 void TestLogger::addTest(const ExecutedTest& test) {
-    totalTimeTicks += test.getTotalTimeTicks();
+    if (test.getTotalTimeTicks() != -1.0) {
+        totalTimeTicks += test.getTotalTimeTicks();
+    }
     passedTests += test.isPassed();
     failedTests += !test.isPassed();
     failedOptionalTests += (!test.isPassed() && test.isOptional());
@@ -22,26 +26,26 @@ void TestLogger::addTest(const ExecutedTest& test) {
     printTestMessage(test);
 }
 
-void TestLogger::logFinalInformation() {
-    stream << "\nTests passed: "
-           << termcolor::green
-           << passedTests
-           << termcolor::reset
-           << "\nTests failed: "
-           << (failedTests == failedOptionalTests
-                    ? (failedTests == 0 ? termcolor::green : termcolor::yellow)
-                    : termcolor::red)
-           << failedTests
-           << termcolor::reset;
+void TestLogger::printFinalInformation() {
+    stream << "\n";
+    stream << "Tests passed: " << green << passedTests << reset << "\n";
+    stream << "Tests failed: ";
+    if (failedTests == 0) {
+        stream << green << failedTests << reset;
+    } else if (failedTests == failedOptionalTests) {
+        stream << yellow << failedTests << reset;
+    } else {
+        stream << red << failedTests << reset;
+    }
     if (failedOptionalTests != 0) {
         stream << " ("
-               << termcolor::yellow << failedOptionalTests << termcolor::reset
+               << yellow << failedOptionalTests << reset
                << " "
                << (failedOptionalTests == 1 ? "was" : "were")
                << " optional)";
     }
     stream << "\n";
-    stream << "Total testing time: "
+    stream << "Total recorded testing time: "
            << fixed
            << setprecision(3)
            << totalTimeTicks
@@ -50,76 +54,100 @@ void TestLogger::logFinalInformation() {
            << " ms)\n";
 }
 
-void TestLogger::logFatalError(const string& errorMessage) {
+void TestLogger::printFatalError(const string& errorMessage) {
     stream << "\nA fatal "
-           << termcolor::red
+           << red
            << "error"
-           << termcolor::reset
+           << reset
            << " occurred during execution: "
            << errorMessage
            << "\n";
 }
 
-string TestLogger::getRecursiveGroupDescription(GroupPtr group) {
-    if (group == nullptr) {
-        return "";
+void TestLogger::printTestPassedOrFailedToken(const ExecutedTest& test) {
+    stream << "[";
+    if (test.isPassed()) {
+        stream << green << "P" << reset;
+    } else if (test.isOptional()) {
+        stream << yellow << "F" << reset;
+    } else {
+        stream << red << "F" << reset;
     }
-    string recursive = getRecursiveGroupDescription(group->getParentGroup());
-    if (group->getIndex() == 0 && group->getDescription().empty()) {
-        return recursive;
+    stream << "]";
+}
+
+void TestLogger::printTestAndGroupsDescription(const ExecutedTest& test) {
+    vector<string> groupDescriptions;
+    GroupPtr group = test.getGroup();
+    while (group != nullptr) {
+        string groupDescription = group->getDescription();
+        if (!groupDescription.empty()) {
+            groupDescriptions.push_back(groupDescription);
+        }
+        group = group->getParentGroup();
     }
-    return recursive + group->getDescription() + "::";
+    string groupDescription = accumulate(groupDescriptions.rbegin(),
+                                         groupDescriptions.rend(),
+                                         string(""),
+                                         [](const string& a, const string& b) {
+        return a.empty() ? b : (a + "::" + b);
+    });
+    if (!groupDescription.empty()) {
+        groupDescription += "::";
+    }
+    stream << groupDescription << test.getDescription();
+}
+
+void TestLogger::printTestExecutionTime(const ExecutedTest& test) {
+    if (test.getAvgTimeTicksForExecution() != -1.0) {
+        stream << fixed
+               << setprecision(3)
+               << (test.getNumAttempts() > 1 ? "~ " : "")
+               << test.getAvgTimeTicksForExecution()
+               << " ticks ("
+               << (test.getNumAttempts() > 1 ? "~ " : "")
+               << test.getAvgTimeTicksForExecution()
+                  * Executor::GetTimeTickLengthMs()
+               << " ms)";
+    } else {
+        stream << "(unknown time)";
+    }
+}
+
+void TestLogger::printTestAttemptsInfo(const ExecutedTest& test) {
+    stream << "(passed: "
+           << test.getNumPassedAttempts()
+           << "/"
+           << test.getNumAttempts();
+    if (!test.isPassed()) {
+        stream << ", required: " << test.getNumRequiredPassedAttempts();
+    }
+    stream << ")";
+}
+
+void TestLogger::printTestFailure(string failure) {
+    stream << "\n\t";
+    // TODO(darius98): This should be somewhere else (in utils maybe?)
+    size_t pos = 0;
+    while ((pos = failure.find('\n', pos)) != string::npos) {
+        failure.replace(pos, 1, "\n\t");
+        pos += 2;
+    }
+    stream << red << failure << reset;
 }
 
 void TestLogger::printTestMessage(const ExecutedTest& test) {
-    stream << "[";
-    if (test.isPassed()) {
-        stream << termcolor::green << "P" << termcolor::reset;
-    } else if (test.isOptional()) {
-        stream << termcolor::yellow << "F" << termcolor::reset;
-    } else {
-        stream << termcolor::red << "F" << termcolor::reset;
-    }
-    stream << "] ";
-    string groupDescription = getRecursiveGroupDescription(test.getGroup());
-    stream << groupDescription
-           << test.getDescription()
-           << " - "
-           << fixed
-           << setprecision(3)
-           << (test.getNumAttempts() > 1 ? "~ " : "")
-           << test.getAvgTimeTicksForExecution()
-           << " ticks ("
-           << (test.getNumAttempts() > 1 ? "~ " : "")
-           << test.getAvgTimeTicksForExecution()
-                * Executor::GetTimeTickLengthMs()
-           << " ms)";
-    if (test.getNumAttempts() > 1 && !test.isPassed()) {
-        stream << " ("
-               << test.getNumPassedAttempts()
-               << " passed, "
-               << test.getNumRequiredPassedAttempts()
-               << " / "
-               << test.getNumAttempts()
-               << " required)";
-    }
-    if (test.getNumAttempts() > 1 && test.isPassed()) {
-        stream << " ("
-               << test.getNumPassedAttempts()
-               << " / "
-               << test.getNumAttempts()
-               << " passed)";
+    printTestPassedOrFailedToken(test);
+    stream << " ";
+    printTestAndGroupsDescription(test);
+    stream << " - ";
+    printTestExecutionTime(test);
+    if (test.getNumAttempts() > 1) {
+        stream << ' ';
+        printTestAttemptsInfo(test);
     }
     if (!test.isPassed() && !test.getLastFailure().empty()) {
-        stream << "\n\t";
-        // TODO(darius98): This should be somewhere else (in utils maybe?)
-        size_t pos = 0;
-        string failure = test.getLastFailure();
-        while ((pos = failure.find('\n', pos)) != string::npos) {
-            failure.replace(pos, 1, "\n\t");
-            pos += 2;
-        }
-        stream << termcolor::red << failure << termcolor::reset;
+        printTestFailure(test.getLastFailure());
     }
     stream << "\n";
 }
