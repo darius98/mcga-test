@@ -61,15 +61,6 @@ int runTests(vector<TestCase> tests, vector<Extension*>* extensions) {
         ret = driver->clean();
     } catch(const ConfigurationError& error) {
         driver->forceDestroy(error);
-    } catch(const ExpectationFailed& error) {
-        driver->forceDestroy(ConfigurationError(
-                string("Expectation failed in global scope: ") + error.what()));
-    } catch(const exception& error) {
-        driver->forceDestroy(ConfigurationError(
-                string("Exception thrown in global scope: ") + error.what()));
-    } catch(...) {
-        driver->forceDestroy(ConfigurationError(
-                "Non-exception object thrown in global scope."));
     }
 
     for (Extension* extension : *extensions) {
