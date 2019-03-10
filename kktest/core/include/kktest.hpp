@@ -5,8 +5,6 @@
 #include <utility>
 #include <vector>
 
-#define KKTEST_VERSION "1.0.0"
-
 namespace kktest {
 
 /** Type of function widely used throughout the library.
@@ -22,18 +20,16 @@ typedef std::function<void()> Executable;
 struct TestConfig {
     /** Description of the test.
      *
-     * A test should provide a concise, yet clear and explicit description,
-     * both for future maintainers of the test and user interfaces of this
-     * library. */
+     * A test should provide a concise, yet clear and explicit description, both
+     * for future maintainers of the test and UIs of this library. */
     std::string description = "-";
 
     /** Whether this test is optional.
      *
      * If only tests that have this flag marked as `true` fail during a test
      * run, the test run will still exit with code `0`, meaning a successful
-     * finish. User interfaces can provide extra feedback based on this flag,
-     * like marking a failed optional test in yellow instead of red (for
-     * example). */
+     * finish. UI can provide extra feedback based on this flag, like marking a
+     * failed optional test in yellow instead of red (for example). */
     bool optional = false;
 
     /** The time limit (in a canonical unit of `ticks`) of this test.
@@ -154,32 +150,13 @@ struct GroupConfig {
     }
 };
 
-struct TestCase {
-    Executable exec;
-
-    std::string name;
-
-    TestCase(void (*exec)()): // NOLINT(google-explicit-constructor)
-            exec(exec), name("") {}
-
-    TestCase(Executable exec): // NOLINT(google-explicit-constructor)
-            exec(std::move(exec)) {}
-
-    TestCase(Executable exec, std::string name):
-            exec(std::move(exec)), name(std::move(name)) {}
-
-    virtual ~TestCase() = default;
-
-    virtual void run() { exec(); }
-};
-
-void test(TestConfig config, Executable func);
-
-void group(GroupConfig config, const Executable& func);
+void group(GroupConfig config, const Executable& body);
 
 void setUp(Executable func);
 
 void tearDown(Executable func);
+
+void test(TestConfig config, Executable body);
 
 void fail(const std::string& message=std::string());
 
@@ -188,6 +165,21 @@ inline void expect(bool expr, const std::string& message=std::string()) {
         fail(message);
     }
 }
+
+struct TestCase {
+    Executable body;
+
+    std::string name;
+
+    TestCase(void (*body)()): // NOLINT(google-explicit-constructor)
+            body(body), name("") {}
+
+    TestCase(Executable body): // NOLINT(google-explicit-constructor)
+            body(std::move(body)) {}
+
+    TestCase(Executable body, std::string name):
+            body(std::move(body)), name(std::move(name)) {}
+};
 
 void init(int argc, char** argv);
 

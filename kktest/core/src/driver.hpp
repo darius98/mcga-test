@@ -28,13 +28,11 @@ class Driver {
 
     void forceDestroy(const ConfigurationError& error);
 
-    void beforeTestCase(const std::string& testCaseName);
-
     void afterTestCase();
 
-    void addGroup(GroupConfig&& config, const Executable& func);
+    void addGroup(GroupConfig config, const Executable& body);
 
-    void addTest(TestConfig&& config, Executable func);
+    void addTest(TestConfig config, Executable body);
 
     void addSetUp(Executable func);
 

@@ -37,17 +37,6 @@ void Driver::forceDestroy(const ConfigurationError& error) {
     extensionApi.runHooks<ExtensionApi::BEFORE_FORCE_DESTROY>(error);
 }
 
-void Driver::beforeTestCase(const string& name) {
-    auto globalScope = make_shared<Group>(name, nullptr, 0);
-    groupStack = {globalScope};
-    beforeGroup(globalScope);
-}
-
-void Driver::afterTestCase() {
-    executor->finalize();
-    afterGroup(groupStack.back());
-}
-
 Driver::Driver(ExtensionApi extensionApi,
                ExecutorType executorType,
                size_t numBoxes): extensionApi(move(extensionApi)) {
@@ -71,16 +60,21 @@ Driver::Driver(ExtensionApi extensionApi,
     }
 }
 
-void Driver::addGroup(GroupConfig&& config, const Executable& func) {
-    executor->checkIsInactive("group");
-    auto group = make_shared<Group>(move(config),
-                                    groupStack.back(),
-                                    ++ currentGroupId);
-    groupStack.push_back(group);
+void Driver::afterTestCase() {
+    executor->finalize();
+}
 
+void Driver::addGroup(GroupConfig config, const Executable& body) {
+    executor->checkIsInactive("group");
+
+    ++ currentGroupId;
+    auto parentGroup = groupStack.empty() ? nullptr : groupStack.back();
+    auto group = make_shared<Group>(move(config), parentGroup, currentGroupId);
+
+    groupStack.push_back(group);
     beforeGroup(group);
     try {
-        func();
+        body();
     } catch(const ConfigurationError& e) {
         throw e;
     } catch(const ExpectationFailed& e) {
@@ -103,7 +97,7 @@ void Driver::addGroup(GroupConfig&& config, const Executable& func) {
     groupStack.pop_back();
 }
 
-void Driver::addTest(TestConfig&& config, Executable body) {
+void Driver::addTest(TestConfig config, Executable body) {
     executor->checkIsInactive("test");
     GroupPtr parentGroup = groupStack.back();
     Test test(move(config), move(body), parentGroup, ++ currentTestId);

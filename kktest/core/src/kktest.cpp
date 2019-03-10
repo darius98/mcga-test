@@ -7,8 +7,8 @@ using namespace std;
 
 namespace kktest {
 
-KKTEST_EXPORT void test(TestConfig config, Executable func) {
-    Driver::Instance()->addTest(move(config), move(func));
+KKTEST_EXPORT void test(TestConfig config, Executable body) {
+    Driver::Instance()->addTest(move(config), move(body));
 }
 
 KKTEST_EXPORT void group(GroupConfig config, const Executable& func) {
