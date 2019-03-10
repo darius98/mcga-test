@@ -6,6 +6,11 @@
 
 namespace kktest {
 
+enum ExecutorType {
+    SMOOTH_EXECUTOR,
+    BOXED_EXECUTOR,
+};
+
 class Driver {
  private:
     static Driver* instance;
@@ -13,10 +18,11 @@ class Driver {
  public:
     static Driver* Instance();
 
-    static Driver* Init(
-            const ExtensionApi& api, bool smooth, std::size_t numBoxes);
+    static Driver* Init(const ExtensionApi& api,
+                        ExecutorType executorType,
+                        std::size_t numBoxes);
 
-    Driver(ExtensionApi hooks, bool smooth, std::size_t numBoxes);
+    Driver(ExtensionApi hooks, ExecutorType executorType, std::size_t numBoxes);
 
     int clean();
 

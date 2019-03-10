@@ -17,11 +17,13 @@ Driver* Driver::Instance() {
     return instance;
 }
 
-Driver* Driver::Init(const ExtensionApi& api, bool smooth, size_t numBoxes) {
+Driver* Driver::Init(const ExtensionApi& api,
+                     ExecutorType executorType,
+                     size_t numBoxes) {
     if (instance != nullptr) {
         throw ConfigurationError("Driver: init() called a twice.");
     }
-    instance = new Driver(api, smooth, numBoxes);
+    instance = new Driver(api, executorType, numBoxes);
     instance->extensionApi.runHooks<ExtensionApi::AFTER_INIT>();
     return instance;
 }
@@ -46,11 +48,28 @@ void Driver::afterTestCase() {
     afterGroup(groupStack.back());
 }
 
-Driver::Driver(ExtensionApi extensionApi, bool smooth, size_t numBoxes):
-        extensionApi(move(extensionApi)),
-        executor(smooth
-             ? new    Executor(bind(&Driver::afterTest, this, _1))
-             : new BoxExecutor(bind(&Driver::afterTest, this, _1), numBoxes)) {}
+Driver::Driver(ExtensionApi extensionApi,
+               ExecutorType executorType,
+               size_t numBoxes): extensionApi(move(extensionApi)) {
+    switch (executorType) {
+        // TODO(darius98): Try to make executors not take callbacks for what to
+        //  do after tests.
+        case ExecutorType::SMOOTH_EXECUTOR: {
+            this->executor = make_unique<Executor>(
+                    /*onTestFinished=*/bind(&Driver::afterTest, this, _1));
+            break;
+        }
+        case ExecutorType::BOXED_EXECUTOR: {
+            this->executor = make_unique<BoxExecutor>(
+                    /*onTestFinished=*/bind(&Driver::afterTest, this, _1),
+                    numBoxes);
+            break;
+        }
+        default: {
+            throw ConfigurationError("Driver::Unknown executor type.");
+        }
+    }
+}
 
 void Driver::addGroup(GroupConfig&& config, const Executable& func) {
     executor->checkIsInactive("group");

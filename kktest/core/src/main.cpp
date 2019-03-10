@@ -17,11 +17,19 @@ void initialize(int argc, char** argv, vector<Extension*>* extensions) {
                     .setShortName("v")
                     .setDescription("Display program version."),
             "KKTest generated test-case.\nKKTest version: " KKTEST_VERSION"\n");
-    auto smoothFlag = parser.addFlag(
-            FlagSpec("smooth")
-                .setDescription("Run all tests within the same process"
-                                " (useful for step-by-step debugging).")
-                .setShortName("s"));
+    auto executorTypeArgument = parser.addChoiceArgument(
+            ChoiceArgumentSpec<ExecutorType>("executor")
+                .setDescription("Choose the type of executor to use. A smooth "
+                                "executor runs all tests in the same process, "
+                                "while a boxed executor runs each test in a "
+                                "separate process. Using a smooth executor "
+                                "means a test killed by signal will not be "
+                                "detected and will kill the whole test suite.")
+                .setOptions({
+                    {"smooth", SMOOTH_EXECUTOR},
+                    {"boxed", BOXED_EXECUTOR}
+                })
+                .setDefaultValue(BOXED_EXECUTOR));
     auto maxParallelTestsArgument = parser.addNumericArgument(
             NumericArgumentSpec<size_t>("max-parallel-tests")
                 .setDescription("Maximum number of tests to execute in parallel"
@@ -41,10 +49,9 @@ void initialize(int argc, char** argv, vector<Extension*>* extensions) {
         extension->init(api);
     }
 
-    bool smooth = smoothFlag.get();
     size_t numBoxes = max(maxParallelTestsArgument.get(), 1ul);
 
-    Driver::Init(api, smooth, numBoxes);
+    Driver::Init(api, executorTypeArgument.get(), numBoxes);
 }
 
 int runTests(vector<TestCase> tests, vector<Extension*>* extensions) {
