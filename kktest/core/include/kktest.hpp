@@ -2,6 +2,7 @@
 
 #include <functional>
 #include <string>
+#include <utility>
 #include <vector>
 
 #define KKTEST_VERSION "1.0.0"
@@ -18,12 +19,17 @@
 
 namespace kktest {
 
+/** Type of function widely used throughout the library.
+ *
+ * This defines the simple concept of a function that can be executed with no
+ * parameters and returns nothing. TestCase, test, group, setUp and tearDown are
+ * all constructed from Executable. */
 typedef std::function<void()> Executable;
 
 /** Structure defining the configuration for a test.
  *
  * Pass an instance of this class to the test() function. */
-struct KKTEST_EXPORT TestConfig {
+struct TestConfig {
     /** Description of the test.
      *
      * A test should provide a concise, yet clear and explicit description,
@@ -73,32 +79,49 @@ struct KKTEST_EXPORT TestConfig {
      * This constructor is provided for easier use of default values for
      * #optional and #timeTicksLimit, which should be used in most cases. It is
      * implicit by design, to allow an inline string call to test(). */
-    TestConfig(std::string description); // NOLINT(google-explicit-constructor)
+    TestConfig(std::string description): // NOLINT(google-explicit-constructor)
+            description(std::move(description)) {}
 
     /** Implicit constructor from a description C-style string (see
      * TestConfig(std::string)). */
-    TestConfig(const char* description); // NOLINT(google-explicit-constructor)
+    TestConfig(const char* description): // NOLINT(google-explicit-constructor)
+            description(description) {}
 
     /** Set the #description of the test. */
-    TestConfig& setDescription(std::string description);
+    TestConfig& setDescription(std::string description) {
+        this->description = std::move(description);
+        return *this;
+    }
 
     /** Set the #optional flag of the test. */
-    TestConfig& setOptional(bool optional);
+    TestConfig& setOptional(bool optional) {
+        this->optional = optional;
+        return *this;
+    }
 
     /** Set the #timeTicksLimit of the test. */
-    TestConfig& setTimeTicksLimit(double timeTicksLimit);
+    TestConfig& setTimeTicksLimit(double timeTicksLimit) {
+        this->timeTicksLimit = timeTicksLimit;
+        return *this;
+    }
 
     /** Set the #attempts property of the test. */
-    TestConfig& setAttempts(std::size_t attempts);
+    TestConfig& setAttempts(std::size_t attempts) {
+        this->attempts = attempts;
+        return *this;
+    }
 
     /** Set the #requiredPassedAttempts property of the test. */
-    TestConfig& setRequiredPassedAttempts(std::size_t requiredPassedAttempts);
+    TestConfig& setRequiredPassedAttempts(std::size_t requiredPassedAttempts) {
+        this->requiredPassedAttempts = requiredPassedAttempts;
+        return *this;
+    }
 };
 
 /** Structure defining the configuration for a group.
  *
  * Pass an instance of this class to the group() function. */
-struct KKTEST_EXPORT GroupConfig {
+struct GroupConfig {
     /** Description of the group.
      *
      * A group should provide a concise, yet clear and explicit description,
@@ -120,28 +143,42 @@ struct KKTEST_EXPORT GroupConfig {
      * This constructor is provided for easier use of default values for
      * all the other properties, which should be used in most cases. It is
      * implicit by design, to allow an inline string call to group(). */
-    GroupConfig(std::string description); // NOLINT(google-explicit-constructor)
+    GroupConfig(std::string description): // NOLINT(google-explicit-constructor)
+            description(std::move(description)) {}
 
     /** Implicit constructor from a description C-style string (see
      * GroupConfig(std::string)). */
-    GroupConfig(const char* description); // NOLINT(google-explicit-constructor)
+    GroupConfig(const char* description): // NOLINT(google-explicit-constructor)
+            description(description) {}
 
     /** Set the #description of the group. */
-    GroupConfig& setDescription(std::string description);
+    GroupConfig& setDescription(std::string description) {
+        this->description = std::move(description);
+        return *this;
+    }
 
     /** Set the #optional flag for this group. */
-    GroupConfig& setOptional(bool optional);
+    GroupConfig& setOptional(bool optional) {
+        this->optional = optional;
+        return *this;
+    }
 };
 
-struct KKTEST_EXPORT TestCase {
+struct TestCase {
     Executable exec;
+
     std::string name;
 
-    TestCase(void (*exec)()); // NOLINT(google-explicit-constructor)
-    TestCase(Executable exec); // NOLINT(google-explicit-constructor)
-    TestCase(Executable exec, std::string name);
+    TestCase(void (*exec)()): // NOLINT(google-explicit-constructor)
+            exec(exec), name("") {}
 
-    virtual void run();
+    TestCase(Executable exec): // NOLINT(google-explicit-constructor)
+            exec(std::move(exec)) {}
+
+    TestCase(Executable exec, std::string name):
+            exec(std::move(exec)), name(std::move(name)) {}
+
+    virtual void run() { exec(); }
 };
 
 KKTEST_EXPORT void test(TestConfig config, Executable func);
@@ -154,7 +191,11 @@ KKTEST_EXPORT void tearDown(Executable func);
 
 KKTEST_EXPORT void fail(const std::string& message=std::string());
 
-KKTEST_EXPORT void expect(bool expr, const std::string& message=std::string());
+inline void expect(bool expr, const std::string& message=std::string()) {
+    if (!expr) {
+        fail(message);
+    }
+}
 
 KKTEST_EXPORT void init(int argc, char** argv);
 
