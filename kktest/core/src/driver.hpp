@@ -2,7 +2,7 @@
 
 #include "kktest/core/src/errors.hpp"
 #include "kktest/core/src/executor.hpp"
-#include "kktest/core/src/extension_api.hpp"
+#include "kktest/core/src/hooks_manager.hpp"
 
 namespace kktest {
 
@@ -11,24 +11,20 @@ enum ExecutorType {
     BOXED_EXECUTOR,
 };
 
-class Driver {
+class Driver: public HooksManager {
  private:
     static Driver* instance;
 
  public:
     static Driver* Instance();
 
-    static Driver* Init(const ExtensionApi& api,
+    static Driver* Init(const HooksManager& api,
                         ExecutorType executorType,
                         std::size_t numBoxes);
-
-    Driver(ExtensionApi hooks, ExecutorType executorType, std::size_t numBoxes);
 
     int clean();
 
     void forceDestroy(const ConfigurationError& error);
-
-    void afterTestCase();
 
     void addGroup(GroupConfig config, const Executable& body);
 
@@ -39,12 +35,12 @@ class Driver {
     void addTearDown(Executable func);
 
  private:
+    Driver(HooksManager hooks, ExecutorType executorType, std::size_t numBoxes);
+
     void beforeTest(const Test& test);
     void afterTest(const ExecutedTest& test);
     void beforeGroup(GroupPtr group);
     void afterGroup(GroupPtr group);
-
-    ExtensionApi extensionApi;
 
     std::unique_ptr<Executor> executor;
     std::vector<GroupPtr> groupStack = {};

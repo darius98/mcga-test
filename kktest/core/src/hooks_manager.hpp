@@ -1,16 +1,12 @@
 #pragma once
 
-#include <functional>
 #include <stdexcept>
-#include <vector>
-
-#include <cppli.hpp>
 
 #include "kktest/core/src/executed_test.hpp"
 
 namespace kktest {
 
-class ExtensionApi {
+class HooksManager {
  public:
     typedef std::function<void(const Test&)> BeforeTest;
     typedef std::function<void(const ExecutedTest&)> AfterTest;
@@ -35,6 +31,7 @@ class ExtensionApi {
         std::get<t>(hooks).push_back(hook);
     }
 
+ protected:
     template<Type t, class... Args>
     void runHooks(const Args&... args) {
         for (const auto& hook : std::get<t>(hooks)) {
@@ -52,17 +49,6 @@ class ExtensionApi {
         std::vector<BeforeDestroy>,
         std::vector<BeforeForceDestroy>
     > hooks;
-};
-
-class Extension {
- public:
-    virtual ~Extension() = default;
-
-    virtual void registerCommandLineArgs(cppli::Parser&) {}
-
-    virtual void init(ExtensionApi&) {}
-
-    virtual void destroy() {}
 };
 
 }

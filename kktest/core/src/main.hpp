@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include "kktest/core/src/extension_api.hpp"
+#include "kktest/core/src/extension.hpp"
 
 namespace kktest {
 

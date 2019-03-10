@@ -40,7 +40,7 @@ void FeedbackExtension::registerCommandLineArgs(Parser& parser) {
                         "results as they become available."));
 }
 
-void FeedbackExtension::init(ExtensionApi& api) {
+void FeedbackExtension::init(HooksManager& api) {
     if (!quietFlag.get()) {
         initLogging(api);
     }
@@ -49,33 +49,33 @@ void FeedbackExtension::init(ExtensionApi& api) {
     }
 }
 
-void FeedbackExtension::initLogging(ExtensionApi& api) {
+void FeedbackExtension::initLogging(HooksManager& api) {
     logger = make_unique<TestLogger>(cout);
 
-    api.addHook<ExtensionApi::AFTER_TEST>([this](const ExecutedTest& test) {
+    api.addHook<HooksManager::AFTER_TEST>([this](const ExecutedTest& test) {
         logger->addTest(test);
     });
 
-    api.addHook<ExtensionApi::BEFORE_DESTROY>([this]() {
+    api.addHook<HooksManager::BEFORE_DESTROY>([this]() {
         logger->printFinalInformation();
     });
 
-    api.addHook<ExtensionApi::BEFORE_FORCE_DESTROY>([this](const auto& err) {
+    api.addHook<HooksManager::BEFORE_FORCE_DESTROY>([this](const auto& err) {
         logger->printFatalError(err.what());
     });
 }
 
-void FeedbackExtension::initPipe(ExtensionApi& api, const string& pipeName) {
+void FeedbackExtension::initPipe(HooksManager& api, const string& pipeName) {
     pipe = unique_ptr<PipeWriter>(openNamedPipeForWriting(pipeName));
 
-    api.addHook<ExtensionApi::BEFORE_GROUP>([this](GroupPtr group) {
+    api.addHook<HooksManager::BEFORE_GROUP>([this](GroupPtr group) {
         pipe->sendMessage(PipeMessageType::GROUP,
                           group->getParentGroup()->getId(),
                           group->getId(),
                           group->getDescription());
     });
 
-    api.addHook<ExtensionApi::AFTER_TEST>([this](const ExecutedTest& test) {
+    api.addHook<HooksManager::AFTER_TEST>([this](const ExecutedTest& test) {
         pipe->sendMessage(PipeMessageType::TEST,
                           test.getGroup()->getId(),
                           test.getId(),
@@ -86,11 +86,11 @@ void FeedbackExtension::initPipe(ExtensionApi& api, const string& pipeName) {
                           test.getExecutions());
     });
 
-    api.addHook<ExtensionApi::BEFORE_DESTROY>([this]() {
+    api.addHook<HooksManager::BEFORE_DESTROY>([this]() {
         pipe->sendMessage(PipeMessageType::DONE);
     });
 
-    api.addHook<ExtensionApi::BEFORE_FORCE_DESTROY>([this](const auto& err) {
+    api.addHook<HooksManager::BEFORE_FORCE_DESTROY>([this](const auto& err) {
         pipe->sendMessage(PipeMessageType::ERROR, string(err.what()));
     });
 }

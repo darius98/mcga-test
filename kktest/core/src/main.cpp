@@ -1,7 +1,7 @@
 #include "kktest/core/src/main.hpp"
 
 #include "kktest/core/src/driver.hpp"
-#include "kktest/core/src/extension_api.hpp"
+#include "kktest/core/src/hooks_manager.hpp"
 
 using namespace cppli;
 using namespace std;
@@ -39,7 +39,7 @@ void initialize(int argc, char** argv, vector<Extension*>* extensions) {
 
     parser.interpret(argc, argv);
 
-    ExtensionApi api;
+    HooksManager api;
     for (Extension* extension : *extensions) {
         extension->init(api);
     }
@@ -57,7 +57,6 @@ int runTests(vector<TestCase> tests, vector<Extension*>* extensions) {
     try {
         for (TestCase& testCase : tests) {
             driver->addGroup(move(testCase.name), testCase.body);
-            driver->afterTestCase();
         }
         ret = driver->clean();
     } catch(const ConfigurationError& error) {
