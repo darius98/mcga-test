@@ -2,6 +2,7 @@
 
 #include "kktest/core/include/kktest.hpp"
 #include "kktest/core/src/box_executor.hpp"
+#include "kktest/core/src/warning.hpp"
 
 using namespace std;
 using namespace std::placeholders;
@@ -11,18 +12,16 @@ namespace kktest {
 Driver* Driver::instance = nullptr;
 
 Driver* Driver::Instance() {
-    if (instance == nullptr) {
-        throw ConfigurationError("Driver: getInstance() called before init().");
-    }
     return instance;
+}
+
+bool Driver::IsInsideTestCase() {
+    return instance != nullptr && !instance->groupStack.empty();
 }
 
 Driver* Driver::Init(const HooksManager& api,
                      ExecutorType executorType,
                      size_t numBoxes) {
-    if (instance != nullptr) {
-        throw ConfigurationError("Driver: init() called a twice.");
-    }
     instance = new Driver(api, executorType, numBoxes);
     instance->runHooks<HooksManager::AFTER_INIT>();
     return instance;
@@ -38,7 +37,12 @@ void Driver::forceDestroy(const ConfigurationError& error) {
 }
 
 void Driver::addGroup(GroupConfig config, const Executable& body) {
-    executor->checkIsInactive("group");
+    if (executor->isActive()) {
+        EmitWarning("Called kktest::group() inside a kktest::",
+                    executor->stateAsString(),
+                    "(). Ignoring...");
+        return;
+    }
 
     ++ currentGroupId;
     auto parentGroup = groupStack.empty() ? nullptr : groupStack.back();
@@ -71,7 +75,12 @@ void Driver::addGroup(GroupConfig config, const Executable& body) {
 }
 
 void Driver::addTest(TestConfig config, Executable body) {
-    executor->checkIsInactive("test");
+    if (executor->isActive()) {
+        EmitWarning("Called kktest::test() inside a kktest::",
+                    executor->stateAsString(),
+                    "(). Ignoring...");
+        return;
+    }
     GroupPtr parentGroup = groupStack.back();
     Test test(move(config), move(body), parentGroup, ++ currentTestId);
     parentGroup->addStartedTest();
@@ -80,12 +89,22 @@ void Driver::addTest(TestConfig config, Executable body) {
 }
 
 void Driver::addSetUp(Executable func) {
-    executor->checkIsInactive("setUp");
+    if (executor->isActive()) {
+        EmitWarning("Called kktest::setUp() inside a kktest::",
+                    executor->stateAsString(),
+                    "(). Ignoring...");
+        return;
+    }
     groupStack.back()->addSetUp(move(func));
 }
 
 void Driver::addTearDown(Executable func) {
-    executor->checkIsInactive("tearDown");
+    if (executor->isActive()) {
+        EmitWarning("Called kktest::tearDown() inside a kktest::",
+                    executor->stateAsString(),
+                    "(). Ignoring...");
+        return;
+    }
     groupStack.back()->addTearDown(move(func));
 }
 

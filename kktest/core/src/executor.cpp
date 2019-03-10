@@ -21,9 +21,16 @@ double Executor::GetTimeTickLengthMs() {
     return timeTickLengthMs;
 }
 
-void Executor::checkIsInactive(const string& methodName) const {
-    if (state == ACTIVE) {
-        throw ConfigurationError(methodName + " called in invalid context.");
+bool Executor::isActive() const {
+    return state != INACTIVE;
+}
+
+string Executor::stateAsString() const {
+    switch (state) {
+        case INACTIVE: return "inactive";
+        case INSIDE_TEST: return "test";
+        case INSIDE_SET_UP: return "setUp";
+        case INSIDE_TEAR_DOWN: return "tearDown";
     }
 }
 
@@ -39,7 +46,7 @@ void Executor::execute(Test test) {
 }
 
 ExecutedTest::Info Executor::run(const Test& test) {
-    state = ACTIVE;
+    state = INSIDE_SET_UP;
     ExecutedTest::Info info;
     RealTimeTimer t;
     vector<GroupPtr> testGroupStack = test.getGroupStack();
@@ -54,11 +61,13 @@ ExecutedTest::Info Executor::run(const Test& test) {
             break;
         }
     }
+    state = INSIDE_TEST;
     if (info.passed) {
         // Only run the test if all setUp()-s passed without exception.
         runJob(bind(&Test::run, &test), &info, "test");
         -- it;
     }
+    state = INSIDE_TEAR_DOWN;
     // Execute tearDown()-s in reverse order, from where setUp()-s stopped.
     for (; it + 1 != testGroupStack.begin(); -- it) {
         runJob([it] { (*it)->tearDown(); },

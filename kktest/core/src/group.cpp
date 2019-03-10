@@ -1,6 +1,6 @@
 #include "kktest/core/src/group.hpp"
 
-#include "kktest/core/src/errors.hpp"
+#include "kktest/core/src/warning.hpp"
 
 using namespace std;
 
@@ -29,8 +29,10 @@ GroupPtr Group::getParentGroup() const {
 
 void Group::addSetUp(Executable func) {
     if (setUpFunc) {
-        throw ConfigurationError(
-            "Trying to add second setUp to group \"" + description + "\".");
+        EmitWarning("kktest::setUp() called, but a setUp for group \"",
+                    description,
+                    "\" already exists. Ignoring...");
+        return;
     }
     setUpFunc = move(func);
 }
@@ -43,8 +45,10 @@ void Group::setUp() const {
 
 void Group::addTearDown(Executable func) {
     if (tearDownFunc) {
-        throw ConfigurationError(
-            "Trying to add second tearDown to group \"" + description + "\".");
+        EmitWarning("kktest::tearDown() called, but a tearDown for group \"",
+                    description,
+                    "\" already exists. Ignoring...");
+        return;
     }
     tearDownFunc = move(func);
 }

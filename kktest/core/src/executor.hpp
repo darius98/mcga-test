@@ -14,7 +14,9 @@ class Executor {
 
     virtual ~Executor() = default;
 
-    void checkIsInactive(const std::string& methodName) const;
+    bool isActive() const;
+
+    std::string stateAsString() const;
 
     virtual void execute(Test test);
 
@@ -31,7 +33,12 @@ class Executor {
     OnTestFinished onTestFinished;
 
  private:
-    enum { ACTIVE, INACTIVE } state = INACTIVE;
+    enum {
+        INACTIVE,
+        INSIDE_TEST,
+        INSIDE_SET_UP,
+        INSIDE_TEAR_DOWN
+    } state = INACTIVE;
 };
 
 }
