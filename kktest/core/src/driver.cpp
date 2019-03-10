@@ -28,6 +28,7 @@ Driver* Driver::Init(const HooksManager& api,
 }
 
 int Driver::clean() {
+    executor->finalize();
     runHooks<HooksManager::BEFORE_DESTROY>();
     return failedAnyNonOptionalTest ? 1 : 0;
 }
