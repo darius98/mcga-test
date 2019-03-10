@@ -5,7 +5,6 @@
 
 namespace kktest::death {
 
-KKTEST_EXPORT DeathStatus checkDeath(const Executable& func,
-                                     double timeTicksLimit = 1);
+DeathStatus checkDeath(const Executable& func, double timeTicksLimit = 1);
 
 }

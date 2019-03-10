@@ -3,6 +3,7 @@
 #include "common/interproc/src/worker_subprocess.hpp"
 #include "common/utils/src/time.hpp"
 #include "kktest/core/src/executor.hpp"
+#include "kktest/core/src/export.hpp"
 
 using namespace kktest::interproc;
 using namespace kktest::utils;
@@ -10,7 +11,8 @@ using namespace std;
 
 namespace kktest::death {
 
-DeathStatus checkDeath(const Executable& func, double timeTicksLimit) {
+KKTEST_EXPORT DeathStatus checkDeath(const Executable& func,
+                                     double timeTicksLimit) {
     WorkerSubprocess proc(
         Duration::FromMs(timeTicksLimit * Executor::GetTimeTickLengthMs()),
         [func](PipeWriter* writer) {

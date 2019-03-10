@@ -1,5 +1,6 @@
 #include "kktest/core/include/kktest.hpp"
 
+#include "kktest/core/src/export.hpp"
 #include "kktest/core/src/main.hpp"
 #include "kktest/extensions/feedback/src/ext.hpp"
 
@@ -15,7 +16,7 @@ bool runCalled = false;
 
 namespace kktest {
 
-void init(int argc, char** argv) {
+KKTEST_EXPORT void init(int argc, char** argv) {
     if (initCalled) {
         throw runtime_error("kktest::init() called twice!");
     }
@@ -26,7 +27,7 @@ void init(int argc, char** argv) {
     initialize(argc, argv, extensions);
 }
 
-int run(vector<TestCase> tests) {
+KKTEST_EXPORT int run(vector<TestCase> tests) {
     if (runCalled) {
         throw runtime_error("kktest::run() called twice!");
     }
@@ -35,11 +36,6 @@ int run(vector<TestCase> tests) {
     }
     runCalled = true;
     return runTests(move(tests), extensions);
-}
-
-int initAndRun(int argc, char **argv, vector<TestCase> tests) {
-    init(argc, argv);
-    return run(move(tests));
 }
 
 }

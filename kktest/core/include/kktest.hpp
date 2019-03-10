@@ -7,16 +7,6 @@
 
 #define KKTEST_VERSION "1.0.0"
 
-#if defined _WIN32 || defined __CYGWIN__
-    #define KKTEST_EXPORT __declspec(dllexport)
-#else
-    #if __GNUC__ >= 4
-        #define KKTEST_EXPORT __attribute__((visibility("default")))
-    #else
-        #define KKTEST_EXPORT
-    #endif
-#endif
-
 namespace kktest {
 
 /** Type of function widely used throughout the library.
@@ -178,18 +168,20 @@ struct TestCase {
     TestCase(Executable exec, std::string name):
             exec(std::move(exec)), name(std::move(name)) {}
 
+    virtual ~TestCase() = default;
+
     virtual void run() { exec(); }
 };
 
-KKTEST_EXPORT void test(TestConfig config, Executable func);
+void test(TestConfig config, Executable func);
 
-KKTEST_EXPORT void group(GroupConfig config, const Executable& func);
+void group(GroupConfig config, const Executable& func);
 
-KKTEST_EXPORT void setUp(Executable func);
+void setUp(Executable func);
 
-KKTEST_EXPORT void tearDown(Executable func);
+void tearDown(Executable func);
 
-KKTEST_EXPORT void fail(const std::string& message=std::string());
+void fail(const std::string& message=std::string());
 
 inline void expect(bool expr, const std::string& message=std::string()) {
     if (!expr) {
@@ -197,11 +189,13 @@ inline void expect(bool expr, const std::string& message=std::string()) {
     }
 }
 
-KKTEST_EXPORT void init(int argc, char** argv);
+void init(int argc, char** argv);
 
-KKTEST_EXPORT int run(std::vector<TestCase> tests);
+int run(std::vector<TestCase> tests);
 
-KKTEST_EXPORT int initAndRun(int argc, char** argv,
-                             std::vector<TestCase> tests);
+inline int initAndRun(int argc, char** argv, std::vector<TestCase> tests) {
+    init(argc, argv);
+    return run(std::move(tests));
+}
 
 }
