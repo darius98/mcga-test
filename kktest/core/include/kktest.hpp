@@ -190,4 +190,6 @@ inline int initAndRun(int argc, char** argv, std::vector<TestCase> tests) {
     return run(std::move(tests));
 }
 
+double getTimeTickLengthMs();
+
 }

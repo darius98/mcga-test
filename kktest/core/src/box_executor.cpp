@@ -1,5 +1,3 @@
-#include <memory>
-
 #include "kktest/core/src/box_executor.hpp"
 
 #include "common/interproc/src/pipe.hpp"
@@ -12,29 +10,18 @@ using namespace std;
 
 namespace kktest {
 
-enum MessageStatus: uint8_t {
-    SUCCESS = 0,
-    CONFIGURATION_ERROR = 1
-};
-
 RunningTest::RunningTest(Test test): test(move(test)) {}
 
 void RunningTest::startExecution(Executor* executor) {
-    double timeLimitMs = test.getTimeTicksLimit()
-                             * Executor::GetTimeTickLengthMs()
-                         + 100.0;
+    double timeLimitMs = test.getTimeTicksLimit() * getTimeTickLengthMs() + 100;
     currentExecution = make_unique<WorkerSubprocess>(
         Duration::FromMs(timeLimitMs),
         bind(&RunningTest::executeBoxed, this, executor, placeholders::_1));
 }
 
 void RunningTest::executeBoxed(Executor *executor, PipeWriter *pipe) const {
-    try {
-        ExecutedTest::Info info = executor->run(test);
-        pipe->sendMessage(SUCCESS, info.timeTicks, info.passed, info.failure);
-    } catch(const ConfigurationError& error) {
-        pipe->sendMessage(CONFIGURATION_ERROR, string(error.what()));
-    }
+    ExecutedTest::Info info = executor->run(test);
+    pipe->sendMessage(info.timeTicks, info.passed, info.failure);
 }
 
 bool RunningTest::finishedCurrentExecution() {
@@ -73,10 +60,6 @@ bool RunningTest::finishedCurrentExecution() {
     if (!passed) {
         executions.emplace_back(move(error));
         return true;
-    }
-    if (message.read<MessageStatus>() == CONFIGURATION_ERROR) {
-        // Read the error message and throw it.
-        throw ConfigurationError(message.read<string>());
     }
     ExecutedTest::Info info;
     message >> info.timeTicks >> info.passed >> info.failure;

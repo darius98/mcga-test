@@ -8,8 +8,6 @@ class Executor {
  public:
     typedef std::function<void(const ExecutedTest&)> OnTestFinished;
 
-    static double GetTimeTickLengthMs();
-
     explicit Executor(OnTestFinished onTestFinished);
 
     virtual ~Executor() = default;

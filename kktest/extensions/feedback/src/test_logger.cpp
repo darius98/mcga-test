@@ -5,8 +5,6 @@
 
 #include <termcolor/termcolor.hpp>
 
-#include "kktest/core/src/executor.hpp"
-
 using namespace std;
 using namespace termcolor;
 
@@ -50,7 +48,7 @@ void TestLogger::printFinalInformation() {
            << setprecision(3)
            << totalTimeTicks
            << " ticks ("
-           << totalTimeTicks * Executor::GetTimeTickLengthMs()
+           << totalTimeTicks * getTimeTickLengthMs()
            << " ms)\n";
 }
 
@@ -106,8 +104,7 @@ void TestLogger::printTestExecutionTime(const ExecutedTest& test) {
                << test.getAvgTimeTicksForExecution()
                << " ticks ("
                << (test.getNumAttempts() > 1 ? "~ " : "")
-               << test.getAvgTimeTicksForExecution()
-                  * Executor::GetTimeTickLengthMs()
+               << test.getAvgTimeTicksForExecution() * getTimeTickLengthMs()
                << " ms)";
     } else {
         stream << "(unknown time)";

@@ -1,8 +1,6 @@
 #include "kktest/extensions/death/include/kktest_ext/death_impl/check_death.hpp"
 
 #include "common/interproc/src/worker_subprocess.hpp"
-#include "common/utils/src/time.hpp"
-#include "kktest/core/src/executor.hpp"
 #include "kktest/core/src/export.hpp"
 
 using namespace kktest::interproc;
@@ -14,7 +12,7 @@ namespace kktest::death {
 KKTEST_EXPORT DeathStatus checkDeath(const Executable& func,
                                      double timeTicksLimit) {
     WorkerSubprocess proc(
-        Duration::FromMs(timeTicksLimit * Executor::GetTimeTickLengthMs()),
+        Duration::FromMs(timeTicksLimit * getTimeTickLengthMs()),
         [func](PipeWriter* writer) {
             func();
             writer->sendMessage(1);
