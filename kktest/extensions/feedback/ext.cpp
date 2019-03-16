@@ -20,10 +20,11 @@ Message::BytesConsumer& Message::BytesConsumer::add(
 namespace kktest::feedback {
 
 enum PipeMessageType : uint8_t {
-    TEST = 0,
-    GROUP = 1,
-    DONE = 2,
-    ERROR = 3
+    TEST_STARTED = 0,
+    TEST_DONE = 1,
+    GROUP = 2,
+    DONE = 3,
+    ERROR = 4
 };
 
 void FeedbackExtension::registerCommandLineArgs(Parser& parser) {
@@ -74,14 +75,19 @@ void FeedbackExtension::initPipe(HooksManager& api, const string& pipeName) {
                           group->getDescription());
     });
 
-    api.addHook<HooksManager::AFTER_TEST>([this](const ExecutedTest& test) {
-        pipe->sendMessage(PipeMessageType::TEST,
-                          test.getGroup()->getId(),
+    api.addHook<HooksManager::BEFORE_TEST>([this](const Test& test) {
+        pipe->sendMessage(PipeMessageType::TEST_STARTED,
                           test.getId(),
+                          test.getGroup()->getId(),
                           test.getDescription(),
                           test.isOptional(),
                           test.getNumAttempts(),
-                          test.getNumRequiredPassedAttempts(),
+                          test.getNumRequiredPassedAttempts());
+    });
+
+    api.addHook<HooksManager::AFTER_TEST>([this](const ExecutedTest& test) {
+        pipe->sendMessage(PipeMessageType::TEST_DONE,
+                          test.getId(),
                           test.getExecutions());
     });
 

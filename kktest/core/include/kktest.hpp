@@ -23,7 +23,7 @@ struct TestConfig {
      *
      * A test should provide a concise, yet clear and explicit description, both
      * for future maintainers of the test and UIs of this library. */
-    std::string description = "-";
+    std::string description = "(anonymous test)";
 
     /** Whether this test is optional.
      *
@@ -81,7 +81,7 @@ struct TestConfig {
     }
 
     /** Set the #optional flag of the test. */
-    TestConfig& setOptional(bool optional) {
+    TestConfig& setOptional(bool optional = true) {
         this->optional = optional;
         return *this;
     }
@@ -145,7 +145,7 @@ struct GroupConfig {
     }
 
     /** Set the #optional flag for this group. */
-    GroupConfig& setOptional(bool optional) {
+    GroupConfig& setOptional(bool optional = true) {
         this->optional = optional;
         return *this;
     }
@@ -168,7 +168,7 @@ inline void expect(bool expr, const std::string& message=std::string()) {
 }
 
 struct TestCase {
-    static void Register(TestCase *testCase);
+    static void Register(TestCase* testCase);
 
     Executable body;
 
@@ -189,7 +189,7 @@ inline std::chrono::nanoseconds timeTicksToNanoseconds(double timeTicks) {
 
 }
 
-#define TEST_CASE(UNIQUE_NAME, DESCRIPTION) \
+#define TEST_CASE(UNIQUE_NAME, DESC) \
     void UNIQUE_NAME##_func(); \
-    static TestCase UNIQUE_NAME##_case(UNIQUE_NAME##_func, DESCRIPTION); \
+    static kktest::TestCase UNIQUE_NAME##_case(UNIQUE_NAME##_func, DESC); \
     void UNIQUE_NAME##_func()
