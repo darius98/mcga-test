@@ -52,24 +52,6 @@ class PosixPipeReader: public PipeReader {
         return Message::INVALID;
     }
 
-    vector<uint8_t> getBytes(int maxConsecutiveFailedReadAttempts) override {
-        int failedAttempts = 0;
-        while (failedAttempts <= maxConsecutiveFailedReadAttempts) {
-            bool successful = readBytes();
-            if (!successful) {
-                failedAttempts += 1;
-            } else {
-                failedAttempts = 0;
-            }
-        }
-        vector<uint8_t> result(bufferSize - bufferReadHead, 0);
-        memcpy(result.data(),
-               buffer + bufferReadHead,
-               bufferSize - bufferReadHead);
-        bufferReadHead = bufferSize;
-        return result;
-    }
-
  private:
     bool readBytes() {
         char block[128];

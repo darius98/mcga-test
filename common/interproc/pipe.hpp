@@ -16,11 +16,6 @@ class PipeReader {
 
     Message getNextMessage();
 
-    virtual std::vector<std::uint8_t> getBytes(
-            int maxConsecutiveFailedReadAttempts) = 0;
-
-    std::vector<std::uint8_t> getBytes();
-
  protected:
     static std::size_t GetMessageSize(const Message& message);
 };
