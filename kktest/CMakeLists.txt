@@ -6,7 +6,6 @@ add_subdirectory(extensions/feedback)
 add_library(kktest SHARED
     $<TARGET_OBJECTS:cppli_obj>
     $<TARGET_OBJECTS:common_interproc_obj>
-    $<TARGET_OBJECTS:common_utils_obj>
 
     entry_point.cpp
     $<TARGET_OBJECTS:kktest_core>

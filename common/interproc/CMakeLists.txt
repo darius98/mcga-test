@@ -14,7 +14,6 @@ add_library(common_interproc_obj OBJECT ${interproc_src})
 target_link_libraries(common_interproc_obj PUBLIC common_utils)
 
 add_kktest(common_interproc_unittests
-    $<TARGET_OBJECTS:common_utils_obj>
     $<TARGET_OBJECTS:common_interproc_obj>
     tests/message_test.cpp
     tests/pipe_test.cpp

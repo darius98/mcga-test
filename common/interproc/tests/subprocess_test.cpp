@@ -16,7 +16,7 @@ TEST_CASE(interprocSubprocessTest, "Interproc subprocess") {
 
         setUp([&proc] {
             proc = Subprocess::Fork([] {});
-            sleepForDuration(50_ms);
+            sleep(50ms);
         });
 
         tearDown([&proc] {
@@ -56,7 +56,7 @@ TEST_CASE(interprocSubprocessTest, "Interproc subprocess") {
             proc = Subprocess::Fork([] {
                 exit(17);
             });
-            sleepForDuration(50_ms);
+            sleep(50ms);
         });
 
         tearDown([&proc] {
@@ -96,7 +96,7 @@ TEST_CASE(interprocSubprocessTest, "Interproc subprocess") {
             proc = Subprocess::Fork([] {
                 raise(SIGINT);
             });
-            sleepForDuration(50_ms);
+            sleep(50ms);
         });
 
         tearDown([&proc] {
@@ -139,7 +139,7 @@ TEST_CASE(interprocSubprocessTest, "Interproc subprocess") {
                     spins += 1;
                 }
             });
-            sleepForDuration(50_ms);
+            sleep(50ms);
         });
 
         tearDown([&proc] {

@@ -14,10 +14,10 @@ TEST_CASE(interprocWorkerSubprocessTest, "Interproc worker subprocess") {
         WorkerSubprocess* proc = nullptr;
 
         setUp([&] {
-            proc = new WorkerSubprocess(50_ms, [](PipeWriter* writer) {
+            proc = new WorkerSubprocess(50ms, [](PipeWriter* writer) {
                 writer->sendMessage(2, 0, 1, 9);
             });
-            sleepForDuration(50_ms);
+            sleep(50ms);
         });
 
         tearDown([&] {
@@ -68,8 +68,8 @@ TEST_CASE(interprocWorkerSubprocessTest, "Interproc worker subprocess") {
         });
 
         test("getNextMessage(32) is invalid", [&] {
-            proc = new WorkerSubprocess(50_ms, [](PipeWriter*) {});
-            sleepForDuration(50_ms);
+            proc = new WorkerSubprocess(50ms, [](PipeWriter*) {});
+            sleep(50ms);
             expect(proc->getNextMessage(32).isInvalid());
         });
     });
@@ -83,10 +83,10 @@ TEST_CASE(interprocWorkerSubprocessTest, "Interproc worker subprocess") {
         });
 
         test("getFinishStatus()==TIMEOUT", [&] {
-            proc = new WorkerSubprocess(50_ms, [](PipeWriter*) {
-                spinForDuration(200_ms);
+            proc = new WorkerSubprocess(50ms, [](PipeWriter*) {
+                spin(200ms);
             });
-            sleepForDuration(100_ms);
+            sleep(100ms);
             expect(proc->getFinishStatus() == Subprocess::TIMEOUT);
         });
     });

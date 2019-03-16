@@ -1,5 +1,6 @@
 #pragma once
 
+#include <chrono>
 #include <functional>
 #include <string>
 #include <utility>
@@ -179,7 +180,12 @@ struct TestCase {
     }
 };
 
-double getTimeTickLengthMs();
+std::chrono::nanoseconds getTimeTickLength();
+
+inline std::chrono::nanoseconds timeTicksToNanoseconds(double timeTicks) {
+    return std::chrono::nanoseconds(
+        static_cast<long long>(timeTicks * getTimeTickLength().count()));
+}
 
 }
 

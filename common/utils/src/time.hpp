@@ -1,71 +1,57 @@
 #pragma once
 
+#include <chrono>
+#include <thread>
+
 namespace kktest::utils {
 
-class Duration {
+typedef std::chrono::high_resolution_clock Clock;
+
+typedef Clock::duration Duration;
+
+typedef Clock::time_point Timestamp;
+
+inline Timestamp now() {
+    return Clock::now();
+}
+
+class Timer {
  public:
-    static constexpr int kSecondsToMilli = 1000;
-    static constexpr int kMilliToNano = 1000000;
-    static constexpr int kSecondsToNano = kSecondsToMilli * kMilliToNano;
+    Timer(): startTime(now()) {}
 
-    static Duration FromMs(long double ms);
+    Duration elapsed() const {
+        return now() - startTime;
+    }
 
-    Duration() = default;
-    Duration(const Duration& other) = default;
-    Duration(Duration&& other) noexcept = default;
-    Duration(int nSeconds, long long nNanoseconds);
-
-    Duration operator+(const Duration& other) const;
-    Duration operator-(const Duration& other) const;
-
-    bool operator<(const Duration& other) const;
-    bool operator==(const Duration& other) const;
-
-    int getSeconds() const;
-
-    long long getNanoseconds() const;
-
-    long long totalNs() const;
-
- private:
-    void normalize();
-
-    int nSeconds = 0;
-    long long nNanoseconds = 0;
-};
-
-Duration operator"" _ms(long double ms);
-Duration operator"" _ms(unsigned long long ms);
-Duration operator"" _s(long double s);
-Duration operator"" _s(unsigned long long s);
-Duration operator"" _ns(unsigned long long ns);
-
-typedef Duration Timestamp;
-
-Timestamp realNow();
-
-class RealTimeTimer {
- public:
-    RealTimeTimer();
-
-    Duration elapsed() const;
+    long long elapsedNs() const {
+        return std::chrono::duration_cast
+                <std::chrono::nanoseconds>(elapsed()).count();
+    }
 
  private:
     Timestamp startTime;
 };
 
-class RealTimeStopwatch {
+class Stopwatch {
  public:
-    explicit RealTimeStopwatch(Duration duration);
+    explicit Stopwatch(Duration duration): endTime(now() + duration) {}
 
-    bool isElapsed() const;
+    bool isElapsed() const { return endTime < now(); }
 
  private:
     Timestamp endTime;
 };
 
-void sleepForDuration(const Duration& duration);
+inline void sleep(Duration duration) {
+    std::this_thread::sleep_for(duration);
+}
 
-void spinForDuration(const Duration& duration);
+inline void spin(Duration duration) {
+    Stopwatch watch(duration);
+    volatile int spins = 0;
+    while (!watch.isElapsed()) {
+        spins += 1;
+    }
+}
 
 }

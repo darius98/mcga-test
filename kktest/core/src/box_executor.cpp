@@ -7,16 +7,17 @@
 using namespace kktest::interproc;
 using namespace kktest::utils;
 using namespace std;
+using namespace std::placeholders;
 
 namespace kktest {
 
 RunningTest::RunningTest(Test test): test(move(test)) {}
 
 void RunningTest::startExecution(Executor* executor) {
-    double timeLimitMs = test.getTimeTicksLimit() * getTimeTickLengthMs() + 100;
+    auto timeLimit = timeTicksToNanoseconds(test.getTimeTicksLimit()) + 1s;
     currentExecution = make_unique<WorkerSubprocess>(
-        Duration::FromMs(timeLimitMs),
-        bind(&RunningTest::executeBoxed, this, executor, placeholders::_1));
+        timeLimit,
+        bind(&RunningTest::executeBoxed, this, executor, _1));
 }
 
 void RunningTest::executeBoxed(Executor *executor, PipeWriter *pipe) const {
@@ -107,7 +108,7 @@ void BoxExecutor::ensureEmptyBoxes(size_t requiredEmpty) {
             }
         }
         if (!progress) {
-            sleepForDuration(5_ms);
+            sleep(5ms);
         }
     }
 }

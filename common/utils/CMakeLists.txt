@@ -1,15 +1,3 @@
-list(APPEND common_utils_src
-    src/time.cpp
-)
-if (UNIX OR APPLE)
-    list(APPEND common_utils_src
-        src/time_posix.cpp
-    )
-endif ()
-
-add_library(common_utils_obj OBJECT ${common_utils_src})
-
 add_kktest(common_utils_unittests
-    $<TARGET_OBJECTS:common_utils_obj>
     tests/time_test.cpp
 )

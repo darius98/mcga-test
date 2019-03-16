@@ -37,7 +37,7 @@ class WorkerSubprocess: public Subprocess {
  private:
     Subprocess* subprocess;
     PipeReader* pipeReader;
-    utils::RealTimeStopwatch stopwatch;
+    utils::Stopwatch stopwatch;
 };
 
 }

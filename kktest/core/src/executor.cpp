@@ -38,7 +38,7 @@ void Executor::execute(Test test) {
 ExecutedTest::Info Executor::run(const Test& test) {
     state = INSIDE_SET_UP;
     ExecutedTest::Info info;
-    RealTimeTimer t;
+    Timer t;
     vector<GroupPtr> testGroupStack = test.getGroupStack();
     vector<GroupPtr>::iterator it;
     // Execute setUp()-s, in the order of the group stack.
@@ -64,8 +64,7 @@ ExecutedTest::Info Executor::run(const Test& test) {
                &info,
                "tearDown of group \"" + (*it)->getDescription() + "\"");
     }
-    double elapsedMs = 1.0 * t.elapsed().totalNs() / Duration::kMilliToNano;
-    info.timeTicks = elapsedMs / getTimeTickLengthMs();
+    info.timeTicks = 1.0 * t.elapsed().count() / getTimeTickLength().count();
     state = INACTIVE;
     return info;
 }

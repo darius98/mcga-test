@@ -2,23 +2,25 @@
 
 #include "kktest/core/src/export.hpp"
 
+using namespace std::chrono;
+
 namespace kktest {
 
 namespace {
 
-double ComputeTimeTickLengthFromHardware() {
+nanoseconds ComputeTimeTickLengthFromHardware() {
     // TODO(darius98): Don't hard-code this!
-    return 1000;
+    return 1s;
 }
 
 }
 
-KKTEST_EXPORT double getTimeTickLengthMs() {
-    static double timeTickLengthMs = -1;
-    if (timeTickLengthMs == -1) {
-        timeTickLengthMs = ComputeTimeTickLengthFromHardware();
+KKTEST_EXPORT nanoseconds getTimeTickLength() {
+    static nanoseconds timeTickLength = 0ns;
+    if (timeTickLength == 0ns) {
+        timeTickLength = ComputeTimeTickLengthFromHardware();
     }
-    return timeTickLengthMs;
+    return timeTickLength;
 }
 
 }
