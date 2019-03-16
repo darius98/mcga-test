@@ -142,9 +142,9 @@ void __describeFailure(Description* description,
     }
 }
 
-template<class T, class M>
+template<class T, class M,
+         class=std::enable_if_t<std::is_base_of_v<Matcher, M>>>
 void expect(const T& obj, M matcher) {
-    static_assert(std::is_base_of_v<Matcher, M>);
     typename M::State state;
     if (__matches(matcher, &state, obj)) {
         return;
