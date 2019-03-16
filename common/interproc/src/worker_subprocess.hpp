@@ -32,17 +32,11 @@ class WorkerSubprocess: public Subprocess {
 
     FinishStatus getFinishStatus() override;
 
-    std::string getOutput();
-
     Message getNextMessage(int maxConsecutiveFailedReadAttempts = -1);
 
  private:
-    void updateOutput();
-
-    std::string output;
     Subprocess* subprocess;
     PipeReader* pipeReader;
-    PipeReader* stdoutReader;
     utils::RealTimeStopwatch stopwatch;
 };
 

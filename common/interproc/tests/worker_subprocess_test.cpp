@@ -45,10 +45,6 @@ TEST_CASE(interprocWorkerSubprocessTest, "Interproc worker subprocess") {
             expect(!proc->isSignaled());
         });
 
-        test("getOutput() is empty", [&] {
-            expect(proc->getOutput().empty());
-        });
-
         test("getFinishStatus() == ZERO_EXIT", [&] {
             expect(proc->getFinishStatus() == Subprocess::ZERO_EXIT);
         });
@@ -75,24 +71,6 @@ TEST_CASE(interprocWorkerSubprocessTest, "Interproc worker subprocess") {
             proc = new WorkerSubprocess(50_ms, [](PipeWriter*) {});
             sleepForDuration(50_ms);
             expect(proc->getNextMessage(32).isInvalid());
-        });
-    });
-
-    group("Write some output and die", [] {
-        WorkerSubprocess* proc = nullptr;
-
-        tearDown([&] {
-            delete proc;
-            proc = nullptr;
-        });
-
-        test("getOutput() returns the written output", [&] {
-            proc = new WorkerSubprocess(50_ms, [](PipeWriter*) {
-                cout << "Hello, World!";
-                cout.flush();
-            });
-            sleepForDuration(50_ms);
-            expect(proc->getOutput() == "Hello, World!");
         });
     });
 

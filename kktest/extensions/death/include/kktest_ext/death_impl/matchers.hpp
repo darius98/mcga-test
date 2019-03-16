@@ -12,7 +12,6 @@ namespace detail {
 class ExitsMatcher;
 class HasExitedMatcher;
 template<class T> class HasExitedWithCodeMatcher;
-template<class T> class HasExitedWithOutputMatcher;
 }
 
 template<class T> constexpr auto hasExitedWithCode(const T& exitCode) {
@@ -20,14 +19,6 @@ template<class T> constexpr auto hasExitedWithCode(const T& exitCode) {
         return detail::HasExitedWithCodeMatcher<T>(exitCode);
     } else {
         return detail::HasExitedWithCodeMatcher(matchers::isEqualTo(exitCode));
-    }
-}
-
-template<class T> constexpr auto hasExitedWithOutput(const T& output) {
-    if constexpr (std::is_base_of_v<matchers::Matcher, T>) {
-        return detail::HasExitedWithOutputMatcher<T>(output);
-    } else {
-        return detail::HasExitedWithOutputMatcher(matchers::isEqualTo(output));
     }
 }
 
@@ -45,69 +36,6 @@ inline void describeStatus(matchers::Description* description,
         (*description) << "not a program exit";
     }
 }
-
-template<class CM, class OM>
-struct ExitsWithCodeAndOutputState {
-    bool codeMatcherMatches = false;
-    typename CM::State codeMatcherState;
-
-    bool outputMatcherMatches = false;
-    typename OM::State outputMatcherState;
-
-    DeathStatus status;
-};
-
-template<class CM, class OM>
-class ExitsWithCodeAndOutputMatcher: public matchers::StatefulMatcher<
-            ExitsWithCodeAndOutputState<CM, OM>> {
-    static_assert(std::is_base_of<matchers::Matcher, CM>::value,
-                  "ExitsWithCodeAndOutputMatcher only supports matchers as "
-                  "template arguments.");
-    static_assert(std::is_base_of<matchers::Matcher, OM>::value,
-                  "ExitsWithCodeAndOutputMatcher only supports matchers as "
-                  "template arguments.");
- public:
-    constexpr ExitsWithCodeAndOutputMatcher(const CM& codeMatcher,
-                                            const OM& outputMatcher):
-            codeMatcher(codeMatcher), outputMatcher(outputMatcher) {}
-
-    bool matches(const Executable& func,
-                 ExitsWithCodeAndOutputState<CM, OM>* state) const {
-        state->status = checkDeath(func);
-        state->codeMatcherMatches = matchers::__matches(
-                codeMatcher,
-                &state->codeMatcherState,
-                state->status.getExitCode());
-        state->outputMatcherMatches = matchers::__matches(
-                outputMatcher,
-                &state->outputMatcherState,
-                state->status.getOutput());
-        return state->codeMatcherMatches && state->outputMatcherMatches;
-    }
-
-    void describe(matchers::Description* description) const {
-        (*description) << "the program's end with code that is ";
-        codeMatcher.describe(description);
-        (*description) << " and where the final output is ";
-        outputMatcher.describe(description);
-    }
-
-    void describeFailure(matchers::Description* description,
-                         ExitsWithCodeAndOutputState<CM, OM>* state) const {
-        if (!state->codeMatcherMatches) {
-            describeStatus(description, state->status);
-        } else {
-            (*description) << "the program's end with valid return code,"
-                              " but output is ";
-            matchers::__describeFailure(
-                    description, outputMatcher, &state->outputMatcherState);
-        }
-    }
-
- private:
-    CM codeMatcher;
-    OM outputMatcher;
-};
 
 template<class M>
 struct ExitsWithCodeState {
@@ -143,67 +71,8 @@ class ExitsWithCodeMatcher:
         describeStatus(description, state->status);
     }
 
-    template<class T>
-    auto withOutput(const T& output) const {
-        if constexpr (std::is_base_of_v<matchers::Matcher, T>) {
-            return ExitsWithCodeAndOutputMatcher(codeMatcher, output);
-        } else {
-            return ExitsWithCodeAndOutputMatcher(
-                    codeMatcher, matchers::isEqualTo(output));
-        }
-    }
-
  private:
     M codeMatcher;
-};
-
-template<class M>
-struct ExitsWithOutputState {
-    typename M::State outputMatcherState;
-    DeathStatus status;
-};
-
-template<class M>
-class ExitsWithOutputMatcher:
-        public matchers::StatefulMatcher<ExitsWithOutputState<M>> {
-    static_assert(std::is_base_of<matchers::Matcher, M>::value,
-                  "ExitsWithCodeMatcher only supports matchers as template "
-                  "arguments.");
- public:
-    explicit constexpr ExitsWithOutputMatcher(const M& outputMatcher):
-            outputMatcher(outputMatcher) {}
-
-    bool matches(const Executable& func, ExitsWithOutputState<M>* state) const {
-        state->status = checkDeath(func);
-        return matchers::__matches(
-                outputMatcher,
-                &state->outputMatcherState,
-                state->status.getOutput());
-    }
-
-    void describe(matchers::Description* description) const {
-        (*description) << "the program's end, where the final output is ";
-        outputMatcher.describe(description);
-    }
-
-    void describeFailure(matchers::Description* description,
-                         ExitsWithOutputState<M>* state) const {
-        matchers::__describeFailure(
-                description, outputMatcher, &state->outputMatcherState);
-    }
-
-    template<class T>
-    auto withCode(const T& code) const {
-        if constexpr (std::is_base_of_v<matchers::Matcher, T>) {
-            return ExitsWithCodeAndOutputMatcher(code, outputMatcher);
-        } else {
-            return ExitsWithCodeAndOutputMatcher(
-                    matchers::isEqualTo(code), outputMatcher);
-        }
-    }
-
- private:
-    M outputMatcher;
 };
 
 class ExitsMatcher: public matchers::StatefulMatcher<DeathStatus> {
@@ -231,15 +100,6 @@ class ExitsMatcher: public matchers::StatefulMatcher<DeathStatus> {
             return ExitsWithCodeMatcher<T>(code);
         } else {
             return ExitsWithCodeMatcher(matchers::isEqualTo(code));
-        }
-    }
-
-    template<class T>
-    auto withOutput(const T& output) const {
-        if constexpr (std::is_base_of_v<matchers::Matcher, T>) {
-            return ExitsWithOutputMatcher<T>(output);
-        } else {
-            return ExitsWithOutputMatcher(matchers::isEqualTo(output));
         }
     }
 
@@ -293,35 +153,6 @@ class HasExitedWithCodeMatcher:
 
  private:
     M exitCodeMatcher;
-};
-
-template<class M>
-class HasExitedWithOutputMatcher:
-        public matchers::StatefulMatcher<typename M::State> {
-    static_assert(std::is_base_of<matchers::Matcher, M>::value,
-                  "HasExitedWithOutputMatcher only supports matchers as template "
-                  "arguments.");
-
- public:
-    explicit HasExitedWithOutputMatcher(M outputMatcher):
-            outputMatcher(std::move(outputMatcher)) {}
-
-    bool matches(const DeathStatus& status, typename M::State* state) const {
-        return matchers::__matches(outputMatcher, state, status.getOutput());
-    }
-
-    void describe(matchers::Description* description) const {
-        (*description) << "the program's end, where the final output is ";
-        outputMatcher.describe(description);
-    }
-
-    void describeFailure(matchers::Description* description,
-                         typename M::State* state) const {
-        matchers::__describeFailure(description, outputMatcher, state);
-    }
-
- private:
-    M outputMatcher;
 };
 
 }

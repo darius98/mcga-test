@@ -15,7 +15,7 @@ using namespace kktest::death;
 using namespace std;
 
 TEST_CASE(checkDeath, "Death extension: check death") {
-    test("exit code 0, no output", [] {
+    test("exit code 0", [] {
         auto func = [] {
             exit(0);
         };
@@ -24,11 +24,10 @@ TEST_CASE(checkDeath, "Death extension: check death") {
         expect(status.exitedOrKilled(), isTrue);
         expect(status.exited(), isTrue);
         expect(status.killedBySignal(), isFalse);
-        expect(status.getOutput(), isEmpty);
         expect(status.getExitCode(), isZero);
     });
 
-    test("exit code 1, no output", [] {
+    test("exit code 1", [] {
         auto func = [] {
             exit(1);
         };
@@ -37,64 +36,7 @@ TEST_CASE(checkDeath, "Death extension: check death") {
         expect(status.exitedOrKilled(), isTrue);
         expect(status.exited(), isTrue);
         expect(status.killedBySignal(), isFalse);
-        expect(status.getOutput(), isEmpty);
         expect(status.getExitCode(), isEqualTo(1));
-    });
-
-    test("exit code 0, small output", [] {
-        auto func = [] {
-            cout << string(100, 'a');
-            exit(0);
-        };
-
-        auto status = checkDeath(func);
-        expect(status.exitedOrKilled(), isTrue);
-        expect(status.exited(), isTrue);
-        expect(status.killedBySignal(), isFalse);
-        expect(status.getOutput(), isEqualTo(string(100, 'a')));
-        expect(status.getExitCode(), isEqualTo(0));
-    });
-
-    test("exit code 214, small output", [] {
-        auto func = [] {
-            cout << string(100, 'a');
-            exit(214);
-        };
-
-        auto status = checkDeath(func);
-        expect(status.exitedOrKilled(), isTrue);
-        expect(status.exited(), isTrue);
-        expect(status.killedBySignal(), isFalse);
-        expect(status.getOutput(), isEqualTo(string(100, 'a')));
-        expect(status.getExitCode(), isEqualTo(214));
-    });
-
-    test("exit code 0, large output", [] {
-        auto func = [] {
-            cout << string(40000, 'a');
-            exit(0);
-        };
-
-        auto status = checkDeath(func);
-        expect(status.exitedOrKilled(), isTrue);
-        expect(status.exited(), isTrue);
-        expect(status.killedBySignal(), isFalse);
-        expect(status.getOutput(), isEqualTo(string(40000, 'a')));
-        expect(status.getExitCode(), isEqualTo(0));
-    });
-
-    test("exit code 214, large output", [] {
-        auto func = [] {
-            cout << string(40000, 'a');
-            exit(214);
-        };
-
-        auto status = checkDeath(func);
-        expect(status.exitedOrKilled(), isTrue);
-        expect(status.exited(), isTrue);
-        expect(status.killedBySignal(), isFalse);
-        expect(status.getOutput(), isEqualTo(string(40000, 'a')));
-        expect(status.getExitCode(), isEqualTo(214));
     });
 
     test("kill by signal SIGTERM", [] {

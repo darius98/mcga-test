@@ -23,11 +23,9 @@ KKTEST_EXPORT DeathStatus checkDeath(const Executable& func,
     }
     if (proc.getNextMessage(32).isInvalid()) {
         // The exit was ok.
-        return DeathStatus(proc.getReturnCode(),
-                           proc.getSignal(),
-                           proc.getOutput());
+        return DeathStatus(proc.getReturnCode(), proc.getSignal());
     }
-    return DeathStatus(-1, 0, proc.getOutput());
+    return DeathStatus(-1, 0);
 }
 
 }
