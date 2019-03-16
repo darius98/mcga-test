@@ -83,11 +83,11 @@ template<class T>
 constexpr bool IsSstreamable = decltype(detail::IsSstreamableImpl<T>(0))::value;
 
 template<class S, std::size_t I = 0, class... Items>
-typename std::enable_if<I == sizeof...(Items), void>::type
+typename std::enable_if_t<I == sizeof...(Items), void>
         StreamTuple(S& stream, const std::tuple<Items...>& t) {}
 
 template<class S, std::size_t I = 0, class... Items>
-typename std::enable_if<I < sizeof...(Items), void>::type
+typename std::enable_if_t<I < sizeof...(Items), void>
         StreamTuple(S& stream, const std::tuple<Items...>& t) {
     if (I != 0) {
         stream << ',';

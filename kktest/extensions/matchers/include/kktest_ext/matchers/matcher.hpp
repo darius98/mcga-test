@@ -77,7 +77,6 @@ class Description {
 
     template<class... Items>
     void appendTuple(const std::tuple<Items...>& t) {
-        constexpr std::size_t size = std::tuple_size_v<Items...>;
         stream << '(';
         tp::StreamTuple(*this, t);
         stream << ')';
