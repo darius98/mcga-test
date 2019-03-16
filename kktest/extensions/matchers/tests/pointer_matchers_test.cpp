@@ -15,7 +15,7 @@ BasicClass globalClass;
 BasicStruct globalStruct;
 double globalDouble;
 
-void pointerMatchersTest() {
+TEST_CASE(pointer, "Matchers extension: pointer") {
     group("Null pointers", [] {
         int* intNullPtr = nullptr;
         BasicClass* classNullPtr = nullptr;

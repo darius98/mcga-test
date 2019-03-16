@@ -6,7 +6,7 @@
 using namespace kktest;
 using namespace kktest::matchers;
 
-void truthMatchersTest() {
+TEST_CASE(truth, "Matchers extension: truth") {
     test("isTrue matcher matches true", [] {
         EXPECT_MATCHER_MATCHES(true, isTrue);
     });

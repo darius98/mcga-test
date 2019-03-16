@@ -9,7 +9,7 @@ using namespace kktest::matchers;
 using namespace kktest::interproc;
 using namespace std;
 
-void interprocPipeTest() {
+TEST_CASE(interprocPipeTest, "Interproc pipe") {
     PipeReader* reader = nullptr;
     PipeWriter* writer = nullptr;
 

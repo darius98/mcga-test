@@ -10,7 +10,7 @@ using namespace kktest::interproc;
 using namespace kktest::utils;
 using namespace std;
 
-void interprocSubprocessTest() {
+TEST_CASE(interprocSubprocessTest, "Interproc subprocess") {
     group("Fork into process doing nothing, after 50ms", [] {
         Subprocess* proc = nullptr;
 

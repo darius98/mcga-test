@@ -13,7 +13,7 @@ using namespace kktest::matchers;
 using namespace kktest::death;
 using namespace std;
 
-void matchersTest() {
+TEST_CASE(matchers, "Death extension: matchers") {
     auto funcExit0 = [] {
         exit(0);
     };

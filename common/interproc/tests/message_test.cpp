@@ -11,7 +11,7 @@ using namespace kktest::matchers;
 using namespace kktest::interproc;
 using namespace std;
 
-void interprocMessageTest() {
+TEST_CASE(interprocMessageTest, "Interproc message") {
     test("Building & reading a message from 3 ints", [] {
         auto message = Message::Build(1, 2, 3);
         int x, y, z;

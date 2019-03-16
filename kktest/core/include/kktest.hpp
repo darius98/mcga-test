@@ -167,29 +167,23 @@ inline void expect(bool expr, const std::string& message=std::string()) {
 }
 
 struct TestCase {
+    static void Register(TestCase *testCase);
+
     Executable body;
 
     std::string name;
 
-    TestCase(void (*body)()): // NOLINT(google-explicit-constructor)
-            body(body), name("") {}
-
-    TestCase(Executable body): // NOLINT(google-explicit-constructor)
-            body(std::move(body)) {}
-
     TestCase(Executable body, std::string name):
-            body(std::move(body)), name(std::move(name)) {}
+            body(std::move(body)), name(std::move(name)) {
+        Register(this);
+    }
 };
-
-void init(int argc, char** argv);
-
-int run(std::vector<TestCase> tests);
-
-inline int initAndRun(int argc, char** argv, std::vector<TestCase> tests) {
-    init(argc, argv);
-    return run(std::move(tests));
-}
 
 double getTimeTickLengthMs();
 
 }
+
+#define TEST_CASE(UNIQUE_NAME, DESCRIPTION) \
+    void UNIQUE_NAME##_func(); \
+    static TestCase UNIQUE_NAME##_case(UNIQUE_NAME##_func, DESCRIPTION); \
+    void UNIQUE_NAME##_func()

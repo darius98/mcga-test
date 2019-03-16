@@ -7,7 +7,7 @@ using namespace kktest;
 using namespace kktest::matchers;
 using namespace std;
 
-void comparisonMatchersTest() {
+TEST_CASE(comparison, "Matchers extension: comparison") {
     group("Equality", [&] {
         test("isEqualTo matches equal values", [&] {
             EXPECT_MATCHER_MATCHES(3, isEqualTo(3));

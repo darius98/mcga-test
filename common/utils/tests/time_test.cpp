@@ -7,7 +7,7 @@ using namespace kktest;
 using namespace kktest::matchers;
 using namespace kktest::utils;
 
-void utilsTimeTest() {
+TEST_CASE(utilsTimeTest, "Utils time") {
     group("Duration", [] {
         group("Factory methods", [] {
             test("Duration::fromMs(.1) is 100000ns", [] {

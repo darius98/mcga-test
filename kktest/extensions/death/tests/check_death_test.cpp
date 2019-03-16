@@ -14,7 +14,7 @@ using namespace kktest::matchers;
 using namespace kktest::death;
 using namespace std;
 
-void checkDeathTest() {
+TEST_CASE(checkDeath, "Death extension: check death") {
     test("exit code 0, no output", [] {
         auto func = [] {
             exit(0);

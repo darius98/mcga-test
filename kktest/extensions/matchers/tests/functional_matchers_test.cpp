@@ -18,7 +18,7 @@ void simpleFunctionThrow5() {
 }
 
 
-void functionalMatchersTest() {
+TEST_CASE(functional, "Matchers extension: functional") {
     group("Lambdas", [] {
         test("throws matcher matches lambda throwing exception", [] {
             EXPECT_MATCHER_MATCHES([] {

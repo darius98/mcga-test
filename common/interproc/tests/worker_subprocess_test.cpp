@@ -9,7 +9,7 @@ using namespace kktest::interproc;
 using namespace kktest::utils;
 using namespace std;
 
-void interprocWorkerSubprocessTest() {
+TEST_CASE(interprocWorkerSubprocessTest, "Interproc worker subprocess") {
     group("Send a message, then die", [] {
         WorkerSubprocess* proc = nullptr;
 

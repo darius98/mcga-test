@@ -7,7 +7,7 @@ using namespace kktest;
 using namespace kktest::matchers;
 using namespace std;
 
-void compositeMatchersTest() {
+TEST_CASE(composite, "Matchers extension: composite") {
     group("both", [] {
         test("both(fitting value, fitting value)", [&] {
             EXPECT_MATCHER_MATCHES(3, both(3, 3));

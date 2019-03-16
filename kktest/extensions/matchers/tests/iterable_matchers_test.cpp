@@ -8,7 +8,7 @@ using namespace kktest;
 using namespace kktest::matchers;
 using namespace std;
 
-void iterableMatchersTest() {
+TEST_CASE(iterable, "Matchers extension: iterable") {
     vector<int> arr = {1, 3, 5, 7, 9, 11, 13, 15};
     vector<vector<int>> matrix = {{1, 2, 3, 4}, {2, 3, 4}, {2, 3}, {2, 4}};
     vector<int> emptyArr = {};

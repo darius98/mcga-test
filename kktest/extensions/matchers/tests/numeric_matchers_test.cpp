@@ -6,7 +6,7 @@
 using namespace kktest;
 using namespace kktest::matchers;
 
-void numericMatchersTest() {
+TEST_CASE(numeric, "Matchers extension: numeric") {
     group("isPositive", [&] {
         test("Matches positive numbers", [&] {
             EXPECT_MATCHER_MATCHES(3, isPositive);
