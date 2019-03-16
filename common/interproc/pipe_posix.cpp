@@ -148,21 +148,6 @@ class PosixPipeWriter: public PipeWriter {
     int outputFD;
 };
 
-void redirectStdoutToPipe(PipeWriter* pipeWriter) {
-    auto linuxPipeWriter = dynamic_cast<PosixPipeWriter*>(pipeWriter);
-    int ret = dup2(linuxPipeWriter->outputFD, STDOUT_FILENO);
-    if (ret < 0) {
-        throw system_error(errno, generic_category(),
-                           "redirectStdoutToPipe:dup2");
-    }
-    ret = ::close(linuxPipeWriter->outputFD);
-    if (ret < 0) {
-        throw system_error(errno, generic_category(),
-                           "redirectStdoutToPipe:closing initial pipe");
-    }
-    linuxPipeWriter->outputFD = STDOUT_FILENO;
-}
-
 pair<PipeReader*, PipeWriter*> createAnonymousPipe() {
     int fd[2];
     if (pipe(fd) < 0) {
@@ -171,7 +156,7 @@ pair<PipeReader*, PipeWriter*> createAnonymousPipe() {
     }
     if (fcntl(fd[0], F_SETFL, O_NONBLOCK) < 0) {
         throw system_error(errno, generic_category(),
-                           "createAnonymousPipe:fcntl (set read non-blocking");
+                           "createAnonymousPipe:fcntl (set read non-blocking)");
     }
     if (fcntl(fd[1], F_SETFL, O_NONBLOCK) < 0) {
         throw system_error(errno, generic_category(),
@@ -180,37 +165,12 @@ pair<PipeReader*, PipeWriter*> createAnonymousPipe() {
     return {new PosixPipeReader(fd[0]), new PosixPipeWriter(fd[1])};
 }
 
-void createNamedPipe(const string& pipeName) {
-    int pipeCreateStatus = mkfifo(pipeName.c_str(), 0666);
-    if (pipeCreateStatus < 0) {
-        throw system_error(errno, generic_category(), "createNamedPipe:mkfifo");
+PipeWriter* PipeWriter::OpenFile(const string& fileName) {
+    int fd = open(fileName.c_str(), O_CREAT | O_WRONLY);
+    if (fd < 0) {
+        throw system_error(errno, generic_category(), "open file");
     }
-}
-
-void destroyNamedPipe(const string& pipeName) {
-    int removeStat = remove(pipeName.c_str());
-    if (removeStat < 0) {
-        throw system_error(errno, generic_category(),
-                           "destroyNamedPipe:remove");
-    }
-}
-
-PipeReader* openNamedPipeForReading(const string& pipeName) {
-    int pipeFD = open(pipeName.c_str(), O_RDONLY | O_NONBLOCK);
-    if (pipeFD < 0) {
-        throw system_error(errno, generic_category(),
-                           "openNamedPipeForReading:open");
-    }
-    return new PosixPipeReader(pipeFD);
-}
-
-PipeWriter* openNamedPipeForWriting(const string& pipeName) {
-    int pipeFD = open(pipeName.c_str(), O_WRONLY | O_NONBLOCK);
-    if (pipeFD < 0) {
-        throw system_error(errno, generic_category(),
-                           "openNamedPipeForWriting:open");
-    }
-    return new PosixPipeWriter(pipeFD);
+    return new PosixPipeWriter(fd);
 }
 
 }

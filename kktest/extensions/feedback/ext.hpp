@@ -15,13 +15,13 @@ class FeedbackExtension: public Extension {
  private:
     void initLogging(HooksManager& api);
 
-    void initPipe(HooksManager& api, const std::string& pipeName);
+    void initFileStream(HooksManager& api, const std::string& fileName);
 
     std::unique_ptr<TestLogger> logger = nullptr;
-    std::unique_ptr<interproc::PipeWriter> pipe = nullptr;
+    std::unique_ptr<interproc::PipeWriter> fileWriter = nullptr;
 
     cppli::Flag quietFlag;
-    cppli::Argument pipeNameArgument;
+    cppli::Argument fileNameArgument;
 };
 
 }

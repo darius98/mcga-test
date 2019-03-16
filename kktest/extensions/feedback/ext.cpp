@@ -33,7 +33,7 @@ void FeedbackExtension::registerCommandLineArgs(Parser& parser) {
         .setHelpGroup("Feedback")
         .setDescription("Disable STDOUT logging for this test run")
         .setShortName("q"));
-    pipeNameArgument = parser.addArgument(
+    fileNameArgument = parser.addArgument(
         ArgumentSpec("pipe-to")
         .setHelpGroup("Feedback")
         .setDescription("A file or fifo with write access for piping the test "
@@ -44,8 +44,8 @@ void FeedbackExtension::init(HooksManager& api) {
     if (!quietFlag.get()) {
         initLogging(api);
     }
-    if (!pipeNameArgument.get().empty()) {
-        initPipe(api, pipeNameArgument.get());
+    if (!fileNameArgument.get().empty()) {
+        initFileStream(api, fileNameArgument.get());
     }
 }
 
@@ -65,38 +65,39 @@ void FeedbackExtension::initLogging(HooksManager& api) {
     });
 }
 
-void FeedbackExtension::initPipe(HooksManager& api, const string& pipeName) {
-    pipe = unique_ptr<PipeWriter>(openNamedPipeForWriting(pipeName));
+void FeedbackExtension::initFileStream(HooksManager& api,
+                                       const string& fileName) {
+    fileWriter = unique_ptr<PipeWriter>(PipeWriter::OpenFile(fileName));
 
     api.addHook<HooksManager::BEFORE_GROUP>([this](GroupPtr group) {
-        pipe->sendMessage(PipeMessageType::GROUP,
-                          group->getParentGroup()->getId(),
-                          group->getId(),
-                          group->getDescription());
+        fileWriter->sendMessage(PipeMessageType::GROUP,
+                                group->getParentGroup()->getId(),
+                                group->getId(),
+                                group->getDescription());
     });
 
     api.addHook<HooksManager::BEFORE_TEST>([this](const Test& test) {
-        pipe->sendMessage(PipeMessageType::TEST_STARTED,
-                          test.getId(),
-                          test.getGroup()->getId(),
-                          test.getDescription(),
-                          test.isOptional(),
-                          test.getNumAttempts(),
-                          test.getNumRequiredPassedAttempts());
+        fileWriter->sendMessage(PipeMessageType::TEST_STARTED,
+                                test.getId(),
+                                test.getGroup()->getId(),
+                                test.getDescription(),
+                                test.isOptional(),
+                                test.getNumAttempts(),
+                                test.getNumRequiredPassedAttempts());
     });
 
     api.addHook<HooksManager::AFTER_TEST>([this](const ExecutedTest& test) {
-        pipe->sendMessage(PipeMessageType::TEST_DONE,
-                          test.getId(),
-                          test.getExecutions());
+        fileWriter->sendMessage(PipeMessageType::TEST_DONE,
+                                test.getId(),
+                                test.getExecutions());
     });
 
     api.addHook<HooksManager::BEFORE_DESTROY>([this]() {
-        pipe->sendMessage(PipeMessageType::DONE);
+        fileWriter->sendMessage(PipeMessageType::DONE);
     });
 
     api.addHook<HooksManager::BEFORE_FORCE_DESTROY>([this](const auto& err) {
-        pipe->sendMessage(PipeMessageType::ERROR, string(err.what()));
+        fileWriter->sendMessage(PipeMessageType::ERROR, string(err.what()));
     });
 }
 

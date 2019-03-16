@@ -27,6 +27,8 @@ class PipeReader {
 
 class PipeWriter {
  public:
+    static PipeWriter* OpenFile(const std::string& fileName);
+
     virtual ~PipeWriter() = default;
 
     void sendMessage(const Message& message);
@@ -40,16 +42,6 @@ class PipeWriter {
     virtual void sendBytes(std::uint8_t* bytes, std::size_t numBytes) = 0;
 };
 
-void redirectStdoutToPipe(PipeWriter* writer);
-
 std::pair<PipeReader*, PipeWriter*> createAnonymousPipe();
-
-void createNamedPipe(const std::string& pipeName);
-
-void destroyNamedPipe(const std::string& pipeName);
-
-PipeReader* openNamedPipeForReading(const std::string& pipeName);
-
-PipeWriter* openNamedPipeForWriting(const std::string& pipeName);
 
 }
