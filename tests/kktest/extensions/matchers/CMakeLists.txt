@@ -1,0 +1,10 @@
+add_kktest(kktest_extension_matchers_unittests
+    comparison_matchers_test.cpp
+    composite_matchers_test.cpp
+    functional_matchers_test.cpp
+    iterable_matchers_test.cpp
+    numeric_matchers_test.cpp
+    pointer_matchers_test.cpp
+    string_matchers_test.cpp
+    truth_matchers_test.cpp
+)

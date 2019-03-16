@@ -6,27 +6,18 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
 set(CMAKE_POSITION_INDEPENDENT_CODE TRUE)
 set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 
-set(TESTS_PATH "${CMAKE_CURRENT_SOURCE_DIR}/build/tests")
-
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/build/lib")
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/build/lib")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/build/bin")
 
-function(add_kktest TEST_NAME)
-    add_executable(${ARGV})
-    target_link_libraries(${TEST_NAME} kktest)
-    set_target_properties(${TEST_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${TESTS_PATH})
-    add_test(NAME ${TEST_NAME} COMMAND ${TEST_NAME})
-endfunction()
-
-enable_testing()
-
 include_directories(.)
-
-add_subdirectory(common/interproc)
-add_subdirectory(common/utils)
 
 add_subdirectory(third_party/cppli EXCLUDE_FROM_ALL)
 add_subdirectory(third_party/termcolor EXCLUDE_FROM_ALL)
 
+add_subdirectory(common/interproc)
+add_subdirectory(common/utils)
 add_subdirectory(kktest)
+
+enable_testing()
+add_subdirectory(tests)

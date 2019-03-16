@@ -2,9 +2,9 @@
 
 #include <iostream>
 
-#include "kktest/core/src/export.hpp"
-#include "kktest/core/src/main.hpp"
-#include "kktest/extensions/feedback/src/ext.hpp"
+#include "kktest/core/export.hpp"
+#include "kktest/core/main.hpp"
+#include "kktest/extensions/feedback/ext.hpp"
 
 using namespace kktest;
 using namespace std;
