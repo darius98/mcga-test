@@ -14,6 +14,14 @@ add_integration_test(core_single_test_timeout
     single_test_timeout.py
     single_test_timeout.cpp
 )
+add_integration_test(core_single_test_exit_0
+    single_test_exit_0.py
+    single_test_exit_0.cpp
+)
+add_integration_test(core_single_test_exit_1
+    single_test_exit_1.py
+    single_test_exit_1.cpp
+)
 add_integration_test(core_single_file_multiple_cases
     single_file_multiple_cases.py
     single_file_multiple_cases.cpp
