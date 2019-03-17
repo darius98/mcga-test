@@ -34,6 +34,8 @@ class Driver: public HooksManager {
 
     void addTearDown(Executable func);
 
+    void addFailure(const std::string& failure);
+
  private:
     Driver(HooksManager hooks, ExecutorType executorType, std::size_t numBoxes);
 

@@ -24,7 +24,7 @@ KKTEST_EXPORT void tearDown(Executable func) {
 }
 
 KKTEST_EXPORT void fail(const string& message) {
-    throw ExpectationFailed(message);
+    Driver::Instance()->addFailure(message);
 }
 
 }

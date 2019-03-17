@@ -115,6 +115,16 @@ void Driver::addTearDown(Executable func) {
     groupStack.back()->addTearDown(move(func));
 }
 
+void Driver::addFailure(const string& failure) {
+    if (!executor->isActive()) {
+        emitWarning("Called kktest::fail() outside "
+                    "kktest::test()/kktest::setUp()/kktest::tearDown()."
+                    "Ignoring...");
+        return;
+    }
+    throw ExpectationFailed(failure);
+}
+
 Driver::Driver(HooksManager hooksManager,
                ExecutorType executorType,
                size_t numBoxes): HooksManager(move(hooksManager)) {
