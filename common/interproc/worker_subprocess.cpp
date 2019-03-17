@@ -6,10 +6,6 @@ using namespace std;
 namespace kktest::interproc {
 
 WorkerSubprocess::WorkerSubprocess(Duration timeLimit, Work run):
-// TODO(darius98): I am not sure exactly what I want here.
-//  The current implementation uses a real-time stopwatch to set the
-//  subprocess's time limit. Is this the desired behaviour or is it
-//  to take into account only the subprocess' CPU time?
         stopwatch(timeLimit) {
     auto pipe = createAnonymousPipe();
     subprocess = Subprocess::Fork([&pipe, &run]() {

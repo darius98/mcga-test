@@ -6,7 +6,6 @@
 using namespace kktest::interproc;
 using namespace kktest::utils;
 using namespace std;
-using namespace std::chrono;
 
 namespace kktest::death {
 
