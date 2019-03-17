@@ -14,7 +14,6 @@ class HooksManager {
     typedef std::function<void(GroupPtr)> AfterGroup;
     typedef std::function<void()> AfterInit;
     typedef std::function<void()> BeforeDestroy;
-    typedef std::function<void(const std::exception&)> BeforeForceDestroy;
     typedef std::function<void(const std::string&)> OnWarning;
 
     enum Type {
@@ -24,8 +23,7 @@ class HooksManager {
         BEFORE_TEST = 3,
         AFTER_TEST = 4,
         BEFORE_DESTROY = 5,
-        BEFORE_FORCE_DESTROY = 6,
-        ON_WARNING = 7,
+        ON_WARNING = 6,
     };
 
     template<Type t, class H>
@@ -49,7 +47,6 @@ class HooksManager {
         std::vector<BeforeTest>,
         std::vector<AfterTest>,
         std::vector<BeforeDestroy>,
-        std::vector<BeforeForceDestroy>,
         std::vector<OnWarning>
     > hooks;
 };

@@ -24,8 +24,7 @@ enum PipeMessageType : uint8_t {
     TEST_DONE = 1,
     GROUP = 2,
     DONE = 3,
-    ERROR = 4,
-    WARNING = 5,
+    WARNING = 4,
 };
 
 int FeedbackExtension::GetReturnCode() {
@@ -70,10 +69,6 @@ void FeedbackExtension::initLogging(HooksManager& api) {
         logger->printFinalInformation();
     });
 
-    api.addHook<HooksManager::BEFORE_FORCE_DESTROY>([this](const auto& err) {
-        logger->printFatalError(err.what());
-    });
-
     api.addHook<HooksManager::ON_WARNING>([this](const string& message) {
         logger->printWarning(message);
     });
@@ -108,10 +103,6 @@ void FeedbackExtension::initFileStream(HooksManager& api,
 
     api.addHook<HooksManager::BEFORE_DESTROY>([this]() {
         fileWriter->sendMessage(PipeMessageType::DONE);
-    });
-
-    api.addHook<HooksManager::BEFORE_FORCE_DESTROY>([this](const auto& err) {
-        fileWriter->sendMessage(PipeMessageType::ERROR, string(err.what()));
     });
 
     api.addHook<HooksManager::ON_WARNING>([this](const string& message) {

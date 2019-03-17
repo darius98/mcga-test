@@ -84,8 +84,6 @@ void Executor::runJob(const Executable& job,
                       const string& where) {
     try {
         job();
-    } catch(const ConfigurationError& e) {
-        throw e;
     } catch(const ExpectationFailed& failure) {
         execution->fail(failure.what());
     } catch(const exception& e) {

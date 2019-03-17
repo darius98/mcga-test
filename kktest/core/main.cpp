@@ -51,16 +51,11 @@ void runTests(int argc,
     size_t numBoxes = max(numBoxesArgument.get(), 1ul);
 
     auto driver = Driver::Init(api, executorType, numBoxes);
-    bool caughtConfigurationError = false;
-    try {
-        for (TestCase* testCase : tests) {
-            driver->addGroup(move(testCase->name), testCase->body);
-        }
-        driver->clean();
-    } catch(const ConfigurationError& error) {
-        driver->forceDestroy(error);
-        caughtConfigurationError = true;
+
+    for (TestCase* testCase : tests) {
+        driver->addGroup(move(testCase->name), testCase->body);
     }
+    driver->clean();
 
     for (Extension* extension : extensions) {
         extension->destroy();
@@ -68,10 +63,6 @@ void runTests(int argc,
     }
 
     delete driver;
-
-    if (caughtConfigurationError) {
-        exit(1);
-    }
 }
 
 }

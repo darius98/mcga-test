@@ -27,10 +27,6 @@ void Driver::clean() {
     runHooks<BEFORE_DESTROY>();
 }
 
-void Driver::forceDestroy(const ConfigurationError& error) {
-    runHooks<BEFORE_FORCE_DESTROY>(error);
-}
-
 void Driver::addGroup(GroupConfig config, const Executable& body) {
     if (executor->isActive()) {
         emitWarning("Called kktest::group() inside a kktest::"
@@ -47,20 +43,14 @@ void Driver::addGroup(GroupConfig config, const Executable& body) {
     beforeGroup(group);
     try {
         body();
-    } catch(const ConfigurationError& e) {
-        throw e;
-    } catch(const ExpectationFailed& e) {
-        throw ConfigurationError(
-            "Expectation failed in group \"" + group->getDescription() + "\""
-            ": " + e.what());
     } catch(const exception& e) {
-        throw ConfigurationError(
-            "Exception thrown in group \"" + group->getDescription() + "\""
-            ": " + e.what());
+        emitWarning("Exception thrown in group "
+                    "\"" + group->getDescription() + "\": " + e.what()
+                    + ". Unable to execute remainder of tests in this group.");
     } catch(...) {
-        throw ConfigurationError(
-            "Non-exception thrown in group \"" + group->getDescription() + "\""
-            ".");
+        emitWarning("Non-exception thrown in group "
+                    "\"" + group->getDescription() + "\". Unable to execute "
+                    "remainder of tests in this group.");
     }
     group->setStartedAllTests();
     if (group->finishedAllTests()) {

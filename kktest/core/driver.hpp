@@ -24,8 +24,6 @@ class Driver: public HooksManager {
 
     void clean();
 
-    void forceDestroy(const ConfigurationError& error);
-
     void addGroup(GroupConfig config, const Executable& body);
 
     void addTest(TestConfig config, Executable body);
