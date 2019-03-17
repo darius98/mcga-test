@@ -1,8 +1,9 @@
 #include "kktest/core/driver.hpp"
 
+#include <iostream>
+
 #include "kktest/core/include/kktest.hpp"
 #include "kktest/core/box_executor.hpp"
-#include "kktest/core/warning.hpp"
 
 using namespace std;
 using namespace std::placeholders;
@@ -13,10 +14,6 @@ Driver* Driver::instance = nullptr;
 
 Driver* Driver::Instance() {
     return instance;
-}
-
-bool Driver::IsInsideTestCase() {
-    return instance != nullptr && !instance->groupStack.empty();
 }
 
 Driver* Driver::Init(const HooksManager& api,
@@ -38,9 +35,9 @@ void Driver::forceDestroy(const ConfigurationError& error) {
 
 void Driver::addGroup(GroupConfig config, const Executable& body) {
     if (executor->isActive()) {
-        EmitWarning("Called kktest::group() inside a kktest::",
-                    executor->stateAsString(),
-                    "(). Ignoring...");
+        emitWarning("Called kktest::group() inside a kktest::"
+                    + executor->stateAsString()
+                    + "(). Ignoring...");
         return;
     }
 
@@ -76,9 +73,9 @@ void Driver::addGroup(GroupConfig config, const Executable& body) {
 
 void Driver::addTest(TestConfig config, Executable body) {
     if (executor->isActive()) {
-        EmitWarning("Called kktest::test() inside a kktest::",
-                    executor->stateAsString(),
-                    "(). Ignoring...");
+        emitWarning("Called kktest::test() inside a kktest::"
+                    + executor->stateAsString()
+                    + "(). Ignoring...");
         return;
     }
     GroupPtr parentGroup = groupStack.back();
@@ -90,9 +87,15 @@ void Driver::addTest(TestConfig config, Executable body) {
 
 void Driver::addSetUp(Executable func) {
     if (executor->isActive()) {
-        EmitWarning("Called kktest::setUp() inside a kktest::",
-                    executor->stateAsString(),
-                    "(). Ignoring...");
+        emitWarning("Called kktest::setUp() inside a kktest::"
+                    + executor->stateAsString()
+                    + "(). Ignoring...");
+        return;
+    }
+    if (groupStack.back()->hasSetUp()) {
+        emitWarning("kktest::setUp() called, but a setUp for group \""
+                    + groupStack.back()->getDescription()
+                    + "\" already exists. Ignoring...");
         return;
     }
     groupStack.back()->addSetUp(move(func));
@@ -100,9 +103,15 @@ void Driver::addSetUp(Executable func) {
 
 void Driver::addTearDown(Executable func) {
     if (executor->isActive()) {
-        EmitWarning("Called kktest::tearDown() inside a kktest::",
-                    executor->stateAsString(),
-                    "(). Ignoring...");
+        emitWarning("Called kktest::tearDown() inside a kktest::"
+                    + executor->stateAsString()
+                    + "(). Ignoring...");
+        return;
+    }
+    if (groupStack.back()->hasTearDown()) {
+        emitWarning("kktest::tearDown() called, but a tearDown for group \""
+                    + groupStack.back()->getDescription()
+                    + "\" already exists. Ignoring...");
         return;
     }
     groupStack.back()->addTearDown(move(func));
@@ -129,6 +138,10 @@ Driver::Driver(HooksManager hooksManager,
             throw ConfigurationError("Driver::Unknown executor type.");
         }
     }
+}
+
+void Driver::emitWarning(const std::string& s) {
+    cout << "KKTest Warning: " << s << "\n";
 }
 
 void Driver::beforeTest(const Test& test) {

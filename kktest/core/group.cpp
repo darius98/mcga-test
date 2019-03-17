@@ -1,7 +1,5 @@
 #include "kktest/core/group.hpp"
 
-#include "kktest/core/warning.hpp"
-
 using namespace std;
 
 namespace kktest {
@@ -28,33 +26,29 @@ GroupPtr Group::getParentGroup() const {
 }
 
 void Group::addSetUp(Executable func) {
-    if (setUpFunc) {
-        EmitWarning("kktest::setUp() called, but a setUp for group \"",
-                    description,
-                    "\" already exists. Ignoring...");
-        return;
-    }
     setUpFunc = move(func);
 }
 
+bool Group::hasSetUp() const {
+    return setUpFunc != nullptr;
+}
+
 void Group::setUp() const {
-    if (setUpFunc) {
+    if (hasSetUp()) {
         setUpFunc();
     }
 }
 
 void Group::addTearDown(Executable func) {
-    if (tearDownFunc) {
-        EmitWarning("kktest::tearDown() called, but a tearDown for group \"",
-                    description,
-                    "\" already exists. Ignoring...");
-        return;
-    }
     tearDownFunc = move(func);
 }
 
+bool Group::hasTearDown() const {
+    return tearDownFunc != nullptr;
+}
+
 void Group::tearDown() const {
-    if (tearDownFunc) {
+    if (hasTearDown()) {
         tearDownFunc();
     }
 }

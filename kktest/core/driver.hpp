@@ -22,8 +22,6 @@ class Driver: public HooksManager {
                         ExecutorType executorType,
                         std::size_t numBoxes);
 
-    static bool IsInsideTestCase();
-
     void clean();
 
     void forceDestroy(const ConfigurationError& error);
@@ -38,6 +36,8 @@ class Driver: public HooksManager {
 
  private:
     Driver(HooksManager hooks, ExecutorType executorType, std::size_t numBoxes);
+
+    void emitWarning(const std::string& message);
 
     void beforeTest(const Test& test);
     void afterTest(const ExecutedTest& test);

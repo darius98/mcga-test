@@ -51,6 +51,11 @@ class Group: private GroupConfig {
      * Note: This throws on being called the second time for the same group. */
     void addSetUp(Executable func);
 
+    /** Returns whether this group has a setUp.
+     *
+     * Is true only if addSetUp() was called on this instance. */
+    bool hasSetUp() const;
+
     /** Call the set-up function of this group. */
     void setUp() const;
 
@@ -62,6 +67,11 @@ class Group: private GroupConfig {
      *
      * Note: This throws on being called the second time for the same group. */
     void addTearDown(Executable func);
+
+    /** Returns whether this group has a tearDown.
+     *
+     * Is true only if addTearDown() was called on this instance. */
+    bool hasTearDown() const;
 
     /** Call the tear-down function of this group. */
     void tearDown() const;
