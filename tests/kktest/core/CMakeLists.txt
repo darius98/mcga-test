@@ -1,0 +1,20 @@
+add_integration_test(core_single_passing_test
+    single_passing_test.py
+    single_passing_test.cpp
+)
+add_integration_test(core_single_failing_test
+    single_failing_test.py
+    single_failing_test.cpp
+)
+add_integration_test(core_single_file_multiple_cases
+    single_file_multiple_cases.py
+    single_file_multiple_cases.cpp
+)
+add_integration_test(core_multiple_files
+    multiple_files.py
+    multiple_files_1.cpp  multiple_files_2.cpp
+)
+add_integration_test(core_multiple_tests_one_fails
+    multiple_tests_one_fails.py
+    multiple_tests_one_fails.cpp
+)

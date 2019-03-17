@@ -1,4 +1,4 @@
-add_kktest(kktest_extension_matchers_unittests
+add_unit_test(extension_matchers
     comparison_matchers_test.cpp
     composite_matchers_test.cpp
     functional_matchers_test.cpp
