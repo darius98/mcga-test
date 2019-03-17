@@ -1,4 +1,4 @@
 add_unit_test(extension_death
-    check_death_test.cpp
-    matchers_test.cpp
+    unit_check_death.cpp
+    unit_matchers.cpp
 )

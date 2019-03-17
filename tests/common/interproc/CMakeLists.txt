@@ -1,7 +1,7 @@
 add_unit_test(common_interproc
     $<TARGET_OBJECTS:common_interproc_obj>
-    message_test.cpp
-    pipe_test.cpp
-    subprocess_test.cpp
-    worker_subprocess_test.cpp
+    unit_message.cpp
+    unit_pipe.cpp
+    unit_subprocess.cpp
+    unit_worker_subprocess.cpp
 )
