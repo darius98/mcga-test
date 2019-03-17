@@ -17,7 +17,7 @@ Driver* Driver::Instance() {
 Driver* Driver::Init(const HooksManager& api,
                      ExecutorType executorType,
                      size_t numBoxes) {
-    Executor* executor;
+    Executor* executor = nullptr;
     switch (executorType) {
         case SMOOTH_EXECUTOR: executor = new Executor(); break;
         case BOXED_EXECUTOR: executor = new BoxExecutor(numBoxes); break;
@@ -27,16 +27,20 @@ Driver* Driver::Init(const HooksManager& api,
     return instance;
 }
 
-void Driver::clean() {
-    executor->finalize();
-    runHooks<BEFORE_DESTROY>();
+Driver::Driver(HooksManager hooksManager, Executor* _executor):
+        HooksManager(move(hooksManager)), executor(_executor) {
+    executor->setOnTestFinishedCallback([this](const ExecutedTest& test) {
+        afterTest(test);
+    });
+    executor->setOnWarningCallback([this](const string& message) {
+        runHooks<ON_WARNING>(message);
+    });
 }
 
 void Driver::addGroup(GroupConfig config, const Executable& body) {
     if (executor->isActive()) {
-        emitWarning("Called kktest::group() inside a kktest::"
-                    + executor->stateAsString()
-                    + "(). Ignoring...");
+        emitWarning("Called group() inside a "
+                    + executor->stateAsString() + "(). Ignoring.");
         return;
     }
 
@@ -66,9 +70,8 @@ void Driver::addGroup(GroupConfig config, const Executable& body) {
 
 void Driver::addTest(TestConfig config, Executable body) {
     if (executor->isActive()) {
-        emitWarning("Called kktest::test() inside a kktest::"
-                    + executor->stateAsString()
-                    + "(). Ignoring...");
+        emitWarning("Called test() inside a "
+                    + executor->stateAsString() + "(). Ignoring.");
         return;
     }
     GroupPtr parentGroup = groupStack.back();
@@ -80,54 +83,46 @@ void Driver::addTest(TestConfig config, Executable body) {
 
 void Driver::addSetUp(Executable func) {
     if (executor->isActive()) {
-        emitWarning("Called kktest::setUp() inside a kktest::"
-                    + executor->stateAsString()
-                    + "(). Ignoring...");
+        emitWarning("Called setUp() inside a "
+                    + executor->stateAsString() + "(). Ignoring.");
         return;
     }
-    if (groupStack.back()->hasSetUp()) {
-        emitWarning("kktest::setUp() called, but a setUp for group \""
-                    + groupStack.back()->getDescription()
-                    + "\" already exists. Ignoring...");
+    const auto& group = groupStack.back();
+    if (group->hasSetUp()) {
+        emitWarning("setUp() called, but a setUp for group \""
+                    + group->getDescription() + "\" already exists. Ignoring.");
         return;
     }
-    groupStack.back()->addSetUp(move(func));
+    group->addSetUp(move(func));
 }
 
 void Driver::addTearDown(Executable func) {
     if (executor->isActive()) {
-        emitWarning("Called kktest::tearDown() inside a kktest::"
-                    + executor->stateAsString()
-                    + "(). Ignoring...");
+        emitWarning("Called tearDown() inside a "
+                    + executor->stateAsString() + "(). Ignoring.");
         return;
     }
-    if (groupStack.back()->hasTearDown()) {
-        emitWarning("kktest::tearDown() called, but a tearDown for group \""
-                    + groupStack.back()->getDescription()
-                    + "\" already exists. Ignoring...");
+    const auto& group = groupStack.back();
+    if (group->hasTearDown()) {
+        emitWarning("tearDown() called, but a tearDown for group \""
+                    + group->getDescription() + "\" already exists. Ignoring.");
         return;
     }
-    groupStack.back()->addTearDown(move(func));
+    group->addTearDown(move(func));
 }
 
 void Driver::addFailure(const string& failure) {
     if (!executor->isActive()) {
-        emitWarning("Called kktest::fail() outside "
-                    "kktest::test()/kktest::setUp()/kktest::tearDown()."
-                    "Ignoring...");
+        emitWarning("Called fail() with message '" + failure + "' "
+                    "outside test()/setUp()/tearDown(). Ignoring.");
         return;
     }
     throw ExpectationFailed(failure);
 }
 
-Driver::Driver(HooksManager hooksManager, Executor* _executor):
-        HooksManager(move(hooksManager)), executor(_executor) {
-    executor->setOnTestFinishedCallback([this](const ExecutedTest& test) {
-        afterTest(test);
-    });
-    executor->setOnWarningCallback([this](const string& message) {
-        runHooks<ON_WARNING>(message);
-    });
+void Driver::clean() {
+    executor->finalize();
+    runHooks<BEFORE_DESTROY>();
 }
 
 void Driver::emitWarning(const string& message) {

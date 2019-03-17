@@ -24,8 +24,6 @@ class Driver: public HooksManager {
 
     Driver(HooksManager hooks, Executor* executor);
 
-    void clean();
-
     void addGroup(GroupConfig config, const Executable& body);
 
     void addTest(TestConfig config, Executable body);
@@ -35,6 +33,8 @@ class Driver: public HooksManager {
     void addTearDown(Executable func);
 
     void addFailure(const std::string& failure);
+
+    void clean();
 
  private:
     void emitWarning(const std::string& message);

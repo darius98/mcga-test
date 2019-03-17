@@ -18,3 +18,7 @@ add_integration_test(core_multiple_tests_one_fails
     multiple_tests_one_fails.py
     multiple_tests_one_fails.cpp
 )
+add_integration_test(emit_warnings
+    emit_warnings.py
+    emit_warnings.cpp
+)

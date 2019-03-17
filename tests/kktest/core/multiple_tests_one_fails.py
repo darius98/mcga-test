@@ -4,7 +4,7 @@ import subprocess
 
 proc = None
 try:
-    proc = subprocess.run("./multiple_tests_one_fails",
+    proc = subprocess.run("./core_multiple_tests_one_fails",
                           timeout=1, capture_output=True)
 except TimeoutError:
     print("Test did not finish in 1 second")
@@ -14,32 +14,32 @@ if proc.returncode != 1:
     print("Did not exit with code 1, exit_code=" + str(proc.returncode))
     exit(1)
 
-if "[P] Multiple tests::test1" not in str(proc.stdout):
+if "[P] Multiple tests::test1" not in proc.stdout.decode():
     print("Did not output correct feedback on passing test 1, output='"
-          + str(proc.stdout) + "'")
+          + proc.stdout.decode() + "'")
     exit(1)
 
-if "[F] Multiple tests::test2" not in str(proc.stdout):
+if "[F] Multiple tests::test2" not in proc.stdout.decode():
     print("Did not output correct feedback on failing test 2, output='"
-          + str(proc.stdout) + "'")
+          + proc.stdout.decode() + "'")
     exit(1)
 
-if "[P] Multiple tests::test3" not in str(proc.stdout):
+if "[P] Multiple tests::test3" not in proc.stdout.decode():
     print("Did not output correct feedback on passing test 3, output='"
-          + str(proc.stdout) + "'")
+          + proc.stdout.decode() + "'")
     exit(1)
 
-if "[P] Multiple tests::test4" not in str(proc.stdout):
+if "[P] Multiple tests::test4" not in proc.stdout.decode():
     print("Did not output correct feedback on passing test 4, output='"
-          + str(proc.stdout) + "'")
+          + proc.stdout.decode() + "'")
     exit(1)
 
-if "Tests passed: 3" not in str(proc.stdout):
+if "Tests passed: 3" not in proc.stdout.decode():
     print("Did not output correct feedback on number of passed tests, output='"
-          + str(proc.stdout) + "'")
+          + proc.stdout.decode() + "'")
     exit(1)
 
-if "Tests failed: 1" not in str(proc.stdout):
+if "Tests failed: 1" not in proc.stdout.decode():
     print("Did not output correct feedback on number of failed tests, output='"
-          + str(proc.stdout) + "'")
+          + proc.stdout.decode() + "'")
     exit(1)

@@ -4,7 +4,7 @@ import subprocess
 
 proc = None
 try:
-    proc = subprocess.run("./single_passing_test",
+    proc = subprocess.run("./core_single_passing_test",
                           timeout=1, capture_output=True)
 except TimeoutError:
     print("Test did not finish in 1 second")
@@ -14,17 +14,17 @@ if proc.returncode != 0:
     print("Did not exit with code 0, exit_code=" + str(proc.returncode))
     exit(1)
 
-if "[P] Single passing test::This test passes" not in str(proc.stdout):
+if "[P] Single passing test::This test passes" not in proc.stdout.decode():
     print("Did not output correct feedback on passing test, output='"
-          + str(proc.stdout) + "'")
+          + proc.stdout.decode() + "'")
     exit(1)
 
-if "Tests passed: 1" not in str(proc.stdout):
+if "Tests passed: 1" not in proc.stdout.decode():
     print("Did not output correct feedback on number of passed tests, output='"
-          + str(proc.stdout) + "'")
+          + proc.stdout.decode() + "'")
     exit(1)
 
-if "Tests failed: 0" not in str(proc.stdout):
+if "Tests failed: 0" not in proc.stdout.decode():
     print("Did not output correct feedback on number of failed tests, output='"
-          + str(proc.stdout) + "'")
+          + proc.stdout.decode() + "'")
     exit(1)
