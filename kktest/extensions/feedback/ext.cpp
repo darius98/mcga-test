@@ -69,8 +69,8 @@ void FeedbackExtension::initLogging(HooksManager& api) {
         logger->printFinalInformation();
     });
 
-    api.addHook<HooksManager::ON_WARNING>([this](const string& message) {
-        logger->printWarning(message);
+    api.addHook<HooksManager::ON_WARNING>([this](const Warning& warning) {
+        logger->printWarning(warning.message);
     });
 }
 
@@ -105,8 +105,11 @@ void FeedbackExtension::initFileStream(HooksManager& api,
         fileWriter->sendMessage(PipeMessageType::DONE);
     });
 
-    api.addHook<HooksManager::ON_WARNING>([this](const string& message) {
-        fileWriter->sendMessage(PipeMessageType::WARNING, message);
+    api.addHook<HooksManager::ON_WARNING>([this](const Warning& warning) {
+        fileWriter->sendMessage(PipeMessageType::WARNING,
+                                warning.message,
+                                warning.groupId,
+                                warning.testId);
     });
 }
 

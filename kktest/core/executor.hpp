@@ -1,13 +1,14 @@
 #pragma once
 
 #include "kktest/core/executed_test.hpp"
+#include "kktest/core/warning.hpp"
 
 namespace kktest {
 
 class Executor {
  public:
     typedef std::function<void(const ExecutedTest&)> OnTestFinished;
-    typedef std::function<void(const std::string&)> OnWarning;
+    typedef std::function<void(const Warning&)> OnWarning;
 
     virtual ~Executor() = default;
 
@@ -43,6 +44,8 @@ class Executor {
         INSIDE_SET_UP,
         INSIDE_TEAR_DOWN
     } state = INACTIVE;
+    int currentTestGroupId = 0;
+    int currentTestId = 0;
 };
 
 }

@@ -59,7 +59,9 @@ bool RunningTest::finishedCurrentExecution() {
                     break;
                 }
                 // It's a warning
-                executor->onWarning(message.read<string>());
+                executor->onWarning(Warning(message.read<string>(),
+                                            test.getGroup()->getId(),
+                                            test.getId()));
             }
             break;
         }

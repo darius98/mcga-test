@@ -32,8 +32,8 @@ Driver::Driver(HooksManager hooksManager, Executor* _executor):
     executor->setOnTestFinishedCallback([this](const ExecutedTest& test) {
         afterTest(test);
     });
-    executor->setOnWarningCallback([this](const string& message) {
-        runHooks<ON_WARNING>(message);
+    executor->setOnWarningCallback([this](const Warning& warning) {
+        runHooks<ON_WARNING>(warning);
     });
 }
 
@@ -129,7 +129,7 @@ void Driver::emitWarning(const string& message) {
     if (executor->isActive()) {
         executor->handleWarning(message);
     } else {
-        runHooks<ON_WARNING>(message);
+        runHooks<ON_WARNING>(Warning(message, groupStack.back()->getId()));
     }
 }
 

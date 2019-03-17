@@ -42,6 +42,8 @@ void Executor::execute(Test test) {
 }
 
 ExecutedTest::Info Executor::run(const Test& test) {
+    currentTestGroupId = test.getGroup()->getId();
+    currentTestId = test.getId();
     state = INSIDE_SET_UP;
     ExecutedTest::Info info;
     Timer t;
@@ -76,7 +78,7 @@ ExecutedTest::Info Executor::run(const Test& test) {
 }
 
 void Executor::handleWarning(const string& message) {
-    onWarning(message);
+    onWarning(Warning(message, currentTestGroupId, currentTestId));
 }
 
 void Executor::runJob(const Executable& job,

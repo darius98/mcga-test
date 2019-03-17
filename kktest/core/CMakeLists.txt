@@ -6,8 +6,9 @@ add_library(kktest_core OBJECT
     group.cpp
     kktest.cpp
     main.cpp
-        time_tick.cpp
+    time_tick.cpp
     test.cpp
+    warning.cpp
 )
 target_compile_options(kktest_core PRIVATE -Wall -Wextra -pedantic)
 target_include_directories(kktest_core PUBLIC include)

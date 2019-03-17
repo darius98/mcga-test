@@ -3,6 +3,7 @@
 #include <stdexcept>
 
 #include "kktest/core/executed_test.hpp"
+#include "kktest/core/warning.hpp"
 
 namespace kktest {
 
@@ -14,7 +15,7 @@ class HooksManager {
     typedef std::function<void(GroupPtr)> AfterGroup;
     typedef std::function<void()> AfterInit;
     typedef std::function<void()> BeforeDestroy;
-    typedef std::function<void(const std::string&)> OnWarning;
+    typedef std::function<void(const Warning&)> OnWarning;
 
     enum Type {
         AFTER_INIT = 0,
