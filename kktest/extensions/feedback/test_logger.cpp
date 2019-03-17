@@ -54,16 +54,6 @@ void TestLogger::printFinalInformation() {
            << " ms)\n";
 }
 
-void TestLogger::printFatalError(const string& errorMessage) {
-    stream << "\nA fatal "
-           << red
-           << "error"
-           << reset
-           << " occurred during execution: "
-           << errorMessage
-           << "\n";
-}
-
 void TestLogger::printWarning(const string& warningMessage) {
     stream << yellow << "Warning: " << warningMessage << reset << "\n";
 }
