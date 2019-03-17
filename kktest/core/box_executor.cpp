@@ -8,7 +8,6 @@
 using namespace kktest::interproc;
 using namespace kktest::utils;
 using namespace std;
-using namespace std::placeholders;
 
 namespace {
 
@@ -28,17 +27,20 @@ void RunningTest::startExecution() {
     auto timeLimit = timeTicksToNanoseconds(test.getTimeTicksLimit()) + 1s;
     currentExecution = make_unique<WorkerSubprocess>(
         timeLimit,
-        bind(&RunningTest::executeBoxed, this, _1));
+        [this](PipeWriter* pipe) {
+            executeBoxed(pipe);
+        });
 }
 
 void RunningTest::executeBoxed(PipeWriter* pipe) const {
+    executor->setCurrentTestingSubprocessPipe(pipe);
     ExecutedTest::Info info = executor->run(test);
     pipe->sendMessage(DONE, info.timeTicks, info.passed, info.failure);
 }
 
 bool RunningTest::finishedCurrentExecution() {
-    bool passed = false;
     Message message;
+    bool passed = false;
     string error;
     switch (currentExecution->getFinishStatus()) {
         case WorkerSubprocess::NO_EXIT: {
@@ -48,20 +50,16 @@ bool RunningTest::finishedCurrentExecution() {
             while (true) {
                 message = currentExecution->getNextMessage(32);
                 if (message.isInvalid()) {
+                    error = "Unexpected 0-code exit.";
                     break;
                 }
                 auto messageType = message.read<PipeMessageType>();
                 if (messageType == PipeMessageType::DONE) {
+                    passed = true;
                     break;
                 }
                 // It's a warning
                 executor->onWarning(message.read<string>());
-            }
-            if (message.isInvalid()) {
-                passed = false;
-                error = "Unexpected 0-code exit.";
-            } else {
-                passed = true;
             }
             break;
         }
@@ -102,8 +100,9 @@ BoxExecutor::BoxExecutor(size_t numBoxes): numBoxes(numBoxes) {}
 
 void BoxExecutor::execute(Test test) {
     ensureEmptyBoxes(1);
-    activeBoxes.emplace_back(move(test), this);
-    activeBoxes.back().startExecution();
+    auto runningTest = RunningTest(move(test), this);
+    runningTest.startExecution();
+    activeBoxes.push_back(move(runningTest));
 }
 
 void BoxExecutor::finalize() {

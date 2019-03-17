@@ -120,11 +120,11 @@ Driver::Driver(HooksManager hooksManager,
                size_t numBoxes): HooksManager(move(hooksManager)) {
     switch (executorType) {
         case ExecutorType::SMOOTH_EXECUTOR: {
-            executor = make_unique<Executor>();
+            executor.reset(new Executor());
             break;
         }
         case ExecutorType::BOXED_EXECUTOR: {
-            executor = make_unique<BoxExecutor>(numBoxes);
+            executor.reset(new BoxExecutor(numBoxes));
             break;
         }
     }
