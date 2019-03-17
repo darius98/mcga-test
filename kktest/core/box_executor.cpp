@@ -10,20 +10,30 @@ using namespace kktest::utils;
 using namespace std;
 using namespace std::placeholders;
 
+namespace {
+
+enum PipeMessageType {
+    WARNING,
+    DONE,
+};
+
+}
+
 namespace kktest {
 
-RunningTest::RunningTest(Test test): test(move(test)) {}
+RunningTest::RunningTest(Test test, BoxExecutor* executor):
+        test(move(test)), executor(executor) {}
 
-void RunningTest::startExecution(Executor* executor) {
+void RunningTest::startExecution() {
     auto timeLimit = timeTicksToNanoseconds(test.getTimeTicksLimit()) + 1s;
     currentExecution = make_unique<WorkerSubprocess>(
         timeLimit,
-        bind(&RunningTest::executeBoxed, this, executor, _1));
+        bind(&RunningTest::executeBoxed, this, _1));
 }
 
-void RunningTest::executeBoxed(Executor *executor, PipeWriter *pipe) const {
+void RunningTest::executeBoxed(PipeWriter* pipe) const {
     ExecutedTest::Info info = executor->run(test);
-    pipe->sendMessage(info.timeTicks, info.passed, info.failure);
+    pipe->sendMessage(DONE, info.timeTicks, info.passed, info.failure);
 }
 
 bool RunningTest::finishedCurrentExecution() {
@@ -35,7 +45,18 @@ bool RunningTest::finishedCurrentExecution() {
             return false;
         }
         case WorkerSubprocess::ZERO_EXIT: {
-            message = currentExecution->getNextMessage(32);
+            while (true) {
+                message = currentExecution->getNextMessage(32);
+                if (message.isInvalid()) {
+                    break;
+                }
+                auto messageType = message.read<PipeMessageType>();
+                if (messageType == PipeMessageType::DONE) {
+                    break;
+                }
+                // It's a warning
+                executor->onWarning(message.read<string>());
+            }
             if (message.isInvalid()) {
                 passed = false;
                 error = "Unexpected 0-code exit.";
@@ -46,7 +67,7 @@ bool RunningTest::finishedCurrentExecution() {
         }
         case WorkerSubprocess::NON_ZERO_EXIT: {
             error = "Test exited with code "
-                    + to_string(currentExecution->getReturnCode()) + ".";
+                    + to_string(currentExecution->getReturnCode());
             break;
         }
         case WorkerSubprocess::SIGNAL_EXIT: {
@@ -77,17 +98,24 @@ ExecutedTest RunningTest::toExecutedTest() && {
     return ExecutedTest(move(test), move(executions));
 }
 
-BoxExecutor::BoxExecutor(OnTestFinished onTestFinished, size_t numBoxes):
-        Executor(move(onTestFinished)), numBoxes(numBoxes) {}
+BoxExecutor::BoxExecutor(size_t numBoxes): numBoxes(numBoxes) {}
 
 void BoxExecutor::execute(Test test) {
     ensureEmptyBoxes(1);
-    activeBoxes.emplace_back(move(test));
-    activeBoxes.back().startExecution(this);
+    activeBoxes.emplace_back(move(test), this);
+    activeBoxes.back().startExecution();
 }
 
 void BoxExecutor::finalize() {
     ensureEmptyBoxes(numBoxes);
+}
+
+void BoxExecutor::setCurrentTestingSubprocessPipe(PipeWriter* pipe) {
+    currentTestingSubprocessPipe = pipe;
+}
+
+void BoxExecutor::handleWarning(const string& message) {
+    currentTestingSubprocessPipe->sendMessage(WARNING, message);
 }
 
 void BoxExecutor::ensureEmptyBoxes(size_t requiredEmpty) {
@@ -100,7 +128,7 @@ void BoxExecutor::ensureEmptyBoxes(size_t requiredEmpty) {
                     onTestFinished(move(*it).toExecutedTest());
                     it = activeBoxes.erase(it);
                 } else {
-                    it->startExecution(this);
+                    it->startExecution();
                     ++ it;
                 }
                 progress = true;

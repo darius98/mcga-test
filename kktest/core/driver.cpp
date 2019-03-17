@@ -10,8 +10,6 @@ using namespace std::placeholders;
 
 namespace kktest {
 
-Driver* Driver::instance = nullptr;
-
 Driver* Driver::Instance() {
     return instance;
 }
@@ -20,17 +18,17 @@ Driver* Driver::Init(const HooksManager& api,
                      ExecutorType executorType,
                      size_t numBoxes) {
     instance = new Driver(api, executorType, numBoxes);
-    instance->runHooks<HooksManager::AFTER_INIT>();
+    instance->runHooks<AFTER_INIT>();
     return instance;
 }
 
 void Driver::clean() {
     executor->finalize();
-    runHooks<HooksManager::BEFORE_DESTROY>();
+    runHooks<BEFORE_DESTROY>();
 }
 
 void Driver::forceDestroy(const ConfigurationError& error) {
-    runHooks<HooksManager::BEFORE_FORCE_DESTROY>(error);
+    runHooks<BEFORE_FORCE_DESTROY>(error);
 }
 
 void Driver::addGroup(GroupConfig config, const Executable& body) {
@@ -121,35 +119,37 @@ Driver::Driver(HooksManager hooksManager,
                ExecutorType executorType,
                size_t numBoxes): HooksManager(move(hooksManager)) {
     switch (executorType) {
-        // TODO(darius98): Try to make executors not take callbacks for what to
-        //  do after tests.
         case ExecutorType::SMOOTH_EXECUTOR: {
-            this->executor = make_unique<Executor>(
-                    /*onTestFinished=*/bind(&Driver::afterTest, this, _1));
+            executor = make_unique<Executor>();
             break;
         }
         case ExecutorType::BOXED_EXECUTOR: {
-            this->executor = make_unique<BoxExecutor>(
-                    /*onTestFinished=*/bind(&Driver::afterTest, this, _1),
-                    numBoxes);
+            executor = make_unique<BoxExecutor>(numBoxes);
             break;
         }
-        default: {
-            throw ConfigurationError("Driver::Unknown executor type.");
-        }
+    }
+    executor->setOnTestFinishedCallback([this](const ExecutedTest& test) {
+        afterTest(test);
+    });
+    executor->setOnWarningCallback([this](const string& message) {
+        runHooks<ON_WARNING>(message);
+    });
+}
+
+void Driver::emitWarning(const string& message) {
+    if (executor->isActive()) {
+        executor->handleWarning(message);
+    } else {
+        runHooks<ON_WARNING>(message);
     }
 }
 
-void Driver::emitWarning(const std::string& s) {
-    cout << "KKTest Warning: " << s << "\n";
-}
-
 void Driver::beforeTest(const Test& test) {
-    runHooks<HooksManager::BEFORE_TEST>(test);
+    runHooks<BEFORE_TEST>(test);
 }
 
 void Driver::afterTest(const ExecutedTest& test) {
-    runHooks<HooksManager::AFTER_TEST>(test);
+    runHooks<AFTER_TEST>(test);
     GroupPtr parentGroup = test.getGroup();
     parentGroup->addFinishedTest();
     while (parentGroup != nullptr) {
@@ -161,11 +161,11 @@ void Driver::afterTest(const ExecutedTest& test) {
 }
 
 void Driver::beforeGroup(GroupPtr group) {
-    runHooks<HooksManager::BEFORE_GROUP>(group);
+    runHooks<BEFORE_GROUP>(group);
 }
 
 void Driver::afterGroup(GroupPtr group) {
-    runHooks<HooksManager::AFTER_GROUP>(group);
+    runHooks<AFTER_GROUP>(group);
 }
 
 }

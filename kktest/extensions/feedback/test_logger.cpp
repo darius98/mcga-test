@@ -64,6 +64,10 @@ void TestLogger::printFatalError(const string& errorMessage) {
            << "\n";
 }
 
+void TestLogger::printWarning(const string& warningMessage) {
+    stream << yellow << "Warning: " << warningMessage << "\n";
+}
+
 void TestLogger::printTestPassedOrFailedToken(const ExecutedTest& test) {
     stream << "[";
     if (test.isPassed()) {

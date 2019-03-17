@@ -7,10 +7,10 @@ namespace kktest {
 ExecutedTest::Info::Info(string&& failure):
         timeTicks(-1.0), passed(false), failure(move(failure)) {}
 
-void ExecutedTest::Info::fail(const string& failure) {
+void ExecutedTest::Info::fail(const string& _failure) {
     if (passed) {
         passed = false;
-        this->failure = failure;
+        failure = _failure;
     }
 }
 

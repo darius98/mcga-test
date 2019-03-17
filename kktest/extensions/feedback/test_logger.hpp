@@ -17,6 +17,8 @@ class TestLogger {
 
     void printFatalError(const std::string& errorMessage);
 
+    void printWarning(const std::string& warningMessage);
+
     void printFinalInformation();
 
  private:

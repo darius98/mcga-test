@@ -9,8 +9,13 @@ using namespace std;
 
 namespace kktest {
 
-Executor::Executor(OnTestFinished onTestFinished):
-        onTestFinished(move(onTestFinished)) {}
+void Executor::setOnTestFinishedCallback(OnTestFinished _onTestFinished) {
+    onTestFinished = move(_onTestFinished);
+}
+
+void Executor::setOnWarningCallback(OnWarning _onWarning) {
+    onWarning = move(_onWarning);
+}
 
 bool Executor::isActive() const {
     return state != INACTIVE;
@@ -68,6 +73,10 @@ ExecutedTest::Info Executor::run(const Test& test) {
     info.timeTicks = 1.0 * t.elapsed().count() / getTimeTickLength().count();
     state = INACTIVE;
     return info;
+}
+
+void Executor::handleWarning(const string& message) {
+    onWarning(message);
 }
 
 void Executor::runJob(const Executable& job,

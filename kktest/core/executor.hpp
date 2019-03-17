@@ -7,10 +7,13 @@ namespace kktest {
 class Executor {
  public:
     typedef std::function<void(const ExecutedTest&)> OnTestFinished;
-
-    explicit Executor(OnTestFinished onTestFinished);
+    typedef std::function<void(const std::string&)> OnWarning;
 
     virtual ~Executor() = default;
+
+    void setOnTestFinishedCallback(OnTestFinished _onTestFinished);
+
+    void setOnWarningCallback(OnWarning _onWarning);
 
     bool isActive() const;
 
@@ -22,6 +25,8 @@ class Executor {
 
     ExecutedTest::Info run(const Test& test);
 
+    virtual void handleWarning(const std::string& message);
+
  private:
     void runJob(const Executable& job,
                 ExecutedTest::Info* execution,
@@ -29,6 +34,7 @@ class Executor {
 
  protected:
     OnTestFinished onTestFinished;
+    OnWarning onWarning;
 
  private:
     enum {

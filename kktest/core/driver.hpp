@@ -13,7 +13,7 @@ enum ExecutorType {
 
 class Driver: public HooksManager {
  private:
-    static Driver* instance;
+    static inline Driver* instance = nullptr;
 
  public:
     static Driver* Instance();

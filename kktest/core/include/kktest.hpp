@@ -73,32 +73,32 @@ struct TestConfig {
             description(description) {}
 
     /** Set the #description of the test. */
-    TestConfig& setDescription(std::string description) {
-        this->description = std::move(description);
+    TestConfig& setDescription(std::string _description) {
+        description = std::move(_description);
         return *this;
     }
 
     /** Set the #optional flag of the test. */
-    TestConfig& setOptional(bool optional = true) {
-        this->optional = optional;
+    TestConfig& setOptional(bool _optional = true) {
+        optional = _optional;
         return *this;
     }
 
     /** Set the #timeTicksLimit of the test. */
-    TestConfig& setTimeTicksLimit(double timeTicksLimit) {
-        this->timeTicksLimit = timeTicksLimit;
+    TestConfig& setTimeTicksLimit(double _timeTicksLimit) {
+        timeTicksLimit = _timeTicksLimit;
         return *this;
     }
 
     /** Set the #attempts property of the test. */
-    TestConfig& setAttempts(std::size_t attempts) {
-        this->attempts = attempts;
+    TestConfig& setAttempts(std::size_t _attempts) {
+        attempts = _attempts;
         return *this;
     }
 
     /** Set the #requiredPassedAttempts property of the test. */
-    TestConfig& setRequiredPassedAttempts(std::size_t requiredPassedAttempts) {
-        this->requiredPassedAttempts = requiredPassedAttempts;
+    TestConfig& setRequiredPassedAttempts(std::size_t _requiredPassedAttempts) {
+        requiredPassedAttempts = _requiredPassedAttempts;
         return *this;
     }
 };
@@ -137,14 +137,14 @@ struct GroupConfig {
             description(description) {}
 
     /** Set the #description of the group. */
-    GroupConfig& setDescription(std::string description) {
-        this->description = std::move(description);
+    GroupConfig& setDescription(std::string _description) {
+        description = std::move(_description);
         return *this;
     }
 
     /** Set the #optional flag for this group. */
-    GroupConfig& setOptional(bool optional = true) {
-        this->optional = optional;
+    GroupConfig& setOptional(bool _optional = true) {
+        optional = _optional;
         return *this;
     }
 };

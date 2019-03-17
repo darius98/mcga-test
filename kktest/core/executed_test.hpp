@@ -42,7 +42,7 @@ class ExecutedTest : public Test {
          *
          * Note: if this method is called multiple times, subsequent calls do
          * NOT overwrite the first failure message. */
-        void fail(const std::string& failure);
+        void fail(const std::string& _failure);
     };
 
     /** Upgrade a Test to an ExecutedTest with the use of the execution Info
