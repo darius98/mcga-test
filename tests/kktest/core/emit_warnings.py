@@ -4,7 +4,7 @@ import subprocess
 
 proc = None
 try:
-    proc = subprocess.run("./emit_warnings",
+    proc = subprocess.run("./core_emit_warnings",
                           timeout=1, capture_output=True)
 except TimeoutError:
     print("Test did not finish in 1 second")

@@ -6,6 +6,14 @@ add_integration_test(core_single_failing_test
     single_failing_test.py
     single_failing_test.cpp
 )
+add_integration_test(core_single_test_kbs
+    single_test_kbs.py
+    single_test_kbs.cpp
+)
+add_integration_test(core_single_test_timeout
+    single_test_timeout.py
+    single_test_timeout.cpp
+)
 add_integration_test(core_single_file_multiple_cases
     single_file_multiple_cases.py
     single_file_multiple_cases.cpp
@@ -18,7 +26,7 @@ add_integration_test(core_multiple_tests_one_fails
     multiple_tests_one_fails.py
     multiple_tests_one_fails.cpp
 )
-add_integration_test(emit_warnings
+add_integration_test(core_emit_warnings
     emit_warnings.py
     emit_warnings.cpp
 )
