@@ -27,6 +27,10 @@ enum PipeMessageType : uint8_t {
     ERROR = 4
 };
 
+int FeedbackExtension::GetReturnCode() {
+    return failedAnyNonOptionalTests ? 1 : 0;
+}
+
 void FeedbackExtension::registerCommandLineArgs(Parser& parser) {
     quietFlag = parser.addFlag(
         FlagSpec("quiet")
@@ -47,6 +51,11 @@ void FeedbackExtension::init(HooksManager& api) {
     if (!fileNameArgument.get().empty()) {
         initFileStream(api, fileNameArgument.get());
     }
+    api.addHook<HooksManager::AFTER_TEST>([](const ExecutedTest& test) {
+        if (!test.isPassed() && !test.isOptional()) {
+            failedAnyNonOptionalTests = true;
+        }
+    });
 }
 
 void FeedbackExtension::initLogging(HooksManager& api) {

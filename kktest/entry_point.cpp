@@ -20,7 +20,8 @@ KKTEST_EXPORT void TestCase::Register(TestCase* testCase) {
 }
 
 KKTEST_EXPORT int main(int argc, char** argv) {
-    return kktest::runTests(argc, argv, testCasesRegistered, {
-        new kktest::feedback::FeedbackExtension()
+    runTests(argc, argv, testCasesRegistered, {
+        new feedback::FeedbackExtension()
     });
+    return feedback::FeedbackExtension::GetReturnCode();
 }

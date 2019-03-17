@@ -24,7 +24,7 @@ class Driver: public HooksManager {
 
     static bool IsInsideTestCase();
 
-    int clean();
+    void clean();
 
     void forceDestroy(const ConfigurationError& error);
 
@@ -48,8 +48,6 @@ class Driver: public HooksManager {
     std::vector<GroupPtr> groupStack = {};
     int currentTestId = 0;
     int currentGroupId = 0;
-
-    bool failedAnyNonOptionalTest = false;
 };
 
 }

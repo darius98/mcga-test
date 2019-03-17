@@ -27,10 +27,9 @@ Driver* Driver::Init(const HooksManager& api,
     return instance;
 }
 
-int Driver::clean() {
+void Driver::clean() {
     executor->finalize();
     runHooks<HooksManager::BEFORE_DESTROY>();
-    return failedAnyNonOptionalTest ? 1 : 0;
 }
 
 void Driver::forceDestroy(const ConfigurationError& error) {
@@ -137,7 +136,6 @@ void Driver::beforeTest(const Test& test) {
 }
 
 void Driver::afterTest(const ExecutedTest& test) {
-    failedAnyNonOptionalTest |= (!test.isOptional() && !test.isPassed());
     runHooks<HooksManager::AFTER_TEST>(test);
     GroupPtr parentGroup = test.getGroup();
     parentGroup->addFinishedTest();

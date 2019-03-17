@@ -7,7 +7,12 @@
 namespace kktest::feedback {
 
 class FeedbackExtension: public Extension {
+ private:
+    static inline bool failedAnyNonOptionalTests = false;
+
  public:
+    static int GetReturnCode();
+
     void registerCommandLineArgs(cppli::Parser& parser) override;
 
     void init(HooksManager& api) override;
