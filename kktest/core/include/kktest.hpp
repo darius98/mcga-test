@@ -112,7 +112,7 @@ struct GroupConfig {
      * A group should provide a concise, yet clear and explicit description,
      * both for future maintainers of the group and user interfaces of this
      * library. */
-    std::string description = "-";
+    std::string description = "(anonymous group)";
 
     /** Flag that marks this whole group as optional.
      *
@@ -158,6 +158,14 @@ void tearDown(Executable func);
 void test(TestConfig config, Executable body);
 
 void fail(const std::string& message=std::string());
+
+inline void group(const Executable& body) {
+    group(GroupConfig(), body);
+}
+
+inline void test(Executable body) {
+    test(TestConfig(), std::move(body));
+}
 
 inline void expect(bool expr, const std::string& message=std::string()) {
     if (!expr) {
