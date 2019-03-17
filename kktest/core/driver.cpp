@@ -17,7 +17,12 @@ Driver* Driver::Instance() {
 Driver* Driver::Init(const HooksManager& api,
                      ExecutorType executorType,
                      size_t numBoxes) {
-    instance = new Driver(api, executorType, numBoxes);
+    Executor* executor;
+    switch (executorType) {
+        case SMOOTH_EXECUTOR: executor = new Executor(); break;
+        case BOXED_EXECUTOR: executor = new BoxExecutor(numBoxes); break;
+    }
+    instance = new Driver(api, executor);
     instance->runHooks<AFTER_INIT>();
     return instance;
 }
@@ -115,19 +120,8 @@ void Driver::addFailure(const string& failure) {
     throw ExpectationFailed(failure);
 }
 
-Driver::Driver(HooksManager hooksManager,
-               ExecutorType executorType,
-               size_t numBoxes): HooksManager(move(hooksManager)) {
-    switch (executorType) {
-        case ExecutorType::SMOOTH_EXECUTOR: {
-            executor.reset(new Executor());
-            break;
-        }
-        case ExecutorType::BOXED_EXECUTOR: {
-            executor.reset(new BoxExecutor(numBoxes));
-            break;
-        }
-    }
+Driver::Driver(HooksManager hooksManager, Executor* _executor):
+        HooksManager(move(hooksManager)), executor(_executor) {
     executor->setOnTestFinishedCallback([this](const ExecutedTest& test) {
         afterTest(test);
     });

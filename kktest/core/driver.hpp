@@ -22,6 +22,8 @@ class Driver: public HooksManager {
                         ExecutorType executorType,
                         std::size_t numBoxes);
 
+    Driver(HooksManager hooks, Executor* executor);
+
     void clean();
 
     void addGroup(GroupConfig config, const Executable& body);
@@ -35,8 +37,6 @@ class Driver: public HooksManager {
     void addFailure(const std::string& failure);
 
  private:
-    Driver(HooksManager hooks, ExecutorType executorType, std::size_t numBoxes);
-
     void emitWarning(const std::string& message);
 
     void beforeTest(const Test& test);
