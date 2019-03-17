@@ -5,6 +5,8 @@
 
 #include <termcolor/termcolor.hpp>
 
+#include "kktest/core/time_tick.hpp"
+
 using namespace std;
 using namespace termcolor;
 

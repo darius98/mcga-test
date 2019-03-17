@@ -1,6 +1,4 @@
-#include "kktest/core/include/kktest.hpp"
-
-#include "kktest/core/export.hpp"
+#include "kktest/core/time_tick.hpp"
 
 using namespace std::chrono;
 
@@ -11,12 +9,17 @@ nanoseconds ComputeTimeTickLengthFromHardware() {
     return 1s;
 }
 
-KKTEST_EXPORT nanoseconds getTimeTickLength() {
+nanoseconds getTimeTickLength() {
     static nanoseconds timeTickLength = 0ns;
     if (timeTickLength == 0ns) {
         timeTickLength = ComputeTimeTickLengthFromHardware();
     }
     return timeTickLength;
+}
+
+nanoseconds timeTicksToNanoseconds(double timeTicks) {
+    return nanoseconds(
+            static_cast<long long>(timeTicks * getTimeTickLength().count()));
 }
 
 }

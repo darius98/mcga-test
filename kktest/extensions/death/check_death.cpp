@@ -2,6 +2,7 @@
 
 #include "common/interproc/worker_subprocess.hpp"
 #include "kktest/core/export.hpp"
+#include "kktest/core/time_tick.hpp"
 
 using namespace kktest::interproc;
 using namespace kktest::utils;

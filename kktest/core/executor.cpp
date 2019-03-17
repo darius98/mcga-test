@@ -2,6 +2,7 @@
 
 #include "common/utils/time.hpp"
 #include "kktest/core/errors.hpp"
+#include "kktest/core/time_tick.hpp"
 
 using namespace kktest::utils;
 using namespace std;
