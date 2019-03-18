@@ -1,12 +1,9 @@
 #include "kktest/core/driver.hpp"
 
-#include <iostream>
-
 #include "kktest/core/include/kktest.hpp"
 #include "kktest/core/box_executor.hpp"
 
 using namespace std;
-using namespace std::placeholders;
 
 namespace kktest {
 
