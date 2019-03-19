@@ -7,11 +7,8 @@
 namespace kktest::feedback {
 
 class FeedbackExtension: public Extension {
- private:
-    static inline bool failedAnyNonOptionalTests = false;
-
  public:
-    static int GetReturnCode();
+    int getReturnCode();
 
     void registerCommandLineArgs(cppli::Parser& parser) override;
 
@@ -22,6 +19,7 @@ class FeedbackExtension: public Extension {
 
     void initFileStream(HooksManager& api, const std::string& fileName);
 
+    bool failedAnyNonOptionalTests = false;
     std::unique_ptr<TestLogger> logger = nullptr;
     std::unique_ptr<interproc::PipeWriter> fileWriter = nullptr;
 

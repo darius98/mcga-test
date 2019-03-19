@@ -59,7 +59,6 @@ void runTests(int argc,
 
     for (Extension* extension : extensions) {
         extension->destroy();
-        delete extension;
     }
 
     delete driver;

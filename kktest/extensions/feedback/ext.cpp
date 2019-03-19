@@ -27,7 +27,7 @@ enum PipeMessageType : uint8_t {
     WARNING = 4,
 };
 
-int FeedbackExtension::GetReturnCode() {
+int FeedbackExtension::getReturnCode() {
     return failedAnyNonOptionalTests ? 1 : 0;
 }
 
@@ -51,7 +51,7 @@ void FeedbackExtension::init(HooksManager& api) {
     if (!fileNameArgument.get().empty()) {
         initFileStream(api, fileNameArgument.get());
     }
-    api.addHook<HooksManager::AFTER_TEST>([](const ExecutedTest& test) {
+    api.addHook<HooksManager::AFTER_TEST>([this](const ExecutedTest& test) {
         if (!test.isPassed() && !test.isOptional()) {
             failedAnyNonOptionalTests = true;
         }
