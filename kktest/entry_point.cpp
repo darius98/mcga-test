@@ -1,7 +1,5 @@
 #include "kktest/core/include/kktest.hpp"
 
-#include <iostream>
-
 #include "kktest/core/export.hpp"
 #include "kktest/core/main.hpp"
 #include "kktest/extensions/feedback/ext.hpp"

@@ -1,3 +1,5 @@
+#include <vector>
+
 #include <kktest.hpp>
 
 #include "kktest/extensions/matchers/include/kktest_ext/matchers/comparison.hpp"
