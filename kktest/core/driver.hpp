@@ -1,6 +1,5 @@
 #pragma once
 
-#include "kktest/core/errors.hpp"
 #include "kktest/core/executor.hpp"
 #include "kktest/core/hooks_manager.hpp"
 
@@ -44,6 +43,7 @@ class Driver: public HooksManager {
     void beforeGroup(GroupPtr group);
     void afterGroup(GroupPtr group);
 
+    std::size_t testingThreadId;
     std::unique_ptr<Executor> executor;
     std::vector<GroupPtr> groupStack = {};
     int currentTestId = 0;

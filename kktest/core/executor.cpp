@@ -1,11 +1,21 @@
 #include "kktest/core/executor.hpp"
 
+#include <stdexcept>
+#include <thread>
+
 #include "common/utils/time.hpp"
-#include "kktest/core/errors.hpp"
 #include "kktest/core/time_tick.hpp"
 
 using namespace kktest::utils;
 using namespace std;
+
+namespace {
+
+class ExpectationFailed : public runtime_error {
+    using runtime_error::runtime_error;
+};
+
+}
 
 namespace kktest {
 
@@ -23,14 +33,32 @@ bool Executor::isActive() const {
 
 string Executor::stateAsString() const {
     switch (state) {
-        case INACTIVE: return "inactive";
         case INSIDE_TEST: return "test";
         case INSIDE_SET_UP: return "setUp";
         case INSIDE_TEAR_DOWN: return "tearDown";
+        default: return "inactive";
     }
 }
 
 void Executor::finalize() {}
+
+void Executor::addFailure(const string& failure) {
+    // We only kill the thread on failure if we are in the main testing thread
+    // and we know we catch this exception.
+    if (hash<thread::id>()(this_thread::get_id()) == currentExecutionThreadId) {
+        throw ExpectationFailed(failure);
+    } else {
+        // If the user starts his own threads that entertain failures, it is his
+        // responsibility to make sure his threads die on failure (we have no
+        // control)
+        currentExecutionFailureMutex.lock();
+        if (!currentExecutionIsFailed) {
+            currentExecutionIsFailed = true;
+            currentExecutionFailureMessage = failure;
+        }
+        currentExecutionFailureMutex.unlock();
+    }
+}
 
 void Executor::execute(Test test) {
     vector<ExecutedTest::Info> executions;
@@ -84,6 +112,10 @@ void Executor::handleWarning(const string& message) {
 void Executor::runJob(const Executable& job,
                       ExecutedTest::Info* execution,
                       const string& where) {
+    currentExecutionThreadId = hash<thread::id>()(this_thread::get_id());
+    currentExecutionIsFailed = false;
+    currentExecutionFailureMessage = "";
+
     try {
         job();
     } catch(const ExpectationFailed& failure) {
@@ -92,6 +124,9 @@ void Executor::runJob(const Executable& job,
         execution->fail("Uncaught exception in " + where + ": " + e.what());
     } catch(...) {
         execution->fail("Uncaught non-exception type in " + where + "\".");
+    }
+    if (currentExecutionIsFailed) {
+        execution->fail(currentExecutionFailureMessage);
     }
 }
 

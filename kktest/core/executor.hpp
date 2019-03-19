@@ -1,5 +1,7 @@
 #pragma once
 
+#include <mutex>
+
 #include "kktest/core/executed_test.hpp"
 #include "kktest/core/warning.hpp"
 
@@ -19,6 +21,8 @@ class Executor {
     bool isActive() const;
 
     std::string stateAsString() const;
+
+    void addFailure(const std::string& failure);
 
     virtual void execute(Test test);
 
@@ -46,6 +50,11 @@ class Executor {
     } state = INACTIVE;
     int currentTestGroupId = 0;
     int currentTestId = 0;
+    std::size_t currentExecutionThreadId;
+
+    std::mutex currentExecutionFailureMutex;
+    bool currentExecutionIsFailed;
+    std::string currentExecutionFailureMessage;
 };
 
 }

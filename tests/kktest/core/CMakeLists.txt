@@ -38,3 +38,7 @@ add_integration_test(core_emit_warnings
     emit_warnings.py
     emit_warnings.cpp
 )
+add_integration_test(core_failure_in_different_thread
+    failure_in_different_thread.py
+    failure_in_different_thread.cpp
+)

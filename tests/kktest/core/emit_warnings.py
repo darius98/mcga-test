@@ -43,6 +43,14 @@ check_warning("Called setUp() inside a tearDown(). Ignoring.")
 check_warning("Called tearDown() inside a tearDown(). Ignoring.")
 check_warning("Called test() inside a tearDown(). Ignoring.")
 check_warning("Called group() inside a tearDown(). Ignoring.")
+check_warning("Called test() from a different thread than the main testing "
+              "thread. Ignoring.")
+check_warning("Called group() from a different thread than the main testing "
+              "thread. Ignoring.")
+check_warning("Called setUp() from a different thread than the main testing "
+              "thread. Ignoring.")
+check_warning("Called tearDown() from a different thread than the main testing "
+              "thread. Ignoring.")
 
 # Tests 'test-in-test', 'test-in-setUp' and 'test-in-tearDown'
 # should not have been executed.

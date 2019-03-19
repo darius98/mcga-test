@@ -1,5 +1,7 @@
 #include "kktest/core/driver.hpp"
 
+#include <thread>
+
 #include "kktest/core/include/kktest.hpp"
 #include "kktest/core/box_executor.hpp"
 
@@ -26,6 +28,7 @@ Driver* Driver::Init(const HooksManager& api,
 
 Driver::Driver(HooksManager hooksManager, Executor* _executor):
         HooksManager(move(hooksManager)), executor(_executor) {
+    testingThreadId = hash<thread::id>()(this_thread::get_id());
     executor->setOnTestFinishedCallback([this](const ExecutedTest& test) {
         afterTest(test);
     });
@@ -38,6 +41,11 @@ void Driver::addGroup(GroupConfig config, const Executable& body) {
     if (executor->isActive()) {
         emitWarning("Called group() inside a "
                     + executor->stateAsString() + "(). Ignoring.");
+        return;
+    }
+    if (testingThreadId != hash<thread::id>()(this_thread::get_id())) {
+        emitWarning("Called group() from a different thread than the main "
+                    "testing thread. Ignoring.");
         return;
     }
 
@@ -71,6 +79,11 @@ void Driver::addTest(TestConfig config, Executable body) {
                     + executor->stateAsString() + "(). Ignoring.");
         return;
     }
+    if (testingThreadId != hash<thread::id>()(this_thread::get_id())) {
+        emitWarning("Called test() from a different thread than the main "
+                    "testing thread. Ignoring.");
+        return;
+    }
     GroupPtr parentGroup = groupStack.back();
     Test test(move(config), move(body), parentGroup, ++ currentTestId);
     parentGroup->addStartedTest();
@@ -82,6 +95,11 @@ void Driver::addSetUp(Executable func) {
     if (executor->isActive()) {
         emitWarning("Called setUp() inside a "
                     + executor->stateAsString() + "(). Ignoring.");
+        return;
+    }
+    if (testingThreadId != hash<thread::id>()(this_thread::get_id())) {
+        emitWarning("Called setUp() from a different thread than the main "
+                    "testing thread. Ignoring.");
         return;
     }
     const auto& group = groupStack.back();
@@ -99,6 +117,11 @@ void Driver::addTearDown(Executable func) {
                     + executor->stateAsString() + "(). Ignoring.");
         return;
     }
+    if (testingThreadId != hash<thread::id>()(this_thread::get_id())) {
+        emitWarning("Called tearDown() from a different thread than the main "
+                    "testing thread. Ignoring.");
+        return;
+    }
     const auto& group = groupStack.back();
     if (group->hasTearDown()) {
         emitWarning("tearDown() called, but a tearDown for group \""
@@ -114,7 +137,7 @@ void Driver::addFailure(const string& failure) {
                     "outside test()/setUp()/tearDown(). Ignoring.");
         return;
     }
-    throw ExpectationFailed(failure);
+    executor->addFailure(failure);
 }
 
 void Driver::clean() {

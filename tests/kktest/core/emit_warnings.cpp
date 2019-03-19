@@ -1,6 +1,9 @@
+#include <thread>
+
 #include <kktest.hpp>
 
 using namespace kktest;
+using namespace std;
 
 TEST_CASE(emitWarnings, "Emit warnings") {
     // fail() top-level
@@ -66,4 +69,20 @@ TEST_CASE(emitWarnings, "Emit warnings") {
         // throw non-exception in group()
         throw 5;
     });
+
+    thread t([] {
+        // test() in different thread
+        test("test-in-thread", [] {});
+
+        // group() in different thread
+        group("group-in-thread", [] {});
+
+        // setUp() in different thread
+        setUp([] {});
+
+        // tearDown() in different thread
+        tearDown([] {});
+    });
+
+    t.join();
 }
