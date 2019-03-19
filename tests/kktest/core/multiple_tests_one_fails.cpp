@@ -1,6 +1,6 @@
 #include <kktest.hpp>
 
-TEST_CASE(multipleTestsOneFails, "Multiple tests") {
+TEST_CASE(testCase, "TestCase") {
     kktest::test("test1", [] {});
 
     kktest::test("test2", [] {

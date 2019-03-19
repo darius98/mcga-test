@@ -14,7 +14,7 @@ if proc.returncode != 1:
     print("Test did not exit with code 1, exit_code=" + str(proc.returncode))
     exit(1)
 
-if "[F] Single test exit 1::This test exits with code 1 - (unknown time)\n" \
+if "[F] TestCase::test - (unknown time)\n" \
    "\tTest exited with code 1" not in proc.stdout.decode():
     print("Test did not correctly report exit of unexpected 1-exit test")
     print("Output:")

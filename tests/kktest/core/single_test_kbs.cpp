@@ -2,8 +2,8 @@
 
 #include <csignal>
 
-TEST_CASE(testCaseKbs, "Test case kbs") {
-    kktest::test("kbs test", [] {
+TEST_CASE(testCase, "TestCase") {
+    kktest::test("test", [] {
         raise(SIGTERM);
     });
 }

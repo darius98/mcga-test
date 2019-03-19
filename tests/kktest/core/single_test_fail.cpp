@@ -1,9 +1,7 @@
 #include <kktest.hpp>
 
-#include <cstdlib>
-
 TEST_CASE(testCase, "TestCase") {
     kktest::test("test", [] {
-        exit(0);
+        kktest::fail("1 + 1 == 3 is not true");
     });
 }

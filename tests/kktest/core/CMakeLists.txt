@@ -1,10 +1,10 @@
-add_integration_test(core_single_passing_test
-    single_passing_test.py
-    single_passing_test.cpp
+add_integration_test(core_single_test_pass
+    single_test_pass.py
+    single_test_pass.cpp
 )
-add_integration_test(core_single_failing_test
-    single_failing_test.py
-    single_failing_test.cpp
+add_integration_test(core_single_test_fail
+    single_test_fail.py
+    single_test_fail.cpp
 )
 add_integration_test(core_single_test_kbs
     single_test_kbs.py
@@ -22,6 +22,10 @@ add_integration_test(core_single_test_exit_1
     single_test_exit_1.py
     single_test_exit_1.cpp
 )
+add_integration_test(core_single_test_fail_thread
+    single_test_fail_thread.py
+    single_test_fail_thread.cpp
+)
 add_integration_test(core_single_file_multiple_cases
     single_file_multiple_cases.py
     single_file_multiple_cases.cpp
@@ -37,8 +41,4 @@ add_integration_test(core_multiple_tests_one_fails
 add_integration_test(core_emit_warnings
     emit_warnings.py
     emit_warnings.cpp
-)
-add_integration_test(core_failure_in_different_thread
-    failure_in_different_thread.py
-    failure_in_different_thread.cpp
 )

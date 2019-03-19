@@ -2,8 +2,8 @@
 
 #include <cstdlib>
 
-TEST_CASE(singleTestExit1, "Single test exit 1") {
-    kktest::test("This test exits with code 1", [] {
+TEST_CASE(testCase, "TestCase") {
+    kktest::test("test", [] {
         exit(1);
     });
 }

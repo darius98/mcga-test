@@ -5,7 +5,7 @@
 using namespace kktest;
 using namespace std;
 
-TEST_CASE(emitWarnings, "Emit warnings") {
+TEST_CASE(testCase, "TestCase") {
     // fail() top-level
     fail("fail-top-level");
 

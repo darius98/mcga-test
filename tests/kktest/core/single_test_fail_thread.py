@@ -4,7 +4,7 @@ import subprocess
 
 proc = None
 try:
-    proc = subprocess.run("./core_failure_in_different_thread",
+    proc = subprocess.run("./core_single_test_fail_thread",
                           timeout=1, capture_output=True)
 except TimeoutError:
     print("Test did not finish in 1 second")
@@ -14,7 +14,7 @@ if proc.returncode != 1:
     print("Did not exit with code 1, exit_code=" + str(proc.returncode))
     exit(1)
 
-if "[F] Failure in different thread::test" not in proc.stdout.decode():
+if "[F] TestCase::test" not in proc.stdout.decode():
     print("Did not output correct feedback on failing test, output='"
           + proc.stdout.decode() + "'")
     exit(1)
