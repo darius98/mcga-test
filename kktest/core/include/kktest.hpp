@@ -102,6 +102,93 @@ struct TestConfig {
     }
 };
 
+/** Main mechanism for defining tests. */
+void test(TestConfig config, Executable body);
+
+/** Convenience function for defining an anonymous test. */
+inline void test(Executable body) {
+    test(TestConfig(), std::move(body));
+}
+
+/** Convenience function for defining an optional test. */
+inline void optionalTest(TestConfig config, Executable body) {
+    config.setOptional();
+    test(std::move(config), std::move(body));
+}
+
+/** Convenience function for defining an anonymous optional test. */
+inline void optionalTest(Executable body) {
+    optionalTest(TestConfig(), std::move(body));
+}
+
+/** Convenience function for defining a test that will be executed multiple
+ * times, and all executions must pass for the test to be marked as `passed`. */
+inline void multiRunTest(TestConfig config,
+                         std::size_t numRuns,
+                         Executable body) {
+    config.setRequiredPassedAttempts(numRuns);
+    config.setAttempts(numRuns);
+    test(std::move(config), std::move(body));
+}
+
+/** Convenience function for defining an anonymous test that will be executed
+ * multiple times, and all executions must pass for the test to be marked as
+ * `passed`. */
+inline void multiRunTest(std::size_t numRuns, Executable body) {
+    multiRunTest(TestConfig(), numRuns, std::move(body));
+}
+
+/** Convenience function for defining an optional test that will be executed
+ * multiple times, and all executions must pass for the test to be marked as
+ * `passed`. */
+inline void optionalMultiRunTest(TestConfig config,
+                                 std::size_t numRuns,
+                                 Executable body) {
+    config.setOptional();
+    multiRunTest(std::move(config), numRuns, std::move(body));
+}
+
+/** Convenience function for defining an anonymous optional test that will be
+ * executed multiple times, and all executions must pass for the test to be
+ * marked as `passed`. */
+inline void optionalMultiRunTest(std::size_t numRuns, Executable body) {
+    optionalMultiRunTest(TestConfig(), numRuns, std::move(body));
+}
+
+/** Convenience function for defining a test that will be retried multiple
+ * times, and only one needs to pass for the test to be marked as `passed`. */
+inline void retryTest(TestConfig config,
+                      std::size_t attempts,
+                      Executable body) {
+    config.setAttempts(attempts);
+    config.setRequiredPassedAttempts(1);
+    test(std::move(config), std::move(body));
+}
+
+/** Convenience function for defining an anonymous test that will be retried
+ * multiple times, and only one needs to pass for the test to be marked as
+ * `passed`. */
+inline void retryTest(std::size_t numAttempts, Executable body) {
+    retryTest(TestConfig(), numAttempts, std::move(body));
+}
+
+/** Convenience function for defining an optional test that will be retried
+ * multiple times, and only one needs to pass for the test to be marked as
+ * `passed`. */
+inline void optionalRetryTest(TestConfig config,
+                              std::size_t attempts,
+                              Executable body) {
+    config.setOptional();
+    retryTest(std::move(config), attempts, std::move(body));
+}
+
+/** Convenience function for defining an optional anonymous test that will be
+ * retried multiple times, and only one needs to pass for the test to be marked
+ * as `passed`. */
+inline void optionalRetryTest(std::size_t numAttempts, Executable body) {
+    optionalRetryTest(TestConfig(), numAttempts, std::move(body));
+}
+
 /** Structure defining the configuration for a group.
  *
  * Pass an instance of this class to the group() function. */
@@ -148,24 +235,42 @@ struct GroupConfig {
     }
 };
 
+/** Main mechanism for defining groups. */
 void group(GroupConfig config, const Executable& body);
 
-void setUp(Executable func);
-
-void tearDown(Executable func);
-
-void test(TestConfig config, Executable body);
-
-void fail(const std::string& message=std::string());
-
+/** Convenience function for defining an anonymous group. */
 inline void group(const Executable& body) {
     group(GroupConfig(), body);
 }
 
-inline void test(Executable body) {
-    test(TestConfig(), std::move(body));
+/** Convenience function for defining an optional group. */
+inline void optionalGroup(GroupConfig config, const Executable& body) {
+    config.setOptional();
+    group(std::move(config), body);
 }
 
+/** Convenience function for defining an anonymous optional group. */
+inline void optionalGroup(const Executable& body) {
+    optionalGroup(GroupConfig(), body);
+}
+
+/** Main mechanism for defining setUp functions, to be executed before every
+ * test in a group. */
+void setUp(Executable func);
+
+/** Main mechanism for defining tearDown functions, to be executed after every
+ * test in a group. */
+void tearDown(Executable func);
+
+/** Main mechanism for marking a test as failed.
+ *
+ * Calling this function inside the main testing thread disrupts the test
+ * completely. Calling it in a separate thread will still mark the test as
+ * failed, but will not interrupt any thread. */
+void fail(const std::string& message=std::string());
+
+/** Convenience function for marking a test as failed if a boolean expression
+ * does not evaluate to `true`. */
 inline void expect(bool expr, const std::string& message=std::string()) {
     if (!expr) {
         fail(message);
