@@ -6,6 +6,18 @@ add_integration_test(core_single_test_fail
     single_test_fail.py
     single_test_fail.cpp
 )
+add_integration_test(core_single_test_optional_fail
+    single_test_optional_fail.py
+    single_test_optional_fail.cpp
+)
+add_integration_test(core_single_test_multiple_executions_pass
+    single_test_multiple_executions_pass.py
+    single_test_multiple_executions_pass.cpp
+)
+add_integration_test(core_single_test_multiple_executions_fail
+    single_test_multiple_executions_fail.py
+    single_test_multiple_executions_fail.cpp
+)
 add_integration_test(core_single_test_kbs
     single_test_kbs.py
     single_test_kbs.cpp
