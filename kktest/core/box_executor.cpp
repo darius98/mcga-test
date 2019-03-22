@@ -110,7 +110,7 @@ Executor::Type BoxExecutor::getType() const {
     return BOXED;
 }
 
-void BoxExecutor::handleWarning(const string& message) {
+void BoxExecutor::emitWarning(const string& message) {
     currentTestingSubprocessPipe->sendMessage(WARNING, message);
 }
 

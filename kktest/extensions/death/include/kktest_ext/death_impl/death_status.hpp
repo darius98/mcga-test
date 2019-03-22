@@ -34,13 +34,14 @@ class DeathStatus {
     int exitCode = -1;
     int signal = -1;
 
-    friend std::ostream& operator<<(std::ostream& out,
-                                    const DeathStatus& status) {
-        out << "(code="
-            << status.exitCode
-            << ", signal="
-            << status.signal
-            << ")";
+    friend std::ostream& operator<<(std::ostream& out, const DeathStatus& ds) {
+        if (ds.exitCode != -1) {
+            out << "<EXIT " << ds.exitCode << ">";
+        } else if (ds.signal != -1) {
+            out << "<KILLED BY SIGNAL " << ds.signal << ">";
+        } else {
+            out << "<UNKNOWN EXIT>";
+        }
         return out;
     }
 };

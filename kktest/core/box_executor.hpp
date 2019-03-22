@@ -39,7 +39,7 @@ class BoxExecutor: public Executor {
 
     void finalize() override;
 
-    void handleWarning(const std::string& message) override;
+    void emitWarning(const std::string& message) override;
 
     Type getType() const override;
 

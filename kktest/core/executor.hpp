@@ -25,17 +25,17 @@ class Executor {
 
     bool isActive() const;
 
-    std::string stateAsString() const;
-
-    void addFailure(const std::string& failure);
+    virtual Type getType() const;
 
     virtual void execute(Test test);
 
     virtual void finalize();
 
-    virtual void handleWarning(const std::string& message);
+    virtual void emitWarning(const std::string& message);
 
-    virtual Type getType() const;
+    std::string stateAsString() const;
+
+    void addFailure(const std::string& failure);
 
     ExecutedTest::Info run(const Test& test);
 

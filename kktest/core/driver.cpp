@@ -115,7 +115,7 @@ void Driver::addFailure(const string& failure) {
 
 void Driver::emitWarning(const string& message) {
     if (executor->isActive()) {
-        executor->handleWarning(message);
+        executor->emitWarning(message);
     } else {
         onWarning(Warning(message, groupStack.back()->getId()));
     }

@@ -1,6 +1,7 @@
 #include "kktest/extensions/death/include/kktest_ext/death_impl/check_death.hpp"
 
 #include "common/interproc/worker_subprocess.hpp"
+#include "kktest/core/driver.hpp"
 #include "kktest/core/export.hpp"
 #include "kktest/core/time_tick.hpp"
 
@@ -12,6 +13,12 @@ namespace kktest::death {
 
 KKTEST_EXPORT DeathStatus checkDeath(const Executable& func,
                                      double timeTicksLimit) {
+    if (Driver::Instance()->getExecutorType() == Executor::SMOOTH) {
+        fail("Death extension matchers & the checkDeath function do not work"
+             " when using a smooth executor.");
+        return DeathStatus(-1, -1);
+    }
+
     WorkerSubprocess proc(TimeTicksToNanoseconds(timeTicksLimit),
                          [func](PipeWriter* writer) {
                              func();
@@ -25,7 +32,7 @@ KKTEST_EXPORT DeathStatus checkDeath(const Executable& func,
         // The exit was ok.
         return DeathStatus(proc.getReturnCode(), proc.getSignal());
     }
-    return DeathStatus(-1, 0);
+    return DeathStatus(-1, -1);
 }
 
 }

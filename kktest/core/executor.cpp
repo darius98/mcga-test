@@ -90,7 +90,7 @@ ExecutedTest::Info Executor::run(const Test& test) {
     state = INSIDE_TEST;
     if (info.passed) {
         // Only run the test if all setUp()-s passed without exception.
-        runJob(bind(&Test::run, &test), &info, "test");
+        runJob([&test] { test.run(); }, &info, "test");
         -- it;
     }
     state = INSIDE_TEAR_DOWN;
@@ -105,7 +105,7 @@ ExecutedTest::Info Executor::run(const Test& test) {
     return info;
 }
 
-void Executor::handleWarning(const string& message) {
+void Executor::emitWarning(const string& message) {
     onWarning(Warning(message, currentTestGroupId, currentTestId));
 }
 
@@ -125,9 +125,12 @@ void Executor::runJob(const Executable& job,
     } catch(...) {
         execution->fail("Uncaught non-exception type in " + where + "\".");
     }
+
+    currentExecutionFailureMutex.lock();
     if (currentExecutionIsFailed) {
         execution->fail(currentExecutionFailureMessage);
     }
+    currentExecutionFailureMutex.unlock();
 }
 
 }
