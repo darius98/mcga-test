@@ -43,7 +43,7 @@ class Test : private TestConfig {
     /** See TestConfig#attempts. */
     std::size_t getNumAttempts() const;
 
-    /** See TestConfig#passedAttemptsRequired */
+    /** See TestConfig#numRequiredPassedAttempts. */
     std::size_t getNumRequiredPassedAttempts() const;
 
     /** The group that contains this test. */
