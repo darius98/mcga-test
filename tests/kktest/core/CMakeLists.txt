@@ -1,3 +1,5 @@
+add_basic_test(core_configs basic/configs.cpp)
+
 add_integration_test(core_single_test_pass
     single_test_pass.py
     single_test_pass.cpp

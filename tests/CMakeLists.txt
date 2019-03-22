@@ -31,6 +31,17 @@ function(add_integration_test TEST_NAME SCRIPT_FILE)
     )
 endfunction()
 
+function(add_basic_test TEST_NAME)
+    set(BASIC_TEST basic_${TEST_NAME})
+    add_executable(${BASIC_TEST} ${ARGN})
+    set_target_properties(${BASIC_TEST} PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY ${TESTS_PATH}
+    )
+    add_dependencies(check ${BASIC_TEST})
+
+    add_test(NAME ${BASIC_TEST} COMMAND ${BASIC_TEST})
+endfunction()
+
 add_subdirectory(common/interproc)
 add_subdirectory(kktest/extensions/death)
 add_subdirectory(kktest/extensions/matchers)
