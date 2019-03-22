@@ -50,7 +50,7 @@ void TestLogger::printFinalInformation() {
            << setprecision(3)
            << totalTimeTicks
            << " ticks ("
-           << timeTicksToNanoseconds(totalTimeTicks).count() * 0.000001
+           << TimeTicksToNanoseconds(totalTimeTicks).count() * 0.000001
            << " ms)\n";
 }
 
@@ -100,7 +100,7 @@ void TestLogger::printTestExecutionTime(const ExecutedTest& test) {
                << test.getAvgTimeTicksForExecution()
                << " ticks ("
                << (test.getNumAttempts() > 1 ? "~ " : "")
-               << timeTicksToNanoseconds(
+               << TimeTicksToNanoseconds(
                       test.getAvgTimeTicksForExecution()).count() * 0.000001
                << " ms)";
     } else {

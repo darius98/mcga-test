@@ -9,6 +9,11 @@ namespace kktest {
 
 class Executor {
  public:
+    enum Type {
+        SMOOTH,
+        BOXED,
+    };
+
     typedef std::function<void(const ExecutedTest&)> OnTestFinished;
     typedef std::function<void(const Warning&)> OnWarning;
 

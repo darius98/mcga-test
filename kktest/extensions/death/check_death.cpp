@@ -12,7 +12,7 @@ namespace kktest::death {
 
 KKTEST_EXPORT DeathStatus checkDeath(const Executable& func,
                                      double timeTicksLimit) {
-    WorkerSubprocess proc(timeTicksToNanoseconds(timeTicksLimit),
+    WorkerSubprocess proc(TimeTicksToNanoseconds(timeTicksLimit),
                          [func](PipeWriter* writer) {
                              func();
                              writer->sendMessage(1);

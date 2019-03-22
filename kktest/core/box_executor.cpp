@@ -8,22 +8,18 @@ using namespace kktest::interproc;
 using namespace kktest::utils;
 using namespace std;
 
-namespace {
+namespace kktest {
 
 enum PipeMessageType {
     WARNING,
     DONE,
 };
 
-}
-
-namespace kktest {
-
 RunningTest::RunningTest(Test test, BoxExecutor* executor):
         test(move(test)), executor(executor) {}
 
 void RunningTest::startExecution() {
-    auto timeLimit = timeTicksToNanoseconds(test.getTimeTicksLimit()) + 1s;
+    auto timeLimit = TimeTicksToNanoseconds(test.getTimeTicksLimit()) + 1s;
     currentExecution = make_unique<WorkerSubprocess>(
         timeLimit,
         [this](PipeWriter* pipe) {

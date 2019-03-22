@@ -5,11 +5,6 @@
 
 namespace kktest {
 
-enum ExecutorType {
-    SMOOTH_EXECUTOR,
-    BOXED_EXECUTOR,
-};
-
 class Driver: public HooksManager {
  private:
     static inline Driver* instance = nullptr;
@@ -17,9 +12,7 @@ class Driver: public HooksManager {
  public:
     static Driver* Instance();
 
-    static Driver* Init(const HooksManager& api,
-                        ExecutorType executorType,
-                        std::size_t numBoxes);
+    static void Init(Driver* driver);
 
     Driver(HooksManager hooks, Executor* executor);
 
@@ -33,18 +26,21 @@ class Driver: public HooksManager {
 
     void addFailure(const std::string& failure);
 
-    void clean();
+    void beforeDestroy();
 
  private:
     void emitWarning(const std::string& message);
 
+    bool checkMainThreadAndInactive(const std::string& method);
+
+    void onWarning(const Warning& warning);
     void beforeTest(const Test& test);
     void afterTest(const ExecutedTest& test);
     void beforeGroup(GroupPtr group);
     void afterGroup(GroupPtr group);
 
     std::size_t testingThreadId;
-    std::unique_ptr<Executor> executor;
+    Executor* executor;
     std::vector<GroupPtr> groupStack = {};
     int currentTestId = 0;
     int currentGroupId = 0;

@@ -1,12 +1,23 @@
 #include "kktest/core/main.hpp"
 
+#include "kktest/core/box_executor.hpp"
 #include "kktest/core/driver.hpp"
-#include "kktest/core/hooks_manager.hpp"
 
 using namespace cppli;
 using namespace std;
 
 namespace kktest {
+
+Executor* InitExecutor(Executor::Type executorType, size_t maxParallelTests) {
+    Executor* executor = nullptr;
+    switch (executorType) {
+        case Executor::SMOOTH:
+            executor = new Executor(); break;
+        case Executor::BOXED:
+            executor = new BoxExecutor(maxParallelTests); break;
+    }
+    return executor;
+}
 
 void runTests(int argc,
               char** argv,
@@ -16,7 +27,7 @@ void runTests(int argc,
 
     parser.addHelpFlag();
     auto executorTypeArgument = parser.addChoiceArgument(
-            ChoiceArgumentSpec<ExecutorType>("executor")
+            ChoiceArgumentSpec<Executor::Type>("executor")
                 .setDescription("Choose the type of executor to use. A smooth "
                                 "executor runs all tests in the same process, "
                                 "while a boxed executor runs each test in a "
@@ -24,15 +35,15 @@ void runTests(int argc,
                                 "means a test killed by signal will not be "
                                 "detected and will kill the whole test suite.")
                 .setOptions({
-                    {"smooth", SMOOTH_EXECUTOR},
-                    {"boxed", BOXED_EXECUTOR}
+                    {"smooth", Executor::SMOOTH},
+                    {"boxed", Executor::BOXED}
                 })
-                .setDefaultValue(BOXED_EXECUTOR));
-    auto numBoxesArgument = parser.addNumericArgument(
-            NumericArgumentSpec<size_t>("num-boxes")
+                .setDefaultValue(Executor::BOXED));
+    auto maxParallelTestsArgument = parser.addNumericArgument(
+            NumericArgumentSpec<size_t>("max-parallel-tests")
                 .setDescription("Maximum number of tests to execute in parallel"
                                 " (processes to spawn). Ignored if `executor` "
-                                "type is not 'boxed'.")
+                                "type is 'smooth'.")
                 .setDefaultValue(1u)
                 .setImplicitValue(1u));
 
@@ -47,21 +58,25 @@ void runTests(int argc,
         extension->init(api);
     }
 
-    ExecutorType executorType = executorTypeArgument.get();
-    size_t numBoxes = max(numBoxesArgument.get(), 1ul);
+    Executor::Type executorType = executorTypeArgument.get();
+    size_t maxParallelTests = max(maxParallelTestsArgument.get(), 1ul);
 
-    auto driver = Driver::Init(api, executorType, numBoxes);
+    Executor* executor = InitExecutor(executorType, maxParallelTests);
+
+    auto driver = new Driver(move(api), executor);
+    Driver::Init(driver);
 
     for (TestCase* testCase : tests) {
         driver->addGroup(move(testCase->name), testCase->body);
     }
-    driver->clean();
+    driver->beforeDestroy();
 
     for (Extension* extension : extensions) {
         extension->destroy();
     }
 
     delete driver;
+    delete executor;
 }
 
 }

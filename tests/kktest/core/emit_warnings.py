@@ -20,9 +20,9 @@ def check_warning(message):
 
 
 check_warning("Called fail() with message 'fail-top-level' "
-              "outside test()/setUp()/tearDown(). Ignoring.")
+              "outside a test execution. Ignoring.")
 check_warning("Called fail() with message 'fail-in-group' "
-              "outside test()/setUp()/tearDown(). Ignoring.")
+              "outside a test execution. Ignoring.")
 check_warning("setUp() called, but a setUp for group "
               "\"group\" already exists. Ignoring.")
 check_warning("tearDown() called, but a tearDown for group "

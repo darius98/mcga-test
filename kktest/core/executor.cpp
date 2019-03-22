@@ -9,15 +9,11 @@
 using namespace kktest::utils;
 using namespace std;
 
-namespace {
+namespace kktest {
 
 class ExpectationFailed : public runtime_error {
     using runtime_error::runtime_error;
 };
-
-}
-
-namespace kktest {
 
 void Executor::setOnTestFinishedCallback(OnTestFinished _onTestFinished) {
     onTestFinished = move(_onTestFinished);
@@ -100,7 +96,7 @@ ExecutedTest::Info Executor::run(const Test& test) {
                &info,
                "tearDown of group \"" + (*it)->getDescription() + "\"");
     }
-    info.timeTicks = 1.0 * t.elapsed().count() / getTimeTickLength().count();
+    info.timeTicks = 1.0 * t.elapsed().count() / GetTimeTickLength().count();
     state = INACTIVE;
     return info;
 }

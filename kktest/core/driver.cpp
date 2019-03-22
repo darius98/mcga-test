@@ -13,17 +13,9 @@ Driver* Driver::Instance() {
     return instance;
 }
 
-Driver* Driver::Init(const HooksManager& api,
-                     ExecutorType executorType,
-                     size_t numBoxes) {
-    Executor* executor = nullptr;
-    switch (executorType) {
-        case SMOOTH_EXECUTOR: executor = new Executor(); break;
-        case BOXED_EXECUTOR: executor = new BoxExecutor(numBoxes); break;
-    }
-    instance = new Driver(api, executor);
+void Driver::Init(Driver* _instance) {
+    instance = _instance;
     instance->runHooks<AFTER_INIT>();
-    return instance;
 }
 
 Driver::Driver(HooksManager hooksManager, Executor* _executor):
@@ -33,19 +25,12 @@ Driver::Driver(HooksManager hooksManager, Executor* _executor):
         afterTest(test);
     });
     executor->setOnWarningCallback([this](const Warning& warning) {
-        runHooks<ON_WARNING>(warning);
+        onWarning(warning);
     });
 }
 
 void Driver::addGroup(GroupConfig config, const Executable& body) {
-    if (executor->isActive()) {
-        emitWarning("Called group() inside a "
-                    + executor->stateAsString() + "(). Ignoring.");
-        return;
-    }
-    if (testingThreadId != hash<thread::id>()(this_thread::get_id())) {
-        emitWarning("Called group() from a different thread than the main "
-                    "testing thread. Ignoring.");
+    if (!checkMainThreadAndInactive("group")) {
         return;
     }
 
@@ -74,14 +59,7 @@ void Driver::addGroup(GroupConfig config, const Executable& body) {
 }
 
 void Driver::addTest(TestConfig config, Executable body) {
-    if (executor->isActive()) {
-        emitWarning("Called test() inside a "
-                    + executor->stateAsString() + "(). Ignoring.");
-        return;
-    }
-    if (testingThreadId != hash<thread::id>()(this_thread::get_id())) {
-        emitWarning("Called test() from a different thread than the main "
-                    "testing thread. Ignoring.");
+    if (!checkMainThreadAndInactive("test")) {
         return;
     }
     GroupPtr parentGroup = groupStack.back();
@@ -92,14 +70,7 @@ void Driver::addTest(TestConfig config, Executable body) {
 }
 
 void Driver::addSetUp(Executable func) {
-    if (executor->isActive()) {
-        emitWarning("Called setUp() inside a "
-                    + executor->stateAsString() + "(). Ignoring.");
-        return;
-    }
-    if (testingThreadId != hash<thread::id>()(this_thread::get_id())) {
-        emitWarning("Called setUp() from a different thread than the main "
-                    "testing thread. Ignoring.");
+    if (!checkMainThreadAndInactive("setUp")) {
         return;
     }
     const auto& group = groupStack.back();
@@ -112,14 +83,7 @@ void Driver::addSetUp(Executable func) {
 }
 
 void Driver::addTearDown(Executable func) {
-    if (executor->isActive()) {
-        emitWarning("Called tearDown() inside a "
-                    + executor->stateAsString() + "(). Ignoring.");
-        return;
-    }
-    if (testingThreadId != hash<thread::id>()(this_thread::get_id())) {
-        emitWarning("Called tearDown() from a different thread than the main "
-                    "testing thread. Ignoring.");
+    if (!checkMainThreadAndInactive("tearDown")) {
         return;
     }
     const auto& group = groupStack.back();
@@ -134,13 +98,13 @@ void Driver::addTearDown(Executable func) {
 void Driver::addFailure(const string& failure) {
     if (!executor->isActive()) {
         emitWarning("Called fail() with message '" + failure + "' "
-                    "outside test()/setUp()/tearDown(). Ignoring.");
+                    "outside a test execution. Ignoring.");
         return;
     }
     executor->addFailure(failure);
 }
 
-void Driver::clean() {
+void Driver::beforeDestroy() {
     executor->finalize();
     runHooks<BEFORE_DESTROY>();
 }
@@ -149,8 +113,26 @@ void Driver::emitWarning(const string& message) {
     if (executor->isActive()) {
         executor->handleWarning(message);
     } else {
-        runHooks<ON_WARNING>(Warning(message, groupStack.back()->getId()));
+        onWarning(Warning(message, groupStack.back()->getId()));
     }
+}
+
+bool Driver::checkMainThreadAndInactive(const string& method) {
+    if (executor->isActive()) {
+        emitWarning("Called " + method + "() inside a "
+                    + executor->stateAsString() + "(). Ignoring.");
+        return false;
+    }
+    if (testingThreadId != hash<thread::id>()(this_thread::get_id())) {
+        emitWarning("Called " + method + "() from a different thread than the "
+                    "main testing thread. Ignoring.");
+        return false;
+    }
+    return true;
+}
+
+void Driver::onWarning(const Warning& warning) {
+    runHooks<ON_WARNING>(warning);
 }
 
 void Driver::beforeTest(const Test& test) {

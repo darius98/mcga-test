@@ -4,8 +4,8 @@
 
 namespace kktest {
 
-std::chrono::nanoseconds getTimeTickLength();
+std::chrono::nanoseconds GetTimeTickLength();
 
-std::chrono::nanoseconds timeTicksToNanoseconds(double timeTicks);
+std::chrono::nanoseconds TimeTicksToNanoseconds(double timeTicks);
 
 }

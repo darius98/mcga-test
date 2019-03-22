@@ -9,7 +9,7 @@ nanoseconds ComputeTimeTickLengthFromHardware() {
     return 1s;
 }
 
-nanoseconds getTimeTickLength() {
+nanoseconds GetTimeTickLength() {
     static nanoseconds timeTickLength = 0ns;
     if (timeTickLength == 0ns) {
         timeTickLength = ComputeTimeTickLengthFromHardware();
@@ -17,9 +17,9 @@ nanoseconds getTimeTickLength() {
     return timeTickLength;
 }
 
-nanoseconds timeTicksToNanoseconds(double timeTicks) {
+nanoseconds TimeTicksToNanoseconds(double timeTicks) {
     return nanoseconds(
-            static_cast<long long>(timeTicks * getTimeTickLength().count()));
+            static_cast<long long>(timeTicks * GetTimeTickLength().count()));
 }
 
 }
