@@ -39,9 +39,11 @@ class BoxExecutor: public Executor {
 
     void finalize() override;
 
-    void setCurrentTestingSubprocessPipe(interproc::PipeWriter* pipe);
-
     void handleWarning(const std::string& message) override;
+
+    Type getType() const override;
+
+    void setCurrentTestingSubprocessPipe(interproc::PipeWriter* pipe);
 
  private:
     void ensureEmptyBoxes(std::size_t numContainers);

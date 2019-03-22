@@ -16,6 +16,10 @@ class Driver: public HooksManager {
 
     Driver(HooksManager hooks, Executor* executor);
 
+    ~Driver() override;
+
+    Executor::Type getExecutorType() const;
+
     void addGroup(GroupConfig config, const Executable& body);
 
     void addTest(TestConfig config, Executable body);
@@ -26,11 +30,9 @@ class Driver: public HooksManager {
 
     void addFailure(const std::string& failure);
 
-    void beforeDestroy();
-
- private:
     void emitWarning(const std::string& message);
 
+ private:
     bool checkMainThreadAndInactive(const std::string& method);
 
     void onWarning(const Warning& warning);

@@ -29,6 +29,15 @@ Driver::Driver(HooksManager hooksManager, Executor* _executor):
     });
 }
 
+Driver::~Driver() {
+    executor->finalize();
+    runHooks<BEFORE_DESTROY>();
+}
+
+Executor::Type Driver::getExecutorType() const {
+    return executor->getType();
+}
+
 void Driver::addGroup(GroupConfig config, const Executable& body) {
     if (!checkMainThreadAndInactive("group")) {
         return;
@@ -102,11 +111,6 @@ void Driver::addFailure(const string& failure) {
         return;
     }
     executor->addFailure(failure);
-}
-
-void Driver::beforeDestroy() {
-    executor->finalize();
-    runHooks<BEFORE_DESTROY>();
 }
 
 void Driver::emitWarning(const string& message) {

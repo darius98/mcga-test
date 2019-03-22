@@ -27,6 +27,8 @@ class HooksManager {
         ON_WARNING = 6,
     };
 
+    virtual ~HooksManager() = default;
+
     template<Type t, class H>
     void addHook(const H& hook) {
         std::get<t>(hooks).push_back(hook);

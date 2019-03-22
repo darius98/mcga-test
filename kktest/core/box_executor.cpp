@@ -106,12 +106,16 @@ void BoxExecutor::finalize() {
     ensureEmptyBoxes(numBoxes);
 }
 
-void BoxExecutor::setCurrentTestingSubprocessPipe(PipeWriter* pipe) {
-    currentTestingSubprocessPipe = pipe;
+Executor::Type BoxExecutor::getType() const {
+    return BOXED;
 }
 
 void BoxExecutor::handleWarning(const string& message) {
     currentTestingSubprocessPipe->sendMessage(WARNING, message);
+}
+
+void BoxExecutor::setCurrentTestingSubprocessPipe(PipeWriter* pipe) {
+    currentTestingSubprocessPipe = pipe;
 }
 
 void BoxExecutor::ensureEmptyBoxes(size_t requiredEmpty) {

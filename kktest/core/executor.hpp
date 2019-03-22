@@ -33,9 +33,11 @@ class Executor {
 
     virtual void finalize();
 
-    ExecutedTest::Info run(const Test& test);
-
     virtual void handleWarning(const std::string& message);
+
+    virtual Type getType() const;
+
+    ExecutedTest::Info run(const Test& test);
 
  private:
     void runJob(const Executable& job,

@@ -69,14 +69,13 @@ void runTests(int argc,
     for (TestCase* testCase : tests) {
         driver->addGroup(move(testCase->name), testCase->body);
     }
-    driver->beforeDestroy();
+
+    delete driver;
+    delete executor;
 
     for (Extension* extension : extensions) {
         extension->destroy();
     }
-
-    delete driver;
-    delete executor;
 }
 
 }

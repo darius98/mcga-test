@@ -65,6 +65,10 @@ void Executor::execute(Test test) {
     onTestFinished(ExecutedTest(move(test), move(executions)));
 }
 
+Executor::Type Executor::getType() const {
+    return SMOOTH;
+}
+
 ExecutedTest::Info Executor::run(const Test& test) {
     currentTestGroupId = test.getGroup()->getId();
     currentTestId = test.getId();
