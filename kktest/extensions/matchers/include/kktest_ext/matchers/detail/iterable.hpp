@@ -90,7 +90,7 @@ struct IterableEachMatcher: StatefulMatcher<IterableEachState<M>> {
     void describeFailure(Description* description,
                          IterableEachState<M>* state) const {
         (*description) << "an iterable where at index "
-                       << index
+                       << state->index
                        << " the element is ";
         __describeFailure(description, elementMatcher, &state->elementState);
     }

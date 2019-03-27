@@ -13,11 +13,16 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/build/bin")
 include_directories(.)
 
 add_subdirectory(third_party/cppli EXCLUDE_FROM_ALL)
+set(cppli_include_dir "${CMAKE_CURRENT_SOURCE_DIR}/third_party/cppli/include")
+
 add_subdirectory(third_party/termcolor EXCLUDE_FROM_ALL)
 
 add_subdirectory(common/interproc)
 add_subdirectory(common/utils)
 add_subdirectory(kktest)
 
-enable_testing()
-add_subdirectory(tests)
+option(BuildTests "Build tests using the KKTest library" OFF)
+if (BuildTests)
+    enable_testing()
+    add_subdirectory(tests)
+endif ()

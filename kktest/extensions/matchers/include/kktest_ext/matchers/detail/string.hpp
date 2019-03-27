@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstring>
+
 #include <string>
 
 #include <kktest_ext/matchers/matcher.hpp>

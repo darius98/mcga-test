@@ -11,6 +11,9 @@ add_library(kktest_core OBJECT
     warning.cpp
 )
 target_compile_options(kktest_core PRIVATE -Wall -Wextra -pedantic)
-target_include_directories(kktest_core PUBLIC include)
+target_include_directories(kktest_core
+    PUBLIC include
+    PUBLIC ${cppli_include_dir}
+)
 
 install(DIRECTORY include DESTINATION .)
