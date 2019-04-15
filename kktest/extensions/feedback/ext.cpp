@@ -47,11 +47,11 @@ void FeedbackExtension::registerCommandLineArgs(Parser& parser) {
 }
 
 void FeedbackExtension::init(HooksManager& api) {
-    if (!quietFlag->get()) {
+    if (!quietFlag->getValue()) {
         initLogging(api);
     }
-    if (!fileNameArgument->get().empty()) {
-        initFileStream(api, fileNameArgument->get());
+    if (!fileNameArgument->getValue().empty()) {
+        initFileStream(api, fileNameArgument->getValue());
     }
     api.addHook<HooksManager::AFTER_TEST>([this](const ExecutedTest& test) {
         if (!test.isPassed() && !test.isOptional()) {

@@ -63,8 +63,8 @@ void runTests(int argc,
         extension->init(api);
     }
 
-    Executor::Type executorType = executorTypeArgument->get();
-    size_t maxParallelTests = max(maxParallelTestsArgument->get(), 1ul);
+    Executor::Type executorType = executorTypeArgument->getValue();
+    size_t maxParallelTests = max(maxParallelTestsArgument->getValue(), 1ul);
 
     Executor* executor = InitExecutor(executorType, maxParallelTests);
 
