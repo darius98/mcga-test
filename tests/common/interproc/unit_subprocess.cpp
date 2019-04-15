@@ -2,13 +2,14 @@
 
 #include <csignal>
 
+#include <thread>
+
 #include "common/interproc/subprocess.hpp"
-#include "common/utils/time.hpp"
 
 using namespace kktest;
 using namespace kktest::interproc;
-using namespace kktest::utils;
 using namespace std;
+using std::this_thread::sleep_for;
 
 TEST_CASE(interprocSubprocessTest, "Interproc subprocess") {
     group("Fork into process doing nothing, after 50ms", [] {
@@ -16,7 +17,7 @@ TEST_CASE(interprocSubprocessTest, "Interproc subprocess") {
 
         setUp([&proc] {
             proc = Subprocess::Fork([] {});
-            sleep(50ms);
+            sleep_for(50ms);
         });
 
         tearDown([&proc] {
@@ -56,7 +57,7 @@ TEST_CASE(interprocSubprocessTest, "Interproc subprocess") {
             proc = Subprocess::Fork([] {
                 exit(17);
             });
-            sleep(50ms);
+            sleep_for(50ms);
         });
 
         tearDown([&proc] {
@@ -96,7 +97,7 @@ TEST_CASE(interprocSubprocessTest, "Interproc subprocess") {
             proc = Subprocess::Fork([] {
                 raise(SIGINT);
             });
-            sleep(50ms);
+            sleep_for(50ms);
         });
 
         tearDown([&proc] {
@@ -139,7 +140,7 @@ TEST_CASE(interprocSubprocessTest, "Interproc subprocess") {
                     spins += 1;
                 }
             });
-            sleep(50ms);
+            sleep_for(50ms);
         });
 
         tearDown([&proc] {

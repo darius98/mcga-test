@@ -1,12 +1,13 @@
 #include "kktest/core/box_executor.hpp"
 
+#include <thread>
+
 #include "common/interproc/pipe.hpp"
-#include "common/utils/time.hpp"
 #include "kktest/core/time_tick.hpp"
 
 using namespace kktest::interproc;
-using namespace kktest::utils;
 using namespace std;
+using std::this_thread::sleep_for;
 
 namespace kktest {
 
@@ -137,7 +138,7 @@ void BoxExecutor::ensureEmptyBoxes(size_t requiredEmpty) {
             }
         }
         if (!progress) {
-            sleep(5ms);
+            sleep_for(5ms);
         }
     }
 }

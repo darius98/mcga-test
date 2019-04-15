@@ -1,8 +1,9 @@
 #pragma once
 
+#include <chrono>
+
 #include "common/interproc/subprocess.hpp"
 #include "common/interproc/pipe.hpp"
-#include "common/utils/time.hpp"
 
 namespace kktest::interproc {
 
@@ -10,7 +11,7 @@ class WorkerSubprocess: public Subprocess {
  public:
     typedef const std::function<void(PipeWriter*)>& Work;
 
-    WorkerSubprocess(utils::Duration timeLimit, Work run);
+    WorkerSubprocess(const std::chrono::nanoseconds& timeLimit, Work run);
 
     WorkerSubprocess(WorkerSubprocess&& other) noexcept;
 
@@ -37,7 +38,7 @@ class WorkerSubprocess: public Subprocess {
  private:
     Subprocess* subprocess;
     PipeReader* pipeReader;
-    utils::Stopwatch stopwatch;
+    std::chrono::high_resolution_clock::time_point endTime;
 };
 
 }

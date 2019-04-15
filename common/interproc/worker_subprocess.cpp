@@ -1,12 +1,13 @@
 #include "common/interproc/worker_subprocess.hpp"
 
-using namespace kktest::utils;
 using namespace std;
+using std::chrono::high_resolution_clock;
+using std::chrono::nanoseconds;
 
 namespace kktest::interproc {
 
-WorkerSubprocess::WorkerSubprocess(Duration timeLimit, Work run):
-        stopwatch(timeLimit) {
+WorkerSubprocess::WorkerSubprocess(const nanoseconds& timeLimit, Work run)
+        : endTime(high_resolution_clock::now() + timeLimit) {
     auto pipe = createAnonymousPipe();
     subprocess = Subprocess::Fork([&pipe, &run]() {
         delete pipe.first;
@@ -18,10 +19,10 @@ WorkerSubprocess::WorkerSubprocess(Duration timeLimit, Work run):
     delete pipe.second;
 }
 
-WorkerSubprocess::WorkerSubprocess(WorkerSubprocess&& other) noexcept:
-        subprocess(other.subprocess),
-        pipeReader(other.pipeReader),
-        stopwatch(other.stopwatch) {
+WorkerSubprocess::WorkerSubprocess(WorkerSubprocess&& other) noexcept
+        : subprocess(other.subprocess),
+          pipeReader(other.pipeReader),
+          endTime(other.endTime) {
     other.subprocess = nullptr;
     other.pipeReader = nullptr;
 }
@@ -61,7 +62,7 @@ int WorkerSubprocess::getSignal() {
 
 Subprocess::FinishStatus WorkerSubprocess::getFinishStatus() {
     if (!isFinished()) {
-        if (!stopwatch.isElapsed()) {
+        if (high_resolution_clock::now() <= endTime) {
             return NO_EXIT;
         }
         auto killStatus = kill();

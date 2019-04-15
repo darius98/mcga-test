@@ -1,4 +1,5 @@
-#include <iostream>
+#include <chrono>
+#include <thread>
 
 #include <kktest.hpp>
 
@@ -6,8 +7,9 @@
 
 using namespace kktest;
 using namespace kktest::interproc;
-using namespace kktest::utils;
 using namespace std;
+using std::chrono::high_resolution_clock;
+using std::this_thread::sleep_for;
 
 TEST_CASE(interprocWorkerSubprocessTest, "Interproc worker subprocess") {
     group("Send a message, then die", [] {
@@ -17,7 +19,7 @@ TEST_CASE(interprocWorkerSubprocessTest, "Interproc worker subprocess") {
             proc = new WorkerSubprocess(50ms, [](PipeWriter* writer) {
                 writer->sendMessage(2, 0, 1, 9);
             });
-            sleep(50ms);
+            sleep_for(50ms);
         });
 
         tearDown([&] {
@@ -69,7 +71,7 @@ TEST_CASE(interprocWorkerSubprocessTest, "Interproc worker subprocess") {
 
         test("getNextMessage(32) is invalid", [&] {
             proc = new WorkerSubprocess(50ms, [](PipeWriter*) {});
-            sleep(50ms);
+            sleep_for(50ms);
             expect(proc->getNextMessage(32).isInvalid());
         });
     });
@@ -84,9 +86,13 @@ TEST_CASE(interprocWorkerSubprocessTest, "Interproc worker subprocess") {
 
         test("getFinishStatus()==TIMEOUT", [&] {
             proc = new WorkerSubprocess(50ms, [](PipeWriter*) {
-                spin(200ms);
+                auto endTime = high_resolution_clock::now() + 200ms;
+                volatile int spins = 0;
+                while (high_resolution_clock::now() <= endTime) {
+                    spins += 1;
+                }
             });
-            sleep(100ms);
+            sleep_for(100ms);
             expect(proc->getFinishStatus() == Subprocess::TIMEOUT);
         });
     });

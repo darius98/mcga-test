@@ -12,7 +12,6 @@ include_directories(.)
 add_subdirectory(third_party/termcolor EXCLUDE_FROM_ALL)
 
 add_subdirectory(common/interproc)
-add_subdirectory(common/utils)
 add_subdirectory(kktest)
 
 if (MCGA_test_tests)

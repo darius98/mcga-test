@@ -1,13 +1,15 @@
 #include "kktest/core/executor.hpp"
 
+#include <chrono>
 #include <stdexcept>
 #include <thread>
 
-#include "common/utils/time.hpp"
 #include "kktest/core/time_tick.hpp"
 
-using namespace kktest::utils;
 using namespace std;
+using std::chrono::duration_cast;
+using std::chrono::high_resolution_clock;
+using std::chrono::nanoseconds;
 
 namespace kktest {
 
@@ -74,7 +76,7 @@ ExecutedTest::Info Executor::run(const Test& test) {
     currentTestId = test.getId();
     state = INSIDE_SET_UP;
     ExecutedTest::Info info;
-    Timer t;
+    auto startTime = high_resolution_clock::now();
     vector<GroupPtr> testGroupStack = test.getGroupStack();
     vector<GroupPtr>::iterator it;
     // Execute setUp()-s, in the order of the group stack.
@@ -100,7 +102,13 @@ ExecutedTest::Info Executor::run(const Test& test) {
                &info,
                "tearDown of group \"" + (*it)->getDescription() + "\"");
     }
-    info.timeTicks = 1.0 * t.elapsed().count() / GetTimeTickLength().count();
+    auto endTime = high_resolution_clock::now();
+    auto nanosecondsElapsed = duration_cast<nanoseconds>(
+            endTime - startTime).count();
+    info.timeTicks = 1.0 * nanosecondsElapsed / GetTimeTickLength().count();
+    if (info.timeTicks > test.getTimeTicksLimit()) {
+        info.fail("Execution timed out.");
+    }
     state = INACTIVE;
     return info;
 }
