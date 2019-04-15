@@ -49,7 +49,7 @@ add_integration_test(core_single_test_fail_thread
     single_test_fail_thread.py
     single_test_fail_thread.cpp
 )
-target_link_libraries(integration_core_single_test_fail_thread_binary ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(mcga_test_integration_core_single_test_fail_thread_binary ${CMAKE_THREAD_LIBS_INIT})
 
 add_integration_test(core_single_file_multiple_cases
     single_file_multiple_cases.py
@@ -70,4 +70,4 @@ add_integration_test(core_emit_warnings
     emit_warnings.py
     emit_warnings.cpp
 )
-target_link_libraries(integration_core_emit_warnings_binary ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(mcga_test_integration_core_emit_warnings_binary ${CMAKE_THREAD_LIBS_INIT})
