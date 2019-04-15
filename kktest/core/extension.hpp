@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cppli.hpp>
+#include <mcga/cli.hpp>
 
 #include "kktest/core/hooks_manager.hpp"
 
@@ -10,7 +10,7 @@ class Extension {
  public:
     virtual ~Extension() = default;
 
-    virtual void registerCommandLineArgs(cppli::Parser&) {}
+    virtual void registerCommandLineArgs(mcga::cli::Parser&) {}
 
     virtual void init(HooksManager&) {}
 

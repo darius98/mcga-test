@@ -3,7 +3,9 @@
 #include <iostream>
 #include <memory>
 
-using namespace cppli;
+using mcga::cli::ArgumentSpec;
+using mcga::cli::FlagSpec;
+using mcga::cli::Parser;
 using namespace kktest::interproc;
 using namespace std;
 
@@ -45,11 +47,11 @@ void FeedbackExtension::registerCommandLineArgs(Parser& parser) {
 }
 
 void FeedbackExtension::init(HooksManager& api) {
-    if (!quietFlag.get()) {
+    if (!quietFlag->get()) {
         initLogging(api);
     }
-    if (!fileNameArgument.get().empty()) {
-        initFileStream(api, fileNameArgument.get());
+    if (!fileNameArgument->get().empty()) {
+        initFileStream(api, fileNameArgument->get());
     }
     api.addHook<HooksManager::AFTER_TEST>([this](const ExecutedTest& test) {
         if (!test.isPassed() && !test.isOptional()) {

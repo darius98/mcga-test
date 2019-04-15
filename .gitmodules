@@ -1,6 +1,3 @@
-[submodule "third_party/cppli"]
-	path = third_party/cppli
-	url = https://github.com/darius98/cppli
 [submodule "third_party/termcolor"]
 	path = third_party/termcolor
 	url = https://github.com/ikalnytskyi/termcolor

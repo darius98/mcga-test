@@ -3,8 +3,13 @@
 #include "kktest/core/box_executor.hpp"
 #include "kktest/core/driver.hpp"
 
-using namespace cppli;
-using namespace std;
+using mcga::cli::Parser;
+using mcga::cli::ChoiceArgumentSpec;
+using mcga::cli::NumericArgumentSpec;
+using std::max;
+using std::move;
+using std::size_t;
+using std::vector;
 
 namespace kktest {
 
@@ -51,15 +56,15 @@ void runTests(int argc,
         extension->registerCommandLineArgs(parser);
     }
 
-    parser.interpret(argc, argv);
+    parser.parse(argc, argv);
 
     HooksManager api;
     for (Extension* extension : extensions) {
         extension->init(api);
     }
 
-    Executor::Type executorType = executorTypeArgument.get();
-    size_t maxParallelTests = max(maxParallelTestsArgument.get(), 1ul);
+    Executor::Type executorType = executorTypeArgument->get();
+    size_t maxParallelTests = max(maxParallelTestsArgument->get(), 1ul);
 
     Executor* executor = InitExecutor(executorType, maxParallelTests);
 

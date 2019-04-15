@@ -10,7 +10,7 @@ class FeedbackExtension: public Extension {
  public:
     int getReturnCode();
 
-    void registerCommandLineArgs(cppli::Parser& parser) override;
+    void registerCommandLineArgs(mcga::cli::Parser& parser) override;
 
     void init(HooksManager& api) override;
 
@@ -23,8 +23,8 @@ class FeedbackExtension: public Extension {
     std::unique_ptr<TestLogger> logger = nullptr;
     std::unique_ptr<interproc::PipeWriter> fileWriter = nullptr;
 
-    cppli::Flag quietFlag;
-    cppli::Argument fileNameArgument;
+    mcga::cli::Flag quietFlag;
+    mcga::cli::Argument fileNameArgument;
 };
 
 }

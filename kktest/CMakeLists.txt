@@ -4,7 +4,6 @@ add_subdirectory(extensions/death)
 add_subdirectory(extensions/feedback)
 
 add_library(kktest SHARED
-    $<TARGET_OBJECTS:cppli_obj>
     $<TARGET_OBJECTS:common_interproc_obj>
 
     entry_point.cpp

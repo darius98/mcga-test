@@ -9,9 +9,6 @@ option(MCGA_test_tests "Build MCGA Test tests" OFF)
 
 include_directories(.)
 
-add_subdirectory(third_party/cppli EXCLUDE_FROM_ALL)
-set(cppli_include_dir "${CMAKE_CURRENT_SOURCE_DIR}/third_party/cppli/include")
-
 add_subdirectory(third_party/termcolor EXCLUDE_FROM_ALL)
 
 add_subdirectory(common/interproc)
