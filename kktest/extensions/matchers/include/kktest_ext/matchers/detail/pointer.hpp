@@ -4,8 +4,8 @@
 
 namespace kktest::matchers::detail {
 
-struct IsNullptrMatcher: StatelessMatcher {
-    bool matches(void*const& obj) const {
+struct IsNullptrMatcher : StatelessMatcher {
+    bool matches(void* const& obj) const {
         return obj == nullptr;
     }
 
@@ -18,8 +18,8 @@ struct IsNullptrMatcher: StatelessMatcher {
     }
 };
 
-struct IsNotNullptrMatcher: StatelessMatcher {
-    bool matches(void*const& obj) const {
+struct IsNotNullptrMatcher : StatelessMatcher {
+    bool matches(void* const& obj) const {
         return obj != nullptr;
     }
 
@@ -32,4 +32,4 @@ struct IsNotNullptrMatcher: StatelessMatcher {
     }
 };
 
-}
+}  // namespace kktest::matchers::detail

@@ -22,13 +22,14 @@ constexpr T& Ref(T);
 
 template<class T>
 decltype(Begin<T>() != End<T>(),
-         ++ Ref(Begin<T>()),
+         ++Ref(Begin<T>()),
          *Begin<T>(),
-         std::true_type()) IsIterableImpl(int) {
+         std::true_type())
+  IsIterableImpl(int) {
     return std::true_type();
 }
 
-template <class T>
+template<class T>
 std::false_type IsIterableImpl(...) {
     return std::false_type();
 }
@@ -47,7 +48,8 @@ struct IsTupleImpl<std::tuple<Items...>> : std::true_type {};
 
 template<class T>
 decltype(Ref(std::declval<std::stringstream>()) << std::declval<T>(),
-         std::true_type()) IsSstreamableImpl(int) {
+         std::true_type())
+  IsSstreamableImpl(int) {
     return std::true_type();
 }
 
@@ -56,16 +58,15 @@ std::false_type IsSstreamableImpl(...) {
     return std::false_type();
 }
 
-}
+}  // namespace detail
 
 template<class T>
-constexpr bool IsStringLike =
-    std::is_same_v<T, std::string>
-    || std::is_same_v<T, std::string_view>
-    || (std::is_pointer_v<T>
-        && std::is_same_v<char, std::remove_pointer_t<T>>)
-    || (std::is_array_v<T>
-        && std::is_same_v<char, std::remove_all_extents_t<T>>);
+constexpr bool IsStringLike
+  = std::is_same_v<
+      T,
+      std::
+        string> || std::is_same_v<T, std::string_view> || (std::is_pointer_v<T> && std::is_same_v<char, std::remove_pointer_t<T>>)
+  || (std::is_array_v<T> && std::is_same_v<char, std::remove_all_extents_t<T>>);
 
 template<class T>
 constexpr bool IsIterable = decltype(detail::IsIterableImpl<T>(0))::value;
@@ -84,11 +85,12 @@ constexpr bool IsSstreamable = decltype(detail::IsSstreamableImpl<T>(0))::value;
 
 template<class S, std::size_t I = 0, class... Items>
 typename std::enable_if_t<I == sizeof...(Items), void>
-        StreamTuple(S& stream, const std::tuple<Items...>& t) {}
+  StreamTuple(S& stream, const std::tuple<Items...>& t) {
+}
 
 template<class S, std::size_t I = 0, class... Items>
-typename std::enable_if_t<I < sizeof...(Items), void>
-        StreamTuple(S& stream, const std::tuple<Items...>& t) {
+  typename std::enable_if_t < I<sizeof...(Items), void>
+  StreamTuple(S& stream, const std::tuple<Items...>& t) {
     if (I != 0) {
         stream << ',';
     }
@@ -96,4 +98,4 @@ typename std::enable_if_t<I < sizeof...(Items), void>
     StreamTuple<I + 1, Items...>(stream, t);
 }
 
-}
+}  // namespace kktest::matchers::tp

@@ -16,16 +16,14 @@ enum PipeMessageType {
     DONE,
 };
 
-RunningTest::RunningTest(Test test, BoxExecutor* executor):
-        test(move(test)), executor(executor) {}
+RunningTest::RunningTest(Test test, BoxExecutor* executor)
+        : test(move(test)), executor(executor) {
+}
 
 void RunningTest::startExecution() {
     auto timeLimit = TimeTicksToNanoseconds(test.getTimeTicksLimit()) + 1s;
     currentExecution = make_unique<WorkerSubprocess>(
-        timeLimit,
-        [this](PipeWriter* pipe) {
-            executeBoxed(pipe);
-        });
+      timeLimit, [this](PipeWriter* pipe) { executeBoxed(pipe); });
 }
 
 void RunningTest::executeBoxed(PipeWriter* pipe) const {
@@ -63,12 +61,12 @@ bool RunningTest::finishedCurrentExecution() {
         }
         case WorkerSubprocess::NON_ZERO_EXIT: {
             error = "Test exited with code "
-                    + to_string(currentExecution->getReturnCode());
+              + to_string(currentExecution->getReturnCode());
             break;
         }
         case WorkerSubprocess::SIGNAL_EXIT: {
             error = "Test killed by signal "
-                    + to_string(currentExecution->getSignal());
+              + to_string(currentExecution->getSignal());
             break;
         }
         case WorkerSubprocess::TIMEOUT: {
@@ -94,7 +92,8 @@ ExecutedTest RunningTest::toExecutedTest() && {
     return ExecutedTest(move(test), move(executions));
 }
 
-BoxExecutor::BoxExecutor(size_t numBoxes): numBoxes(numBoxes) {}
+BoxExecutor::BoxExecutor(size_t numBoxes): numBoxes(numBoxes) {
+}
 
 void BoxExecutor::execute(Test test) {
     ensureEmptyBoxes(1);
@@ -123,18 +122,18 @@ void BoxExecutor::ensureEmptyBoxes(size_t requiredEmpty) {
     size_t maxActive = numBoxes - requiredEmpty;
     while (activeBoxes.size() > maxActive) {
         bool progress = false;
-        for (auto it = activeBoxes.begin(); it != activeBoxes.end(); ) {
+        for (auto it = activeBoxes.begin(); it != activeBoxes.end();) {
             if (it->finishedCurrentExecution()) {
                 if (it->finishedAllExecutions()) {
                     onTestFinished(move(*it).toExecutedTest());
                     it = activeBoxes.erase(it);
                 } else {
                     it->startExecution();
-                    ++ it;
+                    ++it;
                 }
                 progress = true;
             } else {
-                ++ it;
+                ++it;
             }
         }
         if (!progress) {
@@ -143,4 +142,4 @@ void BoxExecutor::ensureEmptyBoxes(size_t requiredEmpty) {
     }
 }
 
-}
+}  // namespace kktest

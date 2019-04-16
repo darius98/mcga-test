@@ -20,8 +20,7 @@ WorkerSubprocess::WorkerSubprocess(const nanoseconds& timeLimit, Work run)
 }
 
 WorkerSubprocess::WorkerSubprocess(WorkerSubprocess&& other) noexcept
-        : subprocess(other.subprocess),
-          pipeReader(other.pipeReader),
+        : subprocess(other.subprocess), pipeReader(other.pipeReader),
           endTime(other.endTime) {
     other.subprocess = nullptr;
     other.pipeReader = nullptr;
@@ -76,4 +75,4 @@ Subprocess::FinishStatus WorkerSubprocess::getFinishStatus() {
     return subprocess->getFinishStatus();
 }
 
-}
+}  // namespace kktest::interproc

@@ -6,7 +6,7 @@
 namespace kktest::matchers {
 
 class Description {
- public:
+  public:
     template<class T>
     Description& operator<<(const T& obj) {
         if constexpr (tp::IsStringLike<T>) {
@@ -55,7 +55,7 @@ class Description {
     void appendIterable(const T& obj) {
         stream << '[';
         bool first = true;
-        for (const auto& item : obj) {
+        for (const auto& item: obj) {
             if (first) {
                 first = false;
             } else {
@@ -86,10 +86,9 @@ class Description {
         return stream.str();
     }
 
- private:
+  private:
     std::stringstream stream;
 };
-
 
 struct Matcher {};
 
@@ -99,26 +98,26 @@ struct StatefulMatcher : public Matcher {
 
     typedef S State;
 
-//    template<class T>
-//    virtual bool matches(const T& obj, S* state) const = 0;
-//
-//    virtual void describe(Description* description) const = 0;
-//
-//    virtual void describeFailure(Description* description,
-//                                 State* state) const = 0;
+    //    template<class T>
+    //    virtual bool matches(const T& obj, S* state) const = 0;
+    //
+    //    virtual void describe(Description* description) const = 0;
+    //
+    //    virtual void describeFailure(Description* description,
+    //                                 State* state) const = 0;
 };
 
 struct StatelessMatcher : public Matcher {
     static constexpr bool HasState = false;
 
-    typedef int State; // for easier usage of nested matchers.
+    typedef int State;  // for easier usage of nested matchers.
 
-//    template<class T>
-//    virtual bool matches(const T& obj) const = 0;
-//
-//    virtual void describe(Description* description) const = 0;
-//
-//    virtual void describeFailure(Description* description) const = 0;
+    //    template<class T>
+    //    virtual bool matches(const T& obj) const = 0;
+    //
+    //    virtual void describe(Description* description) const = 0;
+    //
+    //    virtual void describeFailure(Description* description) const = 0;
 };
 
 template<class T, class M>
@@ -141,8 +140,9 @@ void __describeFailure(Description* description,
     }
 }
 
-template<class T, class M,
-         class=std::enable_if_t<std::is_base_of_v<Matcher, M>>>
+template<class T,
+         class M,
+         class = std::enable_if_t<std::is_base_of_v<Matcher, M>>>
 void expect(const T& obj, M matcher) {
     typename M::State state;
     if (__matches(matcher, &state, obj)) {
@@ -158,4 +158,4 @@ void expect(const T& obj, M matcher) {
     fail("Expectation failed:\n\t" + description.toString());
 }
 
-}
+}  // namespace kktest::matchers

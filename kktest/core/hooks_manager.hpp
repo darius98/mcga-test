@@ -8,7 +8,7 @@
 namespace kktest {
 
 class HooksManager {
- public:
+  public:
     typedef std::function<void(const Test&)> BeforeTest;
     typedef std::function<void(const ExecutedTest&)> AfterTest;
     typedef std::function<void(GroupPtr)> BeforeGroup;
@@ -34,24 +34,23 @@ class HooksManager {
         std::get<t>(hooks).push_back(hook);
     }
 
- protected:
+  protected:
     template<Type t, class... Args>
     void runHooks(const Args&... args) {
-        for (const auto& hook : std::get<t>(hooks)) {
+        for (const auto& hook: std::get<t>(hooks)) {
             hook(args...);
         }
     }
 
- private:
-    std::tuple<
-        std::vector<AfterInit>,
-        std::vector<BeforeGroup>,
-        std::vector<AfterGroup>,
-        std::vector<BeforeTest>,
-        std::vector<AfterTest>,
-        std::vector<BeforeDestroy>,
-        std::vector<OnWarning>
-    > hooks;
+  private:
+    std::tuple<std::vector<AfterInit>,
+               std::vector<BeforeGroup>,
+               std::vector<AfterGroup>,
+               std::vector<BeforeTest>,
+               std::vector<AfterTest>,
+               std::vector<BeforeDestroy>,
+               std::vector<OnWarning>>
+      hooks;
 };
 
-}
+}  // namespace kktest

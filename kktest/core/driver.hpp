@@ -5,11 +5,11 @@
 
 namespace kktest {
 
-class Driver: public HooksManager {
- private:
+class Driver : public HooksManager {
+  private:
     static inline Driver* instance = nullptr;
 
- public:
+  public:
     static Driver* Instance();
 
     static void Init(Driver* driver);
@@ -32,7 +32,7 @@ class Driver: public HooksManager {
 
     void emitWarning(const std::string& message);
 
- private:
+  private:
     bool checkMainThreadAndInactive(const std::string& method);
 
     void onWarning(const Warning& warning);
@@ -48,4 +48,4 @@ class Driver: public HooksManager {
     int currentGroupId = 0;
 };
 
-}
+}  // namespace kktest

@@ -8,4 +8,4 @@ constexpr detail::IsNullptrMatcher isNull;
 
 constexpr detail::IsNotNullptrMatcher isNotNull;
 
-}
+}  // namespace kktest::matchers

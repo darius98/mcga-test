@@ -22,7 +22,7 @@ void group(GroupConfig config, const Executable&) {
     groupConfig = new GroupConfig(move(config));
 }
 
-}
+}  // namespace kktest
 
 int exitCode = 0;
 
@@ -32,13 +32,12 @@ void expectTestConfig(const string& description,
                       size_t attempts,
                       size_t requiredPassedAttempts) {
     if (testConfig->description != description) {
-        cout << "Expected test description to be " << description
-             << ", got " << testConfig->description << "\n";
+        cout << "Expected test description to be " << description << ", got "
+             << testConfig->description << "\n";
         exitCode = 1;
     }
     if (testConfig->optional != optional) {
-        cout << boolalpha
-             << "Expected test optional flag to be " << optional
+        cout << boolalpha << "Expected test optional flag to be " << optional
              << ", got " << testConfig->optional << "\n";
         exitCode = 1;
     }
@@ -48,27 +47,26 @@ void expectTestConfig(const string& description,
         exitCode = 1;
     }
     if (testConfig->attempts != attempts) {
-        cout << "Expected test time ticks limit to be " << attempts
-             << ", got " << testConfig->attempts << "\n";
+        cout << "Expected test time ticks limit to be " << attempts << ", got "
+             << testConfig->attempts << "\n";
         exitCode = 1;
     }
     if (testConfig->requiredPassedAttempts != requiredPassedAttempts) {
         cout << "Expected test time ticks limit to be "
-             << requiredPassedAttempts
-             << ", got " << testConfig->attempts << "\n";
+             << requiredPassedAttempts << ", got " << testConfig->attempts
+             << "\n";
         exitCode = 1;
     }
 }
 
 void expectGroupConfig(const string& description, bool optional) {
     if (groupConfig->description != description) {
-        cout << "Expected group description to be " << description
-             << ", got " << groupConfig->description << "\n";
+        cout << "Expected group description to be " << description << ", got "
+             << groupConfig->description << "\n";
         exitCode = 1;
     }
     if (groupConfig->optional != optional) {
-        cout << boolalpha
-             << "Expected group optional flag to be " << optional
+        cout << boolalpha << "Expected group optional flag to be " << optional
              << ", got " << groupConfig->optional << "\n";
         exitCode = 1;
     }

@@ -8,7 +8,7 @@ namespace kktest {
 class BoxExecutor;
 
 class RunningTest {
- public:
+  public:
     explicit RunningTest(Test test, BoxExecutor* executor);
 
     void startExecution();
@@ -21,7 +21,7 @@ class RunningTest {
 
     ExecutedTest toExecutedTest() &&;
 
- private:
+  private:
     Test test;
     std::vector<ExecutedTest::Info> executions;
     std::unique_ptr<interproc::WorkerSubprocess> currentExecution = nullptr;
@@ -29,8 +29,8 @@ class RunningTest {
     BoxExecutor* executor;
 };
 
-class BoxExecutor: public Executor {
- public:
+class BoxExecutor : public Executor {
+  public:
     explicit BoxExecutor(std::size_t numBoxes);
 
     ~BoxExecutor() override = default;
@@ -45,14 +45,14 @@ class BoxExecutor: public Executor {
 
     void setCurrentTestingSubprocessPipe(interproc::PipeWriter* pipe);
 
- private:
+  private:
     void ensureEmptyBoxes(std::size_t numContainers);
 
     interproc::PipeWriter* currentTestingSubprocessPipe;
     std::size_t numBoxes;
     std::vector<RunningTest> activeBoxes;
 
- friend class RunningTest;
+    friend class RunningTest;
 };
 
-}
+}  // namespace kktest

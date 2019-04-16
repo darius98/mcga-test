@@ -10,7 +10,7 @@ namespace kktest {
  * This defines the simple concept of a function that can be executed with no
  * parameters and returns nothing. TestCase, test, group, setUp and tearDown are
  * all constructed from Executable. */
-typedef std::function<void()> Executable;
+using Executable = std::function<void()>;
 
 /** Structure defining the configuration for a test.
  *
@@ -53,7 +53,7 @@ struct TestConfig {
      * passed overall.
      *
      * This should be at most equal to #attempts. */
-     std::size_t requiredPassedAttempts = 1;
+    std::size_t requiredPassedAttempts = 1;
 
     /** Default constructor. */
     TestConfig() = default;
@@ -63,13 +63,13 @@ struct TestConfig {
      * This constructor is provided for easier use of default values for
      * #optional and #timeTicksLimit, which should be used in most cases. It is
      * implicit by design, to allow an inline string call to test(). */
-    TestConfig(std::string description): // NOLINT(google-explicit-constructor)
-            description(std::move(description)) {}
+    TestConfig(std::string description): description(std::move(description)) {
+    }
 
     /** Implicit constructor from a description C-style string (see
      * TestConfig(std::string)). */
-    TestConfig(const char* description): // NOLINT(google-explicit-constructor)
-            description(description) {}
+    TestConfig(const char* description): description(description) {
+    }
 
     /** Set the #description of the test. */
     TestConfig& setDescription(std::string _description) {
@@ -123,9 +123,8 @@ inline void optionalTest(Executable body) {
 
 /** Convenience function for defining a test that will be executed multiple
  * times, and all executions must pass for the test to be marked as `passed`. */
-inline void multiRunTest(TestConfig config,
-                         std::size_t numRuns,
-                         Executable body) {
+inline void
+  multiRunTest(TestConfig config, std::size_t numRuns, Executable body) {
     config.setRequiredPassedAttempts(numRuns);
     config.setAttempts(numRuns);
     test(std::move(config), std::move(body));
@@ -157,9 +156,8 @@ inline void optionalMultiRunTest(std::size_t numRuns, Executable body) {
 
 /** Convenience function for defining a test that will be retried multiple
  * times, and only one needs to pass for the test to be marked as `passed`. */
-inline void retryTest(TestConfig config,
-                      std::size_t attempts,
-                      Executable body) {
+inline void
+  retryTest(TestConfig config, std::size_t attempts, Executable body) {
     config.setAttempts(attempts);
     config.setRequiredPassedAttempts(1);
     test(std::move(config), std::move(body));
@@ -175,9 +173,8 @@ inline void retryTest(std::size_t numAttempts, Executable body) {
 /** Convenience function for defining an optional test that will be retried
  * multiple times, and only one needs to pass for the test to be marked as
  * `passed`. */
-inline void optionalRetryTest(TestConfig config,
-                              std::size_t attempts,
-                              Executable body) {
+inline void
+  optionalRetryTest(TestConfig config, std::size_t attempts, Executable body) {
     config.setOptional();
     retryTest(std::move(config), attempts, std::move(body));
 }
@@ -204,7 +201,7 @@ struct GroupConfig {
      *
      * This is equivalent to marking each individual test inside the group and
      * all its subgroups as optional. */
-     bool optional = false;
+    bool optional = false;
 
     /** Default constructor. */
     GroupConfig() = default;
@@ -214,13 +211,13 @@ struct GroupConfig {
      * This constructor is provided for easier use of default values for
      * all the other properties, which should be used in most cases. It is
      * implicit by design, to allow an inline string call to group(). */
-    GroupConfig(std::string description): // NOLINT(google-explicit-constructor)
-            description(std::move(description)) {}
+    GroupConfig(std::string description): description(std::move(description)) {
+    }
 
     /** Implicit constructor from a description C-style string (see
      * GroupConfig(std::string)). */
-    GroupConfig(const char* description): // NOLINT(google-explicit-constructor)
-            description(description) {}
+    GroupConfig(const char* description): description(description) {
+    }
 
     /** Set the #description of the group. */
     GroupConfig& setDescription(std::string _description) {
@@ -267,11 +264,11 @@ void tearDown(Executable func);
  * Calling this function inside the main testing thread disrupts the test
  * completely. Calling it in a separate thread will still mark the test as
  * failed, but will not interrupt any thread. */
-void fail(const std::string& message=std::string());
+void fail(const std::string& message = std::string());
 
 /** Convenience function for marking a test as failed if a boolean expression
  * does not evaluate to `true`. */
-inline void expect(bool expr, const std::string& message=std::string()) {
+inline void expect(bool expr, const std::string& message = std::string()) {
     if (!expr) {
         fail(message);
     }
@@ -284,15 +281,15 @@ struct TestCase {
 
     std::string name;
 
-    TestCase(Executable body, std::string name):
-            body(std::move(body)), name(std::move(name)) {
+    TestCase(Executable body, std::string name)
+            : body(std::move(body)), name(std::move(name)) {
         Register(this);
     }
 };
 
-}
+}  // namespace kktest
 
-#define TEST_CASE(UNIQUE_NAME, DESC) \
-    void UNIQUE_NAME##_func(); \
-    static kktest::TestCase UNIQUE_NAME##_case(UNIQUE_NAME##_func, DESC); \
+#define TEST_CASE(UNIQUE_NAME, DESC)                                           \
+    void UNIQUE_NAME##_func();                                                 \
+    static kktest::TestCase UNIQUE_NAME##_case(UNIQUE_NAME##_func, DESC);      \
     void UNIQUE_NAME##_func()

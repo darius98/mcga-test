@@ -1,7 +1,7 @@
 #include "kktest/extensions/feedback/test_logger.hpp"
 
-#include <numeric>
 #include <iomanip>
+#include <numeric>
 
 #include <termcolor/termcolor.hpp>
 
@@ -12,7 +12,8 @@ using namespace termcolor;
 
 namespace kktest::feedback {
 
-TestLogger::TestLogger(ostream& stream): stream(stream) {}
+TestLogger::TestLogger(ostream& stream): stream(stream) {
+}
 
 void TestLogger::addTest(const ExecutedTest& test) {
     if (test.getTotalTimeTicks() != -1.0) {
@@ -38,18 +39,12 @@ void TestLogger::printFinalInformation() {
         stream << red << failedTests << reset;
     }
     if (failedOptionalTests != 0) {
-        stream << " ("
-               << yellow << failedOptionalTests << reset
-               << " "
-               << (failedOptionalTests == 1 ? "was" : "were")
-               << " optional)";
+        stream << " (" << yellow << failedOptionalTests << reset << " "
+               << (failedOptionalTests == 1 ? "was" : "were") << " optional)";
     }
     stream << "\n";
-    stream << "Total recorded testing time: "
-           << fixed
-           << setprecision(3)
-           << totalTimeTicks
-           << " ticks ("
+    stream << "Total recorded testing time: " << fixed << setprecision(3)
+           << totalTimeTicks << " ticks ("
            << TimeTicksToNanoseconds(totalTimeTicks).count() * 0.000001
            << " ms)\n";
 }
@@ -80,12 +75,13 @@ void TestLogger::printTestAndGroupsDescription(const ExecutedTest& test) {
         }
         group = group->getParentGroup();
     }
-    string groupDescription = accumulate(groupDescriptions.rbegin(),
-                                         groupDescriptions.rend(),
-                                         string(""),
-                                         [](const string& a, const string& b) {
-        return a.empty() ? b : (a + "::" + b);
-    });
+    string groupDescription
+      = accumulate(groupDescriptions.rbegin(),
+                   groupDescriptions.rend(),
+                   string(""),
+                   [](const string& a, const string& b) {
+                       return a.empty() ? b : (a + "::" + b);
+                   });
     if (!groupDescription.empty()) {
         groupDescription += "::";
     }
@@ -94,24 +90,20 @@ void TestLogger::printTestAndGroupsDescription(const ExecutedTest& test) {
 
 void TestLogger::printTestExecutionTime(const ExecutedTest& test) {
     if (test.getAvgTimeTicksForExecution() != -1.0) {
-        stream << fixed
-               << setprecision(3)
-               << (test.getNumAttempts() > 1 ? "~ " : "")
-               << test.getAvgTimeTicksForExecution()
-               << " ticks ("
-               << (test.getNumAttempts() > 1 ? "~ " : "")
-               << TimeTicksToNanoseconds(
-                      test.getAvgTimeTicksForExecution()).count() * 0.000001
-               << " ms)";
+        stream
+          << fixed << setprecision(3) << (test.getNumAttempts() > 1 ? "~ " : "")
+          << test.getAvgTimeTicksForExecution() << " ticks ("
+          << (test.getNumAttempts() > 1 ? "~ " : "")
+          << TimeTicksToNanoseconds(test.getAvgTimeTicksForExecution()).count()
+            * 0.000001
+          << " ms)";
     } else {
         stream << "(unknown time)";
     }
 }
 
 void TestLogger::printTestAttemptsInfo(const ExecutedTest& test) {
-    stream << "(passed: "
-           << test.getNumPassedAttempts()
-           << "/"
+    stream << "(passed: " << test.getNumPassedAttempts() << "/"
            << test.getNumAttempts();
     if (!test.isPassed()) {
         stream << ", required: " << test.getNumRequiredPassedAttempts();
@@ -146,4 +138,4 @@ void TestLogger::printTestMessage(const ExecutedTest& test) {
     stream << "\n";
 }
 
-}
+}  // namespace kktest::feedback

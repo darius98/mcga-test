@@ -8,10 +8,11 @@
 
 namespace kktest::matchers::detail {
 
-struct CharInStringMatcher: StatelessMatcher {
+struct CharInStringMatcher : StatelessMatcher {
     constexpr CharInStringMatcher(const char* container,
-                                  const char* expectation):
-            container(container), expectation(expectation) {}
+                                  const char* expectation)
+            : container(container), expectation(expectation) {
+    }
 
     bool matches(const char& ch) const {
         return strchr(container, ch) != nullptr;
@@ -33,15 +34,16 @@ struct CharInStringMatcher: StatelessMatcher {
         }
     }
 
- private:
+  private:
     const char* container;
     const char* expectation;
 };
 
-struct IsSubstringMatcher: StatelessMatcher {
- public:
-    explicit IsSubstringMatcher(std::string container):
-            container(std::move(container)) {}
+struct IsSubstringMatcher : StatelessMatcher {
+  public:
+    explicit IsSubstringMatcher(std::string container)
+            : container(std::move(container)) {
+    }
 
     bool matches(const std::string& object) const {
         return container.find(object) != std::string::npos;
@@ -55,8 +57,8 @@ struct IsSubstringMatcher: StatelessMatcher {
         (*description) << "not a substring";
     }
 
- private:
+  private:
     std::string container;
 };
 
-}
+}  // namespace kktest::matchers::detail

@@ -10,7 +10,7 @@
 namespace kktest::feedback {
 
 class TestLogger {
- public:
+  public:
     explicit TestLogger(std::ostream& stream);
 
     void addTest(const ExecutedTest& test);
@@ -19,8 +19,7 @@ class TestLogger {
 
     void printFinalInformation();
 
- private:
-
+  private:
     void printTestPassedOrFailedToken(const ExecutedTest& test);
 
     void printTestAndGroupsDescription(const ExecutedTest& test);
@@ -42,4 +41,4 @@ class TestLogger {
     int loggedTests = 0;
 };
 
-}
+}  // namespace kktest::feedback

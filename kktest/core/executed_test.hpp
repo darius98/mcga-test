@@ -13,7 +13,7 @@ namespace kktest {
  * a Test is basically _upgraded_ to an ExecutedTest, and should not be used
  * after this. */
 class ExecutedTest : public Test {
- public:
+  public:
     /** Simple helper structure that holds the execution information for a
      * test. */
     struct Info {
@@ -78,13 +78,13 @@ class ExecutedTest : public Test {
     /** Get the array of executions. */
     const std::vector<Info>& getExecutions() const;
 
- private:
+  private:
     std::vector<Info> executions;
 
     // Cached values.
     mutable std::size_t numPassedExecutions = static_cast<std::size_t>(-1);
-    mutable double totalTimeTicks = -2; // -1=un-computable. -2=not calculated
-    mutable double avgTimeTicks = -2; // -1=un-computable. -2=not calculated
+    mutable double totalTimeTicks = -2;  // -1=un-computable. -2=not calculated
+    mutable double avgTimeTicks = -2;    // -1=un-computable. -2=not calculated
 };
 
-}
+}  // namespace kktest

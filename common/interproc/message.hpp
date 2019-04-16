@@ -5,7 +5,7 @@
 namespace kktest::interproc {
 
 class Message {
- public:
+  public:
     static const Message INVALID;
 
     template<class... Args>
@@ -46,7 +46,7 @@ class Message {
         return obj;
     }
 
- private:
+  private:
     explicit Message(uint8_t* payload) noexcept;
 
     std::size_t getSize() const;
@@ -63,9 +63,9 @@ class Message {
     static std::uint8_t* Allocate(std::size_t numBytes);
 
     class BytesConsumer {
-     public:
-        virtual BytesConsumer& addBytes(const void* bytes,
-                                        std::size_t numBytes) = 0;
+      public:
+        virtual BytesConsumer& addBytes(const void* bytes, std::size_t numBytes)
+          = 0;
 
         template<class T>
         BytesConsumer& add(const T& obj) {
@@ -84,26 +84,26 @@ class Message {
         }
     };
 
-    class BytesCounter: public BytesConsumer {
-     public:
+    class BytesCounter : public BytesConsumer {
+      public:
         BytesCounter& addBytes(const void* bytes,
                                std::size_t numBytes) override;
 
         std::size_t getNumBytesConsumed() const;
 
-     private:
+      private:
         std::size_t bytesConsumed = 0;
     };
 
-    class Builder: public BytesConsumer {
-     public:
+    class Builder : public BytesConsumer {
+      public:
         explicit Builder(std::size_t size);
 
         Builder& addBytes(const void* bytes, std::size_t numBytes) override;
 
         Message build();
 
-     private:
+      private:
         std::uint8_t* payloadBuilder;
         std::size_t cursor;
     };
@@ -121,4 +121,4 @@ Message::BytesConsumer& Message::BytesConsumer::add(const std::string& obj);
 template<>
 Message::BytesConsumer& Message::BytesConsumer::add(const Message& obj);
 
-}
+}  // namespace kktest::interproc

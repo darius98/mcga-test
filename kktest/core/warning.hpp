@@ -13,4 +13,4 @@ struct Warning {
     Warning(std::string message, int groupId, int testId);
 };
 
-}
+}  // namespace kktest

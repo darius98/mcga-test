@@ -8,4 +8,4 @@ constexpr detail::IsTrueMatcher isTrue;
 
 constexpr detail::IsFalseMatcher isFalse;
 
-}
+}  // namespace kktest::matchers

@@ -8,8 +8,9 @@
 namespace kktest::matchers::detail {
 
 template<class T>
-struct EqualityMatcher: StatelessMatcher {
-    explicit constexpr EqualityMatcher(const T& target): target(target) {}
+struct EqualityMatcher : StatelessMatcher {
+    explicit constexpr EqualityMatcher(const T& target): target(target) {
+    }
 
     template<class O>
     bool matches(const O& obj) const {
@@ -24,13 +25,14 @@ struct EqualityMatcher: StatelessMatcher {
         (*description) << "not '" << target << "'";
     }
 
- private:
+  private:
     const T& target;
 };
 
 template<class T>
-struct NonEqualityMatcher: StatelessMatcher {
-    explicit constexpr NonEqualityMatcher(const T& target): target(target) {}
+struct NonEqualityMatcher : StatelessMatcher {
+    explicit constexpr NonEqualityMatcher(const T& target): target(target) {
+    }
 
     template<class O>
     bool matches(const O& obj) const {
@@ -45,13 +47,14 @@ struct NonEqualityMatcher: StatelessMatcher {
         (*description) << "'" << target << "'";
     }
 
- private:
+  private:
     const T& target;
 };
 
 template<class T>
-struct IsLessThanMatcher: StatelessMatcher {
-    explicit constexpr IsLessThanMatcher(const T& target): target(target) {}
+struct IsLessThanMatcher : StatelessMatcher {
+    explicit constexpr IsLessThanMatcher(const T& target): target(target) {
+    }
 
     template<class O>
     bool matches(const O& object) const {
@@ -66,14 +69,14 @@ struct IsLessThanMatcher: StatelessMatcher {
         (*description) << ">= '" << target << "'";
     }
 
- private:
+  private:
     const T& target;
 };
 
 template<class T>
-struct IsLessThanEqualMatcher: StatelessMatcher {
-    explicit constexpr IsLessThanEqualMatcher(const T& target):
-            target(target) {}
+struct IsLessThanEqualMatcher : StatelessMatcher {
+    explicit constexpr IsLessThanEqualMatcher(const T& target): target(target) {
+    }
 
     template<class O>
     bool matches(const O& object) const {
@@ -88,13 +91,14 @@ struct IsLessThanEqualMatcher: StatelessMatcher {
         (*description) << "> '" << target << "'";
     }
 
- private:
+  private:
     const T& target;
 };
 
 template<class T>
-struct IsGreaterThanMatcher: StatelessMatcher {
-    explicit constexpr IsGreaterThanMatcher(const T& target): target(target) {}
+struct IsGreaterThanMatcher : StatelessMatcher {
+    explicit constexpr IsGreaterThanMatcher(const T& target): target(target) {
+    }
 
     template<class O>
     bool matches(const O& object) const {
@@ -109,14 +113,15 @@ struct IsGreaterThanMatcher: StatelessMatcher {
         (*description) << "<= '" << target << "'";
     }
 
- private:
+  private:
     const T& target;
 };
 
 template<class T>
-struct IsGreaterThanEqualMatcher: StatelessMatcher {
-    explicit constexpr IsGreaterThanEqualMatcher(const T& target):
-            target(target) {}
+struct IsGreaterThanEqualMatcher : StatelessMatcher {
+    explicit constexpr IsGreaterThanEqualMatcher(const T& target)
+            : target(target) {
+    }
 
     template<class O>
     bool matches(const O& object) const {
@@ -131,14 +136,15 @@ struct IsGreaterThanEqualMatcher: StatelessMatcher {
         (*description) << "< '" << target << "'";
     }
 
- private:
+  private:
     const T& target;
 };
 
 template<class T>
-struct IdentityMatcher: StatefulMatcher<const void*> {
-    explicit constexpr IdentityMatcher(const T& target):
-            address(static_cast<const void*>(&target)) {}
+struct IdentityMatcher : StatefulMatcher<const void*> {
+    explicit constexpr IdentityMatcher(const T& target)
+            : address(static_cast<const void*>(&target)) {
+    }
 
     template<class S>
     bool matches(const S& object, const void** state) const {
@@ -150,20 +156,20 @@ struct IdentityMatcher: StatefulMatcher<const void*> {
         (*description) << "variable at address '" << address << "'";
     }
 
-    void describeFailure(Description* description,
-                         const void** state) const {
+    void describeFailure(Description* description, const void** state) const {
         (*description) << "variable at address '" << *state << "'";
     }
 
- private:
+  private:
     const void* address;
 };
 
 constexpr const std::size_t relevantRange = 20;
 
 template<>
-struct EqualityMatcher<std::string>: StatefulMatcher<std::string> {
-    explicit EqualityMatcher(std::string target) : target(std::move(target)) {}
+struct EqualityMatcher<std::string> : StatefulMatcher<std::string> {
+    explicit EqualityMatcher(std::string target): target(std::move(target)) {
+    }
 
     bool matches(const std::string& obj, std::string* state) const {
         *state = obj;
@@ -201,12 +207,11 @@ struct EqualityMatcher<std::string>: StatefulMatcher<std::string> {
         //             This class should not be inter-dependent with the
         //             implementation of Streamer.
         for (std::size_t index = mismatchIndex >= relevantRange
-                                 ? mismatchIndex - relevantRange
-                                 : 0;
+               ? mismatchIndex - relevantRange
+               : 0;
              index < mismatchIndex;
-             ++ index) {
-            if (target[index] == '\n'
-                || target[index] == '\r'
+             ++index) {
+            if (target[index] == '\n' || target[index] == '\r'
                 || target[index] == '\t') {
                 numSpaces += 1;
             }
@@ -217,17 +222,17 @@ struct EqualityMatcher<std::string>: StatefulMatcher<std::string> {
         (*description) << extractRelevantSection(target, mismatchIndex);
         description->appendRawString("'\n\t     Got: '");
         (*description) << extractRelevantSection(obj, mismatchIndex);
-        description->appendRawString(
-                "'\n\t" + std::string(numSpaces, ' ') + "^");
+        description->appendRawString("'\n\t" + std::string(numSpaces, ' ')
+                                     + "^");
     }
 
     template<int n>
-    operator EqualityMatcher<char[n]>() const; // NOLINT
+    operator EqualityMatcher<char[n]>() const;  // NOLINT
 
- protected:
+  protected:
     std::string target;
 
- private:
+  private:
     static std::string extractRelevantSection(const std::string& s,
                                               const std::size_t index) {
         auto firstIndex = index >= relevantRange ? index - relevantRange : 0;
@@ -245,7 +250,7 @@ struct EqualityMatcher<std::string>: StatefulMatcher<std::string> {
 };
 
 template<int n>
-struct EqualityMatcher<char[n]>: EqualityMatcher<std::string> {
+struct EqualityMatcher<char[n]> : EqualityMatcher<std::string> {
     using EqualityMatcher<std::string>::EqualityMatcher;
 };
 
@@ -255,9 +260,9 @@ EqualityMatcher<std::string>::operator EqualityMatcher<char[n]>() const {
 }
 
 template<>
-struct NonEqualityMatcher<std::string>: StatelessMatcher {
-    explicit NonEqualityMatcher(std::string target):
-            target(std::move(target)) {}
+struct NonEqualityMatcher<std::string> : StatelessMatcher {
+    explicit NonEqualityMatcher(std::string target): target(std::move(target)) {
+    }
 
     bool matches(const std::string& obj) const {
         return obj != target;
@@ -276,14 +281,14 @@ struct NonEqualityMatcher<std::string>: StatelessMatcher {
     }
 
     template<int n>
-    operator NonEqualityMatcher<char[n]>() const; // NOLINT
+    operator NonEqualityMatcher<char[n]>() const;  // NOLINT
 
- protected:
+  protected:
     std::string target;
 };
 
 template<int n>
-struct NonEqualityMatcher<char[n]>: NonEqualityMatcher<std::string> {
+struct NonEqualityMatcher<char[n]> : NonEqualityMatcher<std::string> {
     using NonEqualityMatcher<std::string>::NonEqualityMatcher;
 };
 
@@ -293,9 +298,9 @@ NonEqualityMatcher<std::string>::operator NonEqualityMatcher<char[n]>() const {
 }
 
 template<>
-struct IsLessThanMatcher<std::string>: StatelessMatcher {
-    explicit IsLessThanMatcher(std::string target):
-            target(std::move(target)) {}
+struct IsLessThanMatcher<std::string> : StatelessMatcher {
+    explicit IsLessThanMatcher(std::string target): target(std::move(target)) {
+    }
 
     bool matches(const std::string& obj) const {
         return obj < target;
@@ -314,14 +319,14 @@ struct IsLessThanMatcher<std::string>: StatelessMatcher {
     }
 
     template<int n>
-    operator IsLessThanMatcher<char[n]>() const; // NOLINT
+    operator IsLessThanMatcher<char[n]>() const;  // NOLINT
 
- protected:
+  protected:
     std::string target;
 };
 
 template<int n>
-struct IsLessThanMatcher<char[n]>: IsLessThanMatcher<std::string> {
+struct IsLessThanMatcher<char[n]> : IsLessThanMatcher<std::string> {
     using IsLessThanMatcher<std::string>::IsLessThanMatcher;
 };
 
@@ -331,9 +336,10 @@ IsLessThanMatcher<std::string>::operator IsLessThanMatcher<char[n]>() const {
 }
 
 template<>
-struct IsLessThanEqualMatcher<std::string>: StatelessMatcher {
-    explicit IsLessThanEqualMatcher(std::string target):
-            target(std::move(target)) {}
+struct IsLessThanEqualMatcher<std::string> : StatelessMatcher {
+    explicit IsLessThanEqualMatcher(std::string target)
+            : target(std::move(target)) {
+    }
 
     bool matches(const std::string& obj) const {
         return obj <= target;
@@ -352,27 +358,28 @@ struct IsLessThanEqualMatcher<std::string>: StatelessMatcher {
     }
 
     template<int n>
-    operator IsLessThanEqualMatcher<char[n]>() const; // NOLINT
+    operator IsLessThanEqualMatcher<char[n]>() const;  // NOLINT
 
- protected:
+  protected:
     std::string target;
 };
 
 template<int n>
-struct IsLessThanEqualMatcher<char[n]>: IsLessThanEqualMatcher<std::string> {
+struct IsLessThanEqualMatcher<char[n]> : IsLessThanEqualMatcher<std::string> {
     using IsLessThanEqualMatcher<std::string>::IsLessThanEqualMatcher;
 };
 
 template<int n>
 IsLessThanEqualMatcher<std::string>::
-        operator IsLessThanEqualMatcher<char[n]>() const {
+  operator IsLessThanEqualMatcher<char[n]>() const {
     return IsLessThanEqualMatcher<char[n]>(target);
 }
 
 template<>
-struct IsGreaterThanMatcher<std::string>: StatelessMatcher {
-    explicit IsGreaterThanMatcher(std::string target):
-            target(std::move(target)) {}
+struct IsGreaterThanMatcher<std::string> : StatelessMatcher {
+    explicit IsGreaterThanMatcher(std::string target)
+            : target(std::move(target)) {
+    }
 
     bool matches(const std::string& obj) const {
         return obj > target;
@@ -391,27 +398,28 @@ struct IsGreaterThanMatcher<std::string>: StatelessMatcher {
     }
 
     template<int n>
-    operator IsGreaterThanMatcher<char[n]>() const; // NOLINT
+    operator IsGreaterThanMatcher<char[n]>() const;  // NOLINT
 
- protected:
+  protected:
     std::string target;
 };
 
 template<int n>
-struct IsGreaterThanMatcher<char[n]>: IsGreaterThanMatcher<std::string> {
+struct IsGreaterThanMatcher<char[n]> : IsGreaterThanMatcher<std::string> {
     using IsGreaterThanMatcher<std::string>::IsGreaterThanMatcher;
 };
 
 template<int n>
 IsGreaterThanMatcher<std::string>::
-        operator IsGreaterThanMatcher<char[n]>() const {
+  operator IsGreaterThanMatcher<char[n]>() const {
     return IsGreaterThanMatcher<char[n]>(target);
 }
 
 template<>
-struct IsGreaterThanEqualMatcher<std::string>: StatelessMatcher {
-    explicit IsGreaterThanEqualMatcher(std::string target):
-            target(std::move(target)) {}
+struct IsGreaterThanEqualMatcher<std::string> : StatelessMatcher {
+    explicit IsGreaterThanEqualMatcher(std::string target)
+            : target(std::move(target)) {
+    }
 
     bool matches(const std::string& obj) const {
         return obj >= target;
@@ -430,21 +438,21 @@ struct IsGreaterThanEqualMatcher<std::string>: StatelessMatcher {
     }
 
     template<int n>
-    operator IsGreaterThanEqualMatcher<char[n]>() const; // NOLINT
+    operator IsGreaterThanEqualMatcher<char[n]>() const;  // NOLINT
 
- protected:
+  protected:
     std::string target;
 };
 
 template<int n>
-struct IsGreaterThanEqualMatcher<char[n]>:
-        IsGreaterThanEqualMatcher<std::string> {
+struct IsGreaterThanEqualMatcher<char[n]>
+        : IsGreaterThanEqualMatcher<std::string> {
     using IsGreaterThanEqualMatcher<std::string>::IsGreaterThanEqualMatcher;
 };
 
 template<int n>
 IsGreaterThanEqualMatcher<std::string>::
-        operator IsGreaterThanEqualMatcher<char[n]>() const {
+  operator IsGreaterThanEqualMatcher<char[n]>() const {
     return IsGreaterThanEqualMatcher<char[n]>(target);
 }
 

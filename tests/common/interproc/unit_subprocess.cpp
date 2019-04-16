@@ -25,38 +25,27 @@ TEST_CASE(interprocSubprocessTest, "Interproc subprocess") {
             proc = nullptr;
         });
 
-        test("isFinished() == true", [&] {
-            expect(proc->isFinished());
-        });
+        test("isFinished() == true", [&] { expect(proc->isFinished()); });
 
-        test("isExited() == true", [&] {
-            expect(proc->isExited());
-        });
+        test("isExited() == true", [&] { expect(proc->isExited()); });
 
-        test("getReturnCode() == 0", [&] {
-            expect(proc->getReturnCode() == 0);
-        });
+        test("getReturnCode() == 0",
+             [&] { expect(proc->getReturnCode() == 0); });
 
-        test("isSignaled() == false", [&] {
-            expect(!proc->isSignaled());
-        });
+        test("isSignaled() == false", [&] { expect(!proc->isSignaled()); });
 
-        test("kill() == ALREADY_DEAD", [&] {
-            expect(proc->kill() == Subprocess::ALREADY_DEAD);
-        });
+        test("kill() == ALREADY_DEAD",
+             [&] { expect(proc->kill() == Subprocess::ALREADY_DEAD); });
 
-        test("getFinishStatus() == ZERO_EXIT", [&] {
-            expect(proc->getFinishStatus() == Subprocess::ZERO_EXIT);
-        });
+        test("getFinishStatus() == ZERO_EXIT",
+             [&] { expect(proc->getFinishStatus() == Subprocess::ZERO_EXIT); });
     });
 
     group("Fork into process exiting with code 17, after 50ms", [] {
         Subprocess* proc = nullptr;
 
         setUp([&proc] {
-            proc = Subprocess::Fork([] {
-                exit(17);
-            });
+            proc = Subprocess::Fork([] { exit(17); });
             sleep_for(50ms);
         });
 
@@ -65,25 +54,17 @@ TEST_CASE(interprocSubprocessTest, "Interproc subprocess") {
             proc = nullptr;
         });
 
-        test("isFinished() == true", [&] {
-            expect(proc->isFinished());
-        });
+        test("isFinished() == true", [&] { expect(proc->isFinished()); });
 
-        test("isExited() == true", [&] {
-            expect(proc->isExited());
-        });
+        test("isExited() == true", [&] { expect(proc->isExited()); });
 
-        test("getReturnCode() == 17", [&] {
-            expect(proc->getReturnCode() == 17);
-        });
+        test("getReturnCode() == 17",
+             [&] { expect(proc->getReturnCode() == 17); });
 
-        test("isSignaled() == false", [&] {
-            expect(!proc->isSignaled());
-        });
+        test("isSignaled() == false", [&] { expect(!proc->isSignaled()); });
 
-        test("kill() == ALREADY_DEAD", [&] {
-            expect(proc->kill() == Subprocess::ALREADY_DEAD);
-        });
+        test("kill() == ALREADY_DEAD",
+             [&] { expect(proc->kill() == Subprocess::ALREADY_DEAD); });
 
         test("getFinishStatus() == NON_ZERO_EXIT", [&] {
             expect(proc->getFinishStatus() == Subprocess::NON_ZERO_EXIT);
@@ -94,9 +75,7 @@ TEST_CASE(interprocSubprocessTest, "Interproc subprocess") {
         Subprocess* proc = nullptr;
 
         setUp([&proc] {
-            proc = Subprocess::Fork([] {
-                raise(SIGINT);
-            });
+            proc = Subprocess::Fork([] { raise(SIGINT); });
             sleep_for(50ms);
         });
 
@@ -105,25 +84,17 @@ TEST_CASE(interprocSubprocessTest, "Interproc subprocess") {
             proc = nullptr;
         });
 
-        test("isFinished() == true", [&] {
-            expect(proc->isFinished());
-        });
+        test("isFinished() == true", [&] { expect(proc->isFinished()); });
 
-        test("isExited() == false", [&] {
-            expect(!proc->isExited());
-        });
+        test("isExited() == false", [&] { expect(!proc->isExited()); });
 
-        test("isSignaled() == true", [&] {
-            expect(proc->isSignaled());
-        });
+        test("isSignaled() == true", [&] { expect(proc->isSignaled()); });
 
-        test("getSignal() == SIGINT", [&] {
-            expect(proc->getSignal() == SIGINT);
-        });
+        test("getSignal() == SIGINT",
+             [&] { expect(proc->getSignal() == SIGINT); });
 
-        test("kill() == ALREADY_DEAD", [&] {
-            expect(proc->kill() == Subprocess::ALREADY_DEAD);
-        });
+        test("kill() == ALREADY_DEAD",
+             [&] { expect(proc->kill() == Subprocess::ALREADY_DEAD); });
 
         test("getFinishStatus() == SIGNAL_EXIT", [&] {
             expect(proc->getFinishStatus() == Subprocess::SIGNAL_EXIT);
@@ -149,24 +120,16 @@ TEST_CASE(interprocSubprocessTest, "Interproc subprocess") {
             proc = nullptr;
         });
 
-        test("isFinished() == false", [&] {
-            expect(!proc->isFinished());
-        });
+        test("isFinished() == false", [&] { expect(!proc->isFinished()); });
 
-        test("isExited() == false", [&] {
-            expect(!proc->isExited());
-        });
+        test("isExited() == false", [&] { expect(!proc->isExited()); });
 
-        test("isSignaled() == false", [&] {
-            expect(!proc->isSignaled());
-        });
+        test("isSignaled() == false", [&] { expect(!proc->isSignaled()); });
 
-        test("kill() == KILLED", [&] {
-            expect(proc->kill() == Subprocess::KILLED);
-        });
+        test("kill() == KILLED",
+             [&] { expect(proc->kill() == Subprocess::KILLED); });
 
-        test("getFinishStatus() == NO_EXIT", [&] {
-            expect(proc->getFinishStatus() == Subprocess::NO_EXIT);
-        });
+        test("getFinishStatus() == NO_EXIT",
+             [&] { expect(proc->getFinishStatus() == Subprocess::NO_EXIT); });
     });
 }

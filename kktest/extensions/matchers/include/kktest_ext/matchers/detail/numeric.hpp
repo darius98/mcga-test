@@ -4,7 +4,7 @@
 
 namespace kktest::matchers::detail {
 
-struct IsPositiveMatcher: StatelessMatcher {
+struct IsPositiveMatcher : StatelessMatcher {
     template<class T>
     bool matches(const T& object) const {
         return object > 0;
@@ -19,7 +19,7 @@ struct IsPositiveMatcher: StatelessMatcher {
     }
 };
 
-struct IsNegativeMatcher: StatelessMatcher {
+struct IsNegativeMatcher : StatelessMatcher {
     template<class T>
     bool matches(const T& object) const {
         return object < 0;
@@ -34,7 +34,7 @@ struct IsNegativeMatcher: StatelessMatcher {
     }
 };
 
-struct IsEvenMatcher: StatelessMatcher {
+struct IsEvenMatcher : StatelessMatcher {
     template<class T>
     bool matches(const T& object) const {
         return object % 2 == 0;
@@ -49,7 +49,7 @@ struct IsEvenMatcher: StatelessMatcher {
     }
 };
 
-struct IsOddMatcher: StatelessMatcher {
+struct IsOddMatcher : StatelessMatcher {
     template<class T>
     bool matches(const T& object) const {
         return object % 2 == 1 || object % 2 == -1;
@@ -64,7 +64,7 @@ struct IsOddMatcher: StatelessMatcher {
     }
 };
 
-struct IsZeroMatcher: StatelessMatcher {
+struct IsZeroMatcher : StatelessMatcher {
     template<class T>
     bool matches(const T& object) const {
         return object == 0;
@@ -79,7 +79,7 @@ struct IsZeroMatcher: StatelessMatcher {
     }
 };
 
-struct IsNotZeroMatcher: StatelessMatcher {
+struct IsNotZeroMatcher : StatelessMatcher {
     template<class T>
     bool matches(const T& object) const {
         return object != 0;
@@ -95,9 +95,10 @@ struct IsNotZeroMatcher: StatelessMatcher {
 };
 
 template<class T>
-struct IsAlmostEqualMatcher: StatelessMatcher {
-    constexpr IsAlmostEqualMatcher(const T& target, const double& eps):
-            target(target), eps(eps) {}
+struct IsAlmostEqualMatcher : StatelessMatcher {
+    constexpr IsAlmostEqualMatcher(const T& target, const double& eps)
+            : target(target), eps(eps) {
+    }
 
     bool matches(const T& object) const {
         T delta = object - target;
@@ -112,9 +113,9 @@ struct IsAlmostEqualMatcher: StatelessMatcher {
         (*description) << "a number not within " << eps << " of " << target;
     }
 
- private:
+  private:
     const T& target;
     double eps;
 };
 
-}
+}  // namespace kktest::matchers::detail

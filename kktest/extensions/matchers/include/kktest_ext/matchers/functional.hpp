@@ -11,5 +11,4 @@ constexpr detail::ThrowsSpecificMatcher<E> throwsA() {
 
 constexpr detail::ThrowsAnythingMatcher throws;
 
-}
-
+}  // namespace kktest::matchers

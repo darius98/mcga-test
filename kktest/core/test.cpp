@@ -6,11 +6,10 @@ using namespace std;
 
 namespace kktest {
 
-Test::Test(TestConfig config, Executable body, GroupPtr group, int id):
-        TestConfig(move(config)),
-        body(move(body)),
-        group(move(group)),
-        id(id) {}
+Test::Test(TestConfig config, Executable body, GroupPtr group, int id)
+        : TestConfig(move(config)), body(move(body)), group(move(group)),
+          id(id) {
+}
 
 const string& Test::getDescription() const {
     return description;
@@ -53,4 +52,4 @@ void Test::run() const {
     body();
 }
 
-}
+}  // namespace kktest

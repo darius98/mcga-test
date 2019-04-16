@@ -31,7 +31,6 @@ TEST_CASE(string, "Matchers extension: string") {
             }
         });
 
-
         test("isLowercaseLetter matches only lowercase letters", [] {
             for (unsigned char i = 1; i <= 127; ++i) {
                 if ('a' <= i && i <= 'z') {
@@ -74,9 +73,8 @@ TEST_CASE(string, "Matchers extension: string") {
 
         test("isHexDigit matches only hexadecimal digits", [] {
             for (unsigned char i = 1; i <= 127; ++i) {
-                if (('0' <= i && i <= '9')
-                        || ('a' <= i && i <= 'f')
-                        || ('A' <= i && i <= 'F')) {
+                if (('0' <= i && i <= '9') || ('a' <= i && i <= 'f')
+                    || ('A' <= i && i <= 'F')) {
                     EXPECT_MATCHER_MATCHES(i, isHexDigit);
                 } else {
                     EXPECT_MATCHER_FAILS(i, isHexDigit);
@@ -106,13 +104,13 @@ TEST_CASE(string, "Matchers extension: string") {
 
         test("Nothing but the empty string is substring of the empty substring",
              [] {
-            EXPECT_MATCHER_MATCHES("", isSubstringOf(""));
-            EXPECT_MATCHER_FAILS("Nothing ", isSubstringOf(""));
-            EXPECT_MATCHER_FAILS("i", isSubstringOf(""));
-            EXPECT_MATCHER_FAILS("s", isSubstringOf(""));
-            EXPECT_MATCHER_FAILS(" a substring of the", isSubstringOf(""));
-            EXPECT_MATCHER_FAILS("empty string", isSubstringOf(""));
-        });
+                 EXPECT_MATCHER_MATCHES("", isSubstringOf(""));
+                 EXPECT_MATCHER_FAILS("Nothing ", isSubstringOf(""));
+                 EXPECT_MATCHER_FAILS("i", isSubstringOf(""));
+                 EXPECT_MATCHER_FAILS("s", isSubstringOf(""));
+                 EXPECT_MATCHER_FAILS(" a substring of the", isSubstringOf(""));
+                 EXPECT_MATCHER_FAILS("empty string", isSubstringOf(""));
+             });
 
         test("Any string is a substring of itself", [] {
             EXPECT_MATCHER_MATCHES("Any", isSubstringOf("Any"));
@@ -123,26 +121,24 @@ TEST_CASE(string, "Matchers extension: string") {
         });
 
         test("All substrings of 'Hello World!' match "
-             "isSubstring('Hello World!')", [] {
-            string s = "Hello World!";
-            for (size_t start = 0; start < s.length(); ++start) {
-                for (size_t len = 0; start + len <= s.length(); ++len) {
-                    EXPECT_MATCHER_MATCHES(s.substr(start, len),
-                                           isSubstringOf(s));
-                }
-            }
-        });
+             "isSubstring('Hello World!')",
+             [] {
+                 string s = "Hello World!";
+                 for (size_t start = 0; start < s.length(); ++start) {
+                     for (size_t len = 0; start + len <= s.length(); ++len) {
+                         EXPECT_MATCHER_MATCHES(s.substr(start, len),
+                                                isSubstringOf(s));
+                     }
+                 }
+             });
 
-        test("'Hello' is not a substring of 'World!'", [] {
-            EXPECT_MATCHER_FAILS("Hello", isSubstringOf("World!"));
-        });
+        test("'Hello' is not a substring of 'World!'",
+             [] { EXPECT_MATCHER_FAILS("Hello", isSubstringOf("World!")); });
 
-        test("'Hello' is not a substring of 'ello'", [] {
-            EXPECT_MATCHER_FAILS("Hello", isSubstringOf("ello"));
-        });
+        test("'Hello' is not a substring of 'ello'",
+             [] { EXPECT_MATCHER_FAILS("Hello", isSubstringOf("ello")); });
 
-        test("'Hello' is not a substring of 'hello!!'", [] {
-            EXPECT_MATCHER_FAILS("Hello", isSubstringOf("hello!!"));
-        });
+        test("'Hello' is not a substring of 'hello!!'",
+             [] { EXPECT_MATCHER_FAILS("Hello", isSubstringOf("hello!!")); });
     });
 }

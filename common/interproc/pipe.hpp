@@ -8,7 +8,7 @@
 namespace kktest::interproc {
 
 class PipeReader {
- public:
+  public:
     virtual ~PipeReader() = default;
 
     // If maxConsecutiveFailedReadAttempts = -1, we block instead.
@@ -16,12 +16,12 @@ class PipeReader {
 
     Message getNextMessage();
 
- protected:
+  protected:
     static std::size_t GetMessageSize(const Message& message);
 };
 
 class PipeWriter {
- public:
+  public:
     static PipeWriter* OpenFile(const std::string& fileName);
 
     virtual ~PipeWriter() = default;
@@ -33,10 +33,10 @@ class PipeWriter {
         sendMessage(Message::Build(args...));
     }
 
- private:
+  private:
     virtual void sendBytes(std::uint8_t* bytes, std::size_t numBytes) = 0;
 };
 
 std::pair<PipeReader*, PipeWriter*> createAnonymousPipe();
 
-}
+}  // namespace kktest::interproc

@@ -16,4 +16,4 @@ void PipeWriter::sendMessage(const Message& message) {
     sendBytes(message.payload, message.getSize());
 }
 
-}
+}  // namespace kktest::interproc

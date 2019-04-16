@@ -16,9 +16,7 @@ using namespace std;
 
 TEST_CASE(checkDeath, "Death extension: check death") {
     test("exit code 0", [] {
-        auto func = [] {
-            exit(0);
-        };
+        auto func = [] { exit(0); };
 
         auto status = checkDeath(func);
         expect(status.exitedOrKilled(), isTrue);
@@ -28,9 +26,7 @@ TEST_CASE(checkDeath, "Death extension: check death") {
     });
 
     test("exit code 1", [] {
-        auto func = [] {
-            exit(1);
-        };
+        auto func = [] { exit(1); };
 
         auto status = checkDeath(func);
         expect(status.exitedOrKilled(), isTrue);
@@ -40,9 +36,7 @@ TEST_CASE(checkDeath, "Death extension: check death") {
     });
 
     test("kill by signal SIGTERM", [] {
-        auto func = [] {
-            raise(SIGTERM);
-        };
+        auto func = [] { raise(SIGTERM); };
 
         auto status = checkDeath(func);
         expect(status.exitedOrKilled(), isTrue);
@@ -52,9 +46,7 @@ TEST_CASE(checkDeath, "Death extension: check death") {
     });
 
     test("kill by signal SIGSEGV", [] {
-        auto func = [] {
-            raise(SIGSEGV);
-        };
+        auto func = [] { raise(SIGSEGV); };
 
         auto status = checkDeath(func);
         expect(status.exitedOrKilled(), isTrue);

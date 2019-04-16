@@ -15,9 +15,10 @@ using namespace std;
 
 namespace kktest::interproc {
 
-class PosixSubprocessHandler: public Subprocess {
- public:
-    explicit PosixSubprocessHandler(pid_t pid): pid(pid) {}
+class PosixSubprocessHandler : public Subprocess {
+  public:
+    explicit PosixSubprocessHandler(pid_t pid): pid(pid) {
+    }
 
     bool isFinished() override {
         if (killed || finished) {
@@ -26,8 +27,8 @@ class PosixSubprocessHandler: public Subprocess {
         int wStatus;
         int ret = waitpid(pid, &wStatus, WNOHANG);
         if (ret < 0) {
-            throw system_error(errno, generic_category(),
-                               "PosixSubprocessHandler:waitpid");
+            throw system_error(
+              errno, generic_category(), "PosixSubprocessHandler:waitpid");
         }
         if (ret == 0) {
             return false;
@@ -46,8 +47,8 @@ class PosixSubprocessHandler: public Subprocess {
             if (errno == ESRCH) {
                 return ALREADY_DEAD;
             }
-            throw system_error(errno, generic_category(),
-                               "PosixSubprocessHandler:kill");
+            throw system_error(
+              errno, generic_category(), "PosixSubprocessHandler:kill");
         }
         return KILLED;
     }
@@ -74,7 +75,7 @@ class PosixSubprocessHandler: public Subprocess {
         return -1;
     }
 
-    FinishStatus getFinishStatus() override  {
+    FinishStatus getFinishStatus() override {
         if (!isFinished()) {
             return NO_EXIT;
         }
@@ -87,7 +88,7 @@ class PosixSubprocessHandler: public Subprocess {
         return ZERO_EXIT;
     }
 
- private:
+  private:
     pid_t pid;
     bool killed = false;
     bool finished = false;
@@ -97,8 +98,8 @@ class PosixSubprocessHandler: public Subprocess {
 Subprocess* Subprocess::Fork(const function<void()>& func) {
     pid_t forkPid = ::fork();
     if (forkPid < 0) {
-        throw system_error(errno, generic_category(),
-                           "PosixSubprocessHandler:fork");
+        throw system_error(
+          errno, generic_category(), "PosixSubprocessHandler:fork");
     }
     if (forkPid == 0) {  // child process
         func();
@@ -107,4 +108,4 @@ Subprocess* Subprocess::Fork(const function<void()>& func) {
     return new PosixSubprocessHandler(forkPid);
 }
 
-}
+}  // namespace kktest::interproc

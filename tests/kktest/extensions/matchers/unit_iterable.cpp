@@ -16,31 +16,27 @@ TEST_CASE(iterable, "Matchers extension: iterable") {
     vector<int> emptyArr = {};
     vector<int> all3Arr = {3, 3, 3, 3, 3};
 
-    test("isEmpty matches empty array", [&] {
-        EXPECT_MATCHER_MATCHES(emptyArr, isEmpty);
-    });
+    test("isEmpty matches empty array",
+         [&] { EXPECT_MATCHER_MATCHES(emptyArr, isEmpty); });
 
     test("isEmpty does not match non-empty arrays", [&] {
         EXPECT_MATCHER_FAILS(arr, isEmpty);
         EXPECT_MATCHER_FAILS(matrix, isEmpty);
     });
 
-    test("isNotEmpty does not match empty array", [&] {
-        EXPECT_MATCHER_FAILS(emptyArr, isNotEmpty);
-    });
+    test("isNotEmpty does not match empty array",
+         [&] { EXPECT_MATCHER_FAILS(emptyArr, isNotEmpty); });
 
     test("isNotEmpty matches non-empty arrays", [&] {
         EXPECT_MATCHER_MATCHES(arr, isNotEmpty);
         EXPECT_MATCHER_MATCHES(matrix, isNotEmpty);
     });
 
-    test("hasSize(8) matches iterable with size 8", [&] {
-        EXPECT_MATCHER_MATCHES(arr, hasSize(8));
-    });
+    test("hasSize(8) matches iterable with size 8",
+         [&] { EXPECT_MATCHER_MATCHES(arr, hasSize(8)); });
 
-    test("hasSize(5) does not match iterable with size 8", [&] {
-        EXPECT_MATCHER_FAILS(arr, hasSize(5));
-    });
+    test("hasSize(5) does not match iterable with size 8",
+         [&] { EXPECT_MATCHER_FAILS(arr, hasSize(5)); });
 
     test("hasSize works with size sub-matcher", [&] {
         EXPECT_MATCHER_MATCHES(arr, hasSize(isLessThan(10)));
@@ -50,17 +46,14 @@ TEST_CASE(iterable, "Matchers extension: iterable") {
         EXPECT_MATCHER_FAILS(arr, hasSize(isGreaterThan(20)));
     });
 
-    test("eachElement(3) matches empty array", [&] {
-        EXPECT_MATCHER_MATCHES(emptyArr, eachElement(3));
-    });
+    test("eachElement(3) matches empty array",
+         [&] { EXPECT_MATCHER_MATCHES(emptyArr, eachElement(3)); });
 
-    test("eachElement(3) matches array where all elements are 3", [&] {
-        EXPECT_MATCHER_MATCHES(all3Arr, eachElement(3));
-    });
+    test("eachElement(3) matches array where all elements are 3",
+         [&] { EXPECT_MATCHER_MATCHES(all3Arr, eachElement(3)); });
 
-    test("eachElement(3) does not match array where an element is not 3", [&] {
-        EXPECT_MATCHER_FAILS(arr, eachElement(3));
-    });
+    test("eachElement(3) does not match array where an element is not 3",
+         [&] { EXPECT_MATCHER_FAILS(arr, eachElement(3)); });
 
     test("eachElement works with element sub-matchers", [&] {
         EXPECT_MATCHER_MATCHES(arr, eachElement(isOdd));
@@ -73,17 +66,14 @@ TEST_CASE(iterable, "Matchers extension: iterable") {
         EXPECT_MATCHER_MATCHES(matrix, eachElement(eachElement(isLessThan(5))));
     });
 
-    test("anyElement(3) does not match empty array", [&] {
-        EXPECT_MATCHER_FAILS(emptyArr, anyElement(3));
-    });
+    test("anyElement(3) does not match empty array",
+         [&] { EXPECT_MATCHER_FAILS(emptyArr, anyElement(3)); });
 
-    test("anyElement(3) matches array where all elements are 3", [&] {
-        EXPECT_MATCHER_MATCHES(all3Arr, anyElement(3));
-    });
+    test("anyElement(3) matches array where all elements are 3",
+         [&] { EXPECT_MATCHER_MATCHES(all3Arr, anyElement(3)); });
 
-    test("anyElement(3) matches array where at least one element is 3", [&] {
-        EXPECT_MATCHER_MATCHES(arr, anyElement(3));
-    });
+    test("anyElement(3) matches array where at least one element is 3",
+         [&] { EXPECT_MATCHER_MATCHES(arr, anyElement(3)); });
 
     test("anyElement(3) does not match array where no element is 3", [&] {
         EXPECT_MATCHER_FAILS(vector<int>{1, 2, 4, 5, 6}, anyElement(3));
@@ -108,11 +98,11 @@ TEST_CASE(iterable, "Matchers extension: iterable") {
         EXPECT_MATCHER_FAILS(matrix, eachElement(anyElement(isOdd)));
     });
 
-    test("anyElement and eachElement can be chained with hasSize matchers",
-         [&] {
-        EXPECT_MATCHER_MATCHES(matrix, anyElement(hasSize(isGreaterThan(3))));
-        EXPECT_MATCHER_FAILS(matrix, anyElement(hasSize(isLessThan(2))));
-        EXPECT_MATCHER_MATCHES(matrix, eachElement(hasSize(isLessThan(100))));
-        EXPECT_MATCHER_FAILS(matrix, eachElement(hasSize(isGreaterThan(2))));
-    });
+    test(
+      "anyElement and eachElement can be chained with hasSize matchers", [&] {
+          EXPECT_MATCHER_MATCHES(matrix, anyElement(hasSize(isGreaterThan(3))));
+          EXPECT_MATCHER_FAILS(matrix, anyElement(hasSize(isLessThan(2))));
+          EXPECT_MATCHER_MATCHES(matrix, eachElement(hasSize(isLessThan(100))));
+          EXPECT_MATCHER_FAILS(matrix, eachElement(hasSize(isGreaterThan(2))));
+      });
 }

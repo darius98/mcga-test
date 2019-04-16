@@ -6,15 +6,15 @@
 
 namespace kktest::feedback {
 
-class FeedbackExtension: public Extension {
- public:
+class FeedbackExtension : public Extension {
+  public:
     int getReturnCode();
 
     void registerCommandLineArgs(mcga::cli::Parser& parser) override;
 
     void init(HooksManager& api) override;
 
- private:
+  private:
     void initLogging(HooksManager& api);
 
     void initFileStream(HooksManager& api, const std::string& fileName);
@@ -27,4 +27,4 @@ class FeedbackExtension: public Extension {
     mcga::cli::Argument fileNameArgument;
 };
 
-}
+}  // namespace kktest::feedback

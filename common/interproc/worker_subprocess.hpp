@@ -2,13 +2,13 @@
 
 #include <chrono>
 
-#include "common/interproc/subprocess.hpp"
 #include "common/interproc/pipe.hpp"
+#include "common/interproc/subprocess.hpp"
 
 namespace kktest::interproc {
 
-class WorkerSubprocess: public Subprocess {
- public:
+class WorkerSubprocess : public Subprocess {
+  public:
     typedef const std::function<void(PipeWriter*)>& Work;
 
     WorkerSubprocess(const std::chrono::nanoseconds& timeLimit, Work run);
@@ -35,10 +35,10 @@ class WorkerSubprocess: public Subprocess {
 
     Message getNextMessage(int maxConsecutiveFailedReadAttempts = -1);
 
- private:
+  private:
     Subprocess* subprocess;
     PipeReader* pipeReader;
     std::chrono::high_resolution_clock::time_point endTime;
 };
 
-}
+}  // namespace kktest::interproc

@@ -22,7 +22,8 @@ Message Message::Read(const void* src, size_t maxSize) {
     return Message(messagePayload);
 }
 
-Message::Message(): Message(INVALID) {}
+Message::Message(): Message(INVALID) {
+}
 
 Message::Message(const Message& other) {
     copyContent(other);
@@ -34,7 +35,8 @@ Message::Message(Message&& other) noexcept: payload(other.payload) {
     }
 }
 
-Message::Message(uint8_t* payload) noexcept: payload(payload) {}
+Message::Message(uint8_t* payload) noexcept: payload(payload) {
+}
 
 Message::~Message() {
     if (payload != nullptr) {
@@ -127,8 +129,8 @@ size_t Message::BytesCounter::getNumBytesConsumed() const {
     return bytesConsumed;
 }
 
-Message::Builder::Builder(size_t size):
-        payloadBuilder(Allocate(size + sizeof(size_t))) {
+Message::Builder::Builder(size_t size)
+        : payloadBuilder(Allocate(size + sizeof(size_t))) {
     memcpy(payloadBuilder, &size, sizeof(size_t));
     cursor = sizeof(size_t);
 }
@@ -144,4 +146,4 @@ Message Message::Builder::build() {
     return Message(payloadBuilder);
 }
 
-}
+}  // namespace kktest::interproc

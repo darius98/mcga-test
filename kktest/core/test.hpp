@@ -2,8 +2,8 @@
 
 #include <vector>
 
-#include "kktest/core/include/kktest.hpp"
 #include "kktest/core/group.hpp"
+#include "kktest/core/include/kktest.hpp"
 
 namespace kktest {
 
@@ -20,7 +20,7 @@ namespace kktest {
  * mutability(TestConfig#setDescription(), TestConfig#setOptional() etc.), and
  * the desired behaviour for a Test is to be immutable once instantiated. */
 class Test : private TestConfig {
- public:
+  public:
     /** Default constructor from a TestConfig and the metadata received from the
      * testing Driver. */
     Test(TestConfig config, Executable body, GroupPtr group, int id);
@@ -63,10 +63,10 @@ class Test : private TestConfig {
      */
     void run() const;
 
- private:
+  private:
     Executable body;
     GroupPtr group;
     int id;
 };
 
-}
+}  // namespace kktest

@@ -4,8 +4,9 @@ using namespace std;
 
 namespace kktest {
 
-ExecutedTest::Info::Info(string&& failure):
-        timeTicks(-1.0), passed(false), failure(move(failure)) {}
+ExecutedTest::Info::Info(string&& failure)
+        : timeTicks(-1.0), passed(false), failure(move(failure)) {
+}
 
 void ExecutedTest::Info::fail(const string& _failure) {
     if (passed) {
@@ -14,8 +15,9 @@ void ExecutedTest::Info::fail(const string& _failure) {
     }
 }
 
-ExecutedTest::ExecutedTest(Test test, vector<Info>&& executions):
-        Test(move(test)), executions(move(executions)) {}
+ExecutedTest::ExecutedTest(Test test, vector<Info>&& executions)
+        : Test(move(test)), executions(move(executions)) {
+}
 
 bool ExecutedTest::isPassed() const {
     return getNumPassedAttempts() >= getNumRequiredPassedAttempts();
@@ -68,7 +70,7 @@ double ExecutedTest::getTotalTimeTicks() const {
 }
 
 string ExecutedTest::getLastFailure() const {
-    for (auto it = executions.rbegin(); it != executions.rend(); ++ it) {
+    for (auto it = executions.rbegin(); it != executions.rend(); ++it) {
         if (!it->passed) {
             return it->failure;
         }
@@ -80,4 +82,4 @@ const vector<ExecutedTest::Info>& ExecutedTest::getExecutions() const {
     return executions;
 }
 
-}
+}  // namespace kktest

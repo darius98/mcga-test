@@ -4,10 +4,9 @@ using namespace std;
 
 namespace kktest {
 
-Group::Group(GroupConfig config, Ptr parentGroup, int id):
-        GroupConfig(move(config)),
-        parentGroup(move(parentGroup)),
-        id(id) {}
+Group::Group(GroupConfig config, Ptr parentGroup, int id)
+        : GroupConfig(move(config)), parentGroup(move(parentGroup)), id(id) {
+}
 
 string Group::getDescription() const {
     return description;
@@ -75,4 +74,4 @@ bool Group::finishedAllTests() const {
     return allTestsStarted && testsStarted == testsFinished;
 }
 
-}
+}  // namespace kktest

@@ -27,29 +27,20 @@ TEST_CASE(interprocWorkerSubprocessTest, "Interproc worker subprocess") {
             proc = nullptr;
         });
 
-        test("isFinished() == true", [&] {
-            expect(proc->isFinished());
-        });
+        test("isFinished() == true", [&] { expect(proc->isFinished()); });
 
-        test("kill() == ALREADY_DEAD", [&] {
-            expect(proc->kill() == Subprocess::ALREADY_DEAD);
-        });
+        test("kill() == ALREADY_DEAD",
+             [&] { expect(proc->kill() == Subprocess::ALREADY_DEAD); });
 
-        test("isExited() == true", [&] {
-            expect(proc->isExited());
-        });
+        test("isExited() == true", [&] { expect(proc->isExited()); });
 
-        test("getReturnCode() == 0", [&] {
-            expect(proc->getReturnCode() == 0);
-        });
+        test("getReturnCode() == 0",
+             [&] { expect(proc->getReturnCode() == 0); });
 
-        test("isSignaled() == false", [&] {
-            expect(!proc->isSignaled());
-        });
+        test("isSignaled() == false", [&] { expect(!proc->isSignaled()); });
 
-        test("getFinishStatus() == ZERO_EXIT", [&] {
-            expect(proc->getFinishStatus() == Subprocess::ZERO_EXIT);
-        });
+        test("getFinishStatus() == ZERO_EXIT",
+             [&] { expect(proc->getFinishStatus() == Subprocess::ZERO_EXIT); });
 
         test("getNextMessage(32) is the sent message", [&] {
             auto message = proc->getNextMessage(32);

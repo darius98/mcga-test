@@ -4,7 +4,7 @@
 
 namespace kktest::matchers::detail {
 
-struct IsEmptyMatcher: StatelessMatcher {
+struct IsEmptyMatcher : StatelessMatcher {
     template<class T>
     bool matches(const T& object) const {
         return object.empty();
@@ -19,7 +19,7 @@ struct IsEmptyMatcher: StatelessMatcher {
     }
 };
 
-struct IsNotEmptyMatcher: StatelessMatcher {
+struct IsNotEmptyMatcher : StatelessMatcher {
     template<class T>
     bool matches(const T& object) const {
         return !object.empty();
@@ -35,9 +35,10 @@ struct IsNotEmptyMatcher: StatelessMatcher {
 };
 
 template<class M>
-struct IterableSizeMatcher: StatefulMatcher<typename M::State> {
-    explicit constexpr IterableSizeMatcher(M sizeMatcher):
-            sizeMatcher(std::move(sizeMatcher)) {}
+struct IterableSizeMatcher : StatefulMatcher<typename M::State> {
+    explicit constexpr IterableSizeMatcher(M sizeMatcher)
+            : sizeMatcher(std::move(sizeMatcher)) {
+    }
 
     template<class T>
     bool matches(const T& obj, typename M::State* state) const {
@@ -55,7 +56,7 @@ struct IterableSizeMatcher: StatefulMatcher<typename M::State> {
         __describeFailure(description, sizeMatcher, state);
     }
 
- private:
+  private:
     M sizeMatcher;
 };
 
@@ -66,14 +67,15 @@ struct IterableEachState {
 };
 
 template<class M>
-struct IterableEachMatcher: StatefulMatcher<IterableEachState<M>> {
-    explicit constexpr IterableEachMatcher(M elementMatcher):
-            elementMatcher(std::move(elementMatcher)) {}
+struct IterableEachMatcher : StatefulMatcher<IterableEachState<M>> {
+    explicit constexpr IterableEachMatcher(M elementMatcher)
+            : elementMatcher(std::move(elementMatcher)) {
+    }
 
     template<class T>
     bool matches(const T& iterable, IterableEachState<M>* state) const {
         state->index = -1;
-        for (const auto& obj : iterable) {
+        for (const auto& obj: iterable) {
             state->index += 1;
             if (!__matches(elementMatcher, &state->elementState, obj)) {
                 return false;
@@ -89,25 +91,25 @@ struct IterableEachMatcher: StatefulMatcher<IterableEachState<M>> {
 
     void describeFailure(Description* description,
                          IterableEachState<M>* state) const {
-        (*description) << "an iterable where at index "
-                       << state->index
+        (*description) << "an iterable where at index " << state->index
                        << " the element is ";
         __describeFailure(description, elementMatcher, &state->elementState);
     }
 
- private:
+  private:
     M elementMatcher;
 };
 
 template<class M>
-struct IterableAnyMatcher: StatelessMatcher {
-    explicit constexpr IterableAnyMatcher(M elementMatcher):
-            elementMatcher(std::move(elementMatcher)) {}
+struct IterableAnyMatcher : StatelessMatcher {
+    explicit constexpr IterableAnyMatcher(M elementMatcher)
+            : elementMatcher(std::move(elementMatcher)) {
+    }
 
     template<class T>
     bool matches(const T& collection) const {
         typename M::State state;
-        for (const auto& obj : collection) {
+        for (const auto& obj: collection) {
             if (__matches(elementMatcher, &state, obj)) {
                 return true;
             }
@@ -125,8 +127,8 @@ struct IterableAnyMatcher: StatelessMatcher {
         elementMatcher.describe(description);
     }
 
- private:
+  private:
     M elementMatcher;
 };
 
-}
+}  // namespace kktest::matchers::detail

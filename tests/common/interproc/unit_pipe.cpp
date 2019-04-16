@@ -13,9 +13,7 @@ TEST_CASE(interprocPipeTest, "Interproc pipe") {
     PipeReader* reader = nullptr;
     PipeWriter* writer = nullptr;
 
-    setUp([&] {
-        tie(reader, writer) = createAnonymousPipe();
-    });
+    setUp([&] { tie(reader, writer) = createAnonymousPipe(); });
 
     tearDown([&] {
         delete reader;
@@ -44,7 +42,7 @@ TEST_CASE(interprocPipeTest, "Interproc pipe") {
         int z;
         Message message;
 
-        for (int i = 1; i <= 100; ++ i) {
+        for (int i = 1; i <= 100; ++i) {
             writer->sendMessage(3 * i - 2, 3 * i - 1, 3 * i);
             message = reader->getNextMessage();
             expect(!message.isInvalid(),
@@ -62,11 +60,11 @@ TEST_CASE(interprocPipeTest, "Interproc pipe") {
         int z;
         Message message;
 
-        for (int i = 1; i <= 100; ++ i) {
+        for (int i = 1; i <= 100; ++i) {
             writer->sendMessage(3 * i - 2, 3 * i - 1, 3 * i);
 
             if (i % 4 == 0) {
-                for (int j = i - 3; j <= i; ++ j) {
+                for (int j = i - 3; j <= i; ++j) {
                     message = reader->getNextMessage();
                     expect(!message.isInvalid(),
                            "Message " + to_string(j) + "is invalid!");
@@ -80,11 +78,11 @@ TEST_CASE(interprocPipeTest, "Interproc pipe") {
     });
 
     test("Sending 100 messages, reading all of them afterwards", [&] {
-        for (int i = 1; i <= 100; ++ i) {
+        for (int i = 1; i <= 100; ++i) {
             writer->sendMessage(3 * i - 2, 3 * i - 1, 3 * i);
         }
 
-        for (int i = 1; i <= 100; ++ i) {
+        for (int i = 1; i <= 100; ++i) {
             auto message = reader->getNextMessage();
             expect(!message.isInvalid(),
                    "Message " + to_string(i) + " is invalid!");
@@ -97,7 +95,7 @@ TEST_CASE(interprocPipeTest, "Interproc pipe") {
     });
 
     test("Reading a message without writing one", [&] {
-        Message message = reader->getNextMessage(100); // 100 read attempts
+        Message message = reader->getNextMessage(100);  // 100 read attempts
         expect(message.isInvalid(), isTrue);
     });
 }

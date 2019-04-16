@@ -19,7 +19,7 @@ nanoseconds GetTimeTickLength() {
 
 nanoseconds TimeTicksToNanoseconds(double timeTicks) {
     return nanoseconds(
-            static_cast<long long>(timeTicks * GetTimeTickLength().count()));
+      static_cast<long long>(timeTicks * GetTimeTickLength().count()));
 }
 
-}
+}  // namespace kktest

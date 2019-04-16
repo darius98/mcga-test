@@ -47,4 +47,4 @@ constexpr auto isNot(const T& x) {
     }
 }
 
-}
+}  // namespace kktest::matchers

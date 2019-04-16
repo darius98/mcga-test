@@ -3,9 +3,9 @@
 #include "kktest/core/box_executor.hpp"
 #include "kktest/core/driver.hpp"
 
-using mcga::cli::Parser;
 using mcga::cli::ChoiceArgumentSpec;
 using mcga::cli::NumericArgumentSpec;
+using mcga::cli::Parser;
 using std::max;
 using std::move;
 using std::size_t;
@@ -16,10 +16,10 @@ namespace kktest {
 Executor* InitExecutor(Executor::Type executorType, size_t maxParallelTests) {
     Executor* executor = nullptr;
     switch (executorType) {
-        case Executor::SMOOTH:
-            executor = new Executor(); break;
+        case Executor::SMOOTH: executor = new Executor(); break;
         case Executor::BOXED:
-            executor = new BoxExecutor(maxParallelTests); break;
+            executor = new BoxExecutor(maxParallelTests);
+            break;
     }
     return executor;
 }
@@ -32,34 +32,31 @@ void runTests(int argc,
 
     parser.addHelpFlag();
     auto executorTypeArgument = parser.addChoiceArgument(
-            ChoiceArgumentSpec<Executor::Type>("executor")
-                .setDescription("Choose the type of executor to use. A smooth "
-                                "executor runs all tests in the same process, "
-                                "while a boxed executor runs each test in a "
-                                "separate process. Using a smooth executor "
-                                "means a test killed by signal will not be "
-                                "detected and will kill the whole test suite.")
-                .setOptions({
-                    {"smooth", Executor::SMOOTH},
-                    {"boxed", Executor::BOXED}
-                })
-                .setDefaultValue(Executor::BOXED));
+      ChoiceArgumentSpec<Executor::Type>("executor")
+        .setDescription("Choose the type of executor to use. A smooth "
+                        "executor runs all tests in the same process, "
+                        "while a boxed executor runs each test in a "
+                        "separate process. Using a smooth executor "
+                        "means a test killed by signal will not be "
+                        "detected and will kill the whole test suite.")
+        .setOptions({{"smooth", Executor::SMOOTH}, {"boxed", Executor::BOXED}})
+        .setDefaultValue(Executor::BOXED));
     auto maxParallelTestsArgument = parser.addNumericArgument(
-            NumericArgumentSpec<size_t>("max-parallel-tests")
-                .setDescription("Maximum number of tests to execute in parallel"
-                                " (processes to spawn). Ignored if `executor` "
-                                "type is 'smooth'.")
-                .setDefaultValue(1u)
-                .setImplicitValue(1u));
+      NumericArgumentSpec<size_t>("max-parallel-tests")
+        .setDescription("Maximum number of tests to execute in parallel"
+                        " (processes to spawn). Ignored if `executor` "
+                        "type is 'smooth'.")
+        .setDefaultValue(1u)
+        .setImplicitValue(1u));
 
-    for (Extension* extension : extensions) {
+    for (Extension* extension: extensions) {
         extension->registerCommandLineArgs(parser);
     }
 
     parser.parse(argc, argv);
 
     HooksManager api;
-    for (Extension* extension : extensions) {
+    for (Extension* extension: extensions) {
         extension->init(api);
     }
 
@@ -71,16 +68,16 @@ void runTests(int argc,
     auto driver = new Driver(move(api), executor);
     Driver::Init(driver);
 
-    for (TestCase* testCase : tests) {
+    for (TestCase* testCase: tests) {
         driver->addGroup(move(testCase->name), testCase->body);
     }
 
     delete driver;
     delete executor;
 
-    for (Extension* extension : extensions) {
+    for (Extension* extension: extensions) {
         extension->destroy();
     }
 }
 
-}
+}  // namespace kktest

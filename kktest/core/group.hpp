@@ -19,8 +19,8 @@ namespace kktest {
  * config items are immutable once received into the system). Unlike Test,
  * however, a Group is not _immutable_ (e.g. addSetUp(), addTearDown() and
  * others). */
-class Group: private GroupConfig {
- public:
+class Group : private GroupConfig {
+  public:
     /** The pointer type that should be passed around when working with a
      * Group. */
     typedef std::shared_ptr<Group> Ptr;
@@ -102,7 +102,7 @@ class Group: private GroupConfig {
      * counters for started & finished tests are equal. */
     bool finishedAllTests() const;
 
- private:
+  private:
     Ptr parentGroup;
     int id;
 
@@ -116,4 +116,4 @@ class Group: private GroupConfig {
 
 typedef Group::Ptr GroupPtr;
 
-}
+}  // namespace kktest

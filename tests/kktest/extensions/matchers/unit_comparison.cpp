@@ -28,11 +28,11 @@ TEST_CASE(comparison, "Matchers extension: comparison") {
                 expect(3, isEqualTo(2));
                 fail("did not fail!");
             } catch (const exception& exc) {
-                expect(string(exc.what()) ==
-                    "Expectation failed:\n"
-                    "\tExpected '2'\n"
-                    "\tGot      '3'\n"
-                    "\tWhich is not '2'");
+                expect(string(exc.what())
+                       == "Expectation failed:\n"
+                          "\tExpected '2'\n"
+                          "\tGot      '3'\n"
+                          "\tWhich is not '2'");
             }
         });
 
@@ -41,62 +41,77 @@ TEST_CASE(comparison, "Matchers extension: comparison") {
                 expect("Hello, World!", isEqualTo("Hello, world!"));
                 fail("did not fail!");
             } catch (const exception& exc) {
-                expect(string(exc.what()) ==
-                    "Expectation failed:\n"
-                    "\tExpected 'Hello, world!'\n"
-                    "\tGot      'Hello, World!'\n"
-                    "\tWhich is different at index 7:\n"
-                    "\tExpected: 'Hello, world!'\n"
-                    "\t     Got: 'Hello, World!'\n"
-                    "\t                  ^");
+                expect(string(exc.what())
+                       == "Expectation failed:\n"
+                          "\tExpected 'Hello, world!'\n"
+                          "\tGot      'Hello, World!'\n"
+                          "\tWhich is different at index 7:\n"
+                          "\tExpected: 'Hello, world!'\n"
+                          "\t     Got: 'Hello, World!'\n"
+                          "\t                  ^");
             }
         });
 
         // weird formatting, but good for readability in the case of this test.
         test("isEqualTo description for longer strings", [&] {
             try {
-                expect("This is a long text that differs at a large position",
-             isEqualTo("This is a long text that differs at a laRge position"));
+                expect(
+                  "This is a long text that differs at a large position",
+                  isEqualTo(
+                    "This is a long text that differs at a laRge position"));
                 fail("did not fail!");
             } catch (const exception& exc) {
-                expect(string(exc.what()) ==
-                    "Expectation failed:\n"
-                    "\tExpected 'This is a long text that differs at a laRge position'\n"
-                    "\tGot      'This is a long text that differs at a large position'\n"
-                    "\tWhich is different at index 40:\n"
-                    "\tExpected: '...that differs at a laRge position'\n"
-                    "\t     Got: '...that differs at a large position'\n"
-                    "\t                                  ^");
+                expect(string(exc.what())
+                       == "Expectation failed:\n"
+                          "\tExpected 'This is a long text that differs at a "
+                          "laRge position'\n"
+                          "\tGot      'This is a long text that differs at a "
+                          "large position'\n"
+                          "\tWhich is different at index 40:\n"
+                          "\tExpected: '...that differs at a laRge position'\n"
+                          "\t     Got: '...that differs at a large position'\n"
+                          "\t                                  ^");
             }
 
             try {
-                expect("This is a long text that differs at a small position",
-             isEqualTo("This is a long tExt that differs at a small position"));
+                expect(
+                  "This is a long text that differs at a small position",
+                  isEqualTo(
+                    "This is a long tExt that differs at a small position"));
                 fail("did not fail!");
             } catch (const exception& exc) {
-                expect(string(exc.what()) ==
-                    "Expectation failed:\n"
-                    "\tExpected 'This is a long tExt that differs at a small position'\n"
-                    "\tGot      'This is a long text that differs at a small position'\n"
-                    "\tWhich is different at index 16:\n"
-                    "\tExpected: 'This is a long tExt that differs at a...'\n"
-                    "\t     Got: 'This is a long text that differs at a...'\n"
-                    "\t                           ^");
+                expect(
+                  string(exc.what())
+                  == "Expectation failed:\n"
+                     "\tExpected 'This is a long tExt that differs at a small "
+                     "position'\n"
+                     "\tGot      'This is a long text that differs at a small "
+                     "position'\n"
+                     "\tWhich is different at index 16:\n"
+                     "\tExpected: 'This is a long tExt that differs at a...'\n"
+                     "\t     Got: 'This is a long text that differs at a...'\n"
+                     "\t                           ^");
             }
 
             try {
-                expect("This is a very very very very long text that differs at a medium-placed position",
-             isEqualTo("This is a very very very very long teXt that differs at a medium-placed position"));
+                expect("This is a very very very very long text that differs "
+                       "at a medium-placed position",
+                       isEqualTo("This is a very very very very long teXt that "
+                                 "differs at a medium-placed position"));
                 fail("did not fail!");
             } catch (const exception& exc) {
-                expect(string(exc.what()) ==
-                    "Expectation failed:\n"
-                    "\tExpected 'This is a very very very very long teXt that differs at a medium-placed position'\n"
-                    "\tGot      'This is a very very very very long text that differs at a medium-placed position'\n"
-                    "\tWhich is different at index 37:\n"
-                    "\tExpected: '...ry very very long teXt that differs at a ...'\n"
-                    "\t     Got: '...ry very very long text that differs at a ...'\n"
-                    "\t                                  ^");
+                expect(string(exc.what())
+                       == "Expectation failed:\n"
+                          "\tExpected 'This is a very very very very long teXt "
+                          "that differs at a medium-placed position'\n"
+                          "\tGot      'This is a very very very very long text "
+                          "that differs at a medium-placed position'\n"
+                          "\tWhich is different at index 37:\n"
+                          "\tExpected: '...ry very very long teXt that differs "
+                          "at a ...'\n"
+                          "\t     Got: '...ry very very long text that differs "
+                          "at a ...'\n"
+                          "\t                                  ^");
             }
         });
 

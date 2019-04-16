@@ -36,4 +36,4 @@ KKTEST_EXPORT DeathStatus checkDeath(const Executable& func,
     return DeathStatus(-1, -1);
 }
 
-}
+}  // namespace kktest::death

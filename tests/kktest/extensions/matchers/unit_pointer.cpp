@@ -22,9 +22,8 @@ TEST_CASE(pointer, "Matchers extension: pointer") {
         BasicStruct* structNullPtr = nullptr;
         double* doubleNullPtr = nullptr;
 
-        test("isNull matcher matches nullptr", [] {
-            EXPECT_MATCHER_MATCHES(nullptr, isNull);
-        });
+        test("isNull matcher matches nullptr",
+             [] { EXPECT_MATCHER_MATCHES(nullptr, isNull); });
 
         test("isNull matcher matches null pointer of different types", [&] {
             EXPECT_MATCHER_MATCHES(intNullPtr, isNull);
@@ -33,17 +32,16 @@ TEST_CASE(pointer, "Matchers extension: pointer") {
             EXPECT_MATCHER_MATCHES(doubleNullPtr, isNull);
         });
 
-        test("isNotNull matcher does not match nullptr", [&] {
-            EXPECT_MATCHER_FAILS(nullptr, isNotNull);
-        });
+        test("isNotNull matcher does not match nullptr",
+             [&] { EXPECT_MATCHER_FAILS(nullptr, isNotNull); });
 
         test("isNotNull matcher does not match null pointer of different types",
              [&] {
-            EXPECT_MATCHER_FAILS(intNullPtr, isNotNull);
-            EXPECT_MATCHER_FAILS(classNullPtr, isNotNull);
-            EXPECT_MATCHER_FAILS(structNullPtr, isNotNull);
-            EXPECT_MATCHER_FAILS(doubleNullPtr, isNotNull);
-        });
+                 EXPECT_MATCHER_FAILS(intNullPtr, isNotNull);
+                 EXPECT_MATCHER_FAILS(classNullPtr, isNotNull);
+                 EXPECT_MATCHER_FAILS(structNullPtr, isNotNull);
+                 EXPECT_MATCHER_FAILS(doubleNullPtr, isNotNull);
+             });
     });
 
     group("Non-null pointers", [] {
@@ -68,11 +66,16 @@ TEST_CASE(pointer, "Matchers extension: pointer") {
         });
 
         tearDown([&] {
-            delete intHeapPtr; intHeapPtr = nullptr;
-            delete charHeapPtr; charHeapPtr = nullptr;
-            delete classHeapPtr; classHeapPtr = nullptr;
-            delete structHeapPtr; structHeapPtr = nullptr;
-            delete doubleHeapPtr; doubleHeapPtr = nullptr;
+            delete intHeapPtr;
+            intHeapPtr = nullptr;
+            delete charHeapPtr;
+            charHeapPtr = nullptr;
+            delete classHeapPtr;
+            classHeapPtr = nullptr;
+            delete structHeapPtr;
+            structHeapPtr = nullptr;
+            delete doubleHeapPtr;
+            doubleHeapPtr = nullptr;
         });
 
         test("isNull does not match non-null heap pointers", [&] {

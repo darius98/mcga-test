@@ -4,7 +4,8 @@
 
 namespace kktest::matchers {
 
-template<class T> constexpr auto hasSize(const T& size) {
+template<class T>
+constexpr auto hasSize(const T& size) {
     if constexpr (std::is_base_of_v<Matcher, T>) {
         return detail::IterableSizeMatcher<T>(size);
     } else {
@@ -12,7 +13,8 @@ template<class T> constexpr auto hasSize(const T& size) {
     }
 }
 
-template<class T> constexpr auto eachElement(const T& each) {
+template<class T>
+constexpr auto eachElement(const T& each) {
     if constexpr (std::is_base_of_v<Matcher, T>) {
         return detail::IterableEachMatcher<T>(each);
     } else {
@@ -20,7 +22,8 @@ template<class T> constexpr auto eachElement(const T& each) {
     }
 }
 
-template<class T> constexpr auto anyElement(const T& any) {
+template<class T>
+constexpr auto anyElement(const T& any) {
     if constexpr (std::is_base_of_v<Matcher, T>) {
         return detail::IterableAnyMatcher<T>(any);
     } else {
@@ -32,4 +35,4 @@ constexpr detail::IsEmptyMatcher isEmpty;
 
 constexpr detail::IsNotEmptyMatcher isNotEmpty;
 
-}
+}  // namespace kktest::matchers

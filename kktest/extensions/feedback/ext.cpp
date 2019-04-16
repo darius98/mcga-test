@@ -10,10 +10,10 @@ using namespace kktest::interproc;
 using namespace std;
 
 template<>
-Message::BytesConsumer& Message::BytesConsumer::add(
-        const vector<ExecutedTest::Info>& obj) {
+Message::BytesConsumer&
+  Message::BytesConsumer::add(const vector<ExecutedTest::Info>& obj) {
     add(obj.size());
-    for (const auto& info : obj) {
+    for (const auto& info: obj) {
         add(info.timeTicks, info.passed, info.failure);
     }
     return *this;
@@ -35,12 +35,12 @@ int FeedbackExtension::getReturnCode() {
 
 void FeedbackExtension::registerCommandLineArgs(Parser& parser) {
     quietFlag = parser.addFlag(
-        FlagSpec("quiet")
+      FlagSpec("quiet")
         .setHelpGroup("Feedback")
         .setDescription("Disable STDOUT logging for this test run")
         .setShortName("q"));
     fileNameArgument = parser.addArgument(
-        ArgumentSpec("pipe-to")
+      ArgumentSpec("pipe-to")
         .setHelpGroup("Feedback")
         .setDescription("A file or fifo with write access for piping the test "
                         "results as they become available."));
@@ -63,13 +63,11 @@ void FeedbackExtension::init(HooksManager& api) {
 void FeedbackExtension::initLogging(HooksManager& api) {
     logger = make_unique<TestLogger>(cout);
 
-    api.addHook<HooksManager::AFTER_TEST>([this](const ExecutedTest& test) {
-        logger->addTest(test);
-    });
+    api.addHook<HooksManager::AFTER_TEST>(
+      [this](const ExecutedTest& test) { logger->addTest(test); });
 
-    api.addHook<HooksManager::BEFORE_DESTROY>([this]() {
-        logger->printFinalInformation();
-    });
+    api.addHook<HooksManager::BEFORE_DESTROY>(
+      [this]() { logger->printFinalInformation(); });
 
     api.addHook<HooksManager::ON_WARNING>([this](const Warning& warning) {
         logger->printWarning(warning.message);
@@ -98,14 +96,12 @@ void FeedbackExtension::initFileStream(HooksManager& api,
     });
 
     api.addHook<HooksManager::AFTER_TEST>([this](const ExecutedTest& test) {
-        fileWriter->sendMessage(PipeMessageType::TEST_DONE,
-                                test.getId(),
-                                test.getExecutions());
+        fileWriter->sendMessage(
+          PipeMessageType::TEST_DONE, test.getId(), test.getExecutions());
     });
 
-    api.addHook<HooksManager::BEFORE_DESTROY>([this]() {
-        fileWriter->sendMessage(PipeMessageType::DONE);
-    });
+    api.addHook<HooksManager::BEFORE_DESTROY>(
+      [this]() { fileWriter->sendMessage(PipeMessageType::DONE); });
 
     api.addHook<HooksManager::ON_WARNING>([this](const Warning& warning) {
         fileWriter->sendMessage(PipeMessageType::WARNING,
@@ -115,4 +111,4 @@ void FeedbackExtension::initFileStream(HooksManager& api,
     });
 }
 
-}
+}  // namespace kktest::feedback

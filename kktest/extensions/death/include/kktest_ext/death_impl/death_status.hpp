@@ -6,9 +6,10 @@
 namespace kktest::death {
 
 class DeathStatus {
- public:
+  public:
     DeathStatus() = default;
-    DeathStatus(int exitCode, int signal): exitCode(exitCode), signal(signal) {}
+    DeathStatus(int exitCode, int signal): exitCode(exitCode), signal(signal) {
+    }
 
     bool exitedOrKilled() const {
         return exitCode >= 0 || killedBySignal();
@@ -30,7 +31,7 @@ class DeathStatus {
         return signal;
     }
 
- private:
+  private:
     int exitCode = -1;
     int signal = -1;
 
@@ -46,4 +47,4 @@ class DeathStatus {
     }
 };
 
-}
+}  // namespace kktest::death

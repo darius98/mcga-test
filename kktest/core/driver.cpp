@@ -2,8 +2,8 @@
 
 #include <thread>
 
-#include "kktest/core/include/kktest.hpp"
 #include "kktest/core/box_executor.hpp"
+#include "kktest/core/include/kktest.hpp"
 
 using namespace std;
 
@@ -18,15 +18,13 @@ void Driver::Init(Driver* _instance) {
     instance->runHooks<AFTER_INIT>();
 }
 
-Driver::Driver(HooksManager hooksManager, Executor* _executor):
-        HooksManager(move(hooksManager)), executor(_executor) {
+Driver::Driver(HooksManager hooksManager, Executor* _executor)
+        : HooksManager(move(hooksManager)), executor(_executor) {
     testingThreadId = hash<thread::id>()(this_thread::get_id());
-    executor->setOnTestFinishedCallback([this](const ExecutedTest& test) {
-        afterTest(test);
-    });
-    executor->setOnWarningCallback([this](const Warning& warning) {
-        onWarning(warning);
-    });
+    executor->setOnTestFinishedCallback(
+      [this](const ExecutedTest& test) { afterTest(test); });
+    executor->setOnWarningCallback(
+      [this](const Warning& warning) { onWarning(warning); });
 }
 
 Driver::~Driver() {
@@ -43,7 +41,7 @@ void Driver::addGroup(GroupConfig config, const Executable& body) {
         return;
     }
 
-    ++ currentGroupId;
+    ++currentGroupId;
     auto parentGroup = groupStack.empty() ? nullptr : groupStack.back();
     auto group = make_shared<Group>(move(config), parentGroup, currentGroupId);
 
@@ -51,14 +49,14 @@ void Driver::addGroup(GroupConfig config, const Executable& body) {
     beforeGroup(group);
     try {
         body();
-    } catch(const exception& e) {
-        emitWarning("Exception thrown in group "
-                    "\"" + group->getDescription() + "\": " + e.what()
+    } catch (const exception& e) {
+        emitWarning("Exception thrown in group \"" + group->getDescription()
+                    + "\": " + e.what()
                     + ". Unable to execute remainder of tests in this group.");
-    } catch(...) {
-        emitWarning("Non-exception thrown in group "
-                    "\"" + group->getDescription() + "\". Unable to execute "
-                    "remainder of tests in this group.");
+    } catch (...) {
+        emitWarning(
+          "Non-exception thrown in group \"" + group->getDescription()
+          + "\". Unable to execute remainder of tests in this group.");
     }
     group->setStartedAllTests();
     if (group->finishedAllTests()) {
@@ -72,7 +70,7 @@ void Driver::addTest(TestConfig config, Executable body) {
         return;
     }
     GroupPtr parentGroup = groupStack.back();
-    Test test(move(config), move(body), parentGroup, ++ currentTestId);
+    Test test(move(config), move(body), parentGroup, ++currentTestId);
     parentGroup->addStartedTest();
     beforeTest(test);
     executor->execute(move(test));
@@ -106,8 +104,8 @@ void Driver::addTearDown(Executable func) {
 
 void Driver::addFailure(const string& failure) {
     if (!executor->isActive()) {
-        emitWarning("Called fail() with message '" + failure + "' "
-                    "outside a test execution. Ignoring.");
+        emitWarning("Called fail() with message '" + failure
+                    + "' outside a test execution. Ignoring.");
         return;
     }
     executor->addFailure(failure);
@@ -128,8 +126,9 @@ bool Driver::checkMainThreadAndInactive(const string& method) {
         return false;
     }
     if (testingThreadId != hash<thread::id>()(this_thread::get_id())) {
-        emitWarning("Called " + method + "() from a different thread than the "
-                    "main testing thread. Ignoring.");
+        emitWarning("Called " + method
+                    + "() from a different thread than the main testing "
+                      "thread. Ignoring.");
         return false;
     }
     return true;
@@ -163,4 +162,4 @@ void Driver::afterGroup(GroupPtr group) {
     runHooks<AFTER_GROUP>(group);
 }
 
-}
+}  // namespace kktest

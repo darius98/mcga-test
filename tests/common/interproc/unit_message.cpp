@@ -60,9 +60,8 @@ TEST_CASE(interprocMessageTest, "Interproc message") {
         expect(message.isInvalid(), isTrue);
     });
 
-    test("Message::INVALID is invalid", [] {
-        expect(Message::INVALID.isInvalid(), isTrue);
-    });
+    test("Message::INVALID is invalid",
+         [] { expect(Message::INVALID.isInvalid(), isTrue); });
 
     test("Copying", [] {
         int a = 2;
@@ -109,10 +108,10 @@ TEST_CASE(interprocMessageTest, "Interproc message") {
         auto a = Message::Build(1, 2, 3);
         auto b = Message::Build(1, 2, 3);
 
-        auto &aRef = a;
+        auto& aRef = a;
         expect(a == aRef, isTrue);
 
-        auto &aRef2 = a;
+        auto& aRef2 = a;
         expect(aRef == aRef2, isTrue);
 
         expect(a == b, isFalse);

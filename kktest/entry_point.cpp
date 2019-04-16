@@ -15,12 +15,10 @@ KKTEST_EXPORT void TestCase::Register(TestCase* testCase) {
     testCasesRegistered.push_back(testCase);
 }
 
-}
+}  // namespace kktest
 
 KKTEST_EXPORT int main(int argc, char** argv) {
     feedback::FeedbackExtension feedbackExtension;
-    runTests(argc, argv, testCasesRegistered, {
-        &feedbackExtension
-    });
+    runTests(argc, argv, testCasesRegistered, {&feedbackExtension});
     return feedbackExtension.getReturnCode();
 }

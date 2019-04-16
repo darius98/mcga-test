@@ -7,14 +7,17 @@
 namespace kktest {
 
 class Extension {
- public:
+  public:
     virtual ~Extension() = default;
 
-    virtual void registerCommandLineArgs(mcga::cli::Parser&) {}
+    virtual void registerCommandLineArgs(mcga::cli::Parser&) {
+    }
 
-    virtual void init(HooksManager&) {}
+    virtual void init(HooksManager&) {
+    }
 
-    virtual void destroy() {}
+    virtual void destroy() {
+    }
 };
 
-}
+}  // namespace kktest

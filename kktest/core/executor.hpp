@@ -8,7 +8,7 @@
 namespace kktest {
 
 class Executor {
- public:
+  public:
     enum Type {
         SMOOTH,
         BOXED,
@@ -39,22 +39,19 @@ class Executor {
 
     ExecutedTest::Info run(const Test& test);
 
- private:
+  private:
     void runJob(const Executable& job,
                 ExecutedTest::Info* execution,
                 const std::string& where);
 
- protected:
+  protected:
     OnTestFinished onTestFinished;
     OnWarning onWarning;
 
- private:
-    enum {
-        INACTIVE,
-        INSIDE_TEST,
-        INSIDE_SET_UP,
-        INSIDE_TEAR_DOWN
-    } state = INACTIVE;
+  private:
+    enum State { INACTIVE, INSIDE_TEST, INSIDE_SET_UP, INSIDE_TEAR_DOWN };
+
+    State state = INACTIVE;
     int currentTestGroupId = 0;
     int currentTestId = 0;
     std::size_t currentExecutionThreadId;
@@ -64,4 +61,4 @@ class Executor {
     std::string currentExecutionFailureMessage;
 };
 
-}
+}  // namespace kktest

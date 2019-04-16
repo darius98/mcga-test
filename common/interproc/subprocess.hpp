@@ -5,7 +5,7 @@
 namespace kktest::interproc {
 
 class Subprocess {
- public:
+  public:
     enum FinishStatus {
         NO_EXIT,
         ZERO_EXIT,
@@ -14,10 +14,7 @@ class Subprocess {
         SIGNAL_EXIT,
     };
 
-    enum KillResult {
-        KILLED,
-        ALREADY_DEAD
-    };
+    enum KillResult { KILLED, ALREADY_DEAD };
 
     static Subprocess* Fork(const std::function<void()>& func);
 
@@ -38,4 +35,4 @@ class Subprocess {
     virtual FinishStatus getFinishStatus() = 0;
 };
 
-}
+}  // namespace kktest::interproc

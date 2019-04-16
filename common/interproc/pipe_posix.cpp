@@ -14,14 +14,12 @@ using namespace std;
 
 namespace kktest::interproc {
 
-class PosixPipeReader: public PipeReader {
- public:
-    explicit PosixPipeReader(const int& inputFD):
-        inputFD(inputFD),
-        buffer(static_cast<uint8_t*>(malloc(128))),
-        bufferReadHead(0),
-        bufferSize(0),
-        bufferCapacity(128) {}
+class PosixPipeReader : public PipeReader {
+  public:
+    explicit PosixPipeReader(const int& inputFD)
+            : inputFD(inputFD), buffer(static_cast<uint8_t*>(malloc(128))),
+              bufferReadHead(0), bufferSize(0), bufferCapacity(128) {
+    }
 
     ~PosixPipeReader() override {
         close(inputFD);
@@ -36,8 +34,8 @@ class PosixPipeReader: public PipeReader {
         }
 
         int failedAttempts = 0;
-        while (maxConsecutiveFailedReadAttempts == -1 ||
-               failedAttempts <= maxConsecutiveFailedReadAttempts) {
+        while (maxConsecutiveFailedReadAttempts == -1
+               || failedAttempts <= maxConsecutiveFailedReadAttempts) {
             bool successful = readBytes();
             if (!successful) {
                 failedAttempts += 1;
@@ -52,7 +50,7 @@ class PosixPipeReader: public PipeReader {
         return Message::INVALID;
     }
 
- private:
+  private:
     bool readBytes() {
         char block[128];
         ssize_t numBytesRead = read(inputFD, block, 128);
@@ -60,8 +58,8 @@ class PosixPipeReader: public PipeReader {
             if (errno == EWOULDBLOCK || errno == EAGAIN) {
                 return false;
             }
-            throw system_error(errno, generic_category(),
-                               "PipeReader:readBytes()");
+            throw system_error(
+              errno, generic_category(), "PipeReader:readBytes()");
         }
         if (numBytesRead == 0) {
             return false;
@@ -74,9 +72,8 @@ class PosixPipeReader: public PipeReader {
 
     void resizeBufferToFit(size_t extraBytes) {
         if (bufferCapacity < bufferSize + extraBytes && bufferReadHead > 0) {
-            memcpy(buffer,
-                   buffer + bufferReadHead,
-                   bufferCapacity - bufferReadHead);
+            memcpy(
+              buffer, buffer + bufferReadHead, bufferCapacity - bufferReadHead);
             bufferSize -= bufferReadHead;
             bufferReadHead = 0;
         }
@@ -90,8 +87,8 @@ class PosixPipeReader: public PipeReader {
     }
 
     Message readMessageFromBuffer() {
-        auto message = Message::Read(buffer + bufferReadHead,
-                                     bufferSize - bufferReadHead);
+        auto message
+          = Message::Read(buffer + bufferReadHead, bufferSize - bufferReadHead);
         if (!message.isInvalid()) {
             bufferReadHead += GetMessageSize(message);
         }
@@ -105,9 +102,10 @@ class PosixPipeReader: public PipeReader {
     size_t bufferCapacity;
 };
 
-class PosixPipeWriter: public PipeWriter {
- public:
-    explicit PosixPipeWriter(const int& outputFD): outputFD(outputFD) {}
+class PosixPipeWriter : public PipeWriter {
+  public:
+    explicit PosixPipeWriter(const int& outputFD): outputFD(outputFD) {
+    }
 
     ~PosixPipeWriter() override {
         close(outputFD);
@@ -120,8 +118,8 @@ class PosixPipeWriter: public PipeWriter {
             size_t remaining = numBytes - written;
             ssize_t currentWriteBlockSize = write(outputFD, target, remaining);
             if (currentWriteBlockSize < 0) {
-                throw system_error(errno, generic_category(),
-                                   "PipeWriter:sendBytes");
+                throw system_error(
+                  errno, generic_category(), "PipeWriter:sendBytes");
             }
             written += currentWriteBlockSize;
         }
@@ -133,15 +131,17 @@ class PosixPipeWriter: public PipeWriter {
 pair<PipeReader*, PipeWriter*> createAnonymousPipe() {
     int fd[2];
     if (pipe(fd) < 0) {
-        throw system_error(errno, generic_category(),
-                           "createAnonymousPipe:pipe");
+        throw system_error(
+          errno, generic_category(), "createAnonymousPipe:pipe");
     }
     if (fcntl(fd[0], F_SETFL, O_NONBLOCK) < 0) {
-        throw system_error(errno, generic_category(),
+        throw system_error(errno,
+                           generic_category(),
                            "createAnonymousPipe:fcntl (set read non-blocking)");
     }
     if (fcntl(fd[1], F_SETFL, O_NONBLOCK) < 0) {
-        throw system_error(errno, generic_category(),
+        throw system_error(errno,
+                           generic_category(),
                            "createAnonymousPipe:fcntl (set write non-blocking");
     }
     return {new PosixPipeReader(fd[0]), new PosixPipeWriter(fd[1])};
@@ -155,4 +155,4 @@ PipeWriter* PipeWriter::OpenFile(const string& fileName) {
     return new PosixPipeWriter(fd);
 }
 
-}
+}  // namespace kktest::interproc

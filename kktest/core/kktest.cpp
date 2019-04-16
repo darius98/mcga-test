@@ -27,4 +27,4 @@ KKTEST_EXPORT void fail(const string& message) {
     Driver::Instance()->addFailure(message);
 }
 
-}
+}  // namespace kktest

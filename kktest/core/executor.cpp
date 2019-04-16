@@ -38,7 +38,8 @@ string Executor::stateAsString() const {
     }
 }
 
-void Executor::finalize() {}
+void Executor::finalize() {
+}
 
 void Executor::addFailure(const string& failure) {
     // We only kill the thread on failure if we are in the main testing thread
@@ -61,7 +62,7 @@ void Executor::addFailure(const string& failure) {
 void Executor::execute(Test test) {
     vector<ExecutedTest::Info> executions;
     executions.reserve(test.getNumAttempts());
-    for (size_t i = 0; i < test.getNumAttempts(); ++ i) {
+    for (size_t i = 0; i < test.getNumAttempts(); ++i) {
         executions.push_back(run(test));
     }
     onTestFinished(ExecutedTest(move(test), move(executions)));
@@ -80,7 +81,7 @@ ExecutedTest::Info Executor::run(const Test& test) {
     vector<GroupPtr> testGroupStack = test.getGroupStack();
     vector<GroupPtr>::iterator it;
     // Execute setUp()-s, in the order of the group stack.
-    for (it = testGroupStack.begin(); it != testGroupStack.end(); ++ it) {
+    for (it = testGroupStack.begin(); it != testGroupStack.end(); ++it) {
         runJob([it] { (*it)->setUp(); },
                &info,
                "setUp of group \"" + (*it)->getDescription() + "\"");
@@ -93,18 +94,18 @@ ExecutedTest::Info Executor::run(const Test& test) {
     if (info.passed) {
         // Only run the test if all setUp()-s passed without exception.
         runJob([&test] { test.run(); }, &info, "test");
-        -- it;
+        --it;
     }
     state = INSIDE_TEAR_DOWN;
     // Execute tearDown()-s in reverse order, from where setUp()-s stopped.
-    for (; it + 1 != testGroupStack.begin(); -- it) {
+    for (; it + 1 != testGroupStack.begin(); --it) {
         runJob([it] { (*it)->tearDown(); },
                &info,
                "tearDown of group \"" + (*it)->getDescription() + "\"");
     }
     auto endTime = high_resolution_clock::now();
-    auto nanosecondsElapsed = duration_cast<nanoseconds>(
-            endTime - startTime).count();
+    auto nanosecondsElapsed
+      = duration_cast<nanoseconds>(endTime - startTime).count();
     info.timeTicks = 1.0 * nanosecondsElapsed / GetTimeTickLength().count();
     if (info.timeTicks > test.getTimeTicksLimit()) {
         info.fail("Execution timed out.");
@@ -126,11 +127,11 @@ void Executor::runJob(const Executable& job,
 
     try {
         job();
-    } catch(const ExpectationFailed& failure) {
+    } catch (const ExpectationFailed& failure) {
         execution->fail(failure.what());
-    } catch(const exception& e) {
+    } catch (const exception& e) {
         execution->fail("Uncaught exception in " + where + ": " + e.what());
-    } catch(...) {
+    } catch (...) {
         execution->fail("Uncaught non-exception type in " + where + "\".");
     }
 
@@ -141,4 +142,4 @@ void Executor::runJob(const Executable& job,
     currentExecutionFailureMutex.unlock();
 }
 
-}
+}  // namespace kktest

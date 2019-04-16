@@ -3,7 +3,5 @@
 #include <cstdlib>
 
 TEST_CASE(testCase, "TestCase") {
-    kktest::test("test", [] {
-        exit(0);
-    });
+    kktest::test("test", [] { exit(0); });
 }

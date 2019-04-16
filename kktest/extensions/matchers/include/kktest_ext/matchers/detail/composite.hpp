@@ -13,8 +13,9 @@ struct AndMatcherState {
 };
 
 template<class M1, class M2>
-struct AndMatcher: StatefulMatcher<AndMatcherState<M1, M2>> {
-    constexpr AndMatcher(M1 m1, M2 m2): m1(std::move(m1)), m2(std::move(m2)) {}
+struct AndMatcher : StatefulMatcher<AndMatcherState<M1, M2>> {
+    constexpr AndMatcher(M1 m1, M2 m2): m1(std::move(m1)), m2(std::move(m2)) {
+    }
 
     template<class T>
     bool matches(const T& obj, AndMatcherState<M1, M2>* state) const {
@@ -38,7 +39,7 @@ struct AndMatcher: StatefulMatcher<AndMatcherState<M1, M2>> {
         }
     }
 
- private:
+  private:
     M1 m1;
     M2 m2;
 };
@@ -52,8 +53,9 @@ struct OrMatcherState {
 };
 
 template<class M1, class M2>
-struct OrMatcher: StatefulMatcher<OrMatcherState<M1, M2>> {
-    constexpr OrMatcher(M1 m1, M2 m2): m1(std::move(m1)), m2(std::move(m2)) {}
+struct OrMatcher : StatefulMatcher<OrMatcherState<M1, M2>> {
+    constexpr OrMatcher(M1 m1, M2 m2): m1(std::move(m1)), m2(std::move(m2)) {
+    }
 
     template<class T>
     bool matches(const T& obj, OrMatcherState<M1, M2>* state) const {
@@ -75,14 +77,15 @@ struct OrMatcher: StatefulMatcher<OrMatcherState<M1, M2>> {
         __describeFailure(description, m2, &state->m2State);
     }
 
- private:
+  private:
     M1 m1;
     M2 m2;
 };
 
 template<class M>
-struct NotMatcher: StatelessMatcher {
-    constexpr explicit NotMatcher(M matcher): matcher(std::move(matcher)) {}
+struct NotMatcher : StatelessMatcher {
+    constexpr explicit NotMatcher(M matcher): matcher(std::move(matcher)) {
+    }
 
     template<class T>
     bool matches(const T& obj) const {
@@ -99,7 +102,7 @@ struct NotMatcher: StatelessMatcher {
         matcher.describe(description);
     }
 
- private:
+  private:
     M matcher;
 };
 

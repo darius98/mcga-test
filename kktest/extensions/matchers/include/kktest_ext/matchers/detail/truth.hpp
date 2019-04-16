@@ -4,7 +4,7 @@
 
 namespace kktest::matchers::detail {
 
-struct IsTrueMatcher: StatelessMatcher {
+struct IsTrueMatcher : StatelessMatcher {
     bool matches(const bool& object) const {
         return object;
     }
@@ -18,7 +18,7 @@ struct IsTrueMatcher: StatelessMatcher {
     }
 };
 
-struct IsFalseMatcher: StatelessMatcher {
+struct IsFalseMatcher : StatelessMatcher {
     bool matches(const bool& object) const {
         return !object;
     }
@@ -32,4 +32,4 @@ struct IsFalseMatcher: StatelessMatcher {
     }
 };
 
-}
+}  // namespace kktest::matchers::detail
