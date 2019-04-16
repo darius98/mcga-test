@@ -2,7 +2,7 @@
 
 #include <kktest_ext/matchers/detail/comparison.hpp>
 
-namespace kktest::matchers {
+namespace mcga::test::matchers {
 
 template<class T>
 constexpr auto isEqualTo(const T& object) {
@@ -39,4 +39,4 @@ constexpr auto isIdenticalTo(const T& object) {
     return detail::IdentityMatcher<T>(object);
 }
 
-}  // namespace kktest::matchers
+}  // namespace mcga::test::matchers

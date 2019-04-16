@@ -4,7 +4,7 @@ using namespace std;
 using std::chrono::high_resolution_clock;
 using std::chrono::nanoseconds;
 
-namespace kktest::interproc {
+namespace mcga::proc {
 
 WorkerSubprocess::WorkerSubprocess(const nanoseconds& timeLimit, Work run)
         : endTime(high_resolution_clock::now() + timeLimit) {
@@ -75,4 +75,4 @@ Subprocess::FinishStatus WorkerSubprocess::getFinishStatus() {
     return subprocess->getFinishStatus();
 }
 
-}  // namespace kktest::interproc
+}  // namespace mcga::proc

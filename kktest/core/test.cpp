@@ -4,7 +4,7 @@
 
 using namespace std;
 
-namespace kktest {
+namespace mcga::test {
 
 Test::Test(TestConfig config, Executable body, GroupPtr group, int id)
         : TestConfig(move(config)), body(move(body)), group(move(group)),
@@ -52,4 +52,4 @@ void Test::run() const {
     body();
 }
 
-}  // namespace kktest
+}  // namespace mcga::test

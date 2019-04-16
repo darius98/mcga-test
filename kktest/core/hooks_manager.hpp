@@ -5,7 +5,7 @@
 #include "kktest/core/executed_test.hpp"
 #include "kktest/core/warning.hpp"
 
-namespace kktest {
+namespace mcga::test {
 
 class HooksManager {
   public:
@@ -53,4 +53,4 @@ class HooksManager {
       hooks;
 };
 
-}  // namespace kktest
+}  // namespace mcga::test

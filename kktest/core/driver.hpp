@@ -3,7 +3,7 @@
 #include "kktest/core/executor.hpp"
 #include "kktest/core/hooks_manager.hpp"
 
-namespace kktest {
+namespace mcga::test {
 
 class Driver : public HooksManager {
   private:
@@ -48,4 +48,4 @@ class Driver : public HooksManager {
     int currentGroupId = 0;
 };
 
-}  // namespace kktest
+}  // namespace mcga::test

@@ -2,7 +2,7 @@
 
 using namespace std;
 
-namespace kktest {
+namespace mcga::test {
 
 Warning::Warning(string message, int groupId)
         : message(move(message)), groupId(groupId) {
@@ -12,4 +12,4 @@ Warning::Warning(string message, int groupId, int testId)
         : message(move(message)), groupId(groupId), testId(testId) {
 }
 
-}  // namespace kktest
+}  // namespace mcga::test

@@ -4,7 +4,7 @@
 
 #include "kktest/core/include/kktest.hpp"
 
-namespace kktest {
+namespace mcga::test {
 
 /** Internal representation of a group.
  *
@@ -116,4 +116,4 @@ class Group : private GroupConfig {
 
 typedef Group::Ptr GroupPtr;
 
-}  // namespace kktest
+}  // namespace mcga::test

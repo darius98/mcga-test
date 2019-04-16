@@ -4,7 +4,7 @@
 #include "kktest/core/extension.hpp"
 #include "kktest/extensions/feedback/test_logger.hpp"
 
-namespace kktest::feedback {
+namespace mcga::test::feedback {
 
 class FeedbackExtension : public Extension {
   public:
@@ -21,10 +21,10 @@ class FeedbackExtension : public Extension {
 
     bool failedAnyNonOptionalTests = false;
     std::unique_ptr<TestLogger> logger = nullptr;
-    std::unique_ptr<interproc::PipeWriter> fileWriter = nullptr;
+    std::unique_ptr<mcga::proc::PipeWriter> fileWriter = nullptr;
 
     mcga::cli::Flag quietFlag;
     mcga::cli::Argument fileNameArgument;
 };
 
-}  // namespace kktest::feedback
+}  // namespace mcga::test::feedback

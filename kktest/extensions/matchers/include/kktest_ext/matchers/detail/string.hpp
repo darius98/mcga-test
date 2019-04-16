@@ -6,7 +6,7 @@
 
 #include <kktest_ext/matchers/matcher.hpp>
 
-namespace kktest::matchers::detail {
+namespace mcga::test::matchers::detail {
 
 struct CharInStringMatcher : StatelessMatcher {
     constexpr CharInStringMatcher(const char* container,
@@ -61,4 +61,4 @@ struct IsSubstringMatcher : StatelessMatcher {
     std::string container;
 };
 
-}  // namespace kktest::matchers::detail
+}  // namespace mcga::test::matchers::detail

@@ -2,7 +2,7 @@
 
 #include <kktest_ext/matchers/matcher.hpp>
 
-namespace kktest::matchers::detail {
+namespace mcga::test::matchers::detail {
 
 struct IsNullptrMatcher : StatelessMatcher {
     bool matches(void* const& obj) const {
@@ -32,4 +32,4 @@ struct IsNotNullptrMatcher : StatelessMatcher {
     }
 };
 
-}  // namespace kktest::matchers::detail
+}  // namespace mcga::test::matchers::detail

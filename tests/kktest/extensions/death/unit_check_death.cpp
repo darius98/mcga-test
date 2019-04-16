@@ -9,9 +9,9 @@
 
 #include "kktest/extensions/death/include/kktest_ext/death_impl/check_death.hpp"
 
-using namespace kktest;
-using namespace kktest::matchers;
-using namespace kktest::death;
+using namespace mcga::test;
+using namespace mcga::test::matchers;
+using namespace mcga::test::death;
 using namespace std;
 
 TEST_CASE(checkDeath, "Death extension: check death") {

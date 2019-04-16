@@ -2,7 +2,7 @@
 
 #include <kktest_ext/matchers/matcher.hpp>
 
-namespace kktest::matchers::detail {
+namespace mcga::test::matchers::detail {
 
 struct IsPositiveMatcher : StatelessMatcher {
     template<class T>
@@ -118,4 +118,4 @@ struct IsAlmostEqualMatcher : StatelessMatcher {
     double eps;
 };
 
-}  // namespace kktest::matchers::detail
+}  // namespace mcga::test::matchers::detail

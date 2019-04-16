@@ -11,7 +11,7 @@ using std::move;
 using std::size_t;
 using std::vector;
 
-namespace kktest {
+namespace mcga::test {
 
 Executor* InitExecutor(Executor::Type executorType, size_t maxParallelTests) {
     Executor* executor = nullptr;
@@ -80,4 +80,4 @@ void runTests(int argc,
     }
 }
 
-}  // namespace kktest
+}  // namespace mcga::test

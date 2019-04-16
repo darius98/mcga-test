@@ -12,7 +12,7 @@
 
 using namespace std;
 
-namespace kktest::interproc {
+namespace mcga::proc {
 
 class PosixPipeReader : public PipeReader {
   public:
@@ -155,4 +155,4 @@ PipeWriter* PipeWriter::OpenFile(const string& fileName) {
     return new PosixPipeWriter(fd);
 }
 
-}  // namespace kktest::interproc
+}  // namespace mcga::proc

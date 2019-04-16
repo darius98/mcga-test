@@ -4,7 +4,7 @@
 
 #include "kktest/core/hooks_manager.hpp"
 
-namespace kktest {
+namespace mcga::test {
 
 class Extension {
   public:
@@ -20,4 +20,4 @@ class Extension {
     }
 };
 
-}  // namespace kktest
+}  // namespace mcga::test

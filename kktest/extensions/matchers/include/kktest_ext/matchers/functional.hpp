@@ -2,7 +2,7 @@
 
 #include <kktest_ext/matchers/detail/functional.hpp>
 
-namespace kktest::matchers {
+namespace mcga::test::matchers {
 
 template<class E>
 constexpr detail::ThrowsSpecificMatcher<E> throwsA() {
@@ -11,4 +11,4 @@ constexpr detail::ThrowsSpecificMatcher<E> throwsA() {
 
 constexpr detail::ThrowsAnythingMatcher throws;
 
-}  // namespace kktest::matchers
+}  // namespace mcga::test::matchers

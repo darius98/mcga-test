@@ -5,8 +5,8 @@
 #include "kktest/extensions/matchers/include/kktest_ext/matchers/comparison.hpp"
 #include "kktest/extensions/matchers/include/kktest_ext/matchers/testing_helpers.hpp"
 
-using namespace kktest;
-using namespace kktest::matchers;
+using namespace mcga::test;
+using namespace mcga::test::matchers;
 using namespace std;
 
 TEST_CASE(comparison, "Matchers extension: comparison") {

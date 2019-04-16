@@ -3,7 +3,7 @@
 #include <kktest.hpp>
 #include <kktest_ext/matchers/detail/type_helpers.hpp>
 
-namespace kktest::matchers {
+namespace mcga::test::matchers {
 
 class Description {
   public:
@@ -158,4 +158,4 @@ void expect(const T& obj, M matcher) {
     fail("Expectation failed:\n\t" + description.toString());
 }
 
-}  // namespace kktest::matchers
+}  // namespace mcga::test::matchers

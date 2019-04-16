@@ -2,7 +2,7 @@
 
 #include <kktest_ext/matchers/comparison.hpp>
 
-namespace kktest::matchers::detail {
+namespace mcga::test::matchers::detail {
 
 struct IsEmptyMatcher : StatelessMatcher {
     template<class T>
@@ -131,4 +131,4 @@ struct IterableAnyMatcher : StatelessMatcher {
     M elementMatcher;
 };
 
-}  // namespace kktest::matchers::detail
+}  // namespace mcga::test::matchers::detail

@@ -10,7 +10,7 @@
 using namespace std;
 using namespace termcolor;
 
-namespace kktest::feedback {
+namespace mcga::test::feedback {
 
 TestLogger::TestLogger(ostream& stream): stream(stream) {
 }
@@ -138,4 +138,4 @@ void TestLogger::printTestMessage(const ExecutedTest& test) {
     stream << "\n";
 }
 
-}  // namespace kktest::feedback
+}  // namespace mcga::test::feedback

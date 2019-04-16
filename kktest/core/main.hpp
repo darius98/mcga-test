@@ -4,7 +4,7 @@
 
 #include "kktest/core/extension.hpp"
 
-namespace kktest {
+namespace mcga::test {
 
 void runTests(int argc,
               char** argv,

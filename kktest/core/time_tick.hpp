@@ -2,10 +2,10 @@
 
 #include <chrono>
 
-namespace kktest {
+namespace mcga::test {
 
 std::chrono::nanoseconds GetTimeTickLength();
 
 std::chrono::nanoseconds TimeTicksToNanoseconds(double timeTicks);
 
-}  // namespace kktest
+}  // namespace mcga::test

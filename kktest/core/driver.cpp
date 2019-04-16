@@ -7,7 +7,7 @@
 
 using namespace std;
 
-namespace kktest {
+namespace mcga::test {
 
 Driver* Driver::Instance() {
     return instance;
@@ -162,4 +162,4 @@ void Driver::afterGroup(GroupPtr group) {
     runHooks<AFTER_GROUP>(group);
 }
 
-}  // namespace kktest
+}  // namespace mcga::test

@@ -7,7 +7,7 @@
 #include <tuple>
 #include <utility>
 
-namespace kktest::matchers::tp {
+namespace mcga::test::matchers::tp {
 
 namespace detail {
 
@@ -98,4 +98,4 @@ template<class S, std::size_t I = 0, class... Items>
     StreamTuple<I + 1, Items...>(stream, t);
 }
 
-}  // namespace kktest::matchers::tp
+}  // namespace mcga::test::matchers::tp

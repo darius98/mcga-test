@@ -2,7 +2,7 @@
 
 #include <kktest_ext/matchers/detail/string.hpp>
 
-namespace kktest::matchers {
+namespace mcga::test::matchers {
 
 constexpr detail::CharInStringMatcher
   isLetter("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", "a letter");
@@ -29,4 +29,4 @@ inline detail::IsSubstringMatcher isSubstringOf(const std::string& s) {
     return detail::IsSubstringMatcher(s);
 }
 
-}  // namespace kktest::matchers
+}  // namespace mcga::test::matchers

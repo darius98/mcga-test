@@ -4,7 +4,7 @@
 
 #include <kktest_ext/matchers/matcher.hpp>
 
-namespace kktest::matchers::detail {
+namespace mcga::test::matchers::detail {
 
 struct ThrowsAnythingMatcher : StatelessMatcher {
     bool matches(const Executable& func) const {

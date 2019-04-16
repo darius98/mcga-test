@@ -2,7 +2,7 @@
 
 using namespace std;
 
-namespace kktest::interproc {
+namespace mcga::proc {
 
 Message PipeReader::getNextMessage() {
     return getNextMessage(-1);
@@ -16,4 +16,4 @@ void PipeWriter::sendMessage(const Message& message) {
     sendBytes(message.payload, message.getSize());
 }
 
-}  // namespace kktest::interproc
+}  // namespace mcga::proc

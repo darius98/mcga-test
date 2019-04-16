@@ -2,7 +2,7 @@
 
 #include <functional>
 
-namespace kktest::interproc {
+namespace mcga::proc {
 
 class Subprocess {
   public:
@@ -35,4 +35,4 @@ class Subprocess {
     virtual FinishStatus getFinishStatus() = 0;
 };
 
-}  // namespace kktest::interproc
+}  // namespace mcga::proc

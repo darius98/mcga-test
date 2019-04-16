@@ -5,11 +5,11 @@
 #include "common/interproc/pipe.hpp"
 #include "kktest/core/time_tick.hpp"
 
-using namespace kktest::interproc;
+using namespace mcga::proc;
 using namespace std;
 using std::this_thread::sleep_for;
 
-namespace kktest {
+namespace mcga::test {
 
 enum PipeMessageType {
     WARNING,
@@ -142,4 +142,4 @@ void BoxExecutor::ensureEmptyBoxes(size_t requiredEmpty) {
     }
 }
 
-}  // namespace kktest
+}  // namespace mcga::test

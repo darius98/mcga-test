@@ -6,9 +6,9 @@
 
 #include "common/interproc/message.hpp"
 
-using namespace kktest;
-using namespace kktest::matchers;
-using namespace kktest::interproc;
+using namespace mcga::test;
+using namespace mcga::test::matchers;
+using namespace mcga::proc;
 using namespace std;
 
 TEST_CASE(interprocMessageTest, "Interproc message") {

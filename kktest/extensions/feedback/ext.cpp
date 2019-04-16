@@ -6,7 +6,8 @@
 using mcga::cli::ArgumentSpec;
 using mcga::cli::FlagSpec;
 using mcga::cli::Parser;
-using namespace kktest::interproc;
+using namespace mcga::test;
+using namespace mcga::proc;
 using namespace std;
 
 template<>
@@ -19,7 +20,7 @@ Message::BytesConsumer&
     return *this;
 }
 
-namespace kktest::feedback {
+namespace mcga::test::feedback {
 
 enum PipeMessageType : uint8_t {
     TEST_STARTED = 0,
@@ -111,4 +112,4 @@ void FeedbackExtension::initFileStream(HooksManager& api,
     });
 }
 
-}  // namespace kktest::feedback
+}  // namespace mcga::test::feedback

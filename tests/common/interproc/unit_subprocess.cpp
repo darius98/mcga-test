@@ -6,8 +6,8 @@
 
 #include "common/interproc/subprocess.hpp"
 
-using namespace kktest;
-using namespace kktest::interproc;
+using namespace mcga::test;
+using namespace mcga::proc;
 using namespace std;
 using std::this_thread::sleep_for;
 

@@ -2,7 +2,7 @@
 
 using namespace std;
 
-namespace kktest {
+namespace mcga::test {
 
 Group::Group(GroupConfig config, Ptr parentGroup, int id)
         : GroupConfig(move(config)), parentGroup(move(parentGroup)), id(id) {
@@ -74,4 +74,4 @@ bool Group::finishedAllTests() const {
     return allTestsStarted && testsStarted == testsFinished;
 }
 
-}  // namespace kktest
+}  // namespace mcga::test

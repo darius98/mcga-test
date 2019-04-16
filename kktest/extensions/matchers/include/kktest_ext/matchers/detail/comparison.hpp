@@ -5,7 +5,7 @@
 
 #include <kktest_ext/matchers/matcher.hpp>
 
-namespace kktest::matchers::detail {
+namespace mcga::test::matchers::detail {
 
 template<class T>
 struct EqualityMatcher : StatelessMatcher {

@@ -2,7 +2,7 @@
 
 #include <kktest_ext/matchers/detail/numeric.hpp>
 
-namespace kktest::matchers {
+namespace mcga::test::matchers {
 
 constexpr detail::IsPositiveMatcher isPositive;
 
@@ -21,4 +21,4 @@ constexpr auto isAlmostEqualTo(const T& target, const double& eps) {
     return detail::IsAlmostEqualMatcher(target, eps);
 }
 
-}  // namespace kktest::matchers
+}  // namespace mcga::test::matchers

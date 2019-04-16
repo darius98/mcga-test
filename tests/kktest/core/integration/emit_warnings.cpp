@@ -2,7 +2,7 @@
 
 #include <kktest.hpp>
 
-using namespace kktest;
+using namespace mcga::test;
 using namespace std;
 
 TEST_CASE(testCase, "TestCase") {

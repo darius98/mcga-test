@@ -2,7 +2,7 @@
 
 using namespace std;
 
-namespace kktest {
+namespace mcga::test {
 
 ExecutedTest::Info::Info(string&& failure)
         : timeTicks(-1.0), passed(false), failure(move(failure)) {
@@ -82,4 +82,4 @@ const vector<ExecutedTest::Info>& ExecutedTest::getExecutions() const {
     return executions;
 }
 
-}  // namespace kktest
+}  // namespace mcga::test

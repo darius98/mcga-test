@@ -7,7 +7,7 @@
 
 #include "kktest/core/executed_test.hpp"
 
-namespace kktest::feedback {
+namespace mcga::test::feedback {
 
 class TestLogger {
   public:
@@ -41,4 +41,4 @@ class TestLogger {
     int loggedTests = 0;
 };
 
-}  // namespace kktest::feedback
+}  // namespace mcga::test::feedback

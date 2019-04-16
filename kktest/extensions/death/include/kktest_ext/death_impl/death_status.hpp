@@ -3,7 +3,7 @@
 #include <ostream>
 #include <string>
 
-namespace kktest::death {
+namespace mcga::test::death {
 
 class DeathStatus {
   public:
@@ -47,4 +47,4 @@ class DeathStatus {
     }
 };
 
-}  // namespace kktest::death
+}  // namespace mcga::test::death

@@ -3,7 +3,7 @@
 #include "common/interproc/worker_subprocess.hpp"
 #include "kktest/core/executor.hpp"
 
-namespace kktest {
+namespace mcga::test {
 
 class BoxExecutor;
 
@@ -15,7 +15,7 @@ class RunningTest {
 
     bool finishedCurrentExecution();
 
-    void executeBoxed(interproc::PipeWriter* pipe) const;
+    void executeBoxed(mcga::proc::PipeWriter* pipe) const;
 
     bool finishedAllExecutions() const;
 
@@ -24,7 +24,7 @@ class RunningTest {
   private:
     Test test;
     std::vector<ExecutedTest::Info> executions;
-    std::unique_ptr<interproc::WorkerSubprocess> currentExecution = nullptr;
+    std::unique_ptr<mcga::proc::WorkerSubprocess> currentExecution = nullptr;
 
     BoxExecutor* executor;
 };
@@ -43,16 +43,16 @@ class BoxExecutor : public Executor {
 
     Type getType() const override;
 
-    void setCurrentTestingSubprocessPipe(interproc::PipeWriter* pipe);
+    void setCurrentTestingSubprocessPipe(mcga::proc::PipeWriter* pipe);
 
   private:
     void ensureEmptyBoxes(std::size_t numContainers);
 
-    interproc::PipeWriter* currentTestingSubprocessPipe;
+    mcga::proc::PipeWriter* currentTestingSubprocessPipe;
     std::size_t numBoxes;
     std::vector<RunningTest> activeBoxes;
 
     friend class RunningTest;
 };
 
-}  // namespace kktest
+}  // namespace mcga::test

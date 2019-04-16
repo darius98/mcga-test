@@ -4,7 +4,7 @@
 
 #include "kktest/core/test.hpp"
 
-namespace kktest {
+namespace mcga::test {
 
 /** Immutable class representing a Test that has finished its execution, and the
  * Executor has provided it with the execution information.
@@ -87,4 +87,4 @@ class ExecutedTest : public Test {
     mutable double avgTimeTicks = -2;    // -1=un-computable. -2=not calculated
 };
 
-}  // namespace kktest
+}  // namespace mcga::test

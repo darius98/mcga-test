@@ -3,5 +3,5 @@
 #include <cstdlib>
 
 TEST_CASE(testCase, "TestCase") {
-    kktest::test("test", [] { exit(0); });
+    mcga::test::test("test", [] { exit(0); });
 }

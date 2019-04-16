@@ -2,7 +2,7 @@
 
 using namespace std::chrono;
 
-namespace kktest {
+namespace mcga::test {
 
 nanoseconds ComputeTimeTickLengthFromHardware() {
     // TODO(darius98): Don't hard-code this!
@@ -22,4 +22,4 @@ nanoseconds TimeTicksToNanoseconds(double timeTicks) {
       static_cast<long long>(timeTicks * GetTimeTickLength().count()));
 }
 
-}  // namespace kktest
+}  // namespace mcga::test

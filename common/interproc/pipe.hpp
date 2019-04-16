@@ -5,7 +5,7 @@
 
 #include "common/interproc/message.hpp"
 
-namespace kktest::interproc {
+namespace mcga::proc {
 
 class PipeReader {
   public:
@@ -39,4 +39,4 @@ class PipeWriter {
 
 std::pair<PipeReader*, PipeWriter*> createAnonymousPipe();
 
-}  // namespace kktest::interproc
+}  // namespace mcga::proc

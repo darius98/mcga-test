@@ -5,10 +5,10 @@
 
 #include "kktest/core/include/kktest.hpp"
 
-using namespace kktest;
+using namespace mcga::test;
 using namespace std;
 
-namespace kktest {
+namespace mcga::test {
 
 TestConfig* testConfig = nullptr;
 void test(TestConfig config, Executable) {
@@ -22,7 +22,7 @@ void group(GroupConfig config, const Executable&) {
     groupConfig = new GroupConfig(move(config));
 }
 
-}  // namespace kktest
+}  // namespace mcga::test
 
 int exitCode = 0;
 

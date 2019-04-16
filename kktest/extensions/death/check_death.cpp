@@ -7,10 +7,10 @@
 #include "kktest/core/export.hpp"
 #include "kktest/core/time_tick.hpp"
 
-using namespace kktest::interproc;
+using namespace mcga::proc;
 using namespace std;
 
-namespace kktest::death {
+namespace mcga::test::death {
 
 KKTEST_EXPORT DeathStatus checkDeath(const Executable& func,
                                      double timeTicksLimit) {
@@ -36,4 +36,4 @@ KKTEST_EXPORT DeathStatus checkDeath(const Executable& func,
     return DeathStatus(-1, -1);
 }
 
-}  // namespace kktest::death
+}  // namespace mcga::test::death

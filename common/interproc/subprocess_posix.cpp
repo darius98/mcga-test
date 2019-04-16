@@ -13,7 +13,7 @@
 
 using namespace std;
 
-namespace kktest::interproc {
+namespace mcga::proc {
 
 class PosixSubprocessHandler : public Subprocess {
   public:
@@ -108,4 +108,4 @@ Subprocess* Subprocess::Fork(const function<void()>& func) {
     return new PosixSubprocessHandler(forkPid);
 }
 
-}  // namespace kktest::interproc
+}  // namespace mcga::proc

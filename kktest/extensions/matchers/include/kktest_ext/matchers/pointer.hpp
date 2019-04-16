@@ -2,10 +2,10 @@
 
 #include <kktest_ext/matchers/detail/pointer.hpp>
 
-namespace kktest::matchers {
+namespace mcga::test::matchers {
 
 constexpr detail::IsNullptrMatcher isNull;
 
 constexpr detail::IsNotNullptrMatcher isNotNull;
 
-}  // namespace kktest::matchers
+}  // namespace mcga::test::matchers

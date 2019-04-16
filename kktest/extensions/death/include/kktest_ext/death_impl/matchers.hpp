@@ -6,7 +6,7 @@
 #include <kktest_ext/matchers/composite.hpp>
 #include <kktest_ext/matchers/matcher.hpp>
 
-namespace kktest::death {
+namespace mcga::test::death {
 
 namespace detail {
 class ExitsMatcher;
@@ -173,4 +173,4 @@ constexpr detail::HasExitedWithCodeMatcher
 constexpr detail::HasExitedWithCodeMatcher
   hasExitedWithNonZeroCode(matchers::isNotZero);
 
-}  // namespace kktest::death
+}  // namespace mcga::test::death

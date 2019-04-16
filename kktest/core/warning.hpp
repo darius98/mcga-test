@@ -2,7 +2,7 @@
 
 #include <string>
 
-namespace kktest {
+namespace mcga::test {
 
 struct Warning {
     std::string message;
@@ -13,4 +13,4 @@ struct Warning {
     Warning(std::string message, int groupId, int testId);
 };
 
-}  // namespace kktest
+}  // namespace mcga::test

@@ -2,7 +2,7 @@
 
 #include <kktest_ext/matchers/detail/composite.hpp>
 
-namespace kktest::matchers {
+namespace mcga::test::matchers {
 
 template<class A, class B>
 constexpr auto both(const A& a, const B& b) {
@@ -47,4 +47,4 @@ constexpr auto isNot(const T& x) {
     }
 }
 
-}  // namespace kktest::matchers
+}  // namespace mcga::test::matchers

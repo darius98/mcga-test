@@ -3,7 +3,7 @@
 #include <functional>
 #include <string>
 
-namespace kktest {
+namespace mcga::test {
 
 /** Type of function widely used throughout the library.
  *
@@ -287,9 +287,9 @@ struct TestCase {
     }
 };
 
-}  // namespace kktest
+}  // namespace mcga::test
 
 #define TEST_CASE(UNIQUE_NAME, DESC)                                           \
     void UNIQUE_NAME##_func();                                                 \
-    static kktest::TestCase UNIQUE_NAME##_case(UNIQUE_NAME##_func, DESC);      \
+    static mcga::test::TestCase UNIQUE_NAME##_case(UNIQUE_NAME##_func, DESC);  \
     void UNIQUE_NAME##_func()

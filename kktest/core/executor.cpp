@@ -11,7 +11,7 @@ using std::chrono::duration_cast;
 using std::chrono::high_resolution_clock;
 using std::chrono::nanoseconds;
 
-namespace kktest {
+namespace mcga::test {
 
 class ExpectationFailed : public runtime_error {
     using runtime_error::runtime_error;
@@ -142,4 +142,4 @@ void Executor::runJob(const Executable& job,
     currentExecutionFailureMutex.unlock();
 }
 
-}  // namespace kktest
+}  // namespace mcga::test

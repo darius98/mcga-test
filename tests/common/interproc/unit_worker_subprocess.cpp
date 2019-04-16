@@ -5,8 +5,8 @@
 
 #include "common/interproc/worker_subprocess.hpp"
 
-using namespace kktest;
-using namespace kktest::interproc;
+using namespace mcga::test;
+using namespace mcga::proc;
 using namespace std;
 using std::chrono::high_resolution_clock;
 using std::this_thread::sleep_for;

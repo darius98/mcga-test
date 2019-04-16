@@ -2,7 +2,7 @@
 
 #include <kktest_ext/matchers/comparison.hpp>
 
-namespace kktest::matchers::detail {
+namespace mcga::test::matchers::detail {
 
 template<class M1, class M2>
 struct AndMatcherState {

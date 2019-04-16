@@ -2,7 +2,7 @@
 
 #include <kktest_ext/matchers/matcher.hpp>
 
-namespace kktest::matchers::detail {
+namespace mcga::test::matchers::detail {
 
 struct IsTrueMatcher : StatelessMatcher {
     bool matches(const bool& object) const {
@@ -32,4 +32,4 @@ struct IsFalseMatcher : StatelessMatcher {
     }
 };
 
-}  // namespace kktest::matchers::detail
+}  // namespace mcga::test::matchers::detail

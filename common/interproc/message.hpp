@@ -2,7 +2,7 @@
 
 #include <string>
 
-namespace kktest::interproc {
+namespace mcga::proc {
 
 class Message {
   public:
@@ -121,4 +121,4 @@ Message::BytesConsumer& Message::BytesConsumer::add(const std::string& obj);
 template<>
 Message::BytesConsumer& Message::BytesConsumer::add(const Message& obj);
 
-}  // namespace kktest::interproc
+}  // namespace mcga::proc

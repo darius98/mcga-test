@@ -3,8 +3,8 @@
 #include "kktest/extensions/matchers/include/kktest_ext/matchers/testing_helpers.hpp"
 #include "kktest/extensions/matchers/include/kktest_ext/matchers/truth.hpp"
 
-using namespace kktest;
-using namespace kktest::matchers;
+using namespace mcga::test;
+using namespace mcga::test::matchers;
 
 TEST_CASE(truth, "Matchers extension: truth") {
     test("isTrue matcher matches true",

@@ -5,7 +5,7 @@
 
 using namespace std;
 
-namespace kktest {
+namespace mcga::test {
 
 KKTEST_EXPORT void test(TestConfig config, Executable body) {
     Driver::Instance()->addTest(move(config), move(body));
@@ -27,4 +27,4 @@ KKTEST_EXPORT void fail(const string& message) {
     Driver::Instance()->addFailure(message);
 }
 
-}  // namespace kktest
+}  // namespace mcga::test

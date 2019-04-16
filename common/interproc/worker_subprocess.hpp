@@ -5,7 +5,7 @@
 #include "common/interproc/pipe.hpp"
 #include "common/interproc/subprocess.hpp"
 
-namespace kktest::interproc {
+namespace mcga::proc {
 
 class WorkerSubprocess : public Subprocess {
   public:
@@ -41,4 +41,4 @@ class WorkerSubprocess : public Subprocess {
     std::chrono::high_resolution_clock::time_point endTime;
 };
 
-}  // namespace kktest::interproc
+}  // namespace mcga::proc

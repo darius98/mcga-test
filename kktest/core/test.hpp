@@ -5,7 +5,7 @@
 #include "kktest/core/group.hpp"
 #include "kktest/core/include/kktest.hpp"
 
-namespace kktest {
+namespace mcga::test {
 
 /** Immutable class holding the internal representation of a test.
  *
@@ -69,4 +69,4 @@ class Test : private TestConfig {
     int id;
 };
 
-}  // namespace kktest
+}  // namespace mcga::test

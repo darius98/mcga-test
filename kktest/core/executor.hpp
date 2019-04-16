@@ -5,7 +5,7 @@
 #include "kktest/core/executed_test.hpp"
 #include "kktest/core/warning.hpp"
 
-namespace kktest {
+namespace mcga::test {
 
 class Executor {
   public:
@@ -61,4 +61,4 @@ class Executor {
     std::string currentExecutionFailureMessage;
 };
 
-}  // namespace kktest
+}  // namespace mcga::test

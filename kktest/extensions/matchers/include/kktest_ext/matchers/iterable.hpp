@@ -2,7 +2,7 @@
 
 #include <kktest_ext/matchers/detail/iterable.hpp>
 
-namespace kktest::matchers {
+namespace mcga::test::matchers {
 
 template<class T>
 constexpr auto hasSize(const T& size) {
@@ -35,4 +35,4 @@ constexpr detail::IsEmptyMatcher isEmpty;
 
 constexpr detail::IsNotEmptyMatcher isNotEmpty;
 
-}  // namespace kktest::matchers
+}  // namespace mcga::test::matchers

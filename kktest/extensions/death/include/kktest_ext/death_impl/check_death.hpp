@@ -3,7 +3,7 @@
 #include <kktest.hpp>
 #include <kktest_ext/death_impl/death_status.hpp>
 
-namespace kktest::death {
+namespace mcga::test::death {
 
 DeathStatus checkDeath(const Executable& func, double timeTicksLimit = 1);
 
