@@ -1,6 +1,7 @@
 #pragma once
 
-#include "common/interproc/worker_subprocess.hpp"
+#include <mcga/proc.hpp>
+
 #include "kktest/core/executor.hpp"
 
 namespace mcga::test {

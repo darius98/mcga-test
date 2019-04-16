@@ -1,6 +1,7 @@
 #pragma once
 
-#include "common/interproc/pipe.hpp"
+#include <mcga/proc.hpp>
+
 #include "kktest/core/extension.hpp"
 #include "kktest/extensions/feedback/test_logger.hpp"
 

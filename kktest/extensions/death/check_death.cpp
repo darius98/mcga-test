@@ -2,7 +2,8 @@
 
 #include <thread>
 
-#include "common/interproc/worker_subprocess.hpp"
+#include <mcga/proc.hpp>
+
 #include "kktest/core/driver.hpp"
 #include "kktest/core/export.hpp"
 #include "kktest/core/time_tick.hpp"

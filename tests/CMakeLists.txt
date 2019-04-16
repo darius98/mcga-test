@@ -33,7 +33,6 @@ function(add_basic_test TEST_NAME)
     add_test(NAME ${BASIC_TEST} COMMAND ${BASIC_TEST})
 endfunction()
 
-add_subdirectory(common/interproc)
 add_subdirectory(kktest/extensions/death)
 add_subdirectory(kktest/extensions/matchers)
 add_subdirectory(kktest/core)

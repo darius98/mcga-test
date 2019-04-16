@@ -2,7 +2,8 @@
 
 #include <thread>
 
-#include "common/interproc/pipe.hpp"
+#include <mcga/proc.hpp>
+
 #include "kktest/core/time_tick.hpp"
 
 using namespace mcga::proc;
