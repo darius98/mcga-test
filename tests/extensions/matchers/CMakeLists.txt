@@ -1,10 +1,10 @@
 add_unit_test(extension_matchers
-        unit_comparison.cpp
-        unit_composite.cpp
-        unit_functional.cpp
-        unit_iterable.cpp
-        unit_numeric.cpp
-        unit_pointer.cpp
-        unit_string.cpp
-        unit_truth.cpp
+        comparison_test.cpp
+        composite_test.cpp
+        functional_test.cpp
+        iterable_test.cpp
+        numeric_test.cpp
+        pointer_test.cpp
+        string_test.cpp
+        truth_test.cpp
         )
