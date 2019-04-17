@@ -40,7 +40,7 @@ void runTests(int argc,
                         "means a test killed by signal will not be "
                         "detected and will kill the whole test suite.")
         .setOptions({{"smooth", Executor::SMOOTH}, {"boxed", Executor::BOXED}})
-        .setDefaultValue(Executor::BOXED));
+        .setDefaultValue("boxed"));
     auto maxParallelTestsArgument = parser.addNumericArgument(
       NumericArgumentSpec<size_t>("max-parallel-tests")
         .setDescription("Maximum number of tests to execute in parallel"

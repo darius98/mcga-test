@@ -44,7 +44,8 @@ void FeedbackExtension::registerCommandLineArgs(Parser& parser) {
       ArgumentSpec("pipe-to")
         .setHelpGroup("Feedback")
         .setDescription("A file or fifo with write access for piping the test "
-                        "results as they become available."));
+                        "results as they become available.")
+        .setDefaultValue(""));
 }
 
 void FeedbackExtension::init(HooksManager& api) {
