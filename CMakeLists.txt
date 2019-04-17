@@ -7,11 +7,35 @@ set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 
 option(MCGA_test_tests "Build MCGA Test tests" OFF)
 
-include_directories(.)
-
 add_subdirectory(third_party/termcolor EXCLUDE_FROM_ALL)
 
-add_subdirectory(kktest)
+add_library(mcga_test SHARED
+        src/entry_point.cpp
+
+        src/core/box_executor.cpp
+        src/core/driver.cpp
+        src/core/executed_test.cpp
+        src/core/executor.cpp
+        src/core/group.cpp
+        src/core/main.cpp
+        src/core/mcga_test.cpp
+        src/core/time_tick.cpp
+        src/core/test.cpp
+        src/core/warning.cpp
+
+        src/extensions/death/check_death.cpp
+
+        src/extensions/feedback/ext.cpp
+        src/extensions/feedback/test_logger.cpp
+        )
+target_include_directories(mcga_test PRIVATE src)
+target_link_libraries(mcga_test
+        PRIVATE mcga_proc
+        PRIVATE termcolor
+        )
+
+install(TARGETS mcga_test DESTINATION lib)
+install(DIRECTORY include DESTINATION .)
 
 if (MCGA_test_tests)
     enable_testing()

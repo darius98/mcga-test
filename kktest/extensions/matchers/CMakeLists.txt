@@ -1,5 +1,0 @@
-add_library(kktest_extension_matchers INTERFACE)
-target_include_directories(kktest_extension_matchers INTERFACE include)
-target_link_libraries(kktest_extension_matchers INTERFACE kktest_core)
-
-install(DIRECTORY include DESTINATION .)

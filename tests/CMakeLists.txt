@@ -3,7 +3,7 @@ add_custom_target(mcga_test_check COMMAND ${CMAKE_CTEST_COMMAND})
 function(add_unit_test TEST_NAME)
     set(UNIT_TEST mcga_test_unit_${TEST_NAME})
     add_executable(${UNIT_TEST} ${ARGN})
-    target_link_libraries(${UNIT_TEST} kktest)
+    target_link_libraries(${UNIT_TEST} mcga_test)
     add_dependencies(mcga_test_check ${UNIT_TEST})
 
     add_test(NAME ${UNIT_TEST} COMMAND ${UNIT_TEST})
@@ -16,7 +16,7 @@ function(add_integration_test TEST_NAME SCRIPT_FILE)
     set_target_properties(${INTEGRATION_TEST_BIN} PROPERTIES
             RUNTIME_OUTPUT_NAME ${TEST_NAME}
             )
-    target_link_libraries(${INTEGRATION_TEST_BIN} kktest)
+    target_link_libraries(${INTEGRATION_TEST_BIN} mcga_test)
     add_dependencies(mcga_test_check ${INTEGRATION_TEST_BIN})
 
     add_test(NAME ${INTEGRATION_TEST}
@@ -33,6 +33,6 @@ function(add_basic_test TEST_NAME)
     add_test(NAME ${BASIC_TEST} COMMAND ${BASIC_TEST})
 endfunction()
 
-add_subdirectory(kktest/extensions/death)
-add_subdirectory(kktest/extensions/matchers)
-add_subdirectory(kktest/core)
+add_subdirectory(core)
+add_subdirectory(extensions/death)
+add_subdirectory(extensions/matchers)
