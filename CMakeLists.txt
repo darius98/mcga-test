@@ -30,7 +30,6 @@ add_library(mcga_test SHARED
         )
 target_include_directories(mcga_test PRIVATE src)
 target_link_libraries(mcga_test
-        PRIVATE mcga_proc
         PRIVATE termcolor
         )
 
