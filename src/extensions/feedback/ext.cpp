@@ -28,9 +28,9 @@ Message::BytesConsumer&
 namespace mcga::test::feedback {
 
 enum PipeMessageType : uint8_t {
-    TEST_STARTED = 0,
-    TEST_DONE = 1,
-    GROUP = 2,
+    GROUP_DISCOVERED = 0,
+    TEST_DISCOVERED = 1,
+    TEST_DONE = 2,
     DONE = 3,
     WARNING = 4,
 };
@@ -89,14 +89,15 @@ void FeedbackExtension::initFileStream(HooksManager* api,
     fileWriter = unique_ptr<PipeWriter>(PipeWriter::OpenFile(fileName));
 
     api->addHook<HooksManager::ON_GROUP_DISCOVERED>([this](GroupPtr group) {
-        fileWriter->sendMessage(PipeMessageType::GROUP,
+        fileWriter->sendMessage(PipeMessageType::GROUP_DISCOVERED,
                                 group->getParentGroup()->getId(),
                                 group->getId(),
-                                group->getDescription());
+                                group->getDescription(),
+                                group->isOptional());
     });
 
     api->addHook<HooksManager::ON_TEST_DISCOVERED>([this](const Test& test) {
-        fileWriter->sendMessage(PipeMessageType::TEST_STARTED,
+        fileWriter->sendMessage(PipeMessageType::TEST_DISCOVERED,
                                 test.getId(),
                                 test.getGroup()->getId(),
                                 test.getDescription(),

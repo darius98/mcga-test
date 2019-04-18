@@ -19,12 +19,17 @@ if "[F] TestCase::test" not in proc.stdout.decode():
           + proc.stdout.decode() + "'")
     exit(1)
 
+if "[F] TestCase::optional-group::non-optional-test" not in proc.stdout.decode():
+    print("Did not output correct feedback on failing test, output='"
+          + proc.stdout.decode() + "'")
+    exit(1)
+
 if "Tests passed: 0" not in proc.stdout.decode():
     print("Did not output correct feedback on number of passed tests, output='"
           + proc.stdout.decode() + "'")
     exit(1)
 
-if "Tests failed: 1 (1 was optional)" not in proc.stdout.decode():
+if "Tests failed: 2 (2 were optional)" not in proc.stdout.decode():
     print("Did not output correct feedback on number of failed tests, output='"
           + proc.stdout.decode() + "'")
     exit(1)
