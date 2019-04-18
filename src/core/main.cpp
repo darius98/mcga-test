@@ -17,10 +17,13 @@ using std::vector;
 
 namespace mcga::test {
 
-void runTestsOnDriver(Driver* testingDriver, const vector<TestCase*>& tests) {
-    Driver::Init(testingDriver);
+void runTestsOnExecutor(HooksManager* hooks,
+                        Executor* executor,
+                        const vector<TestCase*>& tests) {
+    Driver driver(hooks, executor);
+    Driver::Init(&driver);
     for (TestCase* testCase: tests) {
-        testingDriver->addGroup(testCase->name, testCase->body);
+        driver.addGroup(testCase->name, testCase->body);
     }
     Driver::Clean();
 }
@@ -40,8 +43,7 @@ void runTests(int argc,
                         "separate process. Using a smooth executor "
                         "means a test killed by signal will not be "
                         "detected and will kill the whole test suite.")
-        .setOptions({{"smooth", Executor::SMOOTH},
-                     {"boxed", Executor::BOXED}})
+        .setOptions({{"smooth", Executor::SMOOTH}, {"boxed", Executor::BOXED}})
         .setDefaultValue("boxed"));
     auto maxParallelTestsArg = parser.addNumericArgument(
       NumericArgumentSpec<size_t>("max-parallel-tests")
@@ -62,22 +64,18 @@ void runTests(int argc,
         extension->init(&api);
     }
 
-    ScanExecutor scanner;
-    Driver scanningDriver(&api, &scanner);
-
-    runTestsOnDriver(&scanningDriver, tests);
+    ScanExecutor scanner(&api);
+    runTestsOnExecutor(&api, &scanner, tests);
 
     switch (executorTypeArg->getValue()) {
         case Executor::SMOOTH: {
             Executor executor;
-            Driver testingDriver(&api, &executor);
-            runTestsOnDriver(&testingDriver, tests);
+            runTestsOnExecutor(&api, &executor, tests);
             break;
         }
         case Executor::BOXED: {
             BoxExecutor executor(max(maxParallelTestsArg->getValue(), 1ul));
-            Driver testingDriver(&api, &executor);
-            runTestsOnDriver(&testingDriver, tests);
+            runTestsOnExecutor(&api, &executor, tests);
             break;
         }
         default: {

@@ -85,14 +85,14 @@ void FeedbackExtension::initFileStream(HooksManager* api,
                                        const string& fileName) {
     fileWriter = unique_ptr<PipeWriter>(PipeWriter::OpenFile(fileName));
 
-    api->addHook<HooksManager::BEFORE_GROUP>([this](GroupPtr group) {
+    api->addHook<HooksManager::ON_GROUP_DISCOVERED>([this](GroupPtr group) {
         fileWriter->sendMessage(PipeMessageType::GROUP,
                                 group->getParentGroup()->getId(),
                                 group->getId(),
                                 group->getDescription());
     });
 
-    api->addHook<HooksManager::BEFORE_TEST>([this](const Test& test) {
+    api->addHook<HooksManager::ON_TEST_DISCOVERED>([this](const Test& test) {
         fileWriter->sendMessage(PipeMessageType::TEST_STARTED,
                                 test.getId(),
                                 test.getGroup()->getId(),

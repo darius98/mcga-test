@@ -53,26 +53,4 @@ void Group::tearDown() const {
     }
 }
 
-void Group::addStartedTest() {
-    testsStarted += 1;
-    if (parentGroup != nullptr) {
-        parentGroup->addStartedTest();
-    }
-}
-
-void Group::setStartedAllTests() {
-    allTestsStarted = true;
-}
-
-void Group::addFinishedTest() {
-    testsFinished += 1;
-    if (parentGroup != nullptr) {
-        parentGroup->addFinishedTest();
-    }
-}
-
-bool Group::finishedAllTests() const {
-    return allTestsStarted && testsStarted == testsFinished;
-}
-
 }  // namespace mcga::test

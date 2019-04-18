@@ -20,7 +20,6 @@ Driver* Driver::Instance() {
 
 void Driver::Init(Driver* _instance) {
     instance = _instance;
-    instance->hooks->runHooks<HooksManager::AFTER_INIT>();
 }
 
 void Driver::Clean() {
@@ -46,11 +45,11 @@ void Driver::addGroup(GroupConfig config, const Executable& body) {
     }
 
     ++currentGroupId;
-    auto parentGroup = groupStack.empty() ? nullptr : groupStack.back();
-    auto group = make_shared<Group>(move(config), parentGroup, currentGroupId);
+    GroupPtr parentGroup = groupStack.empty() ? nullptr : groupStack.back();
+    GroupPtr group
+      = make_shared<Group>(move(config), parentGroup, currentGroupId);
 
     groupStack.push_back(group);
-    beforeGroup(group);
     try {
         body();
     } catch (const exception& e) {
@@ -62,10 +61,6 @@ void Driver::addGroup(GroupConfig config, const Executable& body) {
           "Non-exception thrown in group \"" + group->getDescription()
           + "\". Unable to execute remainder of tests in this group.");
     }
-    group->setStartedAllTests();
-    if (group->finishedAllTests()) {
-        afterGroup(group);
-    }
     groupStack.pop_back();
 }
 
@@ -74,10 +69,8 @@ void Driver::addTest(TestConfig config, Executable body) {
         return;
     }
     GroupPtr parentGroup = groupStack.back();
-    Test test(move(config), move(body), parentGroup, ++currentTestId);
-    parentGroup->addStartedTest();
-    beforeTest(test);
-    executor->execute(move(test));
+    executor->execute(
+      Test(move(config), move(body), parentGroup, ++currentTestId));
 }
 
 void Driver::addSetUp(Executable func) {
@@ -142,28 +135,8 @@ void Driver::onWarning(const Warning& warning) {
     hooks->runHooks<HooksManager::ON_WARNING>(warning);
 }
 
-void Driver::beforeTest(const Test& test) {
-    hooks->runHooks<HooksManager::BEFORE_TEST>(test);
-}
-
 void Driver::afterTest(const ExecutedTest& test) {
     hooks->runHooks<HooksManager::AFTER_TEST>(test);
-    GroupPtr parentGroup = test.getGroup();
-    parentGroup->addFinishedTest();
-    while (parentGroup != nullptr) {
-        if (parentGroup->finishedAllTests()) {
-            afterGroup(parentGroup);
-        }
-        parentGroup = parentGroup->getParentGroup();
-    }
-}
-
-void Driver::beforeGroup(const GroupPtr& group) {
-    hooks->runHooks<HooksManager::BEFORE_GROUP>(group);
-}
-
-void Driver::afterGroup(const GroupPtr& group) {
-    hooks->runHooks<HooksManager::AFTER_GROUP>(group);
 }
 
 }  // namespace mcga::test

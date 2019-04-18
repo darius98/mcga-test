@@ -76,39 +76,9 @@ class Group : private GroupConfig {
     /** Call the tear-down function of this group. */
     void tearDown() const;
 
-    /** Increase the number of tests that have started within this group (and
-     * all sub-groups of it.
-     *
-     * Should only be called within the implementation of the test() function,
-     * only on the instance maintaining the direct Group container of the added
-     * test (the top of the group stack), since it recursively updates all
-     * parents of the instance where it's called.
-     *
-     * Together with setStartedAllTests(), addFinishedTest() and
-     * finishedAllTests() it forms the Group's API for defining a moment when
-     * this Group can be cleaned up (it is no longer needed by the Driver). */
-    void addStartedTest();
-
-    /** Mark a flag that all tests within this group have started. */
-    void setStartedAllTests();
-
-    /** Increase the number of tests that have finished execution within this
-     * group. */
-    void addFinishedTest();
-
-    /** Check if all tests within this group and all subgroups are finished.
-     *
-     * This is `true` iff the flag from setStartedAllTests() was set and the
-     * counters for started & finished tests are equal. */
-    bool finishedAllTests() const;
-
   private:
     Ptr parentGroup;
     int id;
-
-    int testsStarted = 0;
-    bool allTestsStarted = false;
-    int testsFinished = 0;
 
     Executable setUpFunc;
     Executable tearDownFunc;

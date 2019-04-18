@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdint>
+
 #include <stdexcept>
 
 #include "executed_test.hpp"
@@ -9,22 +11,18 @@ namespace mcga::test {
 
 class HooksManager {
   public:
-    using BeforeTest = std::function<void(const Test&)>;
-    using AfterTest = std::function<void(const ExecutedTest&)>;
-    using BeforeGroup = std::function<void(GroupPtr)>;
-    using AfterGroup = std::function<void(GroupPtr)>;
-    using AfterInit = std::function<void()>;
-    using BeforeDestroy = std::function<void()>;
+    using OnGroupDiscovered = std::function<void(GroupPtr)>;
+    using OnTestDiscovered = std::function<void(const Test&)>;
     using OnWarning = std::function<void(const Warning&)>;
+    using AfterTest = std::function<void(const ExecutedTest&)>;
+    using BeforeDestroy = std::function<void()>;
 
-    enum Type {
-        AFTER_INIT = 0,
-        BEFORE_GROUP = 1,
-        AFTER_GROUP = 2,
-        BEFORE_TEST = 3,
-        AFTER_TEST = 4,
-        BEFORE_DESTROY = 5,
-        ON_WARNING = 6,
+    enum Type : std::uint8_t {
+        ON_GROUP_DISCOVERED = 0,
+        ON_TEST_DISCOVERED = 1,
+        ON_WARNING = 2,
+        AFTER_TEST = 3,
+        BEFORE_DESTROY = 4,
     };
 
     HooksManager() = default;
@@ -49,13 +47,11 @@ class HooksManager {
     }
 
   private:
-    std::tuple<std::vector<AfterInit>,
-               std::vector<BeforeGroup>,
-               std::vector<AfterGroup>,
-               std::vector<BeforeTest>,
+    std::tuple<std::vector<OnGroupDiscovered>,
+               std::vector<OnTestDiscovered>,
+               std::vector<OnWarning>,
                std::vector<AfterTest>,
-               std::vector<BeforeDestroy>,
-               std::vector<OnWarning>>
+               std::vector<BeforeDestroy>>
       hooks;
 };
 
