@@ -17,10 +17,8 @@ using std::vector;
 
 namespace mcga::test {
 
-void runTestsOnExecutor(HooksManager* hooks,
-                        Executor* executor,
-                        const vector<TestCase*>& tests) {
-    Driver driver(hooks, executor);
+void runTestsOnExecutor(Executor* executor, const vector<TestCase*>& tests) {
+    Driver driver(executor);
     Driver::Init(&driver);
     for (TestCase* testCase: tests) {
         driver.addGroup(testCase->name, testCase->body);
@@ -65,17 +63,18 @@ void runTests(int argc,
     }
 
     ScanExecutor scanner(&api);
-    runTestsOnExecutor(&api, &scanner, tests);
+    runTestsOnExecutor(&scanner, tests);
 
     switch (executorTypeArg->getValue()) {
         case Executor::SMOOTH: {
-            Executor executor;
-            runTestsOnExecutor(&api, &executor, tests);
+            Executor executor(&api);
+            runTestsOnExecutor(&executor, tests);
             break;
         }
         case Executor::BOXED: {
-            BoxExecutor executor(max(maxParallelTestsArg->getValue(), 1ul));
-            runTestsOnExecutor(&api, &executor, tests);
+            BoxExecutor executor(&api,
+                                 max(maxParallelTestsArg->getValue(), 1ul));
+            runTestsOnExecutor(&executor, tests);
             break;
         }
         default: {

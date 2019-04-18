@@ -4,7 +4,6 @@
 
 #include "disallow_copy_and_move.hpp"
 #include "executor.hpp"
-#include "hooks_manager.hpp"
 
 namespace mcga::test {
 
@@ -19,9 +18,7 @@ class Driver {
 
     static void Clean();
 
-    Driver() = default;
-
-    Driver(HooksManager* hooks, Executor* executor);
+    explicit Driver(Executor* executor);
 
     MCGA_DISALLOW_COPY_AND_MOVE(Driver);
 
@@ -44,10 +41,6 @@ class Driver {
   private:
     bool checkMainThreadAndInactive(const std::string& method);
 
-    void onWarning(const Warning& warning);
-    void afterTest(const Test& test);
-
-    HooksManager* hooks = nullptr;
     Executor* executor = nullptr;
 
     std::size_t testingThreadId

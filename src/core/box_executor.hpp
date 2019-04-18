@@ -35,7 +35,7 @@ class BoxExecutor : public Executor {
     static constexpr auto loopSleepTime = std::chrono::milliseconds(5);
 
   public:
-    explicit BoxExecutor(std::size_t numBoxes);
+    explicit BoxExecutor(HooksManager* hooks, std::size_t numBoxes);
 
     MCGA_DISALLOW_COPY_AND_MOVE(BoxExecutor);
 
@@ -45,7 +45,7 @@ class BoxExecutor : public Executor {
 
     void finalize() override;
 
-    void emitWarning(const std::string& message) override;
+    void emitWarning(const std::string& message, std::size_t groupId) override;
 
     Type getType() const override;
 

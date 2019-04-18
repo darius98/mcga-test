@@ -3,6 +3,7 @@
 #include <mutex>
 
 #include "disallow_copy_and_move.hpp"
+#include "hooks_manager.hpp"
 #include "test.hpp"
 #include "warning.hpp"
 
@@ -16,18 +17,11 @@ class Executor {
         BOXED,
     };
 
-    using OnTestFinished = std::function<void(const Test&)>;
-    using OnWarning = std::function<void(const Warning&)>;
-
-    Executor() = default;
+    explicit Executor(HooksManager* hooks);
 
     MCGA_DISALLOW_COPY_AND_MOVE(Executor);
 
     virtual ~Executor() = default;
-
-    void setOnTestFinishedCallback(OnTestFinished _onTestFinished);
-
-    void setOnWarningCallback(OnWarning _onWarning);
 
     bool isActive() const;
 
@@ -37,7 +31,7 @@ class Executor {
 
     virtual void finalize();
 
-    virtual void emitWarning(const std::string& message);
+    virtual void emitWarning(const std::string& message, std::size_t groupId);
 
     std::string stateAsString() const;
 
@@ -51,14 +45,15 @@ class Executor {
                 const std::string& where);
 
   protected:
-    OnTestFinished onTestFinished;
-    OnWarning onWarning;
+    void onWarning(const Warning& warning);
+    void onTestFinished(const Test& test);
+
+    HooksManager* hooks;
 
   private:
     enum State { INACTIVE, INSIDE_TEST, INSIDE_SET_UP, INSIDE_TEAR_DOWN };
 
     State state = INACTIVE;
-    int currentTestGroupId = 0;
     int currentTestId = 0;
     std::size_t currentExecutionThreadId = 0;
 

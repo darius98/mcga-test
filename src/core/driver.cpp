@@ -27,12 +27,7 @@ void Driver::Clean() {
     instance = nullptr;
 }
 
-Driver::Driver(HooksManager* hooks, Executor* executor)
-        : hooks(hooks), executor(executor) {
-    executor->setOnTestFinishedCallback(
-      [this](const Test& test) { afterTest(test); });
-    executor->setOnWarningCallback(
-      [this](const Warning& warning) { onWarning(warning); });
+Driver::Driver(Executor* executor): executor(executor) {
 }
 
 Executor::Type Driver::getExecutorType() const {
@@ -109,11 +104,7 @@ void Driver::addFailure(const string& failure) {
 }
 
 void Driver::emitWarning(const string& message) {
-    if (executor->isActive()) {
-        executor->emitWarning(message);
-    } else {
-        onWarning(Warning(message, groupStack.back()->getId()));
-    }
+    executor->emitWarning(message, groupStack.back()->getId());
 }
 
 bool Driver::checkMainThreadAndInactive(const string& method) {
@@ -129,14 +120,6 @@ bool Driver::checkMainThreadAndInactive(const string& method) {
         return false;
     }
     return true;
-}
-
-void Driver::onWarning(const Warning& warning) {
-    hooks->runHooks<HooksManager::ON_WARNING>(warning);
-}
-
-void Driver::afterTest(const Test& test) {
-    hooks->runHooks<HooksManager::AFTER_TEST>(test);
 }
 
 }  // namespace mcga::test

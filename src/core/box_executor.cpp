@@ -97,7 +97,8 @@ Test RunningTest::detachTest() && {
     return move(test);
 }
 
-BoxExecutor::BoxExecutor(size_t numBoxes): numBoxes(numBoxes) {
+BoxExecutor::BoxExecutor(HooksManager* hooks, size_t numBoxes)
+        : Executor(hooks), numBoxes(numBoxes) {
 }
 
 void BoxExecutor::execute(Test test) {
@@ -115,8 +116,10 @@ Executor::Type BoxExecutor::getType() const {
     return BOXED;
 }
 
-void BoxExecutor::emitWarning(const string& message) {
-    currentTestingSubprocessPipe->sendMessage(WARNING, message);
+void BoxExecutor::emitWarning(const string& message, std::size_t /*groupId*/) {
+    if (isActive()) {
+        currentTestingSubprocessPipe->sendMessage(WARNING, message);
+    }
 }
 
 void BoxExecutor::setCurrentTestingSubprocessPipe(PipeWriter* pipe) {

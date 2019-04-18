@@ -1,8 +1,11 @@
 #include "scan_executor.hpp"
 
+using std::size_t;
+using std::string;
+
 namespace mcga::test {
 
-ScanExecutor::ScanExecutor(HooksManager* hooks): hooks(hooks) {
+ScanExecutor::ScanExecutor(HooksManager* hooks): Executor(hooks) {
 }
 
 void ScanExecutor::execute(Test test) {
@@ -14,6 +17,10 @@ void ScanExecutor::execute(Test test) {
         hooks->runHooks<HooksManager::ON_GROUP_DISCOVERED>(group);
     }
     hooks->runHooks<HooksManager::ON_TEST_DISCOVERED>(test);
+}
+
+void ScanExecutor::emitWarning(const string& message, size_t groupId) {
+    hooks->runHooks<HooksManager::ON_WARNING>(Warning(message, groupId));
 }
 
 Executor::Type ScanExecutor::getType() const {

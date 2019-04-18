@@ -19,18 +19,12 @@ def check_warning(message):
         exit(1)
 
 
-check_warning("Called fail() with message 'fail-top-level' "
-              "outside a test execution. Ignoring.")
-check_warning("Called fail() with message 'fail-in-group' "
-              "outside a test execution. Ignoring.")
-check_warning("setUp() called, but a setUp for group "
-              "\"group\" already exists. Ignoring.")
-check_warning("tearDown() called, but a tearDown for group "
-              "\"group\" already exists. Ignoring.")
-check_warning("Exception thrown in group \"group\": exception-in-group. "
-              "Unable to execute remainder of tests in this group.")
-check_warning("Non-exception thrown in group \"group2\". "
-              "Unable to execute remainder of tests in this group.")
+check_warning("Called fail() with message 'fail-top-level' outside a test execution. Ignoring.")
+check_warning("Called fail() with message 'fail-in-group' outside a test execution. Ignoring.")
+check_warning("setUp() called, but a setUp for group \"group\" already exists. Ignoring.")
+check_warning("tearDown() called, but a tearDown for group \"group\" already exists. Ignoring.")
+check_warning("Exception thrown in group \"group\": exception-in-group. Unable to execute remainder of tests in this group.")
+check_warning("Non-exception thrown in group \"group2\". Unable to execute remainder of tests in this group.")
 check_warning("Called setUp() inside a setUp(). Ignoring.")
 check_warning("Called tearDown() inside a setUp(). Ignoring.")
 check_warning("Called test() inside a setUp(). Ignoring.")
@@ -43,14 +37,10 @@ check_warning("Called setUp() inside a tearDown(). Ignoring.")
 check_warning("Called tearDown() inside a tearDown(). Ignoring.")
 check_warning("Called test() inside a tearDown(). Ignoring.")
 check_warning("Called group() inside a tearDown(). Ignoring.")
-check_warning("Called test() from a different thread than the main testing "
-              "thread. Ignoring.")
-check_warning("Called group() from a different thread than the main testing "
-              "thread. Ignoring.")
-check_warning("Called setUp() from a different thread than the main testing "
-              "thread. Ignoring.")
-check_warning("Called tearDown() from a different thread than the main testing "
-              "thread. Ignoring.")
+check_warning("Called test() from a different thread than the main testing thread. Ignoring.")
+check_warning("Called group() from a different thread than the main testing thread. Ignoring.")
+check_warning("Called setUp() from a different thread than the main testing thread. Ignoring.")
+check_warning("Called tearDown() from a different thread than the main testing thread. Ignoring.")
 
 # Tests 'test-in-test', 'test-in-setUp' and 'test-in-tearDown'
 # should not have been executed.

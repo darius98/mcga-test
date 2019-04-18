@@ -17,10 +17,11 @@ class ScanExecutor : public Executor {
 
     void execute(Test test) override;
 
+    void emitWarning(const std::string& message, std::size_t groupId) override;
+
     Type getType() const override;
 
   private:
-    HooksManager* hooks;
     std::set<int> discoveredGroups;
 };
 

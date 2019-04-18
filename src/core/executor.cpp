@@ -24,12 +24,7 @@ class ExpectationFailed : public runtime_error {
     using runtime_error::runtime_error;
 };
 
-void Executor::setOnTestFinishedCallback(OnTestFinished _onTestFinished) {
-    onTestFinished = move(_onTestFinished);
-}
-
-void Executor::setOnWarningCallback(OnWarning _onWarning) {
-    onWarning = move(_onWarning);
+Executor::Executor(HooksManager* hooks): hooks(hooks) {
 }
 
 bool Executor::isActive() const {
@@ -66,10 +61,8 @@ void Executor::addFailure(const string& failure) {
 }
 
 void Executor::execute(Test test) {
-    vector<Test::ExecutionInfo> executions;
-    executions.reserve(test.getNumAttempts());
     for (size_t i = 0; i < test.getNumAttempts(); ++i) {
-        executions.push_back(run(test));
+        test.addExecution(run(test));
     }
     onTestFinished(test);
 }
@@ -79,7 +72,6 @@ Executor::Type Executor::getType() const {
 }
 
 Test::ExecutionInfo Executor::run(const Test& test) {
-    currentTestGroupId = test.getGroup()->getId();
     currentTestId = test.getId();
     state = INSIDE_SET_UP;
     Test::ExecutionInfo info;
@@ -120,8 +112,10 @@ Test::ExecutionInfo Executor::run(const Test& test) {
     return info;
 }
 
-void Executor::emitWarning(const string& message) {
-    onWarning(Warning(message, currentTestGroupId, currentTestId));
+void Executor::emitWarning(const string& message, std::size_t groupId) {
+    if (isActive()) {
+        onWarning(Warning(message, groupId, currentTestId));
+    }
 }
 
 void Executor::runJob(const Executable& job,
@@ -145,6 +139,14 @@ void Executor::runJob(const Executable& job,
     if (currentExecutionIsFailed) {
         execution->fail(currentExecutionFailureMessage);
     }
+}
+
+void Executor::onWarning(const Warning& warning) {
+    hooks->runHooks<HooksManager::ON_WARNING>(warning);
+}
+
+void Executor::onTestFinished(const Test& test) {
+    hooks->runHooks<HooksManager::AFTER_TEST>(test);
 }
 
 }  // namespace mcga::test
