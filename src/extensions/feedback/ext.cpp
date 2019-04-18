@@ -36,7 +36,7 @@ enum PipeMessageType : uint8_t {
 };
 
 int FeedbackExtension::getReturnCode() {
-    return failedAnyNonOptionalTests ? 1 : 0;
+    return exitCode;
 }
 
 void FeedbackExtension::registerCommandLineArgs(Parser* parser) {
@@ -62,8 +62,11 @@ void FeedbackExtension::init(HooksManager* api) {
     }
     api->addHook<HooksManager::AFTER_TEST>([this](const Test& test) {
         if (!test.isPassed() && !test.isOptional()) {
-            failedAnyNonOptionalTests = true;
+            exitCode = 1;
         }
+    });
+    api->addHook<HooksManager::ON_WARNING>([this](const Warning& warning) {
+        exitCode = 1;
     });
 }
 

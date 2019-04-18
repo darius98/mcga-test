@@ -20,7 +20,7 @@ class FeedbackExtension : public Extension {
 
     void initFileStream(HooksManager* api, const std::string& fileName);
 
-    bool failedAnyNonOptionalTests = false;
+    int exitCode = 0;
     std::unique_ptr<TestLogger> logger = nullptr;
     std::unique_ptr<mcga::proc::PipeWriter> fileWriter = nullptr;
 
