@@ -1,5 +1,6 @@
 #pragma once
 
+#include "disallow_copy_and_move.hpp"
 #include "executor.hpp"
 #include "hooks_manager.hpp"
 
@@ -14,7 +15,9 @@ class Driver : public HooksManager {
 
     static void Init(Driver* driver);
 
-    Driver(HooksManager hooks, Executor* executor);
+    Driver(const HooksManager& hooks, Executor* executor);
+
+    MCGA_DISALLOW_COPY_AND_MOVE(Driver);
 
     ~Driver() override;
 
@@ -38,8 +41,8 @@ class Driver : public HooksManager {
     void onWarning(const Warning& warning);
     void beforeTest(const Test& test);
     void afterTest(const ExecutedTest& test);
-    void beforeGroup(GroupPtr group);
-    void afterGroup(GroupPtr group);
+    void beforeGroup(const GroupPtr& group);
+    void afterGroup(const GroupPtr& group);
 
     std::size_t testingThreadId;
     Executor* executor;

@@ -23,7 +23,7 @@ class Group : private GroupConfig {
   public:
     /** The pointer type that should be passed around when working with a
      * Group. */
-    typedef std::shared_ptr<Group> Ptr;
+    using Ptr = std::shared_ptr<Group>;
 
     /** Default constructor from the upgraded GroupConfig and extra metadata
      * received from the testing Driver. Very similar to Test#Test().*/
@@ -114,6 +114,6 @@ class Group : private GroupConfig {
     Executable tearDownFunc;
 };
 
-typedef Group::Ptr GroupPtr;
+using GroupPtr = Group::Ptr;
 
 }  // namespace mcga::test

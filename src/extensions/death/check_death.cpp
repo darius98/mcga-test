@@ -14,7 +14,7 @@ using namespace std;
 namespace mcga::test::death {
 
 MCGA_TEST_EXPORT DeathStatus checkDeath(const Executable& func,
-                                     double timeTicksLimit) {
+                                        double timeTicksLimit) {
     if (Driver::Instance()->getExecutorType() == Executor::SMOOTH) {
         fail("Death extension matchers & the checkDeath function do not work"
              " when using a smooth executor.");

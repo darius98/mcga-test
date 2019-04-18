@@ -2,6 +2,7 @@
 
 #include <mutex>
 
+#include "disallow_copy_and_move.hpp"
 #include "executed_test.hpp"
 #include "warning.hpp"
 
@@ -14,8 +15,12 @@ class Executor {
         BOXED,
     };
 
-    typedef std::function<void(const ExecutedTest&)> OnTestFinished;
-    typedef std::function<void(const Warning&)> OnWarning;
+    using OnTestFinished = std::function<void(const ExecutedTest&)>;
+    using OnWarning = std::function<void(const Warning&)>;
+
+    Executor() = default;
+
+    MCGA_DISALLOW_COPY_AND_MOVE(Executor);
 
     virtual ~Executor() = default;
 
@@ -54,10 +59,10 @@ class Executor {
     State state = INACTIVE;
     int currentTestGroupId = 0;
     int currentTestId = 0;
-    std::size_t currentExecutionThreadId;
+    std::size_t currentExecutionThreadId = 0;
 
     std::mutex currentExecutionFailureMutex;
-    bool currentExecutionIsFailed;
+    bool currentExecutionIsFailed = false;
     std::string currentExecutionFailureMessage;
 };
 

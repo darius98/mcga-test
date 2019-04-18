@@ -1,6 +1,8 @@
 #include "time_tick.hpp"
 
-using namespace std::chrono;
+using std::chrono::nanoseconds;
+using std::operator""ns;
+using std::operator""s;
 
 namespace mcga::test {
 
@@ -19,7 +21,7 @@ nanoseconds GetTimeTickLength() {
 
 nanoseconds TimeTicksToNanoseconds(double timeTicks) {
     return nanoseconds(
-      static_cast<long long>(timeTicks * GetTimeTickLength().count()));
+      static_cast<nanoseconds::rep>(timeTicks * GetTimeTickLength().count()));
 }
 
 }  // namespace mcga::test

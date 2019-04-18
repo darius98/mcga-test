@@ -1,6 +1,7 @@
 #include "group.hpp"
 
-using namespace std;
+using std::move;
+using std::string;
 
 namespace mcga::test {
 

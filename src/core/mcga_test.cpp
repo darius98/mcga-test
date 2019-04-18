@@ -3,7 +3,8 @@
 #include "driver.hpp"
 #include "export.hpp"
 
-using namespace std;
+using std::move;
+using std::string;
 
 namespace mcga::test {
 

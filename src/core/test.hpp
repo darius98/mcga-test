@@ -31,6 +31,8 @@ class Test : private TestConfig {
     Test(const Test&) = delete;
     Test& operator=(const Test&) = delete;
 
+    ~Test() = default;
+
     /** See TestConfig#description. */
     const std::string& getDescription() const;
 

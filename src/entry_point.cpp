@@ -4,8 +4,7 @@
 #include "core/main.hpp"
 #include "extensions/feedback/ext.hpp"
 
-using namespace mcga::test;
-using namespace std;
+using std::vector;
 
 namespace mcga::test {
 
@@ -18,7 +17,7 @@ MCGA_TEST_EXPORT void TestCase::Register(TestCase* testCase) {
 }  // namespace mcga::test
 
 MCGA_TEST_EXPORT int main(int argc, char** argv) {
-    feedback::FeedbackExtension feedbackExtension;
-    runTests(argc, argv, testCasesRegistered, {&feedbackExtension});
+    mcga::test::feedback::FeedbackExtension feedbackExtension;
+    runTests(argc, argv, mcga::test::testCasesRegistered, {&feedbackExtension});
     return feedbackExtension.getReturnCode();
 }

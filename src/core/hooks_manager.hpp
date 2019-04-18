@@ -9,13 +9,13 @@ namespace mcga::test {
 
 class HooksManager {
   public:
-    typedef std::function<void(const Test&)> BeforeTest;
-    typedef std::function<void(const ExecutedTest&)> AfterTest;
-    typedef std::function<void(GroupPtr)> BeforeGroup;
-    typedef std::function<void(GroupPtr)> AfterGroup;
-    typedef std::function<void()> AfterInit;
-    typedef std::function<void()> BeforeDestroy;
-    typedef std::function<void(const Warning&)> OnWarning;
+    using BeforeTest = std::function<void(const Test&)>;
+    using AfterTest = std::function<void(const ExecutedTest&)>;
+    using BeforeGroup = std::function<void(GroupPtr)>;
+    using AfterGroup = std::function<void(GroupPtr)>;
+    using AfterInit = std::function<void()>;
+    using BeforeDestroy = std::function<void()>;
+    using OnWarning = std::function<void(const Warning&)>;
 
     enum Type {
         AFTER_INIT = 0,
@@ -26,6 +26,13 @@ class HooksManager {
         BEFORE_DESTROY = 5,
         ON_WARNING = 6,
     };
+
+    HooksManager() = default;
+    HooksManager(const HooksManager&) = default;
+    HooksManager(HooksManager&&) = default;
+
+    HooksManager& operator=(const HooksManager&) = default;
+    HooksManager& operator=(HooksManager&&) = default;
 
     virtual ~HooksManager() = default;
 

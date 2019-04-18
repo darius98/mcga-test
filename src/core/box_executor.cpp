@@ -4,8 +4,14 @@
 
 #include "time_tick.hpp"
 
-using namespace mcga::proc;
-using namespace std;
+using mcga::proc::Message;
+using mcga::proc::PipeWriter;
+using mcga::proc::WorkerSubprocess;
+using std::make_unique;
+using std::move;
+using std::string;
+using std::operator""s;
+using std::to_string;
 using std::this_thread::sleep_for;
 
 namespace mcga::test {
@@ -41,7 +47,7 @@ bool RunningTest::finishedCurrentExecution() {
         }
         case WorkerSubprocess::ZERO_EXIT: {
             while (true) {
-                message = currentExecution->getNextMessage(32);
+                message = currentExecution->getNextMessage(1);
                 if (message.isInvalid()) {
                     error = "Unexpected 0-code exit.";
                     break;
@@ -136,7 +142,7 @@ void BoxExecutor::ensureEmptyBoxes(size_t requiredEmpty) {
             }
         }
         if (!progress) {
-            sleep_for(5ms);
+            sleep_for(loopSleepTime);
         }
     }
 }

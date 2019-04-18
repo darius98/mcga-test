@@ -2,10 +2,15 @@
 
 #include <thread>
 
-#include "mcga/test.hpp"
 #include "box_executor.hpp"
+#include "mcga/test.hpp"
 
-using namespace std;
+using std::exception;
+using std::hash;
+using std::make_shared;
+using std::move;
+using std::string;
+using std::thread;
 
 namespace mcga::test {
 
@@ -18,9 +23,9 @@ void Driver::Init(Driver* _instance) {
     instance->runHooks<AFTER_INIT>();
 }
 
-Driver::Driver(HooksManager hooksManager, Executor* _executor)
-        : HooksManager(move(hooksManager)), executor(_executor) {
-    testingThreadId = hash<thread::id>()(this_thread::get_id());
+Driver::Driver(const HooksManager& hooksManager, Executor* _executor)
+        : HooksManager(hooksManager), executor(_executor) {
+    testingThreadId = hash<thread::id>()(std::this_thread::get_id());
     executor->setOnTestFinishedCallback(
       [this](const ExecutedTest& test) { afterTest(test); });
     executor->setOnWarningCallback(
@@ -125,7 +130,7 @@ bool Driver::checkMainThreadAndInactive(const string& method) {
                     + executor->stateAsString() + "(). Ignoring.");
         return false;
     }
-    if (testingThreadId != hash<thread::id>()(this_thread::get_id())) {
+    if (testingThreadId != hash<thread::id>()(std::this_thread::get_id())) {
         emitWarning("Called " + method
                     + "() from a different thread than the main testing "
                       "thread. Ignoring.");
@@ -154,11 +159,11 @@ void Driver::afterTest(const ExecutedTest& test) {
     }
 }
 
-void Driver::beforeGroup(GroupPtr group) {
+void Driver::beforeGroup(const GroupPtr& group) {
     runHooks<BEFORE_GROUP>(group);
 }
 
-void Driver::afterGroup(GroupPtr group) {
+void Driver::afterGroup(const GroupPtr& group) {
     runHooks<AFTER_GROUP>(group);
 }
 

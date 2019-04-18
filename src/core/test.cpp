@@ -2,7 +2,9 @@
 
 #include <algorithm>
 
-using namespace std;
+using std::move;
+using std::string;
+using std::vector;
 
 namespace mcga::test {
 

@@ -6,10 +6,17 @@
 
 #include "time_tick.hpp"
 
-using namespace std;
+using std::exception;
+using std::hash;
+using std::move;
+using std::runtime_error;
+using std::string;
+using std::thread;
+using std::vector;
 using std::chrono::duration_cast;
 using std::chrono::high_resolution_clock;
 using std::chrono::nanoseconds;
+namespace this_thread = std::this_thread;
 
 namespace mcga::test {
 
@@ -46,16 +53,15 @@ void Executor::addFailure(const string& failure) {
     // and we know we catch this exception.
     if (hash<thread::id>()(this_thread::get_id()) == currentExecutionThreadId) {
         throw ExpectationFailed(failure);
-    } else {
-        // If the user starts his own threads that entertain failures, it is his
-        // responsibility to make sure his threads die on failure (we have no
-        // control)
-        currentExecutionFailureMutex.lock();
-        if (!currentExecutionIsFailed) {
-            currentExecutionIsFailed = true;
-            currentExecutionFailureMessage = failure;
-        }
-        currentExecutionFailureMutex.unlock();
+    }
+
+    // If the user starts his own threads that entertain failures, it is his
+    // responsibility to make sure his threads die on failure (we have no
+    // control)
+    std::lock_guard guard(currentExecutionFailureMutex);
+    if (!currentExecutionIsFailed) {
+        currentExecutionIsFailed = true;
+        currentExecutionFailureMessage = failure;
     }
 }
 
@@ -135,11 +141,10 @@ void Executor::runJob(const Executable& job,
         execution->fail("Uncaught non-exception type in " + where + "\".");
     }
 
-    currentExecutionFailureMutex.lock();
+    std::lock_guard guard(currentExecutionFailureMutex);
     if (currentExecutionIsFailed) {
         execution->fail(currentExecutionFailureMessage);
     }
-    currentExecutionFailureMutex.unlock();
 }
 
 }  // namespace mcga::test

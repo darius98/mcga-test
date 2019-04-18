@@ -1,6 +1,6 @@
 #include "warning.hpp"
 
-using namespace std;
+using std::string;
 
 namespace mcga::test {
 

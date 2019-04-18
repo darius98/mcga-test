@@ -11,14 +11,14 @@ class FeedbackExtension : public Extension {
   public:
     int getReturnCode();
 
-    void registerCommandLineArgs(mcga::cli::Parser& parser) override;
+    void registerCommandLineArgs(mcga::cli::Parser* parser) override;
 
-    void init(HooksManager& api) override;
+    void init(HooksManager* api) override;
 
   private:
-    void initLogging(HooksManager& api);
+    void initLogging(HooksManager* api);
 
-    void initFileStream(HooksManager& api, const std::string& fileName);
+    void initFileStream(HooksManager* api, const std::string& fileName);
 
     bool failedAnyNonOptionalTests = false;
     std::unique_ptr<TestLogger> logger = nullptr;

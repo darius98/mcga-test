@@ -7,7 +7,6 @@ using mcga::cli::ChoiceArgumentSpec;
 using mcga::cli::NumericArgumentSpec;
 using mcga::cli::Parser;
 using std::max;
-using std::move;
 using std::size_t;
 using std::vector;
 
@@ -50,14 +49,14 @@ void runTests(int argc,
         .setImplicitValue(1u));
 
     for (Extension* extension: extensions) {
-        extension->registerCommandLineArgs(parser);
+        extension->registerCommandLineArgs(&parser);
     }
 
     parser.parse(argc, argv);
 
     HooksManager api;
     for (Extension* extension: extensions) {
-        extension->init(api);
+        extension->init(&api);
     }
 
     Executor::Type executorType = executorTypeArgument->getValue();
@@ -65,11 +64,11 @@ void runTests(int argc,
 
     Executor* executor = InitExecutor(executorType, maxParallelTests);
 
-    auto driver = new Driver(move(api), executor);
+    auto driver = new Driver(api, executor);
     Driver::Init(driver);
 
     for (TestCase* testCase: tests) {
-        driver->addGroup(move(testCase->name), testCase->body);
+        driver->addGroup(testCase->name, testCase->body);
     }
 
     delete driver;
