@@ -45,7 +45,7 @@ class Driver {
     bool checkMainThreadAndInactive(const std::string& method);
 
     void onWarning(const Warning& warning);
-    void afterTest(const ExecutedTest& test);
+    void afterTest(const Test& test);
 
     HooksManager* hooks = nullptr;
     Executor* executor = nullptr;

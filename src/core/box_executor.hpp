@@ -21,11 +21,10 @@ class RunningTest {
 
     bool finishedAllExecutions() const;
 
-    ExecutedTest toExecutedTest() &&;
+    Test detachTest() &&;
 
   private:
     Test test;
-    std::vector<ExecutedTest::Info> executions;
     std::unique_ptr<mcga::proc::WorkerSubprocess> currentExecution = nullptr;
 
     BoxExecutor* executor;

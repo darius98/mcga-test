@@ -33,7 +33,7 @@ void RunningTest::startExecution() {
 
 void RunningTest::executeBoxed(PipeWriter* pipe) const {
     executor->setCurrentTestingSubprocessPipe(pipe);
-    ExecutedTest::Info info = executor->run(test);
+    Test::ExecutionInfo info = executor->run(test);
     pipe->sendMessage(DONE, info.timeTicks, info.passed, info.failure);
 }
 
@@ -80,21 +80,21 @@ bool RunningTest::finishedCurrentExecution() {
         }
     }
     if (!passed) {
-        executions.emplace_back(move(error));
+        test.addExecution(Test::ExecutionInfo(move(error)));
         return true;
     }
-    ExecutedTest::Info info;
+    Test::ExecutionInfo info;
     message >> info.timeTicks >> info.passed >> info.failure;
-    executions.push_back(move(info));
+    test.addExecution(info);
     return true;
 }
 
 bool RunningTest::finishedAllExecutions() const {
-    return executions.size() == test.getNumAttempts();
+    return test.getExecutions().size() == test.getNumAttempts();
 }
 
-ExecutedTest RunningTest::toExecutedTest() && {
-    return ExecutedTest(move(test), move(executions));
+Test RunningTest::detachTest() && {
+    return move(test);
 }
 
 BoxExecutor::BoxExecutor(size_t numBoxes): numBoxes(numBoxes) {
@@ -130,7 +130,7 @@ void BoxExecutor::ensureEmptyBoxes(size_t requiredEmpty) {
         for (auto it = activeBoxes.begin(); it != activeBoxes.end();) {
             if (it->finishedCurrentExecution()) {
                 if (it->finishedAllExecutions()) {
-                    onTestFinished(move(*it).toExecutedTest());
+                    onTestFinished(move(*it).detachTest());
                     it = activeBoxes.erase(it);
                 } else {
                     it->startExecution();

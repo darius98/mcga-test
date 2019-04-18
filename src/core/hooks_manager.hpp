@@ -4,7 +4,7 @@
 
 #include <stdexcept>
 
-#include "executed_test.hpp"
+#include "test.hpp"
 #include "warning.hpp"
 
 namespace mcga::test {
@@ -14,7 +14,7 @@ class HooksManager {
     using OnGroupDiscovered = std::function<void(GroupPtr)>;
     using OnTestDiscovered = std::function<void(const Test&)>;
     using OnWarning = std::function<void(const Warning&)>;
-    using AfterTest = std::function<void(const ExecutedTest&)>;
+    using AfterTest = std::function<void(const Test&)>;
     using BeforeDestroy = std::function<void()>;
 
     enum Type : std::uint8_t {

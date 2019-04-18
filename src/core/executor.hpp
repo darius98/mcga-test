@@ -3,7 +3,7 @@
 #include <mutex>
 
 #include "disallow_copy_and_move.hpp"
-#include "executed_test.hpp"
+#include "test.hpp"
 #include "warning.hpp"
 
 namespace mcga::test {
@@ -16,7 +16,7 @@ class Executor {
         BOXED,
     };
 
-    using OnTestFinished = std::function<void(const ExecutedTest&)>;
+    using OnTestFinished = std::function<void(const Test&)>;
     using OnWarning = std::function<void(const Warning&)>;
 
     Executor() = default;
@@ -43,11 +43,11 @@ class Executor {
 
     void addFailure(const std::string& failure);
 
-    ExecutedTest::Info run(const Test& test);
+    Test::ExecutionInfo run(const Test& test);
 
   private:
     void runJob(const Executable& job,
-                ExecutedTest::Info* execution,
+                Test::ExecutionInfo* execution,
                 const std::string& where);
 
   protected:

@@ -8,7 +8,7 @@ using mcga::cli::FlagSpec;
 using mcga::cli::Parser;
 using mcga::proc::Message;
 using mcga::proc::PipeWriter;
-using mcga::test::ExecutedTest;
+using mcga::test::Test;
 using std::cout;
 using std::make_unique;
 using std::string;
@@ -17,7 +17,7 @@ using std::vector;
 
 template<>
 Message::BytesConsumer&
-  Message::BytesConsumer::add(const vector<ExecutedTest::Info>& obj) {
+  Message::BytesConsumer::add(const vector<Test::ExecutionInfo>& obj) {
     add(obj.size());
     for (const auto& info: obj) {
         add(info.timeTicks, info.passed, info.failure);
@@ -60,7 +60,7 @@ void FeedbackExtension::init(HooksManager* api) {
     if (!fileNameArgument->getValue().empty()) {
         initFileStream(api, fileNameArgument->getValue());
     }
-    api->addHook<HooksManager::AFTER_TEST>([this](const ExecutedTest& test) {
+    api->addHook<HooksManager::AFTER_TEST>([this](const Test& test) {
         if (!test.isPassed() && !test.isOptional()) {
             failedAnyNonOptionalTests = true;
         }
@@ -71,7 +71,7 @@ void FeedbackExtension::initLogging(HooksManager* api) {
     logger = make_unique<TestLogger>(cout);
 
     api->addHook<HooksManager::AFTER_TEST>(
-      [this](const ExecutedTest& test) { logger->addTest(test); });
+      [this](const Test& test) { logger->addTest(test); });
 
     api->addHook<HooksManager::BEFORE_DESTROY>(
       [this]() { logger->printFinalInformation(); });
@@ -102,7 +102,7 @@ void FeedbackExtension::initFileStream(HooksManager* api,
                                 test.getNumRequiredPassedAttempts());
     });
 
-    api->addHook<HooksManager::AFTER_TEST>([this](const ExecutedTest& test) {
+    api->addHook<HooksManager::AFTER_TEST>([this](const Test& test) {
         fileWriter->sendMessage(
           PipeMessageType::TEST_DONE, test.getId(), test.getExecutions());
     });

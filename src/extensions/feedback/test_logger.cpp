@@ -15,7 +15,7 @@ namespace mcga::test::feedback {
 TestLogger::TestLogger(ostream& stream): stream(stream) {
 }
 
-void TestLogger::addTest(const ExecutedTest& test) {
+void TestLogger::addTest(const Test& test) {
     if (test.getTotalTimeTicks() != -1.0) {
         totalTimeTicks += test.getTotalTimeTicks();
     }
@@ -53,7 +53,7 @@ void TestLogger::printWarning(const string& warningMessage) {
     stream << yellow << "Warning: " << warningMessage << reset << "\n";
 }
 
-void TestLogger::printTestPassedOrFailedToken(const ExecutedTest& test) {
+void TestLogger::printTestPassedOrFailedToken(const Test& test) {
     stream << "[";
     if (test.isPassed()) {
         stream << green << "P" << reset;
@@ -65,7 +65,7 @@ void TestLogger::printTestPassedOrFailedToken(const ExecutedTest& test) {
     stream << "]";
 }
 
-void TestLogger::printTestAndGroupsDescription(const ExecutedTest& test) {
+void TestLogger::printTestAndGroupsDescription(const Test& test) {
     vector<string> groupDescriptions;
     GroupPtr group = test.getGroup();
     while (group != nullptr) {
@@ -88,7 +88,7 @@ void TestLogger::printTestAndGroupsDescription(const ExecutedTest& test) {
     stream << groupDescription << test.getDescription();
 }
 
-void TestLogger::printTestExecutionTime(const ExecutedTest& test) {
+void TestLogger::printTestExecutionTime(const Test& test) {
     if (test.getAvgTimeTicksForExecution() != -1.0) {
         stream
           << fixed << setprecision(3) << (test.getNumAttempts() > 1 ? "~ " : "")
@@ -102,7 +102,7 @@ void TestLogger::printTestExecutionTime(const ExecutedTest& test) {
     }
 }
 
-void TestLogger::printTestAttemptsInfo(const ExecutedTest& test) {
+void TestLogger::printTestAttemptsInfo(const Test& test) {
     stream << "(passed: " << test.getNumPassedAttempts() << "/"
            << test.getNumAttempts();
     if (!test.isPassed()) {
@@ -122,7 +122,7 @@ void TestLogger::printTestFailure(string failure) {
     stream << red << failure << reset;
 }
 
-void TestLogger::printTestMessage(const ExecutedTest& test) {
+void TestLogger::printTestMessage(const Test& test) {
     printTestPassedOrFailedToken(test);
     stream << " ";
     printTestAndGroupsDescription(test);

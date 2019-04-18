@@ -14,7 +14,6 @@ add_library(mcga_test SHARED
 
         src/core/box_executor.cpp
         src/core/driver.cpp
-        src/core/executed_test.cpp
         src/core/executor.cpp
         src/core/group.cpp
         src/core/main.cpp

@@ -66,23 +66,23 @@ void Executor::addFailure(const string& failure) {
 }
 
 void Executor::execute(Test test) {
-    vector<ExecutedTest::Info> executions;
+    vector<Test::ExecutionInfo> executions;
     executions.reserve(test.getNumAttempts());
     for (size_t i = 0; i < test.getNumAttempts(); ++i) {
         executions.push_back(run(test));
     }
-    onTestFinished(ExecutedTest(move(test), move(executions)));
+    onTestFinished(test);
 }
 
 Executor::Type Executor::getType() const {
     return SMOOTH;
 }
 
-ExecutedTest::Info Executor::run(const Test& test) {
+Test::ExecutionInfo Executor::run(const Test& test) {
     currentTestGroupId = test.getGroup()->getId();
     currentTestId = test.getId();
     state = INSIDE_SET_UP;
-    ExecutedTest::Info info;
+    Test::ExecutionInfo info;
     auto startTime = high_resolution_clock::now();
     vector<GroupPtr> testGroupStack = test.getGroupStack();
     vector<GroupPtr>::iterator it;
@@ -125,7 +125,7 @@ void Executor::emitWarning(const string& message) {
 }
 
 void Executor::runJob(const Executable& job,
-                      ExecutedTest::Info* execution,
+                      Test::ExecutionInfo* execution,
                       const string& where) {
     currentExecutionThreadId = hash<thread::id>()(this_thread::get_id());
     currentExecutionIsFailed = false;

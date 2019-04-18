@@ -30,7 +30,7 @@ void Driver::Clean() {
 Driver::Driver(HooksManager* hooks, Executor* executor)
         : hooks(hooks), executor(executor) {
     executor->setOnTestFinishedCallback(
-      [this](const ExecutedTest& test) { afterTest(test); });
+      [this](const Test& test) { afterTest(test); });
     executor->setOnWarningCallback(
       [this](const Warning& warning) { onWarning(warning); });
 }
@@ -135,7 +135,7 @@ void Driver::onWarning(const Warning& warning) {
     hooks->runHooks<HooksManager::ON_WARNING>(warning);
 }
 
-void Driver::afterTest(const ExecutedTest& test) {
+void Driver::afterTest(const Test& test) {
     hooks->runHooks<HooksManager::AFTER_TEST>(test);
 }
 

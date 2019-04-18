@@ -5,7 +5,7 @@
 #include <set>
 #include <utility>
 
-#include "core/executed_test.hpp"
+#include "core/test.hpp"
 
 namespace mcga::test::feedback {
 
@@ -13,24 +13,24 @@ class TestLogger {
   public:
     explicit TestLogger(std::ostream& stream);
 
-    void addTest(const ExecutedTest& test);
+    void addTest(const Test& test);
 
     void printWarning(const std::string& warningMessage);
 
     void printFinalInformation();
 
   private:
-    void printTestPassedOrFailedToken(const ExecutedTest& test);
+    void printTestPassedOrFailedToken(const Test& test);
 
-    void printTestAndGroupsDescription(const ExecutedTest& test);
+    void printTestAndGroupsDescription(const Test& test);
 
-    void printTestExecutionTime(const ExecutedTest& test);
+    void printTestExecutionTime(const Test& test);
 
-    void printTestAttemptsInfo(const ExecutedTest& test);
+    void printTestAttemptsInfo(const Test& test);
 
     void printTestFailure(std::string failure);
 
-    void printTestMessage(const ExecutedTest& test);
+    void printTestMessage(const Test& test);
 
     std::ostream& stream;
 
