@@ -19,6 +19,7 @@ add_library(mcga_test SHARED
         src/core/group.cpp
         src/core/main.cpp
         src/core/mcga_test.cpp
+        src/core/scan_executor.cpp
         src/core/time_tick.cpp
         src/core/test.cpp
         src/core/warning.cpp

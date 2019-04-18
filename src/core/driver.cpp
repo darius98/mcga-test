@@ -20,21 +20,20 @@ Driver* Driver::Instance() {
 
 void Driver::Init(Driver* _instance) {
     instance = _instance;
-    instance->runHooks<AFTER_INIT>();
+    instance->hooks->runHooks<HooksManager::AFTER_INIT>();
 }
 
-Driver::Driver(const HooksManager& hooksManager, Executor* _executor)
-        : HooksManager(hooksManager), executor(_executor) {
-    testingThreadId = hash<thread::id>()(std::this_thread::get_id());
+void Driver::Clean() {
+    instance->executor->finalize();
+    instance = nullptr;
+}
+
+Driver::Driver(HooksManager* hooks, Executor* executor)
+        : hooks(hooks), executor(executor) {
     executor->setOnTestFinishedCallback(
       [this](const ExecutedTest& test) { afterTest(test); });
     executor->setOnWarningCallback(
       [this](const Warning& warning) { onWarning(warning); });
-}
-
-Driver::~Driver() {
-    executor->finalize();
-    runHooks<BEFORE_DESTROY>();
 }
 
 Executor::Type Driver::getExecutorType() const {
@@ -140,15 +139,15 @@ bool Driver::checkMainThreadAndInactive(const string& method) {
 }
 
 void Driver::onWarning(const Warning& warning) {
-    runHooks<ON_WARNING>(warning);
+    hooks->runHooks<HooksManager::ON_WARNING>(warning);
 }
 
 void Driver::beforeTest(const Test& test) {
-    runHooks<BEFORE_TEST>(test);
+    hooks->runHooks<HooksManager::BEFORE_TEST>(test);
 }
 
 void Driver::afterTest(const ExecutedTest& test) {
-    runHooks<AFTER_TEST>(test);
+    hooks->runHooks<HooksManager::AFTER_TEST>(test);
     GroupPtr parentGroup = test.getGroup();
     parentGroup->addFinishedTest();
     while (parentGroup != nullptr) {
@@ -160,11 +159,11 @@ void Driver::afterTest(const ExecutedTest& test) {
 }
 
 void Driver::beforeGroup(const GroupPtr& group) {
-    runHooks<BEFORE_GROUP>(group);
+    hooks->runHooks<HooksManager::BEFORE_GROUP>(group);
 }
 
 void Driver::afterGroup(const GroupPtr& group) {
-    runHooks<AFTER_GROUP>(group);
+    hooks->runHooks<HooksManager::AFTER_GROUP>(group);
 }
 
 }  // namespace mcga::test

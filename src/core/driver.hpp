@@ -1,12 +1,14 @@
 #pragma once
 
+#include <thread>
+
 #include "disallow_copy_and_move.hpp"
 #include "executor.hpp"
 #include "hooks_manager.hpp"
 
 namespace mcga::test {
 
-class Driver : public HooksManager {
+class Driver {
   private:
     static inline Driver* instance = nullptr;
 
@@ -15,11 +17,15 @@ class Driver : public HooksManager {
 
     static void Init(Driver* driver);
 
-    Driver(const HooksManager& hooks, Executor* executor);
+    static void Clean();
+
+    Driver() = default;
+
+    Driver(HooksManager* hooks, Executor* executor);
 
     MCGA_DISALLOW_COPY_AND_MOVE(Driver);
 
-    ~Driver() override;
+    ~Driver() = default;
 
     Executor::Type getExecutorType() const;
 
@@ -44,8 +50,11 @@ class Driver : public HooksManager {
     void beforeGroup(const GroupPtr& group);
     void afterGroup(const GroupPtr& group);
 
-    std::size_t testingThreadId;
-    Executor* executor;
+    HooksManager* hooks = nullptr;
+    Executor* executor = nullptr;
+
+    std::size_t testingThreadId
+      = std::hash<std::thread::id>()(std::this_thread::get_id());
     std::vector<GroupPtr> groupStack = {};
     int currentTestId = 0;
     int currentGroupId = 0;

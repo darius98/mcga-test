@@ -11,6 +11,7 @@ namespace mcga::test {
 class Executor {
   public:
     enum Type {
+        SCAN,
         SMOOTH,
         BOXED,
     };

@@ -41,7 +41,6 @@ class HooksManager {
         std::get<t>(hooks).push_back(hook);
     }
 
-  protected:
     template<Type t, class... Args>
     void runHooks(const Args&... args) {
         for (const auto& hook: std::get<t>(hooks)) {
