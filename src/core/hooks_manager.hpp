@@ -14,15 +14,17 @@ class HooksManager {
     using OnGroupDiscovered = std::function<void(GroupPtr)>;
     using OnTestDiscovered = std::function<void(const Test&)>;
     using OnWarning = std::function<void(const Warning&)>;
-    using AfterTest = std::function<void(const Test&)>;
+    using OnTestExecutionStart = std::function<void(const Test&)>;
+    using OnTestExecutionFinish = std::function<void(const Test&)>;
     using BeforeDestroy = std::function<void()>;
 
     enum Type : std::uint8_t {
         ON_GROUP_DISCOVERED = 0,
         ON_TEST_DISCOVERED = 1,
         ON_WARNING = 2,
-        AFTER_TEST = 3,
-        BEFORE_DESTROY = 4,
+        ON_TEST_EXECUTION_START = 3,
+        ON_TEST_EXECUTION_FINISH = 4,
+        BEFORE_DESTROY = 5,
     };
 
     HooksManager() = default;
@@ -50,7 +52,8 @@ class HooksManager {
     std::tuple<std::vector<OnGroupDiscovered>,
                std::vector<OnTestDiscovered>,
                std::vector<OnWarning>,
-               std::vector<AfterTest>,
+               std::vector<OnTestExecutionStart>,
+               std::vector<OnTestExecutionFinish>,
                std::vector<BeforeDestroy>>
       hooks;
 };

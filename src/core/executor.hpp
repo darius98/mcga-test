@@ -46,7 +46,8 @@ class Executor {
 
   protected:
     void onWarning(const Warning& warning);
-    void onTestFinished(const Test& test);
+    void onTestExecutionStart(const Test& test);
+    void onTestExecutionFinish(const Test& test);
 
     HooksManager* hooks;
 

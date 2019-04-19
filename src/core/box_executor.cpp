@@ -31,6 +31,7 @@ BoxExecutor::BoxExecutor(HooksManager* hooks, size_t numBoxes)
 
 void BoxExecutor::execute(Test test) {
     ensureEmptyBoxes(1);
+    onTestExecutionStart(test);
     auto firstExecution = this->startExecution(test);
     activeBoxes.emplace_back(move(test), move(firstExecution));
 }
@@ -103,11 +104,12 @@ bool BoxExecutor::tryCloseBox(Box* box) {
         }
     }
     test.addExecution(info);
+    onTestExecutionFinish(test);
     if (!test.isExecuted()) {
+        onTestExecutionStart(test);
         box->second = this->startExecution(test);
         return false;
     }
-    onTestFinished(test);
     return true;
 }
 

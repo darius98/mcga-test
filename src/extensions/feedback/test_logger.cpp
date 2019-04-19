@@ -7,22 +7,43 @@
 
 #include "core/time_tick.hpp"
 
-using namespace std;
-using namespace termcolor;
+using std::fixed;
+using std::milli;
+using std::nano;
+using std::ostream;
+using std::setprecision;
+using std::string;
+using std::vector;
+using termcolor::green;
+using termcolor::red;
+using termcolor::reset;
+using termcolor::yellow;
 
 namespace mcga::test::feedback {
 
 TestLogger::TestLogger(ostream& stream): stream(stream) {
 }
 
-void TestLogger::addTest(const Test& test) {
+void TestLogger::onTestExecutionStart(const Test& test) {
+}
+
+void TestLogger::onTestExecutionFinish(const Test& test) {
+    if (!test.isExecuted()) {
+        return;
+    }
+
     if (test.getTotalTimeTicks() != -1.0) {
         totalTimeTicks += test.getTotalTimeTicks();
     }
-    passedTests += test.isPassed();
-    failedTests += !test.isPassed();
-    failedOptionalTests += (!test.isPassed() && test.isOptional());
-    loggedTests += 1;
+    if (test.isPassed()) {
+        ++passedTests;
+    } else {
+        ++failedTests;
+        if (test.isOptional()) {
+            ++failedOptionalTests;
+        }
+    }
+    ++loggedTests;
 
     printTestMessage(test);
 }
@@ -45,7 +66,8 @@ void TestLogger::printFinalInformation() {
     stream << "\n";
     stream << "Total recorded testing time: " << fixed << setprecision(3)
            << totalTimeTicks << " ticks ("
-           << TimeTicksToNanoseconds(totalTimeTicks).count() * 0.000001
+           << TimeTicksToNanoseconds(totalTimeTicks).count() * 1.0 * milli::den
+        / nano::den
            << " ms)\n";
 }
 
@@ -95,7 +117,7 @@ void TestLogger::printTestExecutionTime(const Test& test) {
           << test.getAvgTimeTicksForExecution() << " ticks ("
           << (test.getNumAttempts() > 1 ? "~ " : "")
           << TimeTicksToNanoseconds(test.getAvgTimeTicksForExecution()).count()
-            * 0.000001
+            * 1.0 * milli::den / nano::den
           << " ms)";
     } else {
         stream << "(unknown time)";

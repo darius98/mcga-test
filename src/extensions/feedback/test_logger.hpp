@@ -13,7 +13,9 @@ class TestLogger {
   public:
     explicit TestLogger(std::ostream& stream);
 
-    void addTest(const Test& test);
+    void onTestExecutionStart(const Test& test);
+
+    void onTestExecutionFinish(const Test& test);
 
     void printWarning(const std::string& warningMessage);
 

@@ -13,26 +13,16 @@ using std::cout;
 using std::make_unique;
 using std::string;
 using std::unique_ptr;
-using std::vector;
-
-template<>
-Message::BytesConsumer&
-  Message::BytesConsumer::add(const vector<Test::ExecutionInfo>& obj) {
-    add(obj.size());
-    for (const auto& info: obj) {
-        add(info.timeTicks, info.passed, info.failure);
-    }
-    return *this;
-}
 
 namespace mcga::test::feedback {
 
 enum PipeMessageType : uint8_t {
     GROUP_DISCOVERED = 0,
     TEST_DISCOVERED = 1,
-    TEST_DONE = 2,
-    DONE = 3,
-    WARNING = 4,
+    TEST_EXECUTION_START = 2,
+    TEST_EXECUTION_FINISH = 3,
+    DONE = 4,
+    WARNING = 5,
 };
 
 int FeedbackExtension::getReturnCode() {
@@ -60,21 +50,24 @@ void FeedbackExtension::init(HooksManager* api) {
     if (!fileNameArgument->getValue().empty()) {
         initFileStream(api, fileNameArgument->getValue());
     }
-    api->addHook<HooksManager::AFTER_TEST>([this](const Test& test) {
-        if (!test.isPassed() && !test.isOptional()) {
-            exitCode = 1;
-        }
-    });
-    api->addHook<HooksManager::ON_WARNING>([this](const Warning& warning) {
-        exitCode = 1;
-    });
+    api->addHook<HooksManager::ON_TEST_EXECUTION_FINISH>(
+      [this](const Test& test) {
+          if (test.isExecuted() && !test.isPassed() && !test.isOptional()) {
+              exitCode = 1;
+          }
+      });
+    api->addHook<HooksManager::ON_WARNING>(
+      [this](const Warning& warning) { exitCode = 1; });
 }
 
 void FeedbackExtension::initLogging(HooksManager* api) {
     logger = make_unique<TestLogger>(cout);
 
-    api->addHook<HooksManager::AFTER_TEST>(
-      [this](const Test& test) { logger->addTest(test); });
+    api->addHook<HooksManager::ON_TEST_EXECUTION_START>(
+      [this](const Test& test) { logger->onTestExecutionStart(test); });
+
+    api->addHook<HooksManager::ON_TEST_EXECUTION_FINISH>(
+      [this](const Test& test) { logger->onTestExecutionFinish(test); });
 
     api->addHook<HooksManager::BEFORE_DESTROY>(
       [this]() { logger->printFinalInformation(); });
@@ -106,10 +99,20 @@ void FeedbackExtension::initFileStream(HooksManager* api,
                                 test.getNumRequiredPassedAttempts());
     });
 
-    api->addHook<HooksManager::AFTER_TEST>([this](const Test& test) {
-        fileWriter->sendMessage(
-          PipeMessageType::TEST_DONE, test.getId(), test.getExecutions());
-    });
+    api->addHook<HooksManager::ON_TEST_EXECUTION_START>(
+      [this](const Test& test) {
+          fileWriter->sendMessage(PipeMessageType::TEST_EXECUTION_START,
+                                  test.getId());
+      });
+
+    api->addHook<HooksManager::ON_TEST_EXECUTION_FINISH>(
+      [this](const Test& test) {
+          fileWriter->sendMessage(PipeMessageType::TEST_EXECUTION_FINISH,
+                                  test.getId(),
+                                  test.getExecutions().back().timeTicks,
+                                  test.getExecutions().back().passed,
+                                  test.getExecutions().back().failure);
+      });
 
     api->addHook<HooksManager::BEFORE_DESTROY>(
       [this]() { fileWriter->sendMessage(PipeMessageType::DONE); });

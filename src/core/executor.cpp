@@ -62,9 +62,10 @@ void Executor::addFailure(const string& failure) {
 
 void Executor::execute(Test test) {
     for (size_t i = 0; i < test.getNumAttempts(); ++i) {
+        onTestExecutionStart(test);
         test.addExecution(run(test));
+        onTestExecutionFinish(test);
     }
-    onTestFinished(test);
 }
 
 Executor::Type Executor::getType() const {
@@ -145,8 +146,12 @@ void Executor::onWarning(const Warning& warning) {
     hooks->runHooks<HooksManager::ON_WARNING>(warning);
 }
 
-void Executor::onTestFinished(const Test& test) {
-    hooks->runHooks<HooksManager::AFTER_TEST>(test);
+void Executor::onTestExecutionStart(const Test& test) {
+    hooks->runHooks<HooksManager::ON_TEST_EXECUTION_START>(test);
+}
+
+void Executor::onTestExecutionFinish(const Test& test) {
+    hooks->runHooks<HooksManager::ON_TEST_EXECUTION_FINISH>(test);
 }
 
 }  // namespace mcga::test
