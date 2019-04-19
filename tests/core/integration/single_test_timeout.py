@@ -14,8 +14,7 @@ if proc.returncode != 1:
     print("Test did not exit with code 1, exit_code=" + str(proc.returncode))
     exit(1)
 
-if "[F] TestCase::test - (unknown time)\n" \
-   "\tTest execution timed out." not in proc.stdout.decode():
+if "[F] TestCase::test" not in proc.stdout.decode() or "\tTest execution timed out." not in proc.stdout.decode():
     print("Test did not correctly report exit of timeout test")
     print("Output:")
     print(proc.stdout.decode())

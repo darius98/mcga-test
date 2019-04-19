@@ -9,14 +9,11 @@ using std::vector;
 
 namespace mcga::test {
 
-Test::ExecutionInfo::ExecutionInfo(string&& failure)
-        : passed(false), failure(move(failure)) {
-}
-
-void Test::ExecutionInfo::fail(const string& _failure) {
+void Test::ExecutionInfo::fail(const string& _failure, double _timeTicks) {
     if (passed) {
         passed = false;
         failure = _failure;
+        timeTicks = _timeTicks;
     }
 }
 
@@ -64,6 +61,10 @@ int Test::getId() const {
 
 void Test::run() const {
     body();
+}
+
+bool Test::isExecuted() const {
+    return executions.size() == attempts;
 }
 
 bool Test::isPassed() const {

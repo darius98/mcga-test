@@ -14,8 +14,7 @@ if proc.returncode != 1:
     print("Test did not exit with code 1, exit_code=" + str(proc.returncode))
     exit(1)
 
-if "[F] TestCase::test - (unknown time)\n" \
-   "\tTest killed by signal 15" not in proc.stdout.decode():
+if "[F] TestCase::test" not in proc.stdout.decode() or "\tTest killed by signal 15" not in proc.stdout.decode():
     print("Test did not correctly report exit of kbs test")
     print("Output:")
     print(proc.stdout.decode())

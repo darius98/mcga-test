@@ -39,16 +39,12 @@ class Test : private TestConfig {
         /** Default constructor. */
         ExecutionInfo() = default;
 
-        /** Shorthand constructor for a failed execution where no other
-         * information except a failure message could be computed (e.g. KBS). */
-        explicit ExecutionInfo(std::string&& failure);
-
         /** Shorthand method for marking the test execution as failed and saving
          * a failure message.
          *
          * Note: if this method is called multiple times, subsequent calls do
          * NOT overwrite the first failure message. */
-        void fail(const std::string& _failure);
+        void fail(const std::string& _failure, double timeTicks = -1.0);
     };
 
     /** Default constructor from a TestConfig and the metadata received from the
@@ -94,6 +90,10 @@ class Test : private TestConfig {
      * running all required set-ups and before all required tear-downs.
      */
     void run() const;
+
+    /** Check whether the number of executions registered is the same as
+     * getNumAttempts(). */
+    bool isExecuted() const;
 
     /** Check whether the execution Info marks the test as passed or failed. */
     bool isPassed() const;

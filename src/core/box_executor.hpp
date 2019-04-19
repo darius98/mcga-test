@@ -7,31 +7,10 @@
 
 namespace mcga::test {
 
-class BoxExecutor;
-
-class RunningTest {
-  public:
-    explicit RunningTest(Test test, BoxExecutor* executor);
-
-    void startExecution();
-
-    bool finishedCurrentExecution();
-
-    void executeBoxed(mcga::proc::PipeWriter* pipe) const;
-
-    bool finishedAllExecutions() const;
-
-    Test detachTest() &&;
-
-  private:
-    Test test;
-    std::unique_ptr<mcga::proc::WorkerSubprocess> currentExecution = nullptr;
-
-    BoxExecutor* executor;
-};
-
 class BoxExecutor : public Executor {
   private:
+    using Box = std::pair<Test, std::unique_ptr<proc::WorkerSubprocess>>;
+
     static constexpr auto loopSleepTime = std::chrono::milliseconds(5);
 
   public:
@@ -49,16 +28,18 @@ class BoxExecutor : public Executor {
 
     Type getType() const override;
 
-    void setCurrentTestingSubprocessPipe(mcga::proc::PipeWriter* pipe);
-
   private:
+    void executeBoxed(const Test& test, proc::PipeWriter* pipe);
+
     void ensureEmptyBoxes(std::size_t numContainers);
 
-    mcga::proc::PipeWriter* currentTestingSubprocessPipe = nullptr;
-    std::size_t numBoxes;
-    std::vector<RunningTest> activeBoxes;
+    std::unique_ptr<proc::WorkerSubprocess> startExecution(const Test& test);
 
-    friend class RunningTest;
+    bool tryCloseBox(Box* box);
+
+    proc::PipeWriter* currentTestingSubprocessPipe = nullptr;
+    std::size_t numBoxes;
+    std::vector<Box> activeBoxes;
 };
 
 }  // namespace mcga::test
