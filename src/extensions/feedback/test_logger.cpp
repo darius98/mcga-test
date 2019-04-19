@@ -126,7 +126,7 @@ void TestLogger::printTestExecutionTime(const Test& test) {
         stream
           << fixed << setprecision(3) << (test.getNumAttempts() > 1 ? "~ " : "")
           << test.getAvgTimeTicksForExecution() << " ticks ("
-          << (test.getNumAttempts() > 1 ? "~ " : "")
+          << (test.getNumAttempts() > 1 ? "~" : "")
           << TimeTicksToNanoseconds(test.getAvgTimeTicksForExecution()).count()
             * 1.0 * milli::den / nano::den
           << " ms)";
@@ -192,7 +192,8 @@ void TestLogger::updateVolatileLine(const Test& test) {
         printTestAndGroupsDescription(test);
         if (test.getNumAttempts() > 1) {
             stream << " - running attempt " << test.getExecutions().size() + 1
-                   << " of " << test.getNumAttempts() << "...";
+                   << " of " << test.getNumAttempts() << ", passed "
+                   << test.getNumPassedAttempts() << " so far...";
         } else {
             stream << " - running...";
         }
