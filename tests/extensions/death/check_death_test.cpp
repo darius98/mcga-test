@@ -2,7 +2,7 @@
 #include <iostream>
 
 #include "mcga/test.hpp"
-#include "mcga/matchers.hpp"
+#include "mcga/test_ext/matchers.hpp"
 
 #include "mcga/test_ext/death/check_death.hpp"
 

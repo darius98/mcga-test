@@ -1,8 +1,8 @@
 #include <iostream>
 
-#include "mcga/test.hpp"
-#include "mcga/matchers.hpp"
 #include "mcga/matchers/testing_helpers.hpp"
+#include "mcga/test.hpp"
+#include "mcga/test_ext/matchers.hpp"
 
 #include "mcga/test_ext/death/matchers.hpp"
 
