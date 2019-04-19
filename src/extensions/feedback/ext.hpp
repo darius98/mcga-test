@@ -11,22 +11,28 @@ class FeedbackExtension : public Extension {
   public:
     int getReturnCode();
 
-    void registerCommandLineArgs(mcga::cli::Parser* parser) override;
+    void registerCommandLineArgs(cli::Parser* parser) override;
 
     void init(HooksManager* api) override;
 
   private:
+    static void addPipeHooks(proc::PipeWriter* pipe, HooksManager* api);
+
     void initLogging(HooksManager* api);
 
     void initFileStream(HooksManager* api, const std::string& fileName);
 
+    void initSocketStream(HooksManager* api, const std::string& socketPath);
+
     int exitCode = 0;
     std::unique_ptr<TestLogger> logger = nullptr;
-    std::unique_ptr<mcga::proc::PipeWriter> fileWriter = nullptr;
+    std::unique_ptr<proc::PipeWriter> fileWriter = nullptr;
+    std::unique_ptr<proc::PipeWriter> socketWriter = nullptr;
 
-    mcga::cli::Flag quietFlag;
-    mcga::cli::Argument fileNameArgument;
-    mcga::cli::Flag noLiveLogging;
+    cli::Flag quietFlag;
+    cli::Argument fileNameArgument;
+    cli::Argument socketPathArgument;
+    cli::Flag noLiveLogging;
 };
 
 }  // namespace mcga::test::feedback

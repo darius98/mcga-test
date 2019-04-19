@@ -6,8 +6,8 @@
 using mcga::cli::ArgumentSpec;
 using mcga::cli::FlagSpec;
 using mcga::cli::Parser;
-using mcga::proc::Message;
 using mcga::proc::PipeWriter;
+using mcga::proc::createLocalClientSocket;
 using mcga::test::Test;
 using std::cout;
 using std::make_unique;
@@ -36,9 +36,15 @@ void FeedbackExtension::registerCommandLineArgs(Parser* parser) {
         .setDescription("Disable STDOUT logging for this test run")
         .setShortName("q"));
     fileNameArgument = parser->addArgument(
-      ArgumentSpec("pipe-to")
+      ArgumentSpec("stream-to-file")
         .setHelpGroup("Feedback")
-        .setDescription("A file or fifo with write access for piping the test "
+        .setDescription("A file with write access for piping the test "
+                        "results as they become available.")
+        .setDefaultValue(""));
+    socketPathArgument = parser->addArgument(
+      ArgumentSpec("stream-to-socket")
+        .setHelpGroup("Feedback")
+        .setDescription("A UNIX socket with write access for piping the test "
                         "results as they become available.")
         .setDefaultValue(""));
     noLiveLogging = parser->addFlag(
@@ -52,8 +58,11 @@ void FeedbackExtension::init(HooksManager* api) {
     if (!quietFlag->getValue()) {
         initLogging(api);
     }
-    if (!fileNameArgument->getValue().empty()) {
+    if (fileNameArgument->appeared()) {
         initFileStream(api, fileNameArgument->getValue());
+    }
+    if (socketPathArgument->appeared()) {
+        initSocketStream(api, socketPathArgument->getValue());
     }
     api->addHook<HooksManager::ON_TEST_EXECUTION_FINISH>(
       [this](const Test& test) {
@@ -63,6 +72,50 @@ void FeedbackExtension::init(HooksManager* api) {
       });
     api->addHook<HooksManager::ON_WARNING>(
       [this](const Warning& warning) { exitCode = 1; });
+}
+
+void FeedbackExtension::addPipeHooks(PipeWriter* pipe, HooksManager* api) {
+    api->addHook<HooksManager::ON_GROUP_DISCOVERED>([pipe](GroupPtr group) {
+        pipe->sendMessage(PipeMessageType::GROUP_DISCOVERED,
+                          group->getParentGroup()->getId(),
+                          group->getId(),
+                          group->getDescription(),
+                          group->isOptional());
+    });
+
+    api->addHook<HooksManager::ON_TEST_DISCOVERED>([pipe](const Test& test) {
+        pipe->sendMessage(PipeMessageType::TEST_DISCOVERED,
+                          test.getId(),
+                          test.getGroup()->getId(),
+                          test.getDescription(),
+                          test.isOptional(),
+                          test.getNumAttempts(),
+                          test.getNumRequiredPassedAttempts());
+    });
+
+    api->addHook<HooksManager::ON_TEST_EXECUTION_START>([pipe](
+                                                          const Test& test) {
+        pipe->sendMessage(PipeMessageType::TEST_EXECUTION_START, test.getId());
+    });
+
+    api->addHook<HooksManager::ON_TEST_EXECUTION_FINISH>(
+      [pipe](const Test& test) {
+          pipe->sendMessage(PipeMessageType::TEST_EXECUTION_FINISH,
+                            test.getId(),
+                            test.getExecutions().back().timeTicks,
+                            test.getExecutions().back().passed,
+                            test.getExecutions().back().failure);
+      });
+
+    api->addHook<HooksManager::BEFORE_DESTROY>(
+      [pipe]() { pipe->sendMessage(PipeMessageType::DONE); });
+
+    api->addHook<HooksManager::ON_WARNING>([pipe](const Warning& warning) {
+        pipe->sendMessage(PipeMessageType::WARNING,
+                          warning.message,
+                          warning.groupId,
+                          warning.testId);
+    });
 }
 
 void FeedbackExtension::initLogging(HooksManager* api) {
@@ -85,49 +138,13 @@ void FeedbackExtension::initLogging(HooksManager* api) {
 void FeedbackExtension::initFileStream(HooksManager* api,
                                        const string& fileName) {
     fileWriter = unique_ptr<PipeWriter>(PipeWriter::OpenFile(fileName));
+    addPipeHooks(fileWriter.get(), api);
+}
 
-    api->addHook<HooksManager::ON_GROUP_DISCOVERED>([this](GroupPtr group) {
-        fileWriter->sendMessage(PipeMessageType::GROUP_DISCOVERED,
-                                group->getParentGroup()->getId(),
-                                group->getId(),
-                                group->getDescription(),
-                                group->isOptional());
-    });
-
-    api->addHook<HooksManager::ON_TEST_DISCOVERED>([this](const Test& test) {
-        fileWriter->sendMessage(PipeMessageType::TEST_DISCOVERED,
-                                test.getId(),
-                                test.getGroup()->getId(),
-                                test.getDescription(),
-                                test.isOptional(),
-                                test.getNumAttempts(),
-                                test.getNumRequiredPassedAttempts());
-    });
-
-    api->addHook<HooksManager::ON_TEST_EXECUTION_START>(
-      [this](const Test& test) {
-          fileWriter->sendMessage(PipeMessageType::TEST_EXECUTION_START,
-                                  test.getId());
-      });
-
-    api->addHook<HooksManager::ON_TEST_EXECUTION_FINISH>(
-      [this](const Test& test) {
-          fileWriter->sendMessage(PipeMessageType::TEST_EXECUTION_FINISH,
-                                  test.getId(),
-                                  test.getExecutions().back().timeTicks,
-                                  test.getExecutions().back().passed,
-                                  test.getExecutions().back().failure);
-      });
-
-    api->addHook<HooksManager::BEFORE_DESTROY>(
-      [this]() { fileWriter->sendMessage(PipeMessageType::DONE); });
-
-    api->addHook<HooksManager::ON_WARNING>([this](const Warning& warning) {
-        fileWriter->sendMessage(PipeMessageType::WARNING,
-                                warning.message,
-                                warning.groupId,
-                                warning.testId);
-    });
+void FeedbackExtension::initSocketStream(HooksManager* api,
+                                         const string& socketPath) {
+    socketWriter = unique_ptr<PipeWriter>(createLocalClientSocket(socketPath));
+    addPipeHooks(socketWriter.get(), api);
 }
 
 }  // namespace mcga::test::feedback
