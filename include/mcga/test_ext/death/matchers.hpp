@@ -1,6 +1,6 @@
 #pragma once
 
-#include "mcga/test_ext/matchers.hpp"
+#include "mcga/matchers.hpp"
 #include "check_death.hpp"
 #include "death_status.hpp"
 

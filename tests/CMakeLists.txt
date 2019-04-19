@@ -35,4 +35,3 @@ endfunction()
 
 add_subdirectory(core)
 add_subdirectory(extensions/death)
-add_subdirectory(extensions/matchers)

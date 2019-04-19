@@ -2,12 +2,12 @@
 #include <iostream>
 
 #include "mcga/test.hpp"
-#include "mcga/test_ext/matchers.hpp"
+#include "mcga/matchers.hpp"
 
 #include "mcga/test_ext/death/check_death.hpp"
 
 using namespace mcga::test;
-using namespace mcga::test::matchers;
+using namespace mcga::matchers;
 using namespace mcga::test::death;
 using namespace std;
 

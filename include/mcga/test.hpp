@@ -3,6 +3,8 @@
 #include <functional>
 #include <string>
 
+#include "mcga/matchers/matcher.hpp"
+
 namespace mcga::test {
 
 /** Type of function widely used throughout the library.
@@ -272,6 +274,24 @@ inline void expect(bool expr, const std::string& message = std::string()) {
     if (!expr) {
         fail(message);
     }
+}
+
+template<class T,
+  class M,
+  class = std::enable_if_t<std::is_base_of_v<matchers::Matcher, M>>>
+void expect(const T& obj, M matcher) {
+    typename M::State state;
+    if (__matches(matcher, &state, obj)) {
+        return;
+    }
+    matchers::Description description;
+    description.appendRawString("Expected ");
+    matcher.describe(&description);
+    description.appendRawString("\n\tGot      '");
+    description << obj;
+    description.appendRawString("'\n\tWhich is ");
+    matchers::__describeFailure(&description, matcher, &state);
+    fail("Expectation failed:\n\t" + description.toString());
 }
 
 struct TestCase {
