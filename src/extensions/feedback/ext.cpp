@@ -41,6 +41,11 @@ void FeedbackExtension::registerCommandLineArgs(Parser* parser) {
         .setDescription("A file or fifo with write access for piping the test "
                         "results as they become available.")
         .setDefaultValue(""));
+    noLiveLogging = parser->addFlag(
+      FlagSpec("no-live-logging")
+        .setHelpGroup("Feedback")
+        .setDescription("Disable logging volatile messages "
+                        "(that are then removed with '\\r' modifiers."));
 }
 
 void FeedbackExtension::init(HooksManager* api) {
@@ -61,7 +66,7 @@ void FeedbackExtension::init(HooksManager* api) {
 }
 
 void FeedbackExtension::initLogging(HooksManager* api) {
-    logger = make_unique<TestLogger>(cout);
+    logger = make_unique<TestLogger>(cout, !noLiveLogging->getValue());
 
     api->addHook<HooksManager::ON_TEST_EXECUTION_START>(
       [this](const Test& test) { logger->onTestExecutionStart(test); });

@@ -21,13 +21,19 @@ using termcolor::yellow;
 
 namespace mcga::test::feedback {
 
-TestLogger::TestLogger(ostream& stream): stream(stream) {
+TestLogger::TestLogger(ostream& stream, bool liveLogging)
+        : stream(stream), liveLogging(liveLogging) {
 }
 
 void TestLogger::onTestExecutionStart(const Test& test) {
+    runningTests.insert(test.getId());
+    updateVolatileLine(test);
 }
 
 void TestLogger::onTestExecutionFinish(const Test& test) {
+    runningTests.erase(test.getId());
+    updateVolatileLine(test);
+
     if (!test.isExecuted()) {
         return;
     }
@@ -49,6 +55,10 @@ void TestLogger::onTestExecutionFinish(const Test& test) {
 }
 
 void TestLogger::printFinalInformation() {
+    if (isLastLineVolatile) {
+        stream << "\r";
+        stream.flush();
+    }
     stream << "\n";
     stream << "Tests passed: " << green << passedTests << reset << "\n";
     stream << "Tests failed: ";
@@ -69,6 +79,7 @@ void TestLogger::printFinalInformation() {
            << TimeTicksToNanoseconds(totalTimeTicks).count() * 1.0 * milli::den
         / nano::den
            << " ms)\n";
+    isLastLineVolatile = false;
 }
 
 void TestLogger::printWarning(const string& warningMessage) {
@@ -145,6 +156,11 @@ void TestLogger::printTestFailure(string failure) {
 }
 
 void TestLogger::printTestMessage(const Test& test) {
+    if (isLastLineVolatile) {
+        stream << "\r";
+        stream.flush();
+    }
+
     printTestPassedOrFailedToken(test);
     stream << " ";
     printTestAndGroupsDescription(test);
@@ -158,6 +174,38 @@ void TestLogger::printTestMessage(const Test& test) {
         printTestFailure(test.getLastFailure());
     }
     stream << "\n";
+    isLastLineVolatile = false;
+}
+
+void TestLogger::updateVolatileLine(const Test& test) {
+    if (!liveLogging) {
+        return;
+    }
+
+    if (isLastLineVolatile) {
+        stream << "\r";
+        stream.flush();
+    }
+
+    if (runningTests.size() == 1 && *runningTests.begin() == test.getId()) {
+        stream << "[" << yellow << "." << reset << "] ";
+        printTestAndGroupsDescription(test);
+        if (test.getNumAttempts() > 1) {
+            stream << " - running attempt " << test.getExecutions().size() + 1
+                   << " of " << test.getNumAttempts() << "...";
+        } else {
+            stream << " - running...";
+        }
+    } else if (runningTests.size() > 1) {
+        stream << runningTests.size() << " tests running...";
+    } else if (runningTests.size() == 1) {
+        stream << "One test running...";
+    } else {
+        stream << "No tests running...";
+    }
+    stream.flush();
+
+    isLastLineVolatile = true;
 }
 
 }  // namespace mcga::test::feedback

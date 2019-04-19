@@ -1,9 +1,7 @@
 #pragma once
 
-#include <map>
 #include <ostream>
 #include <set>
-#include <utility>
 
 #include "core/test.hpp"
 
@@ -11,7 +9,7 @@ namespace mcga::test::feedback {
 
 class TestLogger {
   public:
-    explicit TestLogger(std::ostream& stream);
+    explicit TestLogger(std::ostream& stream, bool liveLogging);
 
     void onTestExecutionStart(const Test& test);
 
@@ -34,8 +32,13 @@ class TestLogger {
 
     void printTestMessage(const Test& test);
 
+    void updateVolatileLine(const Test& test);
+
     std::ostream& stream;
 
+    std::set<int> runningTests;
+    bool liveLogging;
+    bool isLastLineVolatile = false;
     double totalTimeTicks = 0;
     int passedTests = 0;
     int failedTests = 0;

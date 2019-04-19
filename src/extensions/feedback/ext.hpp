@@ -26,6 +26,7 @@ class FeedbackExtension : public Extension {
 
     mcga::cli::Flag quietFlag;
     mcga::cli::Argument fileNameArgument;
+    mcga::cli::Flag noLiveLogging;
 };
 
 }  // namespace mcga::test::feedback
