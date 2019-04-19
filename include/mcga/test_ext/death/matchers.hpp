@@ -1,8 +1,8 @@
 #pragma once
 
-#include "mcga/matchers.hpp"
 #include "check_death.hpp"
 #include "death_status.hpp"
+#include "mcga/matchers.hpp"
 
 namespace mcga::test::death {
 
@@ -38,14 +38,7 @@ inline void describeStatus(matchers::Description* description,
 }
 
 template<class M>
-struct ExitsWithCodeState {
-    DeathStatus status;
-    typename M::State codeMatcherState;
-};
-
-template<class M>
-class ExitsWithCodeMatcher
-        : public matchers::StatefulMatcher<ExitsWithCodeState<M>> {
+class ExitsWithCodeMatcher : public matchers::Matcher {
     static_assert(std::is_base_of<matchers::Matcher, M>::value,
                   "ExitsWithCodeMatcher only supports matchers as template "
                   "arguments.");
@@ -55,10 +48,9 @@ class ExitsWithCodeMatcher
             : codeMatcher(std::move(codeMatcher)) {
     }
 
-    bool matches(const Executable& func, ExitsWithCodeState<M>* state) const {
-        state->status = checkDeath(func);
-        return matchers::__matches(
-          codeMatcher, &state->codeMatcherState, state->status.getExitCode());
+    bool matches(const Executable& func) {
+        status = checkDeath(func);
+        return codeMatcher.matches(status.getExitCode());
     }
 
     void describe(matchers::Description* description) const {
@@ -66,33 +58,32 @@ class ExitsWithCodeMatcher
         codeMatcher.describe(description);
     }
 
-    void describeFailure(matchers::Description* description,
-                         ExitsWithCodeState<M>* state) const {
-        describeStatus(description, state->status);
+    void describeFailure(matchers::Description* description) const {
+        describeStatus(description, status);
     }
 
   private:
+    DeathStatus status;
     M codeMatcher;
 };
 
-class ExitsMatcher : public matchers::StatefulMatcher<DeathStatus> {
+class ExitsMatcher : public matchers::Matcher {
   public:
     constexpr ExitsMatcher()
             : zero(matchers::isZero), nonZero(matchers::isNotZero) {
     }
 
-    bool matches(const Executable& func, DeathStatus* state) const {
-        *state = checkDeath(func);
-        return state->exited();
+    bool matches(const Executable& func) {
+        status = checkDeath(func);
+        return status.exited();
     }
 
     void describe(matchers::Description* description) const {
         (*description) << "the program's end";
     }
 
-    void describeFailure(matchers::Description* description,
-                         DeathStatus* state) const {
-        describeStatus(description, *state);
+    void describeFailure(matchers::Description* description) const {
+        describeStatus(description, status);
     }
 
     template<class T>
@@ -106,28 +97,32 @@ class ExitsMatcher : public matchers::StatefulMatcher<DeathStatus> {
 
     ExitsWithCodeMatcher<matchers::detail::IsZeroMatcher> zero;
     ExitsWithCodeMatcher<matchers::detail::IsNotZeroMatcher> nonZero;
+
+  private:
+    DeathStatus status;
 };
 
-class HasExitedMatcher : public matchers::StatefulMatcher<const DeathStatus*> {
+class HasExitedMatcher : public matchers::Matcher {
   public:
-    bool matches(const DeathStatus& status, const DeathStatus** state) const {
-        *state = &status;
-        return status.exited();
+    bool matches(const DeathStatus& stat) {
+        status = &stat;
+        return status->exited();
     }
 
     void describe(matchers::Description* description) const {
         (*description) << "the program's end";
     }
 
-    void describeFailure(matchers::Description* description,
-                         const DeathStatus** state) const {
-        describeStatus(description, **state);
+    void describeFailure(matchers::Description* description) const {
+        describeStatus(description, *status);
     }
+
+  private:
+    const DeathStatus* status = nullptr;
 };
 
 template<class M>
-class HasExitedWithCodeMatcher
-        : public matchers::StatefulMatcher<const DeathStatus*> {
+class HasExitedWithCodeMatcher : public matchers::Matcher {
     static_assert(std::is_base_of<matchers::Matcher, M>::value,
                   "HasExitedWithCodeMatcher only supports matchers as template "
                   "arguments.");
@@ -137,12 +132,10 @@ class HasExitedWithCodeMatcher
             : exitCodeMatcher(std::move(exitCodeMatcher)) {
     }
 
-    bool matches(const DeathStatus& status, const DeathStatus** state) const {
-        *state = &status;
-        typename M::State codeMatcherState;
-        return status.exited()
-          && matchers::__matches(
-                 exitCodeMatcher, &codeMatcherState, status.getExitCode());
+    bool matches(const DeathStatus& stat) {
+        status = &stat;
+        return status->exited()
+          && exitCodeMatcher.matches(status->getExitCode());
     }
 
     void describe(matchers::Description* description) const {
@@ -150,12 +143,12 @@ class HasExitedWithCodeMatcher
         exitCodeMatcher.describe(description);
     }
 
-    void describeFailure(matchers::Description* description,
-                         const DeathStatus** status) const {
-        describeStatus(description, **status);
+    void describeFailure(matchers::Description* description) const {
+        describeStatus(description, *status);
     }
 
   private:
+    const DeathStatus* status = nullptr;
     M exitCodeMatcher;
 };
 

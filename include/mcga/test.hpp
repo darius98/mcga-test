@@ -280,8 +280,7 @@ template<class T,
   class M,
   class = std::enable_if_t<std::is_base_of_v<matchers::Matcher, M>>>
 void expect(const T& obj, M matcher) {
-    typename M::State state;
-    if (__matches(matcher, &state, obj)) {
+    if (matcher.matches(obj)) {
         return;
     }
     matchers::Description description;
@@ -290,7 +289,7 @@ void expect(const T& obj, M matcher) {
     description.appendRawString("\n\tGot      '");
     description << obj;
     description.appendRawString("'\n\tWhich is ");
-    matchers::__describeFailure(&description, matcher, &state);
+    matcher.describeFailure(&description);
     fail("Expectation failed:\n\t" + description.toString());
 }
 
