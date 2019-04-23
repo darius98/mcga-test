@@ -15,10 +15,11 @@ class HasExitedWithCodeMatcher;
 
 template<class T>
 constexpr auto hasExitedWithCode(const T& exitCode) {
-    if constexpr (std::is_base_of_v<matchers::Matcher, T>) {
+    if constexpr (matchers::isMatcher<T>) {
         return internal::HasExitedWithCodeMatcher<T>(exitCode);
     } else {
-        return internal::HasExitedWithCodeMatcher(matchers::isEqualTo(exitCode));
+        return internal::HasExitedWithCodeMatcher(
+          matchers::isEqualTo(exitCode));
     }
 }
 
@@ -39,7 +40,7 @@ inline void describeStatus(matchers::Description* description,
 
 template<class M>
 class ExitsWithCodeMatcher : public matchers::Matcher {
-    static_assert(std::is_base_of<matchers::Matcher, M>::value,
+    static_assert(matchers::isMatcher<M>,
                   "ExitsWithCodeMatcher only supports matchers as template "
                   "arguments.");
 
@@ -88,7 +89,7 @@ class ExitsMatcher : public matchers::Matcher {
 
     template<class T>
     auto withCode(const T& code) const {
-        if constexpr (std::is_base_of_v<matchers::Matcher, T>) {
+        if constexpr (matchers::isMatcher<T>) {
             return ExitsWithCodeMatcher<T>(code);
         } else {
             return ExitsWithCodeMatcher(matchers::isEqualTo(code));
@@ -123,7 +124,7 @@ class HasExitedMatcher : public matchers::Matcher {
 
 template<class M>
 class HasExitedWithCodeMatcher : public matchers::Matcher {
-    static_assert(std::is_base_of<matchers::Matcher, M>::value,
+    static_assert(matchers::isMatcher<M>,
                   "HasExitedWithCodeMatcher only supports matchers as template "
                   "arguments.");
 

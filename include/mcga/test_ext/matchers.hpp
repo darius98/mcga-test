@@ -1,13 +1,11 @@
 #pragma once
 
-#include "mcga/test.hpp"
 #include "mcga/matchers.hpp"
+#include "mcga/test.hpp"
 
 namespace mcga::test {
 
-template<class T,
-  class M,
-  class = std::enable_if_t<std::is_base_of_v<matchers::Matcher, M>>>
+template<class T, class M, class = std::enable_if_t<matchers::isMatcher<M>>>
 void expect(const T& obj, M matcher) {
     if (matcher.matches(obj)) {
         return;
@@ -22,4 +20,4 @@ void expect(const T& obj, M matcher) {
     fail("Expectation failed:\n\t" + description.toString());
 }
 
-}
+}  // namespace mcga::test
