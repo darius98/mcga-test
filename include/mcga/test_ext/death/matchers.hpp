@@ -6,23 +6,23 @@
 
 namespace mcga::test::death {
 
-namespace detail {
+namespace internal {
 class ExitsMatcher;
 class HasExitedMatcher;
 template<class T>
 class HasExitedWithCodeMatcher;
-}  // namespace detail
+}  // namespace internal
 
 template<class T>
 constexpr auto hasExitedWithCode(const T& exitCode) {
     if constexpr (std::is_base_of_v<matchers::Matcher, T>) {
-        return detail::HasExitedWithCodeMatcher<T>(exitCode);
+        return internal::HasExitedWithCodeMatcher<T>(exitCode);
     } else {
-        return detail::HasExitedWithCodeMatcher(matchers::isEqualTo(exitCode));
+        return internal::HasExitedWithCodeMatcher(matchers::isEqualTo(exitCode));
     }
 }
 
-namespace detail {
+namespace internal {
 
 inline void describeStatus(matchers::Description* description,
                            const DeathStatus& status) {
@@ -95,8 +95,8 @@ class ExitsMatcher : public matchers::Matcher {
         }
     }
 
-    ExitsWithCodeMatcher<matchers::detail::IsZeroMatcher> zero;
-    ExitsWithCodeMatcher<matchers::detail::IsNotZeroMatcher> nonZero;
+    ExitsWithCodeMatcher<matchers::internal::IsZeroMatcher> zero;
+    ExitsWithCodeMatcher<matchers::internal::IsNotZeroMatcher> nonZero;
 
   private:
     DeathStatus status;
@@ -152,16 +152,16 @@ class HasExitedWithCodeMatcher : public matchers::Matcher {
     M exitCodeMatcher;
 };
 
-}  // namespace detail
+}  // namespace internal
 
-constexpr detail::ExitsMatcher exits;
+constexpr internal::ExitsMatcher exits;
 
-constexpr detail::HasExitedMatcher hasExited;
+constexpr internal::HasExitedMatcher hasExited;
 
-constexpr detail::HasExitedWithCodeMatcher
+constexpr internal::HasExitedWithCodeMatcher
   hasExitedWithCodeZero(matchers::isZero);
 
-constexpr detail::HasExitedWithCodeMatcher
+constexpr internal::HasExitedWithCodeMatcher
   hasExitedWithNonZeroCode(matchers::isNotZero);
 
 }  // namespace mcga::test::death
