@@ -48,8 +48,8 @@ void runTests(int argc,
         .setDescription("Maximum number of tests to execute in parallel"
                         " (processes to spawn). Ignored if `executor` "
                         "type is 'smooth'.")
-        .setDefaultValue(1u)
-        .setImplicitValue(1u));
+        .setDefaultValue("1")
+        .setImplicitValue("1"));
 
     for (Extension* extension: extensions) {
         extension->registerCommandLineArgs(&parser);
