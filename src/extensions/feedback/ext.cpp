@@ -6,8 +6,8 @@
 using mcga::cli::ArgumentSpec;
 using mcga::cli::FlagSpec;
 using mcga::cli::Parser;
-using mcga::proc::PipeWriter;
 using mcga::proc::createLocalClientSocket;
+using mcga::proc::PipeWriter;
 using mcga::test::Test;
 using std::cout;
 using std::make_unique;
@@ -30,39 +30,39 @@ int FeedbackExtension::getReturnCode() {
 }
 
 void FeedbackExtension::registerCommandLineArgs(Parser* parser) {
-    quietFlag = parser->addFlag(
+    quietFlag = parser->add_flag(
       FlagSpec("quiet")
-        .setHelpGroup("Feedback")
-        .setDescription("Disable STDOUT logging for this test run")
-        .setShortName("q"));
-    fileNameArgument = parser->addArgument(
+        .set_help_group("Feedback")
+        .set_description("Disable STDOUT logging for this test run")
+        .set_short_name("q"));
+    fileNameArgument = parser->add_argument(
       ArgumentSpec("stream-to-file")
-        .setHelpGroup("Feedback")
-        .setDescription("A file with write access for piping the test "
-                        "results as they become available.")
-        .setDefaultValue(""));
-    socketPathArgument = parser->addArgument(
+        .set_help_group("Feedback")
+        .set_description("A file with write access for piping the test "
+                         "results as they become available.")
+        .set_default_value(""));
+    socketPathArgument = parser->add_argument(
       ArgumentSpec("stream-to-socket")
-        .setHelpGroup("Feedback")
-        .setDescription("A UNIX socket with write access for piping the test "
-                        "results as they become available.")
-        .setDefaultValue(""));
-    noLiveLogging = parser->addFlag(
+        .set_help_group("Feedback")
+        .set_description("A UNIX socket with write access for piping the test "
+                         "results as they become available.")
+        .set_default_value(""));
+    noLiveLogging = parser->add_flag(
       FlagSpec("no-live-logging")
-        .setHelpGroup("Feedback")
-        .setDescription("Disable logging volatile messages "
-                        "(that are then removed with '\\r' modifiers."));
+        .set_help_group("Feedback")
+        .set_description("Disable logging volatile messages "
+                         "(that are then removed with '\\r' modifiers."));
 }
 
 void FeedbackExtension::init(HooksManager* api) {
-    if (!quietFlag->getValue()) {
+    if (!quietFlag->get_value()) {
         initLogging(api);
     }
     if (fileNameArgument->appeared()) {
-        initFileStream(api, fileNameArgument->getValue());
+        initFileStream(api, fileNameArgument->get_value());
     }
     if (socketPathArgument->appeared()) {
-        initSocketStream(api, socketPathArgument->getValue());
+        initSocketStream(api, socketPathArgument->get_value());
     }
     api->addHook<HooksManager::ON_TEST_EXECUTION_FINISH>(
       [this](const Test& test) {
@@ -119,7 +119,7 @@ void FeedbackExtension::addPipeHooks(PipeWriter* pipe, HooksManager* api) {
 }
 
 void FeedbackExtension::initLogging(HooksManager* api) {
-    logger = make_unique<TestLogger>(cout, !noLiveLogging->getValue());
+    logger = make_unique<TestLogger>(cout, !noLiveLogging->get_value());
 
     api->addHook<HooksManager::ON_TEST_EXECUTION_START>(
       [this](const Test& test) { logger->onTestExecutionStart(test); });
