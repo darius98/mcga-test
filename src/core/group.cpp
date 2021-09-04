@@ -26,30 +26,22 @@ GroupPtr Group::getParentGroup() const {
 }
 
 void Group::addSetUp(Executable func) {
-    setUpFunc = move(func);
-}
-
-bool Group::hasSetUp() const {
-    return setUpFunc != nullptr;
+    setUpFuncs.push_back(std::move(func));
 }
 
 void Group::setUp() const {
-    if (hasSetUp()) {
+    for (const auto& setUpFunc: setUpFuncs) {
         setUpFunc();
     }
 }
 
 void Group::addTearDown(Executable func) {
-    tearDownFunc = move(func);
-}
-
-bool Group::hasTearDown() const {
-    return tearDownFunc != nullptr;
+    tearDownFuncs.push_back(move(func));
 }
 
 void Group::tearDown() const {
-    if (hasTearDown()) {
-        tearDownFunc();
+    for (auto it = tearDownFuncs.rbegin(); it != tearDownFuncs.rend(); it++) {
+        (*it)();
     }
 }
 

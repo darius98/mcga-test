@@ -24,7 +24,7 @@ class Driver {
 
     ~Driver() = default;
 
-    Executor::Type getExecutorType() const;
+    [[nodiscard]] Executor::Type getExecutorType() const;
 
     void addGroup(GroupConfig config, const Executable& body);
 

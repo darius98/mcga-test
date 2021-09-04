@@ -27,9 +27,6 @@ TEST_CASE(testCase, "TestCase") {
             group("group-in-setUp", [] {});
         });
 
-        // second setUp() in same group()
-        setUp([] {});
-
         tearDown([] {
             // setUp() in tearDown()
             setUp([] {});
@@ -43,9 +40,6 @@ TEST_CASE(testCase, "TestCase") {
             // group() in tearDown()
             group("group-in-tearDown", [] {});
         });
-
-        // second tearDown() in same group()
-        tearDown([] {});
 
         test("test", [] {
             // setUp() in test()

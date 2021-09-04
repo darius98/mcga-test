@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <vector>
 
 #include "mcga/test.hpp"
 
@@ -30,31 +31,24 @@ class Group : private GroupConfig {
     Group(GroupConfig config, Ptr parentGroup, int id);
 
     /** See GroupConfig#description. */
-    std::string getDescription() const;
+    [[nodiscard]] std::string getDescription() const;
 
     /** See GroupConfig#optional. */
-    bool isOptional() const;
+    [[nodiscard]] bool isOptional() const;
 
     /** Globally unique, incremental identifier of the group. */
-    int getId() const;
+    [[nodiscard]] int getId() const;
 
     /** Pointer to the Group that contains this, or `nullptr` if the current
      * group represents a TestCase. */
-    Ptr getParentGroup() const;
+    [[nodiscard]] Ptr getParentGroup() const;
 
     /** Add a set-up function to this group.
      *
      * This method is called once for every setUp(Executable) call from the
      * global API, on the instance that is currently on top of the group
-     * stack.
-     *
-     * Note: This throws on being called the second time for the same group. */
+     * stack. */
     void addSetUp(Executable func);
-
-    /** Returns whether this group has a setUp.
-     *
-     * Is true only if addSetUp() was called on this instance. */
-    bool hasSetUp() const;
 
     /** Call the set-up function of this group. */
     void setUp() const;
@@ -63,25 +57,18 @@ class Group : private GroupConfig {
      *
      * This method is called once for every tearDown(Executable) call from the
      * global API, on the instance that is currently on top of the group
-     * stack.
-     *
-     * Note: This throws on being called the second time for the same group. */
+     * stack. */
     void addTearDown(Executable func);
 
-    /** Returns whether this group has a tearDown.
-     *
-     * Is true only if addTearDown() was called on this instance. */
-    bool hasTearDown() const;
-
-    /** Call the tear-down function of this group. */
+    /** Call the tear-down functions of this group, in reverse order. */
     void tearDown() const;
 
   private:
     Ptr parentGroup;
     int id;
 
-    Executable setUpFunc;
-    Executable tearDownFunc;
+    std::vector<Executable> setUpFuncs;
+    std::vector<Executable> tearDownFuncs;
 };
 
 using GroupPtr = Group::Ptr;

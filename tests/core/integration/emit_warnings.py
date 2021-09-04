@@ -21,8 +21,6 @@ def check_warning(message):
 
 check_warning("Called fail() with message 'fail-top-level' outside a test execution. Ignoring.")
 check_warning("Called fail() with message 'fail-in-group' outside a test execution. Ignoring.")
-check_warning("setUp() called, but a setUp for group \"group\" already exists. Ignoring.")
-check_warning("tearDown() called, but a tearDown for group \"group\" already exists. Ignoring.")
 check_warning("Exception thrown in group \"group\": exception-in-group. Unable to execute remainder of tests in this group.")
 check_warning("Non-exception thrown in group \"group2\". Unable to execute remainder of tests in this group.")
 check_warning("Called setUp() inside a setUp(). Ignoring.")

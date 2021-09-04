@@ -2,7 +2,6 @@
 
 #include <thread>
 
-#include "box_executor.hpp"
 #include "mcga/test.hpp"
 
 using std::exception;
@@ -72,26 +71,14 @@ void Driver::addSetUp(Executable func) {
     if (!checkMainThreadAndInactive("setUp")) {
         return;
     }
-    const auto& group = groupStack.back();
-    if (group->hasSetUp()) {
-        emitWarning("setUp() called, but a setUp for group \""
-                    + group->getDescription() + "\" already exists. Ignoring.");
-        return;
-    }
-    group->addSetUp(move(func));
+    groupStack.back()->addSetUp(move(func));
 }
 
 void Driver::addTearDown(Executable func) {
     if (!checkMainThreadAndInactive("tearDown")) {
         return;
     }
-    const auto& group = groupStack.back();
-    if (group->hasTearDown()) {
-        emitWarning("tearDown() called, but a tearDown for group \""
-                    + group->getDescription() + "\" already exists. Ignoring.");
-        return;
-    }
-    group->addTearDown(move(func));
+    groupStack.back()->addTearDown(move(func));
 }
 
 void Driver::addFailure(const string& failure) {

@@ -275,16 +275,11 @@ inline void expect(bool expr, const std::string& message = std::string()) {
 }
 
 struct TestCase {
-    static void Register(TestCase* testCase);
-
     Executable body;
 
     std::string name;
 
-    TestCase(Executable body, std::string name)
-            : body(std::move(body)), name(std::move(name)) {
-        Register(this);
-    }
+    TestCase(Executable body, std::string name);
 };
 
 }  // namespace mcga::test
