@@ -12,6 +12,8 @@ using mcga::cli::Parser;
 using std::cout;
 using std::exit;
 using std::max;
+using std::thread;
+using std::to_string;
 using std::size_t;
 using std::vector;
 
@@ -49,7 +51,11 @@ void runTests(int argc,
                          " (processes to spawn). Ignored if `executor` "
                          "type is 'smooth'.")
         .set_default_value("1")
-        .set_implicit_value("1"));
+        .set_implicit_value_generator(
+          []{
+              return to_string(thread::hardware_concurrency());
+          },
+          "Number of CPUs (" + to_string(thread::hardware_concurrency()) + ")"));
 
     for (Extension* extension: extensions) {
         extension->registerCommandLineArgs(&parser);
