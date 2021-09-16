@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include <mcga/proc.hpp>
 
 #include "disallow_copy_and_move.hpp"
@@ -29,7 +31,7 @@ class BoxExecutor : public Executor {
     Type getType() const override;
 
   private:
-    void executeBoxed(const Test& test, proc::PipeWriter* pipe);
+    void executeBoxed(const Test& test, std::unique_ptr<proc::PipeWriter> pipe);
 
     void ensureEmptyBoxes(std::size_t numContainers);
 
@@ -37,7 +39,7 @@ class BoxExecutor : public Executor {
 
     bool tryCloseBox(Box* box);
 
-    proc::PipeWriter* currentTestingSubprocessPipe = nullptr;
+    std::unique_ptr<proc::PipeWriter> currentTestingSubprocessPipe;
     std::size_t numBoxes;
     std::vector<Box> activeBoxes;
 };

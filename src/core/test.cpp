@@ -126,6 +126,4 @@ void Test::addExecution(const ExecutionInfo& info) {
     executions.push_back(info);
 }
 
-
-
 }  // namespace mcga::test

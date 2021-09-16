@@ -1,5 +1,3 @@
-#include <cstdlib>
-
 #include <iostream>
 #include <type_traits>
 
@@ -10,16 +8,14 @@ using namespace std;
 
 namespace mcga::test {
 
-TestConfig* testConfig = nullptr;
+std::unique_ptr<TestConfig> testConfig;
 void test(TestConfig config, Executable) {
-    delete testConfig;
-    testConfig = new TestConfig(move(config));
+    testConfig = std::make_unique<TestConfig>(move(config));
 }
 
-GroupConfig* groupConfig = nullptr;
+std::unique_ptr<GroupConfig> groupConfig;
 void group(GroupConfig config, const Executable&) {
-    delete groupConfig;
-    groupConfig = new GroupConfig(move(config));
+    groupConfig = std::make_unique<GroupConfig>(move(config));
 }
 
 }  // namespace mcga::test

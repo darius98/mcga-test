@@ -1,7 +1,7 @@
 #pragma once
 
-#include "mcga/test.hpp"
 #include "death_status.hpp"
+#include "mcga/test.hpp"
 
 namespace mcga::test::death {
 

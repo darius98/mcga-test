@@ -9,7 +9,7 @@ ScanExecutor::ScanExecutor(HooksManager* hooks): Executor(hooks) {
 }
 
 void ScanExecutor::execute(Test test) {
-    for (const GroupPtr& group : test.getGroupStack()) {
+    for (const GroupPtr& group: test.getGroupStack()) {
         if (discoveredGroups.count(group->getId()) == 0) {
             continue;
         }
@@ -27,4 +27,4 @@ Executor::Type ScanExecutor::getType() const {
     return SCAN;
 }
 
-} // namespace mcga::test
+}  // namespace mcga::test

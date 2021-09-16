@@ -50,16 +50,20 @@ void BoxExecutor::emitWarning(const string& message, std::size_t /*groupId*/) {
     }
 }
 
-void BoxExecutor::executeBoxed(const Test& test, PipeWriter* pipe) {
-    currentTestingSubprocessPipe = pipe;
+void BoxExecutor::executeBoxed(const Test& test,
+                               std::unique_ptr<PipeWriter> pipe) {
+    currentTestingSubprocessPipe = std::move(pipe);
     Test::ExecutionInfo info = run(test);
-    pipe->sendMessage(DONE, info.timeTicks, info.passed, info.failure);
+    currentTestingSubprocessPipe->sendMessage(
+      DONE, info.timeTicks, info.passed, info.failure);
 }
 
 unique_ptr<WorkerSubprocess> BoxExecutor::startExecution(const Test& test) {
     auto timeLimit = TimeTicksToNanoseconds(test.getTimeTicksLimit()) + 1s;
     return make_unique<WorkerSubprocess>(
-      timeLimit, [this, &test](PipeWriter* pipe) { executeBoxed(test, pipe); });
+      timeLimit, [this, &test](std::unique_ptr<PipeWriter> pipe) {
+          executeBoxed(test, std::move(pipe));
+      });
 }
 
 bool BoxExecutor::tryCloseBox(Box* box) {

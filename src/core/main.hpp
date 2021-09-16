@@ -11,4 +11,4 @@ void runTests(int argc,
               const std::vector<TestCase*>& tests,
               const std::vector<Extension*>& extensions);
 
-} // namespace mcga::test
+}  // namespace mcga::test

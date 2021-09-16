@@ -12,9 +12,9 @@ using mcga::cli::Parser;
 using std::cout;
 using std::exit;
 using std::max;
+using std::size_t;
 using std::thread;
 using std::to_string;
-using std::size_t;
 using std::vector;
 
 namespace mcga::test {
@@ -52,10 +52,9 @@ void runTests(int argc,
                          "type is 'smooth'.")
         .set_default_value("1")
         .set_implicit_value_generator(
-          []{
-              return to_string(thread::hardware_concurrency());
-          },
-          "Number of CPUs (" + to_string(thread::hardware_concurrency()) + ")"));
+          [] { return to_string(thread::hardware_concurrency()); },
+          "Number of CPUs (" + to_string(thread::hardware_concurrency())
+            + ")"));
 
     for (Extension* extension: extensions) {
         extension->registerCommandLineArgs(&parser);

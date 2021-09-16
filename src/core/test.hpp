@@ -2,8 +2,8 @@
 
 #include <vector>
 
-#include "mcga/test.hpp"
 #include "group.hpp"
+#include "mcga/test.hpp"
 
 namespace mcga::test {
 

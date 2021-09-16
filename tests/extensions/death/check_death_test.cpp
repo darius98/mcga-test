@@ -42,13 +42,13 @@ TEST_CASE(checkDeath, "Death extension: check death") {
         expect(status.getSignal(), isEqualTo(SIGTERM));
     });
 
-    test("kill by signal SIGSEGV", [] {
-        auto func = [] { raise(SIGSEGV); };
+    test("kill by signal SIGUSR1", [] {
+        auto func = [] { raise(SIGUSR1); };
 
         auto status = checkDeath(func);
         expect(status.exitedOrKilled(), isTrue);
         expect(status.exited(), isFalse);
         expect(status.killedBySignal(), isTrue);
-        expect(status.getSignal(), isEqualTo(SIGSEGV));
+        expect(status.getSignal(), isEqualTo(SIGUSR1));
     });
 }

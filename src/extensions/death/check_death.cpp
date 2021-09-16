@@ -16,13 +16,14 @@ namespace mcga::test::death {
 MCGA_TEST_EXPORT DeathStatus checkDeath(const Executable& func,
                                         double timeTicksLimit) {
     if (Driver::Instance()->getExecutorType() == Executor::SMOOTH) {
+        // TODO: Don't fail() here, implement the skip() functionality instead!
         fail("Death extension matchers & the checkDeath function do not work"
              " when using a smooth executor.");
         return DeathStatus(-1, -1);
     }
 
     WorkerSubprocess proc(TimeTicksToNanoseconds(timeTicksLimit),
-                          [func](PipeWriter* writer) {
+                          [func](std::unique_ptr<PipeWriter> writer) {
                               func();
                               writer->sendMessage(1);
                           });
