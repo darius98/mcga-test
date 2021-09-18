@@ -60,27 +60,27 @@ void Driver::addTest(TestConfig config, Executable body) {
       Test(std::move(config), std::move(body), parentGroup, ++currentTestId));
 }
 
-void Driver::addSetUp(Executable func) {
+void Driver::addSetUp(UserTestExecutable setUp) {
     if (!checkMainThreadAndInactive("setUp")) {
         return;
     }
-    groupStack.back()->addSetUp(std::move(func));
+    groupStack.back()->addSetUp(std::move(setUp));
 }
 
-void Driver::addTearDown(Executable func) {
+void Driver::addTearDown(UserTestExecutable tearDown) {
     if (!checkMainThreadAndInactive("tearDown")) {
         return;
     }
-    groupStack.back()->addTearDown(std::move(func));
+    groupStack.back()->addTearDown(std::move(tearDown));
 }
 
-void Driver::addFailure(const std::string& failure) {
+void Driver::addFailure(const std::string& failure, Context context) {
     if (!executor->isActive()) {
         emitWarning("Called fail() with message '" + failure
                     + "' outside a test execution. Ignoring.");
         return;
     }
-    executor->addFailure(failure);
+    executor->addFailure(failure, std::move(context));
 }
 
 void Driver::emitWarning(const std::string& message) {

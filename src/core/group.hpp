@@ -7,6 +7,11 @@
 
 namespace mcga::test {
 
+struct UserTestExecutable {
+    Executable func;
+    Context context;
+};
+
 /** Internal representation of a group.
  *
  * This class should only be instantiated once per call to the group() function
@@ -31,7 +36,10 @@ class Group : private GroupConfig {
     Group(GroupConfig config, Ptr parentGroup, int id);
 
     /** See GroupConfig#description. */
-    [[nodiscard]] std::string getDescription() const;
+    [[nodiscard]] const std::string& getDescription() const;
+
+    /** See GroupConfig#sourceLocation. */
+    [[nodiscard]] const Context& getContext() const;
 
     /** See GroupConfig#optional. */
     [[nodiscard]] bool isOptional() const;
@@ -48,7 +56,7 @@ class Group : private GroupConfig {
      * This method is called once for every setUp(Executable) call from the
      * global API, on the instance that is currently on top of the group
      * stack. */
-    void addSetUp(Executable func);
+    void addSetUp(UserTestExecutable func);
 
     /** Call the set-up function of this group. */
     void setUp() const;
@@ -58,7 +66,7 @@ class Group : private GroupConfig {
      * This method is called once for every tearDown(Executable) call from the
      * global API, on the instance that is currently on top of the group
      * stack. */
-    void addTearDown(Executable func);
+    void addTearDown(UserTestExecutable func);
 
     /** Call the tear-down functions of this group, in reverse order. */
     void tearDown() const;
@@ -67,8 +75,8 @@ class Group : private GroupConfig {
     Ptr parentGroup;
     int id;
 
-    std::vector<Executable> setUpFuncs;
-    std::vector<Executable> tearDownFuncs;
+    std::vector<UserTestExecutable> setUpFuncs;
+    std::vector<UserTestExecutable> tearDownFuncs;
 };
 
 using GroupPtr = Group::Ptr;

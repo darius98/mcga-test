@@ -26,17 +26,17 @@ class Driver {
 
     [[nodiscard]] Executor::Type getExecutorType() const;
 
-    void addGroup(GroupConfig config, const Executable& body);
+    virtual void addGroup(GroupConfig config, const Executable& body);
 
-    void addTest(TestConfig config, Executable body);
+    virtual void addTest(TestConfig config, Executable body);
 
-    void addSetUp(Executable func);
+    virtual void addSetUp(UserTestExecutable setUp);
 
-    void addTearDown(Executable func);
+    virtual void addTearDown(UserTestExecutable tearDown);
 
-    void addFailure(const std::string& failure);
+    virtual void addFailure(const std::string& failure, Context context);
 
-    void emitWarning(const std::string& message);
+    virtual void emitWarning(const std::string& message);
 
   private:
     bool checkMainThreadAndInactive(const std::string& method);

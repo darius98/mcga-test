@@ -1,68 +1,75 @@
 #include <iostream>
 #include <type_traits>
 
+#include "../../../src/core/driver.hpp"
+#include "../../../src/core/scan_executor.hpp"
 #include "mcga/test.hpp"
 
 using namespace mcga::test;
 
-namespace mcga::test {
+class TestingDriver : public Driver {
+  public:
+    std::unique_ptr<TestConfig> testConfig;
+    std::unique_ptr<GroupConfig> groupConfig;
 
-std::unique_ptr<TestConfig> testConfig;
-void test(TestConfig config, Executable) {
-    testConfig = std::make_unique<TestConfig>(std::move(config));
-}
+    using Driver::Driver;
 
-std::unique_ptr<GroupConfig> groupConfig;
-void group(GroupConfig config, const Executable&) {
-    groupConfig = std::make_unique<GroupConfig>(std::move(config));
-}
+    void addGroup(GroupConfig config, const Executable& body) override {
+        groupConfig = std::make_unique<GroupConfig>(std::move(config));
+    }
 
-}  // namespace mcga::test
+    void addTest(TestConfig config, Executable body) override {
+        testConfig = std::make_unique<TestConfig>(std::move(config));
+    }
+};
 
 int exitCode = 0;
+TestingDriver* driver;
 
 void expectTestConfig(const std::string& description,
                       bool optional,
                       double timeTicksLimit,
                       size_t attempts,
                       size_t requiredPassedAttempts) {
-    if (testConfig->description != description) {
+    if (driver->testConfig->description != description) {
         std::cout << "Expected test description to be " << description
-                  << ", got " << testConfig->description << "\n";
+                  << ", got " << driver->testConfig->description << "\n";
         exitCode = 1;
     }
-    if (testConfig->optional != optional) {
+    if (driver->testConfig->optional != optional) {
         std::cout << std::boolalpha << "Expected test optional flag to be "
-                  << optional << ", got " << testConfig->optional << "\n";
-        exitCode = 1;
-    }
-    if (testConfig->timeTicksLimit != timeTicksLimit) {
-        std::cout << "Expected test time ticks limit to be " << timeTicksLimit
-                  << ", got " << testConfig->timeTicksLimit << "\n";
-        exitCode = 1;
-    }
-    if (testConfig->attempts != attempts) {
-        std::cout << "Expected test time ticks limit to be " << attempts
-                  << ", got " << testConfig->attempts << "\n";
-        exitCode = 1;
-    }
-    if (testConfig->requiredPassedAttempts != requiredPassedAttempts) {
-        std::cout << "Expected test time ticks limit to be "
-                  << requiredPassedAttempts << ", got " << testConfig->attempts
+                  << optional << ", got " << driver->testConfig->optional
                   << "\n";
+        exitCode = 1;
+    }
+    if (driver->testConfig->timeTicksLimit != timeTicksLimit) {
+        std::cout << "Expected test time ticks limit to be " << timeTicksLimit
+                  << ", got " << driver->testConfig->timeTicksLimit << "\n";
+        exitCode = 1;
+    }
+    if (driver->testConfig->attempts != attempts) {
+        std::cout << "Expected test time ticks limit to be " << attempts
+                  << ", got " << driver->testConfig->attempts << "\n";
+        exitCode = 1;
+    }
+    if (driver->testConfig->requiredPassedAttempts != requiredPassedAttempts) {
+        std::cout << "Expected test time ticks limit to be "
+                  << requiredPassedAttempts << ", got "
+                  << driver->testConfig->attempts << "\n";
         exitCode = 1;
     }
 }
 
 void expectGroupConfig(const std::string& description, bool optional) {
-    if (groupConfig->description != description) {
+    if (driver->groupConfig->description != description) {
         std::cout << "Expected group description to be " << description
-                  << ", got " << groupConfig->description << "\n";
+                  << ", got " << driver->groupConfig->description << "\n";
         exitCode = 1;
     }
-    if (groupConfig->optional != optional) {
+    if (driver->groupConfig->optional != optional) {
         std::cout << std::boolalpha << "Expected group optional flag to be "
-                  << optional << ", got " << groupConfig->optional << "\n";
+                  << optional << ", got " << driver->groupConfig->optional
+                  << "\n";
         exitCode = 1;
     }
 }
@@ -71,10 +78,17 @@ void executable() {
 }
 
 int main() {
+    HooksManager hooks;
+    ScanExecutor executor(&hooks);
+    TestingDriver testingDriver(&executor);
+
+    driver = &testingDriver;
+    Driver::Init(&testingDriver);
+
     // Common cases of test configs.
 
     // Default test
-    test("desc", executable);
+    test("desc", executable, Context());
     expectTestConfig("desc", false, 1.0, 1, 1);
 
     // Anonymous test
@@ -124,7 +138,7 @@ int main() {
     // Common cases of group configs.
 
     // Default group
-    group("desc", executable);
+    group("desc", executable, Context());
     expectGroupConfig("desc", false);
 
     // Anonymous group

@@ -9,7 +9,7 @@ option(MCGA_test_tests "Build MCGA Test tests" OFF)
 
 add_subdirectory(third_party/termcolor EXCLUDE_FROM_ALL)
 
-add_library(mcga_test SHARED
+add_library(mcga_test_obj OBJECT
         src/entry_point.cpp
 
         src/core/box_executor.cpp
@@ -28,13 +28,17 @@ add_library(mcga_test SHARED
         src/extensions/feedback/ext.cpp
         src/extensions/feedback/test_logger.cpp
         )
-target_include_directories(mcga_test PRIVATE src)
-target_link_libraries(mcga_test
-        PUBLIC mcga_cli
-        PRIVATE termcolor
-        )
+target_include_directories(mcga_test_obj PRIVATE src)
+target_link_libraries(mcga_test_obj PUBLIC mcga_cli PRIVATE termcolor)
+
+add_library(mcga_test SHARED $<TARGET_OBJECTS:mcga_test_obj>)
+target_link_libraries(mcga_test PUBLIC mcga_test_obj)
+
+add_library(mcga_test_static STATIC $<TARGET_OBJECTS:mcga_test_obj>)
+target_link_libraries(mcga_test_static PUBLIC mcga_test_obj)
 
 install(TARGETS mcga_test DESTINATION lib)
+install(TARGETS mcga_test_static DESTINATION lib)
 install(DIRECTORY include DESTINATION .)
 
 if (MCGA_test_tests)

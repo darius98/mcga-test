@@ -8,8 +8,9 @@ namespace mcga::test {
 
 std::vector<TestCase*> testCasesRegistered;
 
-MCGA_TEST_EXPORT TestCase::TestCase(Executable body, std::string name)
-        : body(std::move(body)), name(std::move(name)) {
+MCGA_TEST_EXPORT
+  TestCase::TestCase(Executable body, std::string name, Context context)
+        : body(std::move(body)), name(std::move(name)), context(context) {
     testCasesRegistered.push_back(this);
 }
 

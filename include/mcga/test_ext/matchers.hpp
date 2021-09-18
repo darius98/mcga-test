@@ -6,23 +6,24 @@
 namespace mcga::test {
 
 template<class T, matchers::MatcherFor<T> M>
-void expect(const T& obj, M matcher) {
+void expect(const T& obj, M matcher, Context context = Context()) {
     if (matcher.matches(obj)) {
         return;
     }
     matchers::Description description;
     description.appendRawString("Expected ");
     matcher.describe(&description);
-    description.appendRawString("\n\tGot      '");
+    description.appendRawString("\nGot      '");
     description << obj;
-    description.appendRawString("'\n\tWhich is ");
+    description.appendRawString("'\nWhich is ");
     matcher.describeFailure(&description);
-    fail("Expectation failed:\n\t" + description.toString());
+    context.verb = "Expectation failed";
+    fail(description.toString(), std::move(context));
 }
 
-template<class T, class Val>
-requires(!matchers::Matcher<Val>) void expect(const T& obj, Val expected) {
-    expect(obj, matchers::isEqualTo(expected));
+template<class T, matchers::EqualityMatchableFor<T> Val>
+void expect(const T& obj, Val expected, Context context = Context()) {
+    expect(obj, matchers::isEqualTo(expected), context);
 }
 
 }  // namespace mcga::test

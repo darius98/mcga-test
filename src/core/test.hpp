@@ -1,5 +1,6 @@
 #pragma once
 
+#include <optional>
 #include <vector>
 
 #include "group.hpp"
@@ -36,6 +37,9 @@ class Test : private TestConfig {
          * string if the test passed. */
         std::string failure = "";
 
+        /** Context of the failure. */
+        std::optional<Context> failureContext;
+
         /** Default constructor. */
         ExecutionInfo() = default;
 
@@ -44,7 +48,9 @@ class Test : private TestConfig {
          *
          * Note: if this method is called multiple times, subsequent calls do
          * NOT overwrite the first failure message. */
-        void fail(const std::string& _failure, double timeTicks = -1.0);
+        void fail(const std::string& _failure,
+                  std::optional<Context> failureContext = std::nullopt,
+                  double timeTicks = -1.0);
     };
 
     /** Default constructor from a TestConfig and the metadata received from the
@@ -61,6 +67,9 @@ class Test : private TestConfig {
 
     /** See TestConfig#description. */
     const std::string& getDescription() const;
+
+    /** See TestConfig#sourceLocation. */
+    const Context& getContext() const;
 
     /** See TestConfig#optional. */
     bool isOptional() const;
@@ -115,7 +124,7 @@ class Test : private TestConfig {
 
     /** Get the error message for the last failed execution, or empty string if
      * all executions passed. */
-    std::string getLastFailure() const;
+    std::optional<Test::ExecutionInfo> getLastFailure() const;
 
     /** Get the array of executions. */
     const std::vector<ExecutionInfo>& getExecutions() const;

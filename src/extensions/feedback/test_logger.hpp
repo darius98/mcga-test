@@ -28,7 +28,7 @@ class TestLogger {
 
     void printTestAttemptsInfo(const Test& test);
 
-    void printTestFailure(std::string failure);
+    void printTestFailure(const Test::ExecutionInfo& info);
 
     void printTestMessage(const Test& test);
 

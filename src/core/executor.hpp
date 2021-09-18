@@ -35,7 +35,7 @@ class Executor {
 
     std::string stateAsString() const;
 
-    void addFailure(const std::string& failure);
+    void addFailure(std::string failure, Context context);
 
     Test::ExecutionInfo run(const Test& test);
 
@@ -61,6 +61,7 @@ class Executor {
     std::mutex currentExecutionFailureMutex;
     bool currentExecutionIsFailed = false;
     std::string currentExecutionFailureMessage;
+    std::optional<Context> currentExecutionFailureContext;
 };
 
 }  // namespace mcga::test

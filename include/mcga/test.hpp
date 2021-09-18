@@ -3,6 +3,8 @@
 #include <functional>
 #include <string>
 
+#include "mcga/internal/source_location.hpp"
+
 namespace mcga::test {
 
 /** Type of function widely used throughout the library.
@@ -11,6 +13,21 @@ namespace mcga::test {
  * parameters and returns nothing. TestCase, test, group, setUp and tearDown are
  * all constructed from Executable. */
 using Executable = std::function<void()>;
+
+struct Context {
+    std::string verb = "Failed";
+    std::string fileName;
+    std::string functionName;
+    uint32_t line;
+    uint32_t column;
+
+    explicit Context(internal::source_location location
+                     = internal::source_location::current())
+            : fileName(location.file_name()),
+              functionName(location.function_name()), line(location.line()),
+              column(location.column()) {
+    }
+};
 
 /** Structure defining the configuration for a test.
  *
@@ -54,6 +71,8 @@ struct TestConfig {
      *
      * This should be at most equal to #attempts. */
     std::size_t requiredPassedAttempts = 1;
+
+    Context context;
 
     /** Default constructor. */
     TestConfig() = default;
@@ -103,88 +122,76 @@ struct TestConfig {
 };
 
 /** Main mechanism for defining tests. */
-void test(TestConfig config, Executable body);
+void test(TestConfig config, Executable body, Context context = Context());
 
 /** Convenience function for defining an anonymous test. */
-inline void test(Executable body) {
-    test(TestConfig(), std::move(body));
-}
+void test(Executable body, Context context = Context());
 
 /** Convenience function for defining an optional test. */
-inline void optionalTest(TestConfig config, Executable body) {
-    config.setOptional();
-    test(std::move(config), std::move(body));
-}
+void optionalTest(TestConfig config,
+                  Executable body,
+                  Context context = Context());
 
 /** Convenience function for defining an anonymous optional test. */
-inline void optionalTest(Executable body) {
-    optionalTest(TestConfig(), std::move(body));
-}
+void optionalTest(Executable body, Context context = Context());
 
 /** Convenience function for defining a test that will be executed multiple
  * times, and all executions must pass for the test to be marked as `passed`. */
-inline void
-  multiRunTest(TestConfig config, std::size_t numRuns, Executable body) {
-    config.setRequiredPassedAttempts(numRuns);
-    config.setAttempts(numRuns);
-    test(std::move(config), std::move(body));
-}
+void multiRunTest(TestConfig config,
+                  std::size_t numRuns,
+                  Executable body,
+                  Context context = Context());
 
 /** Convenience function for defining an anonymous test that will be executed
  * multiple times, and all executions must pass for the test to be marked as
  * `passed`. */
-inline void multiRunTest(std::size_t numRuns, Executable body) {
-    multiRunTest(TestConfig(), numRuns, std::move(body));
-}
+void multiRunTest(std::size_t numRuns,
+                  Executable body,
+                  Context context = Context());
 
 /** Convenience function for defining an optional test that will be executed
  * multiple times, and all executions must pass for the test to be marked as
  * `passed`. */
-inline void optionalMultiRunTest(TestConfig config,
-                                 std::size_t numRuns,
-                                 Executable body) {
-    config.setOptional();
-    multiRunTest(std::move(config), numRuns, std::move(body));
-}
+void optionalMultiRunTest(TestConfig config,
+                          std::size_t numRuns,
+                          Executable body,
+                          Context context = Context());
 
 /** Convenience function for defining an anonymous optional test that will be
  * executed multiple times, and all executions must pass for the test to be
  * marked as `passed`. */
-inline void optionalMultiRunTest(std::size_t numRuns, Executable body) {
-    optionalMultiRunTest(TestConfig(), numRuns, std::move(body));
-}
+void optionalMultiRunTest(std::size_t numRuns,
+                          Executable body,
+                          Context context = Context());
 
 /** Convenience function for defining a test that will be retried multiple
  * times, and only one needs to pass for the test to be marked as `passed`. */
-inline void
-  retryTest(TestConfig config, std::size_t attempts, Executable body) {
-    config.setAttempts(attempts);
-    config.setRequiredPassedAttempts(1);
-    test(std::move(config), std::move(body));
-}
+void retryTest(TestConfig config,
+               std::size_t attempts,
+               Executable body,
+               Context context = Context());
 
 /** Convenience function for defining an anonymous test that will be retried
  * multiple times, and only one needs to pass for the test to be marked as
  * `passed`. */
-inline void retryTest(std::size_t numAttempts, Executable body) {
-    retryTest(TestConfig(), numAttempts, std::move(body));
-}
+void retryTest(std::size_t numAttempts,
+               Executable body,
+               Context context = Context());
 
 /** Convenience function for defining an optional test that will be retried
  * multiple times, and only one needs to pass for the test to be marked as
  * `passed`. */
-inline void
-  optionalRetryTest(TestConfig config, std::size_t attempts, Executable body) {
-    config.setOptional();
-    retryTest(std::move(config), attempts, std::move(body));
-}
+void optionalRetryTest(TestConfig config,
+                       std::size_t attempts,
+                       Executable body,
+                       Context context = Context());
 
 /** Convenience function for defining an optional anonymous test that will be
  * retried multiple times, and only one needs to pass for the test to be marked
  * as `passed`. */
-inline void optionalRetryTest(std::size_t numAttempts, Executable body) {
-    optionalRetryTest(TestConfig(), numAttempts, std::move(body));
-}
+void optionalRetryTest(std::size_t numAttempts,
+                       Executable body,
+                       Context context = Context());
 
 /** Structure defining the configuration for a group.
  *
@@ -202,6 +209,8 @@ struct GroupConfig {
      * This is equivalent to marking each individual test inside the group and
      * all its subgroups as optional. */
     bool optional = false;
+
+    Context context;
 
     /** Default constructor. */
     GroupConfig() = default;
@@ -233,58 +242,55 @@ struct GroupConfig {
 };
 
 /** Main mechanism for defining groups. */
-void group(GroupConfig config, const Executable& body);
+void group(GroupConfig config,
+           const Executable& body,
+           Context context = Context());
 
 /** Convenience function for defining an anonymous group. */
-inline void group(const Executable& body) {
-    group(GroupConfig(), body);
-}
+void group(const Executable& body, Context context = Context());
 
 /** Convenience function for defining an optional group. */
-inline void optionalGroup(GroupConfig config, const Executable& body) {
-    config.setOptional();
-    group(std::move(config), body);
-}
+void optionalGroup(GroupConfig config,
+                   const Executable& body,
+                   Context context = Context());
 
 /** Convenience function for defining an anonymous optional group. */
-inline void optionalGroup(const Executable& body) {
-    optionalGroup(GroupConfig(), body);
-}
+void optionalGroup(const Executable& body, Context context = Context());
 
 /** Main mechanism for defining setUp functions, to be executed before every
  * test in a group. */
-void setUp(Executable func);
+void setUp(Executable func, Context context = Context());
 
 /** Main mechanism for defining tearDown functions, to be executed after every
  * test in a group. */
-void tearDown(Executable func);
+void tearDown(Executable func, Context context = Context());
 
 /** Main mechanism for marking a test as failed.
  *
  * Calling this function inside the main testing thread disrupts the test
  * completely. Calling it in a separate thread will still mark the test as
  * failed, but will not interrupt any thread. */
-void fail(const std::string& message = std::string());
+void fail(const std::string& message = std::string(),
+          Context context = Context());
 
 /** Convenience function for marking a test as failed if a boolean expression
  * does not evaluate to `true`. */
-inline void expect(bool expr, const std::string& message = std::string()) {
-    if (!expr) {
-        fail(message);
-    }
-}
+void expect(bool expr, Context context = Context());
 
 struct TestCase {
     Executable body;
 
     std::string name;
 
-    TestCase(Executable body, std::string name);
+    Context context;
+
+    TestCase(Executable body, std::string name, Context context);
 };
 
 }  // namespace mcga::test
 
 #define TEST_CASE(UNIQUE_NAME, DESC)                                           \
     void UNIQUE_NAME##_func();                                                 \
-    static mcga::test::TestCase UNIQUE_NAME##_case(UNIQUE_NAME##_func, DESC);  \
+    static mcga::test::TestCase UNIQUE_NAME##_case(                            \
+      UNIQUE_NAME##_func, DESC, ::mcga::test::Context());                      \
     void UNIQUE_NAME##_func()

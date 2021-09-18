@@ -7,11 +7,6 @@
 
 #include "core/time_tick.hpp"
 
-using termcolor::green;
-using termcolor::red;
-using termcolor::reset;
-using termcolor::yellow;
-
 namespace mcga::test::feedback {
 
 TestLogger::TestLogger(std::ostream& stream, bool liveLogging)
@@ -53,17 +48,19 @@ void TestLogger::printFinalInformation() {
         stream.flush();
     }
     stream << "\n";
-    stream << "Tests passed: " << green << passedTests << reset << "\n";
+    stream << "Tests passed: " << termcolor::green << passedTests
+           << termcolor::reset << "\n";
     stream << "Tests failed: ";
     if (failedTests == 0) {
-        stream << green << failedTests << reset;
+        stream << termcolor::green << failedTests << termcolor::reset;
     } else if (failedTests == failedOptionalTests) {
-        stream << yellow << failedTests << reset;
+        stream << termcolor::yellow << failedTests << termcolor::reset;
     } else {
-        stream << red << failedTests << reset;
+        stream << termcolor::red << failedTests << termcolor::reset;
     }
     if (failedOptionalTests != 0) {
-        stream << " (" << yellow << failedOptionalTests << reset << " "
+        stream << " (" << termcolor::yellow << failedOptionalTests
+               << termcolor::reset << " "
                << (failedOptionalTests == 1 ? "was" : "were") << " optional)";
     }
     stream << "\n";
@@ -76,17 +73,18 @@ void TestLogger::printFinalInformation() {
 }
 
 void TestLogger::printWarning(const std::string& warningMessage) {
-    stream << yellow << "Warning: " << warningMessage << reset << "\n";
+    stream << termcolor::yellow << "Warning: " << warningMessage
+           << termcolor::reset << "\n";
 }
 
 void TestLogger::printTestPassedOrFailedToken(const Test& test) {
     stream << "[";
     if (test.isPassed()) {
-        stream << green << "P" << reset;
+        stream << termcolor::green << "P" << termcolor::reset;
     } else if (test.isOptional()) {
-        stream << yellow << "F" << reset;
+        stream << termcolor::yellow << "F" << termcolor::reset;
     } else {
-        stream << red << "F" << reset;
+        stream << termcolor::red << "F" << termcolor::reset;
     }
     stream << "]";
 }
@@ -138,15 +136,23 @@ void TestLogger::printTestAttemptsInfo(const Test& test) {
     stream << ")";
 }
 
-void TestLogger::printTestFailure(std::string failure) {
-    stream << "\n\t";
+void TestLogger::printTestFailure(const Test::ExecutionInfo& info) {
+    stream << "\n";
+    auto failure = info.failure;
     // TODO(darius98): This should be somewhere else (in utils maybe?)
     size_t pos = 0;
     while ((pos = failure.find('\n', pos)) != std::string::npos) {
         failure.replace(pos, 1, "\n\t");
         pos += 2;
     }
-    stream << red << failure << reset;
+    stream << termcolor::red;
+    if (info.failureContext.has_value()) {
+        stream << info.failureContext->verb << " at "
+               << info.failureContext->fileName << ":"
+               << info.failureContext->line << ":"
+               << info.failureContext->column << "\n";
+    }
+    stream << "\t" << failure << termcolor::reset;
 }
 
 void TestLogger::printTestMessage(const Test& test) {
@@ -164,8 +170,9 @@ void TestLogger::printTestMessage(const Test& test) {
         stream << ' ';
         printTestAttemptsInfo(test);
     }
-    if (!test.isPassed() && !test.getLastFailure().empty()) {
-        printTestFailure(test.getLastFailure());
+    const auto lastFailure = test.getLastFailure();
+    if (!test.isPassed() && lastFailure.has_value()) {
+        printTestFailure(lastFailure.value());
     }
     stream << "\n";
     isLastLineVolatile = false;
@@ -182,7 +189,7 @@ void TestLogger::updateVolatileLine(const Test& test) {
     }
 
     if (runningTests.size() == 1 && *runningTests.begin() == test.getId()) {
-        stream << "[" << yellow << "." << reset << "] ";
+        stream << "[" << termcolor::yellow << "." << termcolor::reset << "] ";
         printTestAndGroupsDescription(test);
         if (test.getNumAttempts() > 1) {
             stream << " - running attempt " << test.getExecutions().size() + 1

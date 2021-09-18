@@ -7,8 +7,12 @@ Group::Group(GroupConfig config, Ptr parentGroup, int id)
           id(id) {
 }
 
-std::string Group::getDescription() const {
+const std::string& Group::getDescription() const {
     return description;
+}
+
+const Context& Group::getContext() const {
+    return context;
 }
 
 bool Group::isOptional() const {
@@ -23,23 +27,23 @@ GroupPtr Group::getParentGroup() const {
     return parentGroup;
 }
 
-void Group::addSetUp(Executable func) {
+void Group::addSetUp(UserTestExecutable func) {
     setUpFuncs.push_back(std::move(func));
 }
 
 void Group::setUp() const {
     for (const auto& setUpFunc: setUpFuncs) {
-        setUpFunc();
+        setUpFunc.func();
     }
 }
 
-void Group::addTearDown(Executable func) {
-    tearDownFuncs.push_back(move(func));
+void Group::addTearDown(UserTestExecutable func) {
+    tearDownFuncs.push_back(std::move(func));
 }
 
 void Group::tearDown() const {
     for (auto it = tearDownFuncs.rbegin(); it != tearDownFuncs.rend(); it++) {
-        (*it)();
+        it->func();
     }
 }
 

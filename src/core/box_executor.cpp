@@ -47,8 +47,22 @@ void BoxExecutor::executeBoxed(const Test& test,
                                std::unique_ptr<PipeWriter> pipe) {
     currentTestingSubprocessPipe = std::move(pipe);
     Test::ExecutionInfo info = run(test);
-    currentTestingSubprocessPipe->sendMessage(
-      DONE, info.timeTicks, info.passed, info.failure);
+    if (!info.failureContext.has_value()) {
+        currentTestingSubprocessPipe->sendMessage(
+          DONE, info.timeTicks, info.passed, info.failure, false);
+    } else {
+        currentTestingSubprocessPipe->sendMessage(
+          DONE,
+          info.timeTicks,
+          info.passed,
+          info.failure,
+          true,
+          info.failureContext->verb,
+          info.failureContext->functionName,
+          info.failureContext->fileName,
+          info.failureContext->line,
+          info.failureContext->column);
+    }
 }
 
 std::unique_ptr<WorkerSubprocess>
@@ -77,18 +91,21 @@ bool BoxExecutor::tryCloseBox(Box* box) {
     if (finishStatus == Subprocess::NON_ZERO_EXIT) {
         info.fail("Test exited with code "
                     + std::to_string(process->getReturnCode()),
+                  std::nullopt,
                   timeTicksElapsed);
     } else if (finishStatus == Subprocess::SIGNAL_EXIT) {
         info.fail("Test killed by signal "
                     + std::to_string(process->getSignal()),
+                  std::nullopt,
                   timeTicksElapsed);
     } else if (finishStatus == Subprocess::TIMEOUT) {
-        info.fail("Test execution timed out.", timeTicksElapsed);
+        info.fail("Test execution timed out.", std::nullopt, timeTicksElapsed);
     } else if (finishStatus == Subprocess::ZERO_EXIT) {
         while (true) {
             Message message = process->getNextMessage(1);
             if (message.isInvalid()) {
-                info.fail("Unexpected 0-code exit.", timeTicksElapsed);
+                info.fail(
+                  "Unexpected 0-code exit.", std::nullopt, timeTicksElapsed);
                 break;
             }
             auto messageType = message.read<PipeMessageType>();
@@ -100,6 +117,15 @@ bool BoxExecutor::tryCloseBox(Box* box) {
                 continue;
             }
             message >> info.timeTicks >> info.passed >> info.failure;
+            bool hasFailureContext = message.read<bool>();
+            if (hasFailureContext) {
+                info.failureContext = Context{};
+                info.failureContext->verb = message.read<std::string>();
+                info.failureContext->functionName = message.read<std::string>();
+                info.failureContext->fileName = message.read<std::string>();
+                info.failureContext->line = message.read<uint32_t>();
+                info.failureContext->column = message.read<uint32_t>();
+            }
             break;
         }
     }

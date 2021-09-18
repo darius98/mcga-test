@@ -9,7 +9,12 @@
 namespace mcga::test {
 
 class ExpectationFailed : public std::runtime_error {
-    using runtime_error::runtime_error;
+  public:
+    Context context;
+
+    ExpectationFailed(std::string what, Context context)
+            : std::runtime_error(std::move(what)), context(std::move(context)) {
+    }
 };
 
 Executor::Executor(HooksManager* hooks): hooks(hooks) {
@@ -31,12 +36,12 @@ std::string Executor::stateAsString() const {
 void Executor::finalize() {
 }
 
-void Executor::addFailure(const std::string& failure) {
+void Executor::addFailure(std::string failure, Context context) {
     // We only kill the thread on failure if we are in the main testing thread
     // and we know we catch this exception.
     if (std::hash<std::thread::id>()(std::this_thread::get_id())
         == currentExecutionThreadId) {
-        throw ExpectationFailed(failure);
+        throw ExpectationFailed(std::move(failure), std::move(context));
     }
 
     // If the user starts his own threads that entertain failures, it is his
@@ -45,7 +50,8 @@ void Executor::addFailure(const std::string& failure) {
     std::lock_guard guard(currentExecutionFailureMutex);
     if (!currentExecutionIsFailed) {
         currentExecutionIsFailed = true;
-        currentExecutionFailureMessage = failure;
+        currentExecutionFailureMessage = std::move(failure);
+        currentExecutionFailureContext = std::move(context);
     }
 }
 
@@ -115,11 +121,12 @@ void Executor::runJob(const Executable& job,
       = std::hash<std::thread::id>()(std::this_thread::get_id());
     currentExecutionIsFailed = false;
     currentExecutionFailureMessage = "";
+    currentExecutionFailureContext = std::nullopt;
 
     try {
         job();
     } catch (const ExpectationFailed& failure) {
-        execution->fail(failure.what());
+        execution->fail(failure.what(), failure.context);
     } catch (const std::exception& e) {
         execution->fail("Uncaught exception in " + where + ": " + e.what());
     } catch (...) {
@@ -128,7 +135,8 @@ void Executor::runJob(const Executable& job,
 
     std::lock_guard guard(currentExecutionFailureMutex);
     if (currentExecutionIsFailed) {
-        execution->fail(currentExecutionFailureMessage);
+        execution->fail(currentExecutionFailureMessage,
+                        currentExecutionFailureContext);
     }
 }
 

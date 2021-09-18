@@ -4,10 +4,13 @@
 
 namespace mcga::test {
 
-void Test::ExecutionInfo::fail(const std::string& _failure, double _timeTicks) {
+void Test::ExecutionInfo::fail(const std::string& _failure,
+                               std::optional<Context> _failureContext,
+                               double _timeTicks) {
     if (passed) {
         passed = false;
         failure = _failure;
+        failureContext = _failureContext;
         timeTicks = _timeTicks;
     }
 }
@@ -19,6 +22,10 @@ Test::Test(TestConfig config, Executable body, GroupPtr group, int id)
 
 const std::string& Test::getDescription() const {
     return description;
+}
+
+const Context& Test::getContext() const {
+    return context;
 }
 
 bool Test::isOptional() const {
@@ -104,13 +111,13 @@ double Test::getTotalTimeTicks() const {
     return totalTimeTicks;
 }
 
-std::string Test::getLastFailure() const {
+std::optional<Test::ExecutionInfo> Test::getLastFailure() const {
     for (auto it = executions.rbegin(); it != executions.rend(); ++it) {
         if (!it->passed) {
-            return it->failure;
+            return *it;
         }
     }
-    return "";
+    return std::nullopt;
 }
 
 const std::vector<Test::ExecutionInfo>& Test::getExecutions() const {
