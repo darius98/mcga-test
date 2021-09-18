@@ -9,13 +9,13 @@ namespace mcga::test::death {
 namespace internal {
 class ExitsMatcher;
 class HasExitedMatcher;
-template<class T>
+template<matchers::Matcher T>
 class HasExitedWithCodeMatcher;
 }  // namespace internal
 
 template<class T>
 constexpr auto hasExitedWithCode(const T& exitCode) {
-    if constexpr (matchers::isMatcher<T>) {
+    if constexpr (matchers::Matcher<T>) {
         return internal::HasExitedWithCodeMatcher<T>(exitCode);
     } else {
         return internal::HasExitedWithCodeMatcher(
@@ -38,12 +38,8 @@ inline void describeStatus(matchers::Description* description,
     }
 }
 
-template<class M>
-class ExitsWithCodeMatcher : public matchers::Matcher {
-    static_assert(matchers::isMatcher<M>,
-                  "ExitsWithCodeMatcher only supports matchers as template "
-                  "arguments.");
-
+template<matchers::Matcher M>
+class ExitsWithCodeMatcher {
   public:
     explicit constexpr ExitsWithCodeMatcher(M codeMatcher)
             : codeMatcher(std::move(codeMatcher)) {
@@ -68,7 +64,7 @@ class ExitsWithCodeMatcher : public matchers::Matcher {
     M codeMatcher;
 };
 
-class ExitsMatcher : public matchers::Matcher {
+class ExitsMatcher {
   public:
     constexpr ExitsMatcher()
             : zero(matchers::isZero), nonZero(matchers::isNotZero) {
@@ -89,7 +85,7 @@ class ExitsMatcher : public matchers::Matcher {
 
     template<class T>
     auto withCode(const T& code) const {
-        if constexpr (matchers::isMatcher<T>) {
+        if constexpr (matchers::Matcher<T>) {
             return ExitsWithCodeMatcher<T>(code);
         } else {
             return ExitsWithCodeMatcher(matchers::isEqualTo(code));
@@ -103,7 +99,7 @@ class ExitsMatcher : public matchers::Matcher {
     DeathStatus status;
 };
 
-class HasExitedMatcher : public matchers::Matcher {
+class HasExitedMatcher {
   public:
     bool matches(const DeathStatus& stat) {
         status = &stat;
@@ -122,12 +118,8 @@ class HasExitedMatcher : public matchers::Matcher {
     const DeathStatus* status = nullptr;
 };
 
-template<class M>
-class HasExitedWithCodeMatcher : public matchers::Matcher {
-    static_assert(matchers::isMatcher<M>,
-                  "HasExitedWithCodeMatcher only supports matchers as template "
-                  "arguments.");
-
+template<matchers::Matcher M>
+class HasExitedWithCodeMatcher {
   public:
     explicit constexpr HasExitedWithCodeMatcher(M exitCodeMatcher)
             : exitCodeMatcher(std::move(exitCodeMatcher)) {

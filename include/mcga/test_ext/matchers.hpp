@@ -5,7 +5,7 @@
 
 namespace mcga::test {
 
-template<class T, class M, class = std::enable_if_t<matchers::isMatcher<M>>>
+template<class T, matchers::MatcherFor<T> M>
 void expect(const T& obj, M matcher) {
     if (matcher.matches(obj)) {
         return;
@@ -18,6 +18,11 @@ void expect(const T& obj, M matcher) {
     description.appendRawString("'\n\tWhich is ");
     matcher.describeFailure(&description);
     fail("Expectation failed:\n\t" + description.toString());
+}
+
+template<class T, class Val>
+requires(!matchers::Matcher<Val>) void expect(const T& obj, Val expected) {
+    expect(obj, matchers::isEqualTo(expected));
 }
 
 }  // namespace mcga::test
