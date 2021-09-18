@@ -7,23 +7,6 @@
 namespace mcga::test::death {
 
 namespace internal {
-class ExitsMatcher;
-class HasExitedMatcher;
-template<matchers::Matcher T>
-class HasExitedWithCodeMatcher;
-}  // namespace internal
-
-template<class T>
-constexpr auto hasExitedWithCode(const T& exitCode) {
-    if constexpr (matchers::Matcher<T>) {
-        return internal::HasExitedWithCodeMatcher<T>(exitCode);
-    } else {
-        return internal::HasExitedWithCodeMatcher(
-          matchers::isEqualTo(exitCode));
-    }
-}
-
-namespace internal {
 
 inline void describeStatus(matchers::Description* description,
                            const DeathStatus& status) {
@@ -37,6 +20,8 @@ inline void describeStatus(matchers::Description* description,
         (*description) << "not a program exit";
     }
 }
+
+}  // namespace internal
 
 template<matchers::Matcher M>
 class ExitsWithCodeMatcher {
@@ -56,7 +41,7 @@ class ExitsWithCodeMatcher {
     }
 
     void describeFailure(matchers::Description* description) const {
-        describeStatus(description, status);
+        internal::describeStatus(description, status);
     }
 
   private:
@@ -80,7 +65,7 @@ class ExitsMatcher {
     }
 
     void describeFailure(matchers::Description* description) const {
-        describeStatus(description, status);
+        internal::describeStatus(description, status);
     }
 
     template<class T>
@@ -92,8 +77,8 @@ class ExitsMatcher {
         }
     }
 
-    ExitsWithCodeMatcher<matchers::internal::IsZeroMatcher> zero;
-    ExitsWithCodeMatcher<matchers::internal::IsNotZeroMatcher> nonZero;
+    ExitsWithCodeMatcher<matchers::IsZeroMatcher> zero;
+    ExitsWithCodeMatcher<matchers::IsNotZeroMatcher> nonZero;
 
   private:
     DeathStatus status;
@@ -111,7 +96,7 @@ class HasExitedMatcher {
     }
 
     void describeFailure(matchers::Description* description) const {
-        describeStatus(description, *status);
+        internal::describeStatus(description, *status);
     }
 
   private:
@@ -137,7 +122,7 @@ class HasExitedWithCodeMatcher {
     }
 
     void describeFailure(matchers::Description* description) const {
-        describeStatus(description, *status);
+        internal::describeStatus(description, *status);
     }
 
   private:
@@ -145,16 +130,22 @@ class HasExitedWithCodeMatcher {
     M exitCodeMatcher;
 };
 
-}  // namespace internal
+constexpr ExitsMatcher exits;
 
-constexpr internal::ExitsMatcher exits;
+constexpr HasExitedMatcher hasExited;
 
-constexpr internal::HasExitedMatcher hasExited;
+constexpr HasExitedWithCodeMatcher hasExitedWithCodeZero(matchers::isZero);
 
-constexpr internal::HasExitedWithCodeMatcher
-  hasExitedWithCodeZero(matchers::isZero);
-
-constexpr internal::HasExitedWithCodeMatcher
+constexpr HasExitedWithCodeMatcher
   hasExitedWithNonZeroCode(matchers::isNotZero);
+
+template<class T>
+constexpr auto hasExitedWithCode(const T& exitCode) {
+    if constexpr (matchers::Matcher<T>) {
+        return HasExitedWithCodeMatcher<T>(exitCode);
+    } else {
+        return HasExitedWithCodeMatcher(matchers::isEqualTo(exitCode));
+    }
+}
 
 }  // namespace mcga::test::death
