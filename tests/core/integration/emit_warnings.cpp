@@ -3,7 +3,6 @@
 #include "mcga/test.hpp"
 
 using namespace mcga::test;
-using namespace std;
 
 TEST_CASE(testCase, "TestCase") {
     // fail() top-level
@@ -64,7 +63,7 @@ TEST_CASE(testCase, "TestCase") {
         throw 5;
     });
 
-    thread t([] {
+    std::thread t([] {
         // test() in different thread
         test("test-in-thread", [] {});
 

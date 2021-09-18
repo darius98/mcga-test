@@ -4,66 +4,65 @@
 #include "mcga/test.hpp"
 
 using namespace mcga::test;
-using namespace std;
 
 namespace mcga::test {
 
 std::unique_ptr<TestConfig> testConfig;
 void test(TestConfig config, Executable) {
-    testConfig = std::make_unique<TestConfig>(move(config));
+    testConfig = std::make_unique<TestConfig>(std::move(config));
 }
 
 std::unique_ptr<GroupConfig> groupConfig;
 void group(GroupConfig config, const Executable&) {
-    groupConfig = std::make_unique<GroupConfig>(move(config));
+    groupConfig = std::make_unique<GroupConfig>(std::move(config));
 }
 
 }  // namespace mcga::test
 
 int exitCode = 0;
 
-void expectTestConfig(const string& description,
+void expectTestConfig(const std::string& description,
                       bool optional,
                       double timeTicksLimit,
                       size_t attempts,
                       size_t requiredPassedAttempts) {
     if (testConfig->description != description) {
-        cout << "Expected test description to be " << description << ", got "
-             << testConfig->description << "\n";
+        std::cout << "Expected test description to be " << description
+                  << ", got " << testConfig->description << "\n";
         exitCode = 1;
     }
     if (testConfig->optional != optional) {
-        cout << boolalpha << "Expected test optional flag to be " << optional
-             << ", got " << testConfig->optional << "\n";
+        std::cout << std::boolalpha << "Expected test optional flag to be "
+                  << optional << ", got " << testConfig->optional << "\n";
         exitCode = 1;
     }
     if (testConfig->timeTicksLimit != timeTicksLimit) {
-        cout << "Expected test time ticks limit to be " << timeTicksLimit
-             << ", got " << testConfig->timeTicksLimit << "\n";
+        std::cout << "Expected test time ticks limit to be " << timeTicksLimit
+                  << ", got " << testConfig->timeTicksLimit << "\n";
         exitCode = 1;
     }
     if (testConfig->attempts != attempts) {
-        cout << "Expected test time ticks limit to be " << attempts << ", got "
-             << testConfig->attempts << "\n";
+        std::cout << "Expected test time ticks limit to be " << attempts
+                  << ", got " << testConfig->attempts << "\n";
         exitCode = 1;
     }
     if (testConfig->requiredPassedAttempts != requiredPassedAttempts) {
-        cout << "Expected test time ticks limit to be "
-             << requiredPassedAttempts << ", got " << testConfig->attempts
-             << "\n";
+        std::cout << "Expected test time ticks limit to be "
+                  << requiredPassedAttempts << ", got " << testConfig->attempts
+                  << "\n";
         exitCode = 1;
     }
 }
 
-void expectGroupConfig(const string& description, bool optional) {
+void expectGroupConfig(const std::string& description, bool optional) {
     if (groupConfig->description != description) {
-        cout << "Expected group description to be " << description << ", got "
-             << groupConfig->description << "\n";
+        std::cout << "Expected group description to be " << description
+                  << ", got " << groupConfig->description << "\n";
         exitCode = 1;
     }
     if (groupConfig->optional != optional) {
-        cout << boolalpha << "Expected group optional flag to be " << optional
-             << ", got " << groupConfig->optional << "\n";
+        std::cout << std::boolalpha << "Expected group optional flag to be "
+                  << optional << ", got " << groupConfig->optional << "\n";
         exitCode = 1;
     }
 }

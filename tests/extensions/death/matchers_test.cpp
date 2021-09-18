@@ -9,7 +9,6 @@
 using namespace mcga::test;
 using namespace mcga::matchers;
 using namespace mcga::test::death;
-using namespace std;
 
 TEST_CASE(matchers, "Death extension: matchers") {
     auto funcExit0 = [] { exit(0); };

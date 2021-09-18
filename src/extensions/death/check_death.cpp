@@ -9,7 +9,6 @@
 #include "core/time_tick.hpp"
 
 using namespace mcga::proc;
-using namespace std;
 
 namespace mcga::test::death {
 
@@ -29,7 +28,7 @@ MCGA_TEST_EXPORT DeathStatus checkDeath(const Executable& func,
                           });
 
     while (!proc.isFinished()) {
-        std::this_thread::sleep_for(5ms);
+        std::this_thread::sleep_for(std::chrono::milliseconds{5});
     }
     if (proc.getNextMessage(32).isInvalid()) {
         // The exit was ok.
