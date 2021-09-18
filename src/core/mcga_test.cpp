@@ -3,28 +3,25 @@
 #include "driver.hpp"
 #include "export.hpp"
 
-using std::move;
-using std::string;
-
 namespace mcga::test {
 
 MCGA_TEST_EXPORT void test(TestConfig config, Executable body) {
-    Driver::Instance()->addTest(move(config), move(body));
+    Driver::Instance()->addTest(std::move(config), std::move(body));
 }
 
 MCGA_TEST_EXPORT void group(GroupConfig config, const Executable& func) {
-    Driver::Instance()->addGroup(move(config), func);
+    Driver::Instance()->addGroup(std::move(config), func);
 }
 
 MCGA_TEST_EXPORT void setUp(Executable func) {
-    Driver::Instance()->addSetUp(move(func));
+    Driver::Instance()->addSetUp(std::move(func));
 }
 
 MCGA_TEST_EXPORT void tearDown(Executable func) {
-    Driver::Instance()->addTearDown(move(func));
+    Driver::Instance()->addTearDown(std::move(func));
 }
 
-MCGA_TEST_EXPORT void fail(const string& message) {
+MCGA_TEST_EXPORT void fail(const std::string& message) {
     Driver::Instance()->addFailure(message);
 }
 

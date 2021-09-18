@@ -9,14 +9,6 @@ using mcga::proc::Message;
 using mcga::proc::PipeWriter;
 using mcga::proc::Subprocess;
 using mcga::proc::WorkerSubprocess;
-using std::make_unique;
-using std::move;
-using std::operator""s;
-using std::remove_if;
-using std::string;
-using std::to_string;
-using std::unique_ptr;
-using std::this_thread::sleep_for;
 
 namespace mcga::test {
 
@@ -33,7 +25,7 @@ void BoxExecutor::execute(Test test) {
     ensureEmptyBoxes(1);
     onTestExecutionStart(test);
     auto firstExecution = this->startExecution(test);
-    activeBoxes.emplace_back(move(test), move(firstExecution));
+    activeBoxes.emplace_back(std::move(test), std::move(firstExecution));
 }
 
 void BoxExecutor::finalize() {
@@ -44,7 +36,8 @@ Executor::Type BoxExecutor::getType() const {
     return BOXED;
 }
 
-void BoxExecutor::emitWarning(const string& message, std::size_t /*groupId*/) {
+void BoxExecutor::emitWarning(const std::string& message,
+                              std::size_t /*groupId*/) {
     if (isActive()) {
         currentTestingSubprocessPipe->sendMessage(WARNING, message);
     }
@@ -58,8 +51,10 @@ void BoxExecutor::executeBoxed(const Test& test,
       DONE, info.timeTicks, info.passed, info.failure);
 }
 
-unique_ptr<WorkerSubprocess> BoxExecutor::startExecution(const Test& test) {
-    auto timeLimit = TimeTicksToNanoseconds(test.getTimeTicksLimit()) + 1s;
+std::unique_ptr<WorkerSubprocess>
+  BoxExecutor::startExecution(const Test& test) {
+    auto timeLimit = TimeTicksToNanoseconds(test.getTimeTicksLimit())
+      + std::chrono::seconds(1);
     return make_unique<WorkerSubprocess>(
       timeLimit, [this, &test](std::unique_ptr<PipeWriter> pipe) {
           executeBoxed(test, std::move(pipe));
@@ -81,10 +76,11 @@ bool BoxExecutor::tryCloseBox(Box* box) {
 
     if (finishStatus == Subprocess::NON_ZERO_EXIT) {
         info.fail("Test exited with code "
-                    + to_string(process->getReturnCode()),
+                    + std::to_string(process->getReturnCode()),
                   timeTicksElapsed);
     } else if (finishStatus == Subprocess::SIGNAL_EXIT) {
-        info.fail("Test killed by signal " + to_string(process->getSignal()),
+        info.fail("Test killed by signal "
+                    + std::to_string(process->getSignal()),
                   timeTicksElapsed);
     } else if (finishStatus == Subprocess::TIMEOUT) {
         info.fail("Test execution timed out.", timeTicksElapsed);
@@ -98,7 +94,7 @@ bool BoxExecutor::tryCloseBox(Box* box) {
             auto messageType = message.read<PipeMessageType>();
             if (messageType != PipeMessageType::DONE) {
                 // It's a warning
-                onWarning(Warning(message.read<string>(),
+                onWarning(Warning(message.read<std::string>(),
                                   test.getGroup()->getId(),
                                   test.getId()));
                 continue;
@@ -124,7 +120,7 @@ void BoxExecutor::ensureEmptyBoxes(size_t requiredEmpty) {
                     activeBoxes.end(),
                     [this](Box& box) { return this->tryCloseBox(&box); }),
           activeBoxes.end());
-        sleep_for(loopSleepTime);
+        std::this_thread::sleep_for(loopSleepTime);
     }
 }
 

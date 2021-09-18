@@ -4,13 +4,6 @@
 
 #include "mcga/test.hpp"
 
-using std::exception;
-using std::hash;
-using std::make_shared;
-using std::move;
-using std::string;
-using std::thread;
-
 namespace mcga::test {
 
 Driver* Driver::Instance() {
@@ -41,12 +34,12 @@ void Driver::addGroup(GroupConfig config, const Executable& body) {
     ++currentGroupId;
     GroupPtr parentGroup = groupStack.empty() ? nullptr : groupStack.back();
     GroupPtr group
-      = make_shared<Group>(move(config), parentGroup, currentGroupId);
+      = make_shared<Group>(std::move(config), parentGroup, currentGroupId);
 
     groupStack.push_back(group);
     try {
         body();
-    } catch (const exception& e) {
+    } catch (const std::exception& e) {
         emitWarning("Exception thrown in group \"" + group->getDescription()
                     + "\": " + e.what()
                     + ". Unable to execute remainder of tests in this group.");
@@ -64,24 +57,24 @@ void Driver::addTest(TestConfig config, Executable body) {
     }
     GroupPtr parentGroup = groupStack.back();
     executor->execute(
-      Test(move(config), move(body), parentGroup, ++currentTestId));
+      Test(std::move(config), std::move(body), parentGroup, ++currentTestId));
 }
 
 void Driver::addSetUp(Executable func) {
     if (!checkMainThreadAndInactive("setUp")) {
         return;
     }
-    groupStack.back()->addSetUp(move(func));
+    groupStack.back()->addSetUp(std::move(func));
 }
 
 void Driver::addTearDown(Executable func) {
     if (!checkMainThreadAndInactive("tearDown")) {
         return;
     }
-    groupStack.back()->addTearDown(move(func));
+    groupStack.back()->addTearDown(std::move(func));
 }
 
-void Driver::addFailure(const string& failure) {
+void Driver::addFailure(const std::string& failure) {
     if (!executor->isActive()) {
         emitWarning("Called fail() with message '" + failure
                     + "' outside a test execution. Ignoring.");
@@ -90,17 +83,18 @@ void Driver::addFailure(const string& failure) {
     executor->addFailure(failure);
 }
 
-void Driver::emitWarning(const string& message) {
+void Driver::emitWarning(const std::string& message) {
     executor->emitWarning(message, groupStack.back()->getId());
 }
 
-bool Driver::checkMainThreadAndInactive(const string& method) {
+bool Driver::checkMainThreadAndInactive(const std::string& method) {
     if (executor->isActive()) {
         emitWarning("Called " + method + "() inside a "
                     + executor->stateAsString() + "(). Ignoring.");
         return false;
     }
-    if (testingThreadId != hash<thread::id>()(std::this_thread::get_id())) {
+    if (testingThreadId
+        != std::hash<std::thread::id>()(std::this_thread::get_id())) {
         emitWarning("Called " + method
                     + "() from a different thread than the main testing "
                       "thread. Ignoring.");

@@ -7,13 +7,6 @@
 
 #include "core/time_tick.hpp"
 
-using std::fixed;
-using std::milli;
-using std::nano;
-using std::ostream;
-using std::setprecision;
-using std::string;
-using std::vector;
 using termcolor::green;
 using termcolor::red;
 using termcolor::reset;
@@ -21,7 +14,7 @@ using termcolor::yellow;
 
 namespace mcga::test::feedback {
 
-TestLogger::TestLogger(ostream& stream, bool liveLogging)
+TestLogger::TestLogger(std::ostream& stream, bool liveLogging)
         : stream(stream), liveLogging(liveLogging) {
 }
 
@@ -74,15 +67,15 @@ void TestLogger::printFinalInformation() {
                << (failedOptionalTests == 1 ? "was" : "were") << " optional)";
     }
     stream << "\n";
-    stream << "Total recorded testing time: " << fixed << setprecision(3)
-           << totalTimeTicks << " ticks ("
-           << TimeTicksToNanoseconds(totalTimeTicks).count() * 1.0 * milli::den
-        / nano::den
+    stream << "Total recorded testing time: " << std::fixed
+           << std::setprecision(3) << totalTimeTicks << " ticks ("
+           << TimeTicksToNanoseconds(totalTimeTicks).count() * 1.0
+        * std::milli::den / std::nano::den
            << " ms)\n";
     isLastLineVolatile = false;
 }
 
-void TestLogger::printWarning(const string& warningMessage) {
+void TestLogger::printWarning(const std::string& warningMessage) {
     stream << yellow << "Warning: " << warningMessage << reset << "\n";
 }
 
@@ -99,22 +92,22 @@ void TestLogger::printTestPassedOrFailedToken(const Test& test) {
 }
 
 void TestLogger::printTestAndGroupsDescription(const Test& test) {
-    vector<string> groupDescriptions;
+    std::vector<std::string> groupDescriptions;
     GroupPtr group = test.getGroup();
     while (group != nullptr) {
-        string groupDescription = group->getDescription();
+        std::string groupDescription = group->getDescription();
         if (!groupDescription.empty()) {
             groupDescriptions.push_back(groupDescription);
         }
         group = group->getParentGroup();
     }
-    string groupDescription
-      = accumulate(groupDescriptions.rbegin(),
-                   groupDescriptions.rend(),
-                   string(""),
-                   [](const string& a, const string& b) {
-                       return a.empty() ? b : (a + "::" + b);
-                   });
+    std::string groupDescription
+      = std::accumulate(groupDescriptions.rbegin(),
+                        groupDescriptions.rend(),
+                        std::string(""),
+                        [](const std::string& a, const std::string& b) {
+                            return a.empty() ? b : (a + "::" + b);
+                        });
     if (!groupDescription.empty()) {
         groupDescription += "::";
     }
@@ -124,11 +117,12 @@ void TestLogger::printTestAndGroupsDescription(const Test& test) {
 void TestLogger::printTestExecutionTime(const Test& test) {
     if (test.getAvgTimeTicksForExecution() != -1.0) {
         stream
-          << fixed << setprecision(3) << (test.getNumAttempts() > 1 ? "~ " : "")
+          << std::fixed << std::setprecision(3)
+          << (test.getNumAttempts() > 1 ? "~ " : "")
           << test.getAvgTimeTicksForExecution() << " ticks ("
           << (test.getNumAttempts() > 1 ? "~" : "")
           << TimeTicksToNanoseconds(test.getAvgTimeTicksForExecution()).count()
-            * 1.0 * milli::den / nano::den
+            * 1.0 * std::milli::den / std::nano::den
           << " ms)";
     } else {
         stream << "(unknown time)";
@@ -144,11 +138,11 @@ void TestLogger::printTestAttemptsInfo(const Test& test) {
     stream << ")";
 }
 
-void TestLogger::printTestFailure(string failure) {
+void TestLogger::printTestFailure(std::string failure) {
     stream << "\n\t";
     // TODO(darius98): This should be somewhere else (in utils maybe?)
     size_t pos = 0;
-    while ((pos = failure.find('\n', pos)) != string::npos) {
+    while ((pos = failure.find('\n', pos)) != std::string::npos) {
         failure.replace(pos, 1, "\n\t");
         pos += 2;
     }

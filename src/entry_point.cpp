@@ -4,11 +4,9 @@
 #include "core/main.hpp"
 #include "extensions/feedback/ext.hpp"
 
-using std::vector;
-
 namespace mcga::test {
 
-vector<TestCase*> testCasesRegistered;
+std::vector<TestCase*> testCasesRegistered;
 
 MCGA_TEST_EXPORT TestCase::TestCase(Executable body, std::string name)
         : body(std::move(body)), name(std::move(name)) {

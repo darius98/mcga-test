@@ -2,14 +2,9 @@
 
 #include <algorithm>
 
-using std::move;
-using std::size_t;
-using std::string;
-using std::vector;
-
 namespace mcga::test {
 
-void Test::ExecutionInfo::fail(const string& _failure, double _timeTicks) {
+void Test::ExecutionInfo::fail(const std::string& _failure, double _timeTicks) {
     if (passed) {
         passed = false;
         failure = _failure;
@@ -18,11 +13,11 @@ void Test::ExecutionInfo::fail(const string& _failure, double _timeTicks) {
 }
 
 Test::Test(TestConfig config, Executable body, GroupPtr group, int id)
-        : TestConfig(move(config)), body(move(body)), group(move(group)),
-          id(id) {
+        : TestConfig(std::move(config)), body(std::move(body)),
+          group(std::move(group)), id(id) {
 }
 
-const string& Test::getDescription() const {
+const std::string& Test::getDescription() const {
     return description;
 }
 
@@ -46,8 +41,8 @@ GroupPtr Test::getGroup() const {
     return group;
 }
 
-vector<GroupPtr> Test::getGroupStack() const {
-    vector<GroupPtr> groupStack(1, getGroup());
+std::vector<GroupPtr> Test::getGroupStack() const {
+    std::vector<GroupPtr> groupStack(1, getGroup());
     while (groupStack.back()->getParentGroup() != nullptr) {
         groupStack.push_back(groupStack.back()->getParentGroup());
     }
@@ -109,7 +104,7 @@ double Test::getTotalTimeTicks() const {
     return totalTimeTicks;
 }
 
-string Test::getLastFailure() const {
+std::string Test::getLastFailure() const {
     for (auto it = executions.rbegin(); it != executions.rend(); ++it) {
         if (!it->passed) {
             return it->failure;
@@ -118,7 +113,7 @@ string Test::getLastFailure() const {
     return "";
 }
 
-const vector<Test::ExecutionInfo>& Test::getExecutions() const {
+const std::vector<Test::ExecutionInfo>& Test::getExecutions() const {
     return executions;
 }
 

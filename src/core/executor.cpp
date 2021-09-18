@@ -6,21 +6,9 @@
 
 #include "time_tick.hpp"
 
-using std::exception;
-using std::hash;
-using std::move;
-using std::runtime_error;
-using std::string;
-using std::thread;
-using std::vector;
-using std::chrono::duration_cast;
-using std::chrono::high_resolution_clock;
-using std::chrono::nanoseconds;
-namespace this_thread = std::this_thread;
-
 namespace mcga::test {
 
-class ExpectationFailed : public runtime_error {
+class ExpectationFailed : public std::runtime_error {
     using runtime_error::runtime_error;
 };
 
@@ -31,7 +19,7 @@ bool Executor::isActive() const {
     return state != INACTIVE;
 }
 
-string Executor::stateAsString() const {
+std::string Executor::stateAsString() const {
     switch (state) {
         case INSIDE_TEST: return "test";
         case INSIDE_SET_UP: return "setUp";
@@ -43,10 +31,11 @@ string Executor::stateAsString() const {
 void Executor::finalize() {
 }
 
-void Executor::addFailure(const string& failure) {
+void Executor::addFailure(const std::string& failure) {
     // We only kill the thread on failure if we are in the main testing thread
     // and we know we catch this exception.
-    if (hash<thread::id>()(this_thread::get_id()) == currentExecutionThreadId) {
+    if (std::hash<std::thread::id>()(std::this_thread::get_id())
+        == currentExecutionThreadId) {
         throw ExpectationFailed(failure);
     }
 
@@ -76,9 +65,9 @@ Test::ExecutionInfo Executor::run(const Test& test) {
     currentTestId = test.getId();
     state = INSIDE_SET_UP;
     Test::ExecutionInfo info;
-    auto startTime = high_resolution_clock::now();
-    vector<GroupPtr> testGroupStack = test.getGroupStack();
-    vector<GroupPtr>::iterator it;
+    auto startTime = std::chrono::high_resolution_clock::now();
+    std::vector<GroupPtr> testGroupStack = test.getGroupStack();
+    std::vector<GroupPtr>::iterator it;
     // Execute setUp()-s, in the order of the group stack.
     for (it = testGroupStack.begin(); it != testGroupStack.end(); ++it) {
         runJob([it] { (*it)->setUp(); },
@@ -102,9 +91,9 @@ Test::ExecutionInfo Executor::run(const Test& test) {
                &info,
                "tearDown of group \"" + (*it)->getDescription() + "\"");
     }
-    auto endTime = high_resolution_clock::now();
+    auto endTime = std::chrono::high_resolution_clock::now();
     auto nanosecondsElapsed
-      = duration_cast<nanoseconds>(endTime - startTime).count();
+      = duration_cast<std::chrono::nanoseconds>(endTime - startTime).count();
     info.timeTicks = 1.0 * nanosecondsElapsed / GetTimeTickLength().count();
     if (info.timeTicks > test.getTimeTicksLimit()) {
         info.fail("Execution timed out.");
@@ -113,7 +102,7 @@ Test::ExecutionInfo Executor::run(const Test& test) {
     return info;
 }
 
-void Executor::emitWarning(const string& message, std::size_t groupId) {
+void Executor::emitWarning(const std::string& message, std::size_t groupId) {
     if (isActive()) {
         onWarning(Warning(message, groupId, currentTestId));
     }
@@ -121,8 +110,9 @@ void Executor::emitWarning(const string& message, std::size_t groupId) {
 
 void Executor::runJob(const Executable& job,
                       Test::ExecutionInfo* execution,
-                      const string& where) {
-    currentExecutionThreadId = hash<thread::id>()(this_thread::get_id());
+                      const std::string& where) {
+    currentExecutionThreadId
+      = std::hash<std::thread::id>()(std::this_thread::get_id());
     currentExecutionIsFailed = false;
     currentExecutionFailureMessage = "";
 
@@ -130,7 +120,7 @@ void Executor::runJob(const Executable& job,
         job();
     } catch (const ExpectationFailed& failure) {
         execution->fail(failure.what());
-    } catch (const exception& e) {
+    } catch (const std::exception& e) {
         execution->fail("Uncaught exception in " + where + ": " + e.what());
     } catch (...) {
         execution->fail("Uncaught non-exception type in " + where + "\".");

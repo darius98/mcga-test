@@ -1,27 +1,20 @@
 #include "time_tick.hpp"
 
-using std::chrono::nanoseconds;
-using std::operator""ns;
-using std::operator""s;
-
 namespace mcga::test {
 
-nanoseconds ComputeTimeTickLengthFromHardware() {
+std::chrono::nanoseconds ComputeTimeTickLengthFromHardware() {
     // TODO(darius98): Don't hard-code this!
-    return 1s;
+    return std::chrono::seconds(1);
 }
 
-nanoseconds GetTimeTickLength() {
-    static nanoseconds timeTickLength = 0ns;
-    if (timeTickLength == 0ns) {
-        timeTickLength = ComputeTimeTickLengthFromHardware();
-    }
+std::chrono::nanoseconds GetTimeTickLength() {
+    static const auto timeTickLength = ComputeTimeTickLengthFromHardware();
     return timeTickLength;
 }
 
-nanoseconds TimeTicksToNanoseconds(double timeTicks) {
-    return nanoseconds(
-      static_cast<nanoseconds::rep>(timeTicks * GetTimeTickLength().count()));
+std::chrono::nanoseconds TimeTicksToNanoseconds(double timeTicks) {
+    return std::chrono::nanoseconds(static_cast<std::chrono::nanoseconds::rep>(
+      timeTicks * GetTimeTickLength().count()));
 }
 
 }  // namespace mcga::test

@@ -9,10 +9,6 @@ using mcga::cli::Parser;
 using mcga::proc::createLocalClientSocket;
 using mcga::proc::PipeWriter;
 using mcga::test::Test;
-using std::cout;
-using std::make_unique;
-using std::string;
-using std::unique_ptr;
 
 namespace mcga::test::feedback {
 
@@ -119,7 +115,7 @@ void FeedbackExtension::addPipeHooks(PipeWriter* pipe, HooksManager* api) {
 }
 
 void FeedbackExtension::initLogging(HooksManager* api) {
-    logger = make_unique<TestLogger>(cout, !noLiveLogging->get_value());
+    logger = make_unique<TestLogger>(std::cout, !noLiveLogging->get_value());
 
     api->addHook<HooksManager::ON_TEST_EXECUTION_START>(
       [this](const Test& test) { logger->onTestExecutionStart(test); });
@@ -136,14 +132,15 @@ void FeedbackExtension::initLogging(HooksManager* api) {
 }
 
 void FeedbackExtension::initFileStream(HooksManager* api,
-                                       const string& fileName) {
-    fileWriter = unique_ptr<PipeWriter>(PipeWriter::OpenFile(fileName));
+                                       const std::string& fileName) {
+    fileWriter = std::unique_ptr<PipeWriter>(PipeWriter::OpenFile(fileName));
     addPipeHooks(fileWriter.get(), api);
 }
 
 void FeedbackExtension::initSocketStream(HooksManager* api,
-                                         const string& socketPath) {
-    socketWriter = unique_ptr<PipeWriter>(createLocalClientSocket(socketPath));
+                                         const std::string& socketPath) {
+    socketWriter
+      = std::unique_ptr<PipeWriter>(createLocalClientSocket(socketPath));
     addPipeHooks(socketWriter.get(), api);
 }
 

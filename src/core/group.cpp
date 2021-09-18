@@ -1,15 +1,13 @@
 #include "group.hpp"
 
-using std::move;
-using std::string;
-
 namespace mcga::test {
 
 Group::Group(GroupConfig config, Ptr parentGroup, int id)
-        : GroupConfig(move(config)), parentGroup(move(parentGroup)), id(id) {
+        : GroupConfig(std::move(config)), parentGroup(std::move(parentGroup)),
+          id(id) {
 }
 
-string Group::getDescription() const {
+std::string Group::getDescription() const {
     return description;
 }
 
