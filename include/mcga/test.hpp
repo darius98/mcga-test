@@ -278,19 +278,34 @@ void fail(const std::string& message = std::string(),
 void expect(bool expr, Context context = Context());
 
 struct TestCase {
-    Executable body;
+    TestCase* next;
 
-    std::string name;
+    void (*body)();
 
-    Context context;
+    const char* name;
+    const char* file;
+    uint32_t line;
 
-    TestCase(Executable body, std::string name, Context context);
+    TestCase(void (*body)(),
+             const char* name,
+             const char* file,
+             uint32_t line) noexcept;
 };
 
 }  // namespace mcga::test
 
-#define TEST_CASE(UNIQUE_NAME, DESC)                                           \
-    void UNIQUE_NAME##_func();                                                 \
-    static mcga::test::TestCase UNIQUE_NAME##_case(                            \
-      UNIQUE_NAME##_func, DESC, ::mcga::test::Context());                      \
-    void UNIQUE_NAME##_func()
+#define INTERNAL_TEST_CASE_CAT(a, b) a##b
+#define INTERNAL_TEST_CASE_CAT2(a, b) INTERNAL_TEST_CASE_CAT(a, b)
+#define INTERNAL_TEST_CASE_NAME_CLS                                            \
+    INTERNAL_TEST_CASE_CAT2(TestCaseCls, __LINE__)
+#define INTERNAL_TEST_CASE_NAME_REG                                            \
+    INTERNAL_TEST_CASE_CAT2(TestCaseReg, __LINE__)
+#define TEST_CASE(description)                                                 \
+    namespace {                                                                \
+    struct INTERNAL_TEST_CASE_NAME_CLS {                                       \
+        static void testCase();                                                \
+    };                                                                         \
+    }                                                                          \
+    static mcga::test::TestCase INTERNAL_TEST_CASE_NAME_REG(                   \
+      INTERNAL_TEST_CASE_NAME_CLS::testCase, description, __FILE__, __LINE__); \
+    void INTERNAL_TEST_CASE_NAME_CLS::testCase()

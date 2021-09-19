@@ -2,7 +2,7 @@
 
 #include <random>
 
-TEST_CASE(testCase, "TestCase") {
+TEST_CASE("TestCase") {
     mcga::test::test(
       mcga::test::TestConfig("test").setAttempts(100).setRequiredPassedAttempts(
         50),

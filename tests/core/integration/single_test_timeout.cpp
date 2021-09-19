@@ -1,6 +1,6 @@
 #include "mcga/test.hpp"
 
-TEST_CASE(testCase, "TestCase") {
+TEST_CASE("TestCase") {
     mcga::test::test("test", [] {
         std::atomic_uint64_t numSpins = 0;
         while (numSpins >= 0) {

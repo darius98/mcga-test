@@ -4,7 +4,7 @@
 
 using namespace mcga::test;
 
-TEST_CASE(testCase, "TestCase") {
+TEST_CASE("TestCase") {
     // fail() top-level
     fail("fail-top-level");
 

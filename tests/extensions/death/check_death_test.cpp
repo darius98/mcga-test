@@ -10,7 +10,7 @@ using namespace mcga::test;
 using namespace mcga::matchers;
 using namespace mcga::test::death;
 
-TEST_CASE(checkDeath, "Death extension: check death") {
+TEST_CASE("Death extension: check death") {
     test("exit code 0", [] {
         auto func = [] { exit(0); };
 
