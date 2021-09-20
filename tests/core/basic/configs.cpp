@@ -78,8 +78,8 @@ void executable() {
 }
 
 int main() {
-    HooksManager hooks;
-    ScanExecutor executor(&hooks);
+    ExtensionApi api;
+    ScanExecutor executor(&api);
     TestingDriver testingDriver(&executor);
 
     driver = &testingDriver;

@@ -3,13 +3,13 @@
 #include <set>
 
 #include "executor.hpp"
-#include "hooks_manager.hpp"
+#include "extension_api.hpp"
 
 namespace mcga::test {
 
 class ScanExecutor : public Executor {
   public:
-    explicit ScanExecutor(HooksManager* hooks);
+    explicit ScanExecutor(ExtensionApi* api);
 
     MCGA_DISALLOW_COPY_AND_MOVE(ScanExecutor);
 
@@ -17,9 +17,11 @@ class ScanExecutor : public Executor {
 
     void execute(Test test) override;
 
-    void emitWarning(const std::string& message, std::size_t groupId) override;
+    void emitWarning(const std::string& message, int groupId) override;
 
     Type getType() const override;
+
+    void finalize() override;
 
   private:
     std::set<int> discoveredGroups;

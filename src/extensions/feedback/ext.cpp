@@ -50,7 +50,7 @@ void FeedbackExtension::registerCommandLineArgs(Parser* parser) {
                          "(that are then removed with '\\r' modifiers."));
 }
 
-void FeedbackExtension::init(HooksManager* api) {
+void FeedbackExtension::init(ExtensionApi* api) {
     if (!quietFlag->get_value()) {
         initLogging(api);
     }
@@ -60,18 +60,18 @@ void FeedbackExtension::init(HooksManager* api) {
     if (socketPathArgument->appeared()) {
         initSocketStream(api, socketPathArgument->get_value());
     }
-    api->addHook<HooksManager::ON_TEST_EXECUTION_FINISH>(
+    api->addHook<ExtensionApi::ON_TEST_EXECUTION_FINISH>(
       [this](const Test& test) {
           if (test.isExecuted() && !test.isPassed() && !test.isOptional()) {
               exitCode = 1;
           }
       });
-    api->addHook<HooksManager::ON_WARNING>(
+    api->addHook<ExtensionApi::ON_WARNING>(
       [this](const Warning& warning) { exitCode = 1; });
 }
 
-void FeedbackExtension::addPipeHooks(PipeWriter* pipe, HooksManager* api) {
-    api->addHook<HooksManager::ON_GROUP_DISCOVERED>([pipe](GroupPtr group) {
+void FeedbackExtension::addPipeHooks(PipeWriter* pipe, ExtensionApi* api) {
+    api->addHook<ExtensionApi::ON_GROUP_DISCOVERED>([pipe](GroupPtr group) {
         pipe->sendMessage(PipeMessageType::GROUP_DISCOVERED,
                           group->getParentGroup()->getId(),
                           group->getId(),
@@ -79,7 +79,7 @@ void FeedbackExtension::addPipeHooks(PipeWriter* pipe, HooksManager* api) {
                           group->isOptional());
     });
 
-    api->addHook<HooksManager::ON_TEST_DISCOVERED>([pipe](const Test& test) {
+    api->addHook<ExtensionApi::ON_TEST_DISCOVERED>([pipe](const Test& test) {
         pipe->sendMessage(PipeMessageType::TEST_DISCOVERED,
                           test.getId(),
                           test.getGroup()->getId(),
@@ -89,12 +89,12 @@ void FeedbackExtension::addPipeHooks(PipeWriter* pipe, HooksManager* api) {
                           test.getNumRequiredPassedAttempts());
     });
 
-    api->addHook<HooksManager::ON_TEST_EXECUTION_START>([pipe](
+    api->addHook<ExtensionApi::ON_TEST_EXECUTION_START>([pipe](
                                                           const Test& test) {
         pipe->sendMessage(PipeMessageType::TEST_EXECUTION_START, test.getId());
     });
 
-    api->addHook<HooksManager::ON_TEST_EXECUTION_FINISH>(
+    api->addHook<ExtensionApi::ON_TEST_EXECUTION_FINISH>(
       [pipe](const Test& test) {
           pipe->sendMessage(PipeMessageType::TEST_EXECUTION_FINISH,
                             test.getId(),
@@ -103,10 +103,10 @@ void FeedbackExtension::addPipeHooks(PipeWriter* pipe, HooksManager* api) {
                             test.getExecutions().back().failure);
       });
 
-    api->addHook<HooksManager::BEFORE_DESTROY>(
+    api->addHook<ExtensionApi::BEFORE_DESTROY>(
       [pipe]() { pipe->sendMessage(PipeMessageType::DONE); });
 
-    api->addHook<HooksManager::ON_WARNING>([pipe](const Warning& warning) {
+    api->addHook<ExtensionApi::ON_WARNING>([pipe](const Warning& warning) {
         pipe->sendMessage(PipeMessageType::WARNING,
                           warning.message,
                           warning.groupId,
@@ -114,30 +114,30 @@ void FeedbackExtension::addPipeHooks(PipeWriter* pipe, HooksManager* api) {
     });
 }
 
-void FeedbackExtension::initLogging(HooksManager* api) {
+void FeedbackExtension::initLogging(ExtensionApi* api) {
     logger = make_unique<TestLogger>(std::cout, !noLiveLogging->get_value());
 
-    api->addHook<HooksManager::ON_TEST_EXECUTION_START>(
+    api->addHook<ExtensionApi::ON_TEST_EXECUTION_START>(
       [this](const Test& test) { logger->onTestExecutionStart(test); });
 
-    api->addHook<HooksManager::ON_TEST_EXECUTION_FINISH>(
+    api->addHook<ExtensionApi::ON_TEST_EXECUTION_FINISH>(
       [this](const Test& test) { logger->onTestExecutionFinish(test); });
 
-    api->addHook<HooksManager::BEFORE_DESTROY>(
+    api->addHook<ExtensionApi::BEFORE_DESTROY>(
       [this]() { logger->printFinalInformation(); });
 
-    api->addHook<HooksManager::ON_WARNING>([this](const Warning& warning) {
+    api->addHook<ExtensionApi::ON_WARNING>([this](const Warning& warning) {
         logger->printWarning(warning.message);
     });
 }
 
-void FeedbackExtension::initFileStream(HooksManager* api,
+void FeedbackExtension::initFileStream(ExtensionApi* api,
                                        const std::string& fileName) {
     fileWriter = std::unique_ptr<PipeWriter>(PipeWriter::OpenFile(fileName));
     addPipeHooks(fileWriter.get(), api);
 }
 
-void FeedbackExtension::initSocketStream(HooksManager* api,
+void FeedbackExtension::initSocketStream(ExtensionApi* api,
                                          const std::string& socketPath) {
     socketWriter
       = std::unique_ptr<PipeWriter>(createLocalClientSocket(socketPath));

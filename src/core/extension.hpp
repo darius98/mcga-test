@@ -3,7 +3,7 @@
 #include <mcga/cli.hpp>
 
 #include "disallow_copy_and_move.hpp"
-#include "hooks_manager.hpp"
+#include "extension_api.hpp"
 
 namespace mcga::test {
 
@@ -18,7 +18,7 @@ class Extension {
     virtual void registerCommandLineArgs(mcga::cli::Parser* /*parser*/) {
     }
 
-    virtual void init(HooksManager* /*api*/) {
+    virtual void init(ExtensionApi* /*api*/) {
     }
 
     virtual void destroy() {

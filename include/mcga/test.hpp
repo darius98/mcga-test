@@ -283,14 +283,14 @@ struct TestCase {
     void (*body)();
 
     const char* name;
-    const char* file;
-    uint32_t line;
+    internal::source_location location;
 
     TestCase(void (*body)(),
              const char* name,
-             const char* file,
-             uint32_t line) noexcept;
+             internal::source_location location) noexcept;
 };
+
+std::vector<TestCase*> getTestCases();
 
 }  // namespace mcga::test
 
@@ -300,6 +300,7 @@ struct TestCase {
     INTERNAL_TEST_CASE_CAT2(TestCaseCls, __LINE__)
 #define INTERNAL_TEST_CASE_NAME_REG                                            \
     INTERNAL_TEST_CASE_CAT2(TestCaseReg, __LINE__)
+
 #define TEST_CASE(description)                                                 \
     namespace {                                                                \
     struct INTERNAL_TEST_CASE_NAME_CLS {                                       \
@@ -307,5 +308,7 @@ struct TestCase {
     };                                                                         \
     }                                                                          \
     static mcga::test::TestCase INTERNAL_TEST_CASE_NAME_REG(                   \
-      INTERNAL_TEST_CASE_NAME_CLS::testCase, description, __FILE__, __LINE__); \
+      INTERNAL_TEST_CASE_NAME_CLS::testCase,                                   \
+      "" description,                                                          \
+      ::mcga::internal::source_location::current());                           \
     void INTERNAL_TEST_CASE_NAME_CLS::testCase()

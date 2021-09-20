@@ -9,7 +9,7 @@
 
 namespace mcga::test {
 
-class HooksManager {
+class ExtensionApi {
   public:
     using OnGroupDiscovered = std::function<void(GroupPtr)>;
     using OnTestDiscovered = std::function<void(const Test&)>;
@@ -27,24 +27,24 @@ class HooksManager {
         BEFORE_DESTROY = 5,
     };
 
-    HooksManager() = default;
-    HooksManager(const HooksManager&) = default;
-    HooksManager(HooksManager&&) = default;
+    ExtensionApi() = default;
+    ExtensionApi(const ExtensionApi&) = default;
+    ExtensionApi(ExtensionApi&&) = default;
 
-    HooksManager& operator=(const HooksManager&) = default;
-    HooksManager& operator=(HooksManager&&) = default;
+    ExtensionApi& operator=(const ExtensionApi&) = default;
+    ExtensionApi& operator=(ExtensionApi&&) = default;
 
-    virtual ~HooksManager() = default;
+    virtual ~ExtensionApi() = default;
 
     template<Type t, class H>
-    void addHook(const H& hook) {
-        std::get<t>(hooks).push_back(hook);
+    void addHook(H&& hook) {
+        std::get<t>(hooks).push_back(std::forward<H>(hook));
     }
 
     template<Type t, class... Args>
-    void runHooks(const Args&... args) {
+    void runHooks(Args&&... args) {
         for (const auto& hook: std::get<t>(hooks)) {
-            hook(args...);
+            hook(std::forward<Args>(args)...);
         }
     }
 

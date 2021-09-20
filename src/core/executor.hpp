@@ -3,7 +3,7 @@
 #include <mutex>
 
 #include "disallow_copy_and_move.hpp"
-#include "hooks_manager.hpp"
+#include "extension_api.hpp"
 #include "test.hpp"
 #include "warning.hpp"
 
@@ -17,7 +17,7 @@ class Executor {
         BOXED,
     };
 
-    explicit Executor(HooksManager* hooks);
+    explicit Executor(ExtensionApi* api);
 
     MCGA_DISALLOW_COPY_AND_MOVE(Executor);
 
@@ -31,11 +31,11 @@ class Executor {
 
     virtual void finalize();
 
-    virtual void emitWarning(const std::string& message, std::size_t groupId);
+    virtual void emitWarning(const std::string& message, int groupId);
 
     std::string stateAsString() const;
 
-    void addFailure(std::string failure, Context context);
+    void addFailure(const std::string& failure, Context context);
 
     Test::ExecutionInfo run(const Test& test);
 
@@ -49,7 +49,7 @@ class Executor {
     void onTestExecutionStart(const Test& test);
     void onTestExecutionFinish(const Test& test);
 
-    HooksManager* hooks;
+    ExtensionApi* api;
 
   private:
     enum State { INACTIVE, INSIDE_TEST, INSIDE_SET_UP, INSIDE_TEAR_DOWN };

@@ -56,7 +56,7 @@ void runTests(int argc,
 
     parser.parse(argc, argv);
 
-    HooksManager api;
+    ExtensionApi api;
     for (Extension* extension: extensions) {
         extension->init(&api);
     }
@@ -64,16 +64,15 @@ void runTests(int argc,
     ScanExecutor scanner(&api);
     runTestsOnExecutor(&scanner, tests);
 
+    std::unique_ptr<Executor> executor;
     switch (executorTypeArg->get_value()) {
         case Executor::SMOOTH: {
-            Executor executor(&api);
-            runTestsOnExecutor(&executor, tests);
+            executor = std::make_unique<Executor>(&api);
             break;
         }
         case Executor::BOXED: {
-            BoxExecutor executor(
+            executor = std::make_unique<BoxExecutor>(
               &api, std::max(maxParallelTestsArg->get_value(), 1ul));
-            runTestsOnExecutor(&executor, tests);
             break;
         }
         default: {
@@ -81,7 +80,7 @@ void runTests(int argc,
             exit(1);
         }
     }
-    api.runHooks<HooksManager::BEFORE_DESTROY>();
+    runTestsOnExecutor(executor.get(), tests);
     for (Extension* extension: extensions) {
         extension->destroy();
     }

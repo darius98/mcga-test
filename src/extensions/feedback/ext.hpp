@@ -13,16 +13,16 @@ class FeedbackExtension : public Extension {
 
     void registerCommandLineArgs(cli::Parser* parser) override;
 
-    void init(HooksManager* api) override;
+    void init(ExtensionApi* api) override;
 
   private:
-    static void addPipeHooks(proc::PipeWriter* pipe, HooksManager* api);
+    static void addPipeHooks(proc::PipeWriter* pipe, ExtensionApi* api);
 
-    void initLogging(HooksManager* api);
+    void initLogging(ExtensionApi* api);
 
-    void initFileStream(HooksManager* api, const std::string& fileName);
+    void initFileStream(ExtensionApi* api, const std::string& fileName);
 
-    void initSocketStream(HooksManager* api, const std::string& socketPath);
+    void initSocketStream(ExtensionApi* api, const std::string& socketPath);
 
     int exitCode = 0;
     std::unique_ptr<TestLogger> logger = nullptr;

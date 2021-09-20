@@ -12,12 +12,12 @@ class ExpectationFailed : public std::runtime_error {
   public:
     Context context;
 
-    ExpectationFailed(std::string what, Context context)
-            : std::runtime_error(std::move(what)), context(std::move(context)) {
+    ExpectationFailed(const std::string& what, Context context)
+            : std::runtime_error(what), context(std::move(context)) {
     }
 };
 
-Executor::Executor(HooksManager* hooks): hooks(hooks) {
+Executor::Executor(ExtensionApi* api): api(api) {
 }
 
 bool Executor::isActive() const {
@@ -34,14 +34,15 @@ std::string Executor::stateAsString() const {
 }
 
 void Executor::finalize() {
+    api->runHooks<ExtensionApi::BEFORE_DESTROY>();
 }
 
-void Executor::addFailure(std::string failure, Context context) {
+void Executor::addFailure(const std::string& failure, Context context) {
     // We only kill the thread on failure if we are in the main testing thread
     // and we know we catch this exception.
     if (std::hash<std::thread::id>()(std::this_thread::get_id())
         == currentExecutionThreadId) {
-        throw ExpectationFailed(std::move(failure), std::move(context));
+        throw ExpectationFailed(failure, std::move(context));
     }
 
     // If the user starts his own threads that entertain failures, it is his
@@ -50,7 +51,7 @@ void Executor::addFailure(std::string failure, Context context) {
     std::lock_guard guard(currentExecutionFailureMutex);
     if (!currentExecutionIsFailed) {
         currentExecutionIsFailed = true;
-        currentExecutionFailureMessage = std::move(failure);
+        currentExecutionFailureMessage = failure;
         currentExecutionFailureContext = std::move(context);
     }
 }
@@ -108,7 +109,7 @@ Test::ExecutionInfo Executor::run(const Test& test) {
     return info;
 }
 
-void Executor::emitWarning(const std::string& message, std::size_t groupId) {
+void Executor::emitWarning(const std::string& message, int groupId) {
     if (isActive()) {
         onWarning(Warning(message, groupId, currentTestId));
     }
@@ -141,15 +142,15 @@ void Executor::runJob(const Executable& job,
 }
 
 void Executor::onWarning(const Warning& warning) {
-    hooks->runHooks<HooksManager::ON_WARNING>(warning);
+    api->runHooks<ExtensionApi::ON_WARNING>(warning);
 }
 
 void Executor::onTestExecutionStart(const Test& test) {
-    hooks->runHooks<HooksManager::ON_TEST_EXECUTION_START>(test);
+    api->runHooks<ExtensionApi::ON_TEST_EXECUTION_START>(test);
 }
 
 void Executor::onTestExecutionFinish(const Test& test) {
-    hooks->runHooks<HooksManager::ON_TEST_EXECUTION_FINISH>(test);
+    api->runHooks<ExtensionApi::ON_TEST_EXECUTION_FINISH>(test);
 }
 
 }  // namespace mcga::test

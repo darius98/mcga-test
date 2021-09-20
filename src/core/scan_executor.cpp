@@ -2,7 +2,7 @@
 
 namespace mcga::test {
 
-ScanExecutor::ScanExecutor(HooksManager* hooks): Executor(hooks) {
+ScanExecutor::ScanExecutor(ExtensionApi* api): Executor(api) {
 }
 
 void ScanExecutor::execute(Test test) {
@@ -11,17 +11,21 @@ void ScanExecutor::execute(Test test) {
             continue;
         }
         discoveredGroups.insert(group->getId());
-        hooks->runHooks<HooksManager::ON_GROUP_DISCOVERED>(group);
+        api->runHooks<ExtensionApi::ON_GROUP_DISCOVERED>(group);
     }
-    hooks->runHooks<HooksManager::ON_TEST_DISCOVERED>(test);
+    api->runHooks<ExtensionApi::ON_TEST_DISCOVERED>(test);
 }
 
-void ScanExecutor::emitWarning(const std::string& message, size_t groupId) {
-    hooks->runHooks<HooksManager::ON_WARNING>(Warning(message, groupId));
+void ScanExecutor::emitWarning(const std::string& message, int groupId) {
+    api->runHooks<ExtensionApi::ON_WARNING>(Warning(message, groupId));
 }
 
 Executor::Type ScanExecutor::getType() const {
     return SCAN;
+}
+
+void ScanExecutor::finalize() {
+    // Intentionally don't run destroy hooks for this executor.
 }
 
 }  // namespace mcga::test

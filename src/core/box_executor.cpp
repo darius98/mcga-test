@@ -17,8 +17,8 @@ enum PipeMessageType {
     DONE,
 };
 
-BoxExecutor::BoxExecutor(HooksManager* hooks, size_t numBoxes)
-        : Executor(hooks), numBoxes(numBoxes) {
+BoxExecutor::BoxExecutor(ExtensionApi* api, size_t numBoxes)
+        : Executor(api), numBoxes(numBoxes) {
 }
 
 void BoxExecutor::execute(Test test) {
@@ -30,14 +30,14 @@ void BoxExecutor::execute(Test test) {
 
 void BoxExecutor::finalize() {
     ensureEmptyBoxes(numBoxes);
+    Executor::finalize();
 }
 
 Executor::Type BoxExecutor::getType() const {
     return BOXED;
 }
 
-void BoxExecutor::emitWarning(const std::string& message,
-                              std::size_t /*groupId*/) {
+void BoxExecutor::emitWarning(const std::string& message, int /*groupId*/) {
     if (isActive()) {
         currentTestingSubprocessPipe->sendMessage(WARNING, message);
     }

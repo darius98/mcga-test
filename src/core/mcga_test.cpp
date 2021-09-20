@@ -148,4 +148,27 @@ MCGA_TEST_EXPORT void expect(bool expr, Context context) {
     }
 }
 
+static TestCase* registeredTestCasesListHead = nullptr;
+
+MCGA_TEST_EXPORT
+TestCase::TestCase(void (*body)(),
+                   const char* name,
+                   internal::source_location location) noexcept
+        : body(body), name(name), location(location),
+          next(registeredTestCasesListHead) {
+    registeredTestCasesListHead = this;
+}
+
+MCGA_TEST_EXPORT
+std::vector<TestCase*> getTestCases() {
+    std::vector<mcga::test::TestCase*> testCasesRegistered;
+    for (auto testCase = mcga::test::registeredTestCasesListHead;
+         testCase != nullptr;
+         testCase = testCase->next) {
+        testCasesRegistered.push_back(testCase);
+    }
+    std::reverse(testCasesRegistered.begin(), testCasesRegistered.end());
+    return testCasesRegistered;
+}
+
 }  // namespace mcga::test
