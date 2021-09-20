@@ -58,8 +58,14 @@ class Group : private GroupConfig {
      * stack. */
     void addSetUp(UserTestExecutable func);
 
-    /** Call the set-up function of this group. */
-    void setUp() const;
+    template<class Callable>
+    void forEachSetUp(Callable callable) const {
+        for (const auto& setUp: setUpFuncs) {
+            if (!callable(setUp)) {
+                break;
+            }
+        }
+    }
 
     /** Add a tear-down function to this group.
      *
@@ -69,7 +75,15 @@ class Group : private GroupConfig {
     void addTearDown(UserTestExecutable func);
 
     /** Call the tear-down functions of this group, in reverse order. */
-    void tearDown() const;
+    template<class Callable>
+    void forEachTearDown(Callable callable) const {
+        for (auto it = tearDownFuncs.rbegin(); it != tearDownFuncs.rend();
+             it++) {
+            if (!callable(*it)) {
+                break;
+            }
+        }
+    }
 
   private:
     Ptr parentGroup;

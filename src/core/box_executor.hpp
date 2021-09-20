@@ -26,7 +26,7 @@ class BoxExecutor : public Executor {
 
     void finalize() override;
 
-    void emitWarning(const std::string& message, int groupId) override;
+    void emitWarning(Warning warning, GroupPtr group) override;
 
     Type getType() const override;
 

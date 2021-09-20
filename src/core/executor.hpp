@@ -31,7 +31,7 @@ class Executor {
 
     virtual void finalize();
 
-    virtual void emitWarning(const std::string& message, int groupId);
+    virtual void emitWarning(Warning warning, GroupPtr group);
 
     std::string stateAsString() const;
 
@@ -42,20 +42,27 @@ class Executor {
   private:
     void runJob(const Executable& job,
                 Test::ExecutionInfo* execution,
-                const std::string& where);
+                const Context& jobContext);
 
   protected:
-    void onWarning(const Warning& warning);
+    void decorateWarningWithCurrentTestNotes(Warning& warning, GroupPtr group);
+
+    void onWarning(Warning warning, GroupPtr group);
+    void onGroupDiscovered(GroupPtr group);
+    void onTestDiscovered(const Test& test);
     void onTestExecutionStart(const Test& test);
     void onTestExecutionFinish(const Test& test);
 
     ExtensionApi* api;
 
+    const UserTestExecutable* currentSetUp = nullptr;
+    const UserTestExecutable* currentTearDown = nullptr;
+    const Test* currentTest = nullptr;
+
   private:
     enum State { INACTIVE, INSIDE_TEST, INSIDE_SET_UP, INSIDE_TEAR_DOWN };
 
     State state = INACTIVE;
-    int currentTestId = 0;
     std::size_t currentExecutionThreadId = 0;
 
     std::mutex currentExecutionFailureMutex;

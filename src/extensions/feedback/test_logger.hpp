@@ -4,6 +4,7 @@
 #include <set>
 
 #include "core/test.hpp"
+#include "core/warning.hpp"
 
 namespace mcga::test::feedback {
 
@@ -15,7 +16,7 @@ class TestLogger {
 
     void onTestExecutionFinish(const Test& test);
 
-    void printWarning(const std::string& warningMessage);
+    void printWarning(const Warning& warning);
 
     void printFinalInformation();
 

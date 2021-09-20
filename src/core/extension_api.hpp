@@ -41,6 +41,7 @@ class ExtensionApi {
         std::get<t>(hooks).push_back(std::forward<H>(hook));
     }
 
+  private:
     template<Type t, class... Args>
     void runHooks(Args&&... args) {
         for (const auto& hook: std::get<t>(hooks)) {
@@ -48,7 +49,6 @@ class ExtensionApi {
         }
     }
 
-  private:
     std::tuple<std::vector<OnGroupDiscovered>,
                std::vector<OnTestDiscovered>,
                std::vector<OnWarning>,
@@ -56,6 +56,8 @@ class ExtensionApi {
                std::vector<OnTestExecutionFinish>,
                std::vector<BeforeDestroy>>
       hooks;
+
+    friend class Executor;
 };
 
 }  // namespace mcga::test

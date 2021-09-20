@@ -72,9 +72,23 @@ void TestLogger::printFinalInformation() {
     isLastLineVolatile = false;
 }
 
-void TestLogger::printWarning(const std::string& warningMessage) {
-    stream << termcolor::yellow << "Warning: " << warningMessage
-           << termcolor::reset << "\n";
+void TestLogger::printWarning(const Warning& warning) {
+    if (isLastLineVolatile) {
+        stream << "\r";
+        stream.flush();
+    }
+    stream << termcolor::yellow << "Warning: " << warning.message << "\n";
+    if (warning.context.has_value()) {
+        stream << "\tat " << warning.context->fileName << ":" << warning.context->line << ":" << warning.context->column << "\n";
+    }
+    for (const auto& note: warning.notes) {
+        stream << "\tNote: " << note.message;
+        if (note.context.has_value()) {
+            stream << " at " << note.context->fileName << ":" << note.context->line << ":" << note.context->column;
+        }
+        stream << "\n";
+    }
+    stream << termcolor::reset;
 }
 
 void TestLogger::printTestPassedOrFailedToken(const Test& test) {

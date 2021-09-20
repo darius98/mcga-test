@@ -11,13 +11,9 @@ void ScanExecutor::execute(Test test) {
             continue;
         }
         discoveredGroups.insert(group->getId());
-        api->runHooks<ExtensionApi::ON_GROUP_DISCOVERED>(group);
+        onGroupDiscovered(group);
     }
-    api->runHooks<ExtensionApi::ON_TEST_DISCOVERED>(test);
-}
-
-void ScanExecutor::emitWarning(const std::string& message, int groupId) {
-    api->runHooks<ExtensionApi::ON_WARNING>(Warning(message, groupId));
+    onTestDiscovered(test);
 }
 
 Executor::Type ScanExecutor::getType() const {

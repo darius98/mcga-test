@@ -68,7 +68,8 @@ TEST_CASE("TestCase") {
         test("test-in-thread", [] {});
 
         // group() in different thread
-        group("group-in-thread", [] {});
+        group("group-in-thread",
+              [] { test("test-in-group-in-thread", [] {}); });
 
         // setUp() in different thread
         setUp([] {});

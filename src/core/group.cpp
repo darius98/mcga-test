@@ -31,20 +31,8 @@ void Group::addSetUp(UserTestExecutable func) {
     setUpFuncs.push_back(std::move(func));
 }
 
-void Group::setUp() const {
-    for (const auto& setUpFunc: setUpFuncs) {
-        setUpFunc.func();
-    }
-}
-
 void Group::addTearDown(UserTestExecutable func) {
     tearDownFuncs.push_back(std::move(func));
-}
-
-void Group::tearDown() const {
-    for (auto it = tearDownFuncs.rbegin(); it != tearDownFuncs.rend(); it++) {
-        it->func();
-    }
 }
 
 }  // namespace mcga::test

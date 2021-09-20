@@ -69,7 +69,7 @@ Executor::Type Executor::getType() const {
 }
 
 Test::ExecutionInfo Executor::run(const Test& test) {
-    currentTestId = test.getId();
+    currentTest = &test;
     state = INSIDE_SET_UP;
     Test::ExecutionInfo info;
     auto startTime = std::chrono::high_resolution_clock::now();
@@ -77,26 +77,29 @@ Test::ExecutionInfo Executor::run(const Test& test) {
     std::vector<GroupPtr>::iterator it;
     // Execute setUp()-s, in the order of the group stack.
     for (it = testGroupStack.begin(); it != testGroupStack.end(); ++it) {
-        runJob([it] { (*it)->setUp(); },
-               &info,
-               "setUp of group \"" + (*it)->getDescription() + "\"");
-        if (!info.passed) {
+        (*it)->forEachSetUp([&](const UserTestExecutable& setUp) {
+            currentSetUp = &setUp;
+            runJob(setUp.func, &info, setUp.context);
+            currentSetUp = nullptr;
             // If a setUp() fails, do not execute the rest.
-            break;
-        }
+            return info.passed;
+        });
     }
     state = INSIDE_TEST;
     if (info.passed) {
         // Only run the test if all setUp()-s passed without exception.
-        runJob([&test] { test.run(); }, &info, "test");
+        runJob([&test] { test.run(); }, &info, test.getContext());
         --it;
     }
     state = INSIDE_TEAR_DOWN;
     // Execute tearDown()-s in reverse order, from where setUp()-s stopped.
     for (; it + 1 != testGroupStack.begin(); --it) {
-        runJob([it] { (*it)->tearDown(); },
-               &info,
-               "tearDown of group \"" + (*it)->getDescription() + "\"");
+        (*it)->forEachTearDown([&](const UserTestExecutable& tearDown) {
+            currentTearDown = &tearDown;
+            runJob(tearDown.func, &info, tearDown.context);
+            currentTearDown = nullptr;
+            return true;
+        });
     }
     auto endTime = std::chrono::high_resolution_clock::now();
     auto nanosecondsElapsed
@@ -106,18 +109,17 @@ Test::ExecutionInfo Executor::run(const Test& test) {
         info.fail("Execution timed out.");
     }
     state = INACTIVE;
+    currentTest = nullptr;
     return info;
 }
 
-void Executor::emitWarning(const std::string& message, int groupId) {
-    if (isActive()) {
-        onWarning(Warning(message, groupId, currentTestId));
-    }
+void Executor::emitWarning(Warning warning, GroupPtr group) {
+    onWarning(std::move(warning), std::move(group));
 }
 
 void Executor::runJob(const Executable& job,
                       Test::ExecutionInfo* execution,
-                      const std::string& where) {
+                      const Context& jobContext) {
     currentExecutionThreadId
       = std::hash<std::thread::id>()(std::this_thread::get_id());
     currentExecutionIsFailed = false;
@@ -129,9 +131,10 @@ void Executor::runJob(const Executable& job,
     } catch (const ExpectationFailed& failure) {
         execution->fail(failure.what(), failure.context);
     } catch (const std::exception& e) {
-        execution->fail("Uncaught exception in " + where + ": " + e.what());
+        execution->fail("Uncaught exception: " + std::string(e.what()),
+                        jobContext);
     } catch (...) {
-        execution->fail("Uncaught non-exception type in " + where + "\".");
+        execution->fail("Uncaught non-exception type.", jobContext);
     }
 
     std::lock_guard guard(currentExecutionFailureMutex);
@@ -141,8 +144,36 @@ void Executor::runJob(const Executable& job,
     }
 }
 
-void Executor::onWarning(const Warning& warning) {
+void Executor::onWarning(Warning warning, GroupPtr group) {
+    decorateWarningWithCurrentTestNotes(warning, std::move(group));
     api->runHooks<ExtensionApi::ON_WARNING>(warning);
+}
+
+void Executor::decorateWarningWithCurrentTestNotes(Warning& warning,
+                                                   GroupPtr group) {
+    if (currentSetUp) {
+        warning.addNote("While running setUp", currentSetUp->context);
+    }
+    if (currentTearDown) {
+        warning.addNote("While running tearDown", currentTearDown->context);
+    }
+    if (currentTest) {
+        warning.addNote("While running test " + currentTest->getDescription(),
+                        currentTest->getContext());
+    }
+    while (group != nullptr) {
+        warning.addNote("In group " + group->getDescription(),
+                        group->getContext());
+        group = group->getParentGroup();
+    }
+}
+
+void Executor::onGroupDiscovered(GroupPtr group) {
+    api->runHooks<ExtensionApi::ON_GROUP_DISCOVERED>(std::move(group));
+}
+
+void Executor::onTestDiscovered(const Test& test) {
+    api->runHooks<ExtensionApi::ON_TEST_DISCOVERED>(test);
 }
 
 void Executor::onTestExecutionStart(const Test& test) {

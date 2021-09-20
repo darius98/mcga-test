@@ -17,9 +17,7 @@ class ScanExecutor : public Executor {
 
     void execute(Test test) override;
 
-    void emitWarning(const std::string& message, int groupId) override;
-
-    Type getType() const override;
+    [[nodiscard]] Type getType() const override;
 
     void finalize() override;
 

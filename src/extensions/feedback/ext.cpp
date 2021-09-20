@@ -107,10 +107,7 @@ void FeedbackExtension::addPipeHooks(PipeWriter* pipe, ExtensionApi* api) {
       [pipe]() { pipe->sendMessage(PipeMessageType::DONE); });
 
     api->addHook<ExtensionApi::ON_WARNING>([pipe](const Warning& warning) {
-        pipe->sendMessage(PipeMessageType::WARNING,
-                          warning.message,
-                          warning.groupId,
-                          warning.testId);
+        pipe->sendMessage(PipeMessageType::WARNING, warning);
     });
 }
 
@@ -127,7 +124,7 @@ void FeedbackExtension::initLogging(ExtensionApi* api) {
       [this]() { logger->printFinalInformation(); });
 
     api->addHook<ExtensionApi::ON_WARNING>([this](const Warning& warning) {
-        logger->printWarning(warning.message);
+        logger->printWarning(warning);
     });
 }
 

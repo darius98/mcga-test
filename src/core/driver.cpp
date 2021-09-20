@@ -27,7 +27,7 @@ Executor::Type Driver::getExecutorType() const {
 }
 
 void Driver::addGroup(GroupConfig config, const Executable& body) {
-    if (!checkMainThreadAndInactive("group")) {
+    if (!checkMainThreadAndInactive("group", config.context)) {
         return;
     }
 
@@ -40,19 +40,23 @@ void Driver::addGroup(GroupConfig config, const Executable& body) {
     try {
         body();
     } catch (const std::exception& e) {
-        emitWarning("Exception thrown in group \"" + group->getDescription()
-                    + "\": " + e.what()
-                    + ". Unable to execute remainder of tests in this group.");
+        emitWarning(Warning(
+          "Exception thrown outside a test: " + std::string(e.what()),
+          std::nullopt,
+          {Warning::Note("Unable to execute remainder of tests in this group.",
+                         std::nullopt)}));
     } catch (...) {
-        emitWarning(
-          "Non-exception thrown in group \"" + group->getDescription()
-          + "\". Unable to execute remainder of tests in this group.");
+        emitWarning(Warning(
+          "Non-exception object thrown outside a test.",
+          std::nullopt,
+          {Warning::Note("Unable to execute remainder of tests in this group.",
+                         std::nullopt)}));
     }
     groupStack.pop_back();
 }
 
 void Driver::addTest(TestConfig config, Executable body) {
-    if (!checkMainThreadAndInactive("test")) {
+    if (!checkMainThreadAndInactive("test", config.context)) {
         return;
     }
     GroupPtr parentGroup = groupStack.back();
@@ -61,14 +65,14 @@ void Driver::addTest(TestConfig config, Executable body) {
 }
 
 void Driver::addSetUp(UserTestExecutable setUp) {
-    if (!checkMainThreadAndInactive("setUp")) {
+    if (!checkMainThreadAndInactive("setUp", setUp.context)) {
         return;
     }
     groupStack.back()->addSetUp(std::move(setUp));
 }
 
 void Driver::addTearDown(UserTestExecutable tearDown) {
-    if (!checkMainThreadAndInactive("tearDown")) {
+    if (!checkMainThreadAndInactive("tearDown", tearDown.context)) {
         return;
     }
     groupStack.back()->addTearDown(std::move(tearDown));
@@ -76,28 +80,32 @@ void Driver::addTearDown(UserTestExecutable tearDown) {
 
 void Driver::addFailure(const std::string& failure, Context context) {
     if (!executor->isActive()) {
-        emitWarning("Called fail() with message '" + failure
-                    + "' outside a test execution. Ignoring.");
+        emitWarning(Warning("Called fail() outside a test, ignoring.",
+                            std::move(context)));
         return;
     }
     executor->addFailure(failure, std::move(context));
 }
 
-void Driver::emitWarning(const std::string& message) {
-    executor->emitWarning(message, groupStack.back()->getId());
+void Driver::emitWarning(Warning warning) {
+    executor->emitWarning(std::move(warning), groupStack.back());
 }
 
-bool Driver::checkMainThreadAndInactive(const std::string& method) {
+bool Driver::checkMainThreadAndInactive(const std::string& method,
+                                        const Context& context) {
     if (executor->isActive()) {
-        emitWarning("Called " + method + "() inside a "
-                    + executor->stateAsString() + "(). Ignoring.");
+        emitWarning(Warning("Called " + method + "() inside a "
+                              + executor->stateAsString() + "(), ignoring.",
+                            context));
         return false;
     }
     if (testingThreadId
         != std::hash<std::thread::id>()(std::this_thread::get_id())) {
-        emitWarning("Called " + method
+        emitWarning(
+          Warning("Called " + method
                     + "() from a different thread than the main testing "
-                      "thread. Ignoring.");
+                      "thread, ignoring.",
+                  context));
         return false;
     }
     return true;

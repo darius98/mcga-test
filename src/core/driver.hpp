@@ -36,10 +36,11 @@ class Driver {
 
     virtual void addFailure(const std::string& failure, Context context);
 
-    virtual void emitWarning(const std::string& message);
+    virtual void emitWarning(Warning warning);
 
   private:
-    bool checkMainThreadAndInactive(const std::string& method);
+    bool checkMainThreadAndInactive(const std::string& method,
+                                    const Context& context);
 
     Executor* executor = nullptr;
 

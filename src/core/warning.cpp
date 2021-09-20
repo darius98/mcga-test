@@ -2,12 +2,21 @@
 
 namespace mcga::test {
 
-Warning::Warning(std::string message, int groupId)
-        : message(std::move(message)), groupId(groupId) {
+Warning::Note::Note(std::string message, std::optional<Context> context)
+        : message(std::move(message)), context(std::move(context)) {
 }
 
-Warning::Warning(std::string message, int groupId, int testId)
-        : message(std::move(message)), groupId(groupId), testId(testId) {
+Warning::Warning(std::string message,
+                 std::optional<Context> context,
+                 std::vector<Note> notes)
+        : message(std::move(message)), context(std::move(context)),
+          notes(std::move(notes)) {
+}
+
+Warning& Warning::addNote(std::string noteMessage,
+                          std::optional<Context> noteContext) {
+    notes.emplace_back(std::move(noteMessage), std::move(noteContext));
+    return *this;
 }
 
 }  // namespace mcga::test

@@ -1,10 +1,11 @@
 #! /usr/bin/env python3.7
 
 import subprocess
+import sys
 
 proc = None
 try:
-    proc = subprocess.run("./core_single_test_optional_fail",
+    proc = subprocess.run(["./core_single_test_optional_fail", "--executor=" + sys.argv[1]],
                           timeout=1, capture_output=True)
 except TimeoutError:
     print("Test did not finish in 1 second")

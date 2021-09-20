@@ -37,9 +37,10 @@ Executor::Type BoxExecutor::getType() const {
     return BOXED;
 }
 
-void BoxExecutor::emitWarning(const std::string& message, int /*groupId*/) {
+void BoxExecutor::emitWarning(Warning warning, GroupPtr group) {
     if (isActive()) {
-        currentTestingSubprocessPipe->sendMessage(WARNING, message);
+        decorateWarningWithCurrentTestNotes(warning, group);
+        currentTestingSubprocessPipe->sendMessage(WARNING, warning);
     }
 }
 
@@ -47,22 +48,8 @@ void BoxExecutor::executeBoxed(const Test& test,
                                std::unique_ptr<PipeWriter> pipe) {
     currentTestingSubprocessPipe = std::move(pipe);
     Test::ExecutionInfo info = run(test);
-    if (!info.failureContext.has_value()) {
-        currentTestingSubprocessPipe->sendMessage(
-          DONE, info.timeTicks, info.passed, info.failure, false);
-    } else {
-        currentTestingSubprocessPipe->sendMessage(
-          DONE,
-          info.timeTicks,
-          info.passed,
-          info.failure,
-          true,
-          info.failureContext->verb,
-          info.failureContext->functionName,
-          info.failureContext->fileName,
-          info.failureContext->line,
-          info.failureContext->column);
-    }
+    currentTestingSubprocessPipe->sendMessage(
+      DONE, info.timeTicks, info.passed, info.failure, info.failureContext);
 }
 
 std::unique_ptr<WorkerSubprocess>
@@ -111,21 +98,11 @@ bool BoxExecutor::tryCloseBox(Box* box) {
             auto messageType = message.read<PipeMessageType>();
             if (messageType != PipeMessageType::DONE) {
                 // It's a warning
-                onWarning(Warning(message.read<std::string>(),
-                                  test.getGroup()->getId(),
-                                  test.getId()));
+                onWarning(message.read<Warning>(), nullptr);
                 continue;
             }
-            message >> info.timeTicks >> info.passed >> info.failure;
-            bool hasFailureContext = message.read<bool>();
-            if (hasFailureContext) {
-                info.failureContext = Context{};
-                info.failureContext->verb = message.read<std::string>();
-                info.failureContext->functionName = message.read<std::string>();
-                info.failureContext->fileName = message.read<std::string>();
-                info.failureContext->line = message.read<uint32_t>();
-                info.failureContext->column = message.read<uint32_t>();
-            }
+            message >> info.timeTicks >> info.passed >> info.failure
+              >> info.failureContext;
             break;
         }
     }
