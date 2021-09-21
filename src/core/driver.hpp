@@ -36,9 +36,9 @@ class Driver {
 
     virtual void addFailure(const std::string& failure, Context context);
 
-    virtual void emitWarning(Warning warning);
-
   private:
+    void emitWarning(Warning warning);
+
     bool checkMainThreadAndInactive(const std::string& method,
                                     const Context& context);
 

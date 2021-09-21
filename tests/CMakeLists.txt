@@ -13,7 +13,7 @@ function(add_integration_test TEST_NAME)
     cmake_parse_arguments(P "NO_EXECUTOR_TYPE" "SCRIPT" "SOURCES" ${ARGN})
     set(INTEGRATION_TEST mcga_test_integration_${TEST_NAME})
     set(INTEGRATION_TEST_BIN ${INTEGRATION_TEST}_binary)
-    add_executable(${INTEGRATION_TEST_BIN} EXCLUDE_FROM_ALL ${P_SOURCES})
+    add_executable(${INTEGRATION_TEST_BIN} ${P_SOURCES})
     set_target_properties(${INTEGRATION_TEST_BIN} PROPERTIES
             RUNTIME_OUTPUT_NAME ${TEST_NAME}
             )

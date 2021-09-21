@@ -6,6 +6,7 @@
 
 MCGA_TEST_EXPORT_WEAK int main(int argc, char** argv) {
     mcga::test::feedback::FeedbackExtension feedbackExtension;
-    runTests(argc, argv, mcga::test::getTestCases(), {&feedbackExtension});
+    mcga::test::runTests(
+      argc, argv, mcga::test::internal::getTestCases(), {&feedbackExtension});
     return feedbackExtension.getReturnCode();
 }

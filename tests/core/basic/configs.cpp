@@ -93,47 +93,47 @@ int main() {
 
     // Anonymous test
     test(executable);
-    expectTestConfig("(anonymous test)", false, 1.0, 1, 1);
+    expectTestConfig("", false, 1.0, 1, 1);
 
     // Optional test
-    optionalTest("desc", executable);
+    test.optional("desc", executable);
     expectTestConfig("desc", true, 1.0, 1, 1);
 
     // Anonymous optional test
-    optionalTest(executable);
-    expectTestConfig("(anonymous test)", true, 1.0, 1, 1);
+    test.optional(executable);
+    expectTestConfig("", true, 1.0, 1, 1);
 
     // Multi-run test
-    multiRunTest("desc", 100, executable);
+    test.multiRun(100, "desc", executable);
     expectTestConfig("desc", false, 1.0, 100, 100);
 
     // Anonymous multi-run test
-    multiRunTest(100, executable);
-    expectTestConfig("(anonymous test)", false, 1.0, 100, 100);
+    test.multiRun(100, executable);
+    expectTestConfig("", false, 1.0, 100, 100);
 
     // Optional multi-run test
-    optionalMultiRunTest("desc", 100, executable);
+    test.optional.multiRun(100, "desc", executable);
     expectTestConfig("desc", true, 1.0, 100, 100);
 
     // Anonymous optional multi-run test
-    optionalMultiRunTest(100, executable);
-    expectTestConfig("(anonymous test)", true, 1.0, 100, 100);
+    test.optional.multiRun(100, executable);
+    expectTestConfig("", true, 1.0, 100, 100);
 
     // Retry test
-    retryTest("desc", 100, executable);
+    test.retry(100, "desc", executable);
     expectTestConfig("desc", false, 1.0, 100, 1);
 
     // Anonymous retry test
-    retryTest(100, executable);
-    expectTestConfig("(anonymous test)", false, 1.0, 100, 1);
+    test.retry(100, executable);
+    expectTestConfig("", false, 1.0, 100, 1);
 
     // Optional retry test
-    optionalRetryTest("desc", 100, executable);
+    test.optional.retry(100, "desc", executable);
     expectTestConfig("desc", true, 1.0, 100, 1);
 
     // Anonymous optional retry test
-    optionalRetryTest(100, executable);
-    expectTestConfig("(anonymous test)", true, 1.0, 100, 1);
+    test.optional.retry(100, executable);
+    expectTestConfig("", true, 1.0, 100, 1);
 
     // Common cases of group configs.
 
@@ -143,15 +143,15 @@ int main() {
 
     // Anonymous group
     group(executable);
-    expectGroupConfig("(anonymous group)", false);
+    expectGroupConfig("", false);
 
     // Optional group
-    optionalGroup("desc", executable);
+    group.optional("desc", executable);
     expectGroupConfig("desc", true);
 
     // Optional anonymous group
-    optionalGroup(executable);
-    expectGroupConfig("(anonymous group)", true);
+    group.optional(executable);
+    expectGroupConfig("", true);
 
     return exitCode;
 }

@@ -37,7 +37,7 @@ struct TestConfig {
      *
      * A test should provide a concise, yet clear and explicit description, both
      * for future maintainers of the test and UIs of this library. */
-    std::string description = "(anonymous test)";
+    std::string description;
 
     /** Whether this test is optional.
      *
@@ -121,78 +121,6 @@ struct TestConfig {
     }
 };
 
-/** Main mechanism for defining tests. */
-void test(TestConfig config, Executable body, Context context = Context());
-
-/** Convenience function for defining an anonymous test. */
-void test(Executable body, Context context = Context());
-
-/** Convenience function for defining an optional test. */
-void optionalTest(TestConfig config,
-                  Executable body,
-                  Context context = Context());
-
-/** Convenience function for defining an anonymous optional test. */
-void optionalTest(Executable body, Context context = Context());
-
-/** Convenience function for defining a test that will be executed multiple
- * times, and all executions must pass for the test to be marked as `passed`. */
-void multiRunTest(TestConfig config,
-                  std::size_t numRuns,
-                  Executable body,
-                  Context context = Context());
-
-/** Convenience function for defining an anonymous test that will be executed
- * multiple times, and all executions must pass for the test to be marked as
- * `passed`. */
-void multiRunTest(std::size_t numRuns,
-                  Executable body,
-                  Context context = Context());
-
-/** Convenience function for defining an optional test that will be executed
- * multiple times, and all executions must pass for the test to be marked as
- * `passed`. */
-void optionalMultiRunTest(TestConfig config,
-                          std::size_t numRuns,
-                          Executable body,
-                          Context context = Context());
-
-/** Convenience function for defining an anonymous optional test that will be
- * executed multiple times, and all executions must pass for the test to be
- * marked as `passed`. */
-void optionalMultiRunTest(std::size_t numRuns,
-                          Executable body,
-                          Context context = Context());
-
-/** Convenience function for defining a test that will be retried multiple
- * times, and only one needs to pass for the test to be marked as `passed`. */
-void retryTest(TestConfig config,
-               std::size_t attempts,
-               Executable body,
-               Context context = Context());
-
-/** Convenience function for defining an anonymous test that will be retried
- * multiple times, and only one needs to pass for the test to be marked as
- * `passed`. */
-void retryTest(std::size_t numAttempts,
-               Executable body,
-               Context context = Context());
-
-/** Convenience function for defining an optional test that will be retried
- * multiple times, and only one needs to pass for the test to be marked as
- * `passed`. */
-void optionalRetryTest(TestConfig config,
-                       std::size_t attempts,
-                       Executable body,
-                       Context context = Context());
-
-/** Convenience function for defining an optional anonymous test that will be
- * retried multiple times, and only one needs to pass for the test to be marked
- * as `passed`. */
-void optionalRetryTest(std::size_t numAttempts,
-                       Executable body,
-                       Context context = Context());
-
 /** Structure defining the configuration for a group.
  *
  * Pass an instance of this class to the group() function. */
@@ -202,7 +130,7 @@ struct GroupConfig {
      * A group should provide a concise, yet clear and explicit description,
      * both for future maintainers of the group and user interfaces of this
      * library. */
-    std::string description = "(anonymous group)";
+    std::string description;
 
     /** Flag that marks this whole group as optional.
      *
@@ -241,41 +169,90 @@ struct GroupConfig {
     }
 };
 
-/** Main mechanism for defining groups. */
-void group(GroupConfig config,
-           const Executable& body,
-           Context context = Context());
+namespace internal {
 
-/** Convenience function for defining an anonymous group. */
-void group(const Executable& body, Context context = Context());
+struct MultiRunTestApi {
+    bool optional;
 
-/** Convenience function for defining an optional group. */
-void optionalGroup(GroupConfig config,
-                   const Executable& body,
-                   Context context = Context());
+    void operator()(std::size_t numRuns,
+                    TestConfig config,
+                    Executable body,
+                    Context context = Context()) const;
 
-/** Convenience function for defining an anonymous optional group. */
-void optionalGroup(const Executable& body, Context context = Context());
+    void operator()(std::size_t numRuns,
+                    Executable body,
+                    Context context = Context()) const;
+};
 
-/** Main mechanism for defining setUp functions, to be executed before every
- * test in a group. */
-void setUp(Executable func, Context context = Context());
+struct RetryTestApi {
+    bool optional;
 
-/** Main mechanism for defining tearDown functions, to be executed after every
- * test in a group. */
-void tearDown(Executable func, Context context = Context());
+    void operator()(std::size_t attempts,
+                    TestConfig config,
+                    Executable body,
+                    Context context = Context()) const;
 
-/** Main mechanism for marking a test as failed.
- *
- * Calling this function inside the main testing thread disrupts the test
- * completely. Calling it in a separate thread will still mark the test as
- * failed, but will not interrupt any thread. */
-void fail(const std::string& message = std::string(),
-          Context context = Context());
+    void operator()(std::size_t numAttempts,
+                    Executable body,
+                    Context context = Context()) const;
+};
 
-/** Convenience function for marking a test as failed if a boolean expression
- * does not evaluate to `true`. */
-void expect(bool expr, Context context = Context());
+struct OptionalTestApi {
+    void operator()(TestConfig config,
+                    Executable body,
+                    Context context = Context()) const;
+
+    void operator()(Executable body, Context context = Context()) const;
+
+    [[no_unique_address]] MultiRunTestApi multiRun{true};
+    [[no_unique_address]] RetryTestApi retry{true};
+};
+
+struct TestApi {
+    void operator()(TestConfig config,
+                    Executable body,
+                    Context context = Context()) const;
+
+    void operator()(Executable body, Context context = Context()) const;
+
+    [[no_unique_address]] MultiRunTestApi multiRun{false};
+    [[no_unique_address]] RetryTestApi retry{false};
+    [[no_unique_address]] OptionalTestApi optional;
+};
+
+struct OptionalGroupApi {
+    /** Convenience function for defining an optional group. */
+    void operator()(GroupConfig config,
+                  const Executable& body,
+                  Context context = Context()) const;
+
+    /** Convenience function for defining an anonymous optional group. */
+    void operator()(const Executable& body, Context context = Context()) const;
+};
+
+struct GroupApi {
+    /** Main mechanism for defining groups. */
+    void operator()(GroupConfig config,
+                    const Executable& body,
+                    Context context = Context()) const;
+
+    /** Convenience function for defining an anonymous group. */
+    void operator()(const Executable& body, Context context = Context()) const;
+
+    OptionalGroupApi optional;
+};
+
+struct SetUpApi {
+    /** Main mechanism for defining setUp functions, to be executed before every
+     * test in a group. */
+    void operator()(Executable func, Context context = Context()) const;
+};
+
+struct TearDownApi {
+    /** Main mechanism for defining setUp functions, to be executed before every
+     * test in a group. */
+    void operator()(Executable func, Context context = Context()) const;
+};
 
 struct TestCase {
     TestCase* next;
@@ -292,6 +269,25 @@ struct TestCase {
 
 std::vector<TestCase*> getTestCases();
 
+}  // namespace internal
+
+inline constexpr internal::TestApi test;
+inline constexpr internal::GroupApi group;
+inline constexpr internal::SetUpApi setUp;
+inline constexpr internal::TearDownApi tearDown;
+
+/** Main mechanism for marking a test as failed.
+ *
+ * Calling this function inside the main testing thread disrupts the test
+ * completely. Calling it in a separate thread will still mark the test as
+ * failed, but will not interrupt any thread. */
+void fail(const std::string& message = std::string(),
+          Context context = Context());
+
+/** Convenience function for marking a test as failed if a boolean expression
+ * does not evaluate to `true`. */
+void expect(bool expr, Context context = Context());
+
 }  // namespace mcga::test
 
 #define INTERNAL_TEST_CASE_CAT(a, b) a##b
@@ -307,8 +303,8 @@ std::vector<TestCase*> getTestCases();
         static void testCase();                                                \
     };                                                                         \
     }                                                                          \
-    static mcga::test::TestCase INTERNAL_TEST_CASE_NAME_REG(                   \
+    static ::mcga::test::internal::TestCase INTERNAL_TEST_CASE_NAME_REG(       \
       INTERNAL_TEST_CASE_NAME_CLS::testCase,                                   \
       "" description,                                                          \
-      ::mcga::internal::source_location::current());                           \
+      ::mcga::test::internal::source_location::current());                     \
     void INTERNAL_TEST_CASE_NAME_CLS::testCase()

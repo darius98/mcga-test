@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-namespace mcga::internal {
+namespace mcga::test::internal {
 
 // TODO: Remove this once this is available in the standard library
 //  implementations.
