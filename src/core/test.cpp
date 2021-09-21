@@ -10,14 +10,15 @@ void Test::ExecutionInfo::fail(const std::string& _failure,
     if (passed) {
         passed = false;
         failure = _failure;
-        failureContext = _failureContext;
+        failureContext = std::move(_failureContext);
         timeTicks = _timeTicks;
     }
 }
 
-Test::Test(TestConfig config, Executable body, GroupPtr group, int id)
-        : TestConfig(std::move(config)), body(std::move(body)),
-          group(std::move(group)), id(id) {
+Test::Test(
+  TestConfig config, Executable body, Context context, GroupPtr group, int id)
+        : TestConfig(std::move(config)), context(std::move(context)),
+          body(std::move(body)), group(std::move(group)), id(id) {
 }
 
 const std::string& Test::getDescription() const {

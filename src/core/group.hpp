@@ -33,7 +33,7 @@ class Group : private GroupConfig {
 
     /** Default constructor from the upgraded GroupConfig and extra metadata
      * received from the testing Driver. Very similar to Test#Test().*/
-    Group(GroupConfig config, Ptr parentGroup, int id);
+    Group(GroupConfig config, Context context, Ptr parentGroup, int id);
 
     /** See GroupConfig#description. */
     [[nodiscard]] const std::string& getDescription() const;
@@ -89,6 +89,7 @@ class Group : private GroupConfig {
     Ptr parentGroup;
     int id;
 
+    Context context;
     std::vector<UserTestExecutable> setUpFuncs;
     std::vector<UserTestExecutable> tearDownFuncs;
 };

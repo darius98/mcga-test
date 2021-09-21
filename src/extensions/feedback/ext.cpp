@@ -123,9 +123,8 @@ void FeedbackExtension::initLogging(ExtensionApi* api) {
     api->addHook<ExtensionApi::BEFORE_DESTROY>(
       [this]() { logger->printFinalInformation(); });
 
-    api->addHook<ExtensionApi::ON_WARNING>([this](const Warning& warning) {
-        logger->printWarning(warning);
-    });
+    api->addHook<ExtensionApi::ON_WARNING>(
+      [this](const Warning& warning) { logger->printWarning(warning); });
 }
 
 void FeedbackExtension::initFileStream(ExtensionApi* api,

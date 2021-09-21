@@ -55,4 +55,4 @@ struct source_location {
     const char* function_name_;
 };
 
-}  // namespace mcga::internal
+}  // namespace mcga::test::internal

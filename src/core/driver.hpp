@@ -26,9 +26,10 @@ class Driver {
 
     [[nodiscard]] Executor::Type getExecutorType() const;
 
-    virtual void addGroup(GroupConfig config, const Executable& body);
+    virtual void
+      addGroup(GroupConfig config, const Executable& body, Context context);
 
-    virtual void addTest(TestConfig config, Executable body);
+    virtual void addTest(TestConfig config, Executable body, Context context);
 
     virtual void addSetUp(UserTestExecutable setUp);
 

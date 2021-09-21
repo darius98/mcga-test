@@ -2,9 +2,9 @@
 
 namespace mcga::test {
 
-Group::Group(GroupConfig config, Ptr parentGroup, int id)
-        : GroupConfig(std::move(config)), parentGroup(std::move(parentGroup)),
-          id(id) {
+Group::Group(GroupConfig config, Context context, Ptr parentGroup, int id)
+        : GroupConfig(std::move(config)), context(std::move(context)),
+          parentGroup(std::move(parentGroup)), id(id) {
 }
 
 const std::string& Group::getDescription() const {

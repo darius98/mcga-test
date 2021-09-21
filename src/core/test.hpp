@@ -35,7 +35,7 @@ class Test : private TestConfig {
 
         /** Human-readable failure message in case the test failed, or empty
          * string if the test passed. */
-        std::string failure = "";
+        std::string failure;
 
         /** Context of the failure. */
         std::optional<Context> failureContext;
@@ -55,7 +55,11 @@ class Test : private TestConfig {
 
     /** Default constructor from a TestConfig and the metadata received from the
      * testing Driver. */
-    Test(TestConfig config, Executable body, GroupPtr group, int id);
+    Test(TestConfig config,
+         Executable body,
+         Context context,
+         GroupPtr group,
+         int id);
 
     Test(Test&&) = default;
     Test& operator=(Test&&) = default;
@@ -133,6 +137,7 @@ class Test : private TestConfig {
     void addExecution(const ExecutionInfo& info);
 
   private:
+    Context context;
     Executable body;
     GroupPtr group;
     int id;

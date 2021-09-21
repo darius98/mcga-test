@@ -26,15 +26,17 @@ Executor::Type Driver::getExecutorType() const {
     return executor->getType();
 }
 
-void Driver::addGroup(GroupConfig config, const Executable& body) {
-    if (!checkMainThreadAndInactive("group", config.context)) {
+void Driver::addGroup(GroupConfig config,
+                      const Executable& body,
+                      Context context) {
+    if (!checkMainThreadAndInactive("group", context)) {
         return;
     }
 
     ++currentGroupId;
     GroupPtr parentGroup = groupStack.empty() ? nullptr : groupStack.back();
-    GroupPtr group
-      = make_shared<Group>(std::move(config), parentGroup, currentGroupId);
+    GroupPtr group = make_shared<Group>(
+      std::move(config), std::move(context), parentGroup, currentGroupId);
 
     groupStack.push_back(group);
     try {
@@ -55,13 +57,16 @@ void Driver::addGroup(GroupConfig config, const Executable& body) {
     groupStack.pop_back();
 }
 
-void Driver::addTest(TestConfig config, Executable body) {
-    if (!checkMainThreadAndInactive("test", config.context)) {
+void Driver::addTest(TestConfig config, Executable body, Context context) {
+    if (!checkMainThreadAndInactive("test", context)) {
         return;
     }
     GroupPtr parentGroup = groupStack.back();
-    executor->execute(
-      Test(std::move(config), std::move(body), parentGroup, ++currentTestId));
+    executor->execute(Test(std::move(config),
+                           std::move(body),
+                           std::move(context),
+                           parentGroup,
+                           ++currentTestId));
 }
 
 void Driver::addSetUp(UserTestExecutable setUp) {

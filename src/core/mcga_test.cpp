@@ -3,6 +3,8 @@
 #include "driver.hpp"
 #include "export.hpp"
 
+#include <iostream>
+
 namespace mcga::test {
 
 namespace internal {
@@ -11,26 +13,48 @@ MCGA_TEST_EXPORT void MultiRunTestApi::operator()(std::size_t numRuns,
                                                   TestConfig config,
                                                   Executable body,
                                                   Context context) const {
-    config.setRequiredPassedAttempts(numRuns);
-    config.setAttempts(numRuns);
-    config.setOptional(optional);
-    test(std::move(config), std::move(body), std::move(context));
+    config.attempts = numRuns;
+    config.requiredPassedAttempts = numRuns;
+    config.optional = isOptional;
+    Driver::Instance()->addTest(
+      std::move(config), std::move(body), std::move(context));
+}
+
+MCGA_TEST_EXPORT void MultiRunTestApi::operator()(std::size_t numRuns,
+                                                  std::string description,
+                                                  Executable body,
+                                                  Context context) const {
+    (*this)(numRuns,
+            TestConfig{.description = std::move(description)},
+            std::move(body),
+            std::move(context));
 }
 
 MCGA_TEST_EXPORT void MultiRunTestApi::operator()(std::size_t numRuns,
                                                   Executable body,
                                                   Context context) const {
-    (*this)(numRuns, TestConfig(), std::move(body), std::move(context));
+    (*this)(numRuns, TestConfig{}, std::move(body), std::move(context));
 }
 
 MCGA_TEST_EXPORT void RetryTestApi::operator()(std::size_t attempts,
                                                TestConfig config,
                                                Executable body,
                                                Context context) const {
-    config.setAttempts(attempts);
-    config.setRequiredPassedAttempts(1);
-    config.setOptional(optional);
-    test(std::move(config), std::move(body), std::move(context));
+    config.attempts = attempts;
+    config.requiredPassedAttempts = 1;
+    config.optional = isOptional;
+    Driver::Instance()->addTest(
+      std::move(config), std::move(body), std::move(context));
+}
+
+MCGA_TEST_EXPORT void RetryTestApi::operator()(std::size_t attempts,
+                                               std::string description,
+                                               Executable body,
+                                               Context context) const {
+    (*this)(attempts,
+            TestConfig{.description = std::move(description)},
+            std::move(body),
+            std::move(context));
 }
 
 MCGA_TEST_EXPORT void RetryTestApi::operator()(std::size_t numAttempts,
@@ -42,8 +66,17 @@ MCGA_TEST_EXPORT void RetryTestApi::operator()(std::size_t numAttempts,
 MCGA_TEST_EXPORT void OptionalTestApi::operator()(TestConfig config,
                                                   Executable body,
                                                   Context context) const {
-    config.setOptional();
-    test(std::move(config), std::move(body), std::move(context));
+    config.optional = isOptional;
+    Driver::Instance()->addTest(
+      std::move(config), std::move(body), std::move(context));
+}
+
+MCGA_TEST_EXPORT void OptionalTestApi::operator()(std::string description,
+                                                  Executable body,
+                                                  Context context) const {
+    (*this)(TestConfig{.description = std::move(description)},
+            std::move(body),
+            std::move(context));
 }
 
 MCGA_TEST_EXPORT void OptionalTestApi::operator()(Executable body,
@@ -51,39 +84,23 @@ MCGA_TEST_EXPORT void OptionalTestApi::operator()(Executable body,
     (*this)(TestConfig(), std::move(body), std::move(context));
 }
 
-MCGA_TEST_EXPORT void TestApi::operator()(TestConfig config,
-                                          Executable body,
-                                          Context context) const {
-    config.context = std::move(context);
-    Driver::Instance()->addTest(std::move(config), std::move(body));
-}
-
-MCGA_TEST_EXPORT void TestApi::operator()(Executable body,
-                                          Context context) const {
-    (*this)(TestConfig(), std::move(body), std::move(context));
-}
-
 MCGA_TEST_EXPORT void OptionalGroupApi::operator()(GroupConfig config,
                                                    const Executable& body,
                                                    Context context) const {
-    config.setOptional();
-    group(std::move(config), body, std::move(context));
+    config.optional = isOptional;
+    Driver::Instance()->addGroup(std::move(config), body, std::move(context));
+}
+
+MCGA_TEST_EXPORT void OptionalGroupApi::operator()(std::string description,
+                                                   const Executable& body,
+                                                   Context context) const {
+    (*this)(GroupConfig{.description = std::move(description)},
+            body,
+            std::move(context));
 }
 
 MCGA_TEST_EXPORT void OptionalGroupApi::operator()(const Executable& body,
                                                    Context context) const {
-    (*this)(GroupConfig(), body, std::move(context));
-}
-
-MCGA_TEST_EXPORT void GroupApi::operator()(GroupConfig config,
-                                           const Executable& func,
-                                           Context context) const {
-    config.context = std::move(context);
-    Driver::Instance()->addGroup(std::move(config), func);
-}
-
-MCGA_TEST_EXPORT void GroupApi::operator()(const Executable& body,
-                                           Context context) const {
     (*this)(GroupConfig(), body, std::move(context));
 }
 

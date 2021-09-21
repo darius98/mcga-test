@@ -5,8 +5,9 @@ import sys
 
 proc = None
 try:
-    proc = subprocess.run(["./core_single_test_multiple_executions_fail", "--executor=" + sys.argv[1]],
-                          timeout=10, capture_output=True)
+    proc = subprocess.run(
+        ["./core_single_test_multiple_executions_fail", "--executor=" + sys.argv[1]],
+        timeout=10, capture_output=True)
 except TimeoutError:
     print("Test did not finish in 10 seconds")
     exit(1)

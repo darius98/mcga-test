@@ -71,54 +71,6 @@ struct TestConfig {
      *
      * This should be at most equal to #attempts. */
     std::size_t requiredPassedAttempts = 1;
-
-    Context context;
-
-    /** Default constructor. */
-    TestConfig() = default;
-
-    /** Implicit constructor from a description string.
-     *
-     * This constructor is provided for easier use of default values for
-     * #optional and #timeTicksLimit, which should be used in most cases. It is
-     * implicit by design, to allow an inline string call to test(). */
-    TestConfig(std::string description): description(std::move(description)) {
-    }
-
-    /** Implicit constructor from a description C-style string (see
-     * TestConfig(std::string)). */
-    TestConfig(const char* description): description(description) {
-    }
-
-    /** Set the #description of the test. */
-    TestConfig& setDescription(std::string _description) {
-        description = std::move(_description);
-        return *this;
-    }
-
-    /** Set the #optional flag of the test. */
-    TestConfig& setOptional(bool _optional = true) {
-        optional = _optional;
-        return *this;
-    }
-
-    /** Set the #timeTicksLimit of the test. */
-    TestConfig& setTimeTicksLimit(double _timeTicksLimit) {
-        timeTicksLimit = _timeTicksLimit;
-        return *this;
-    }
-
-    /** Set the #attempts property of the test. */
-    TestConfig& setAttempts(std::size_t _attempts) {
-        attempts = _attempts;
-        return *this;
-    }
-
-    /** Set the #requiredPassedAttempts property of the test. */
-    TestConfig& setRequiredPassedAttempts(std::size_t _requiredPassedAttempts) {
-        requiredPassedAttempts = _requiredPassedAttempts;
-        return *this;
-    }
 };
 
 /** Structure defining the configuration for a group.
@@ -137,45 +89,20 @@ struct GroupConfig {
      * This is equivalent to marking each individual test inside the group and
      * all its subgroups as optional. */
     bool optional = false;
-
-    Context context;
-
-    /** Default constructor. */
-    GroupConfig() = default;
-
-    /** Implicit constructor from a description string.
-     *
-     * This constructor is provided for easier use of default values for
-     * all the other properties, which should be used in most cases. It is
-     * implicit by design, to allow an inline string call to group(). */
-    GroupConfig(std::string description): description(std::move(description)) {
-    }
-
-    /** Implicit constructor from a description C-style string (see
-     * GroupConfig(std::string)). */
-    GroupConfig(const char* description): description(description) {
-    }
-
-    /** Set the #description of the group. */
-    GroupConfig& setDescription(std::string _description) {
-        description = std::move(_description);
-        return *this;
-    }
-
-    /** Set the #optional flag for this group. */
-    GroupConfig& setOptional(bool _optional = true) {
-        optional = _optional;
-        return *this;
-    }
 };
 
 namespace internal {
 
 struct MultiRunTestApi {
-    bool optional;
+    bool isOptional{false};
 
     void operator()(std::size_t numRuns,
                     TestConfig config,
+                    Executable body,
+                    Context context = Context()) const;
+
+    void operator()(std::size_t numRuns,
+                    std::string description,
                     Executable body,
                     Context context = Context()) const;
 
@@ -185,10 +112,15 @@ struct MultiRunTestApi {
 };
 
 struct RetryTestApi {
-    bool optional;
+    bool isOptional{false};
 
     void operator()(std::size_t attempts,
                     TestConfig config,
+                    Executable body,
+                    Context context = Context()) const;
+
+    void operator()(std::size_t attempts,
+                    std::string description,
                     Executable body,
                     Context context = Context()) const;
 
@@ -198,59 +130,49 @@ struct RetryTestApi {
 };
 
 struct OptionalTestApi {
+    bool isOptional{false};
+
     void operator()(TestConfig config,
+                    Executable body,
+                    Context context = Context()) const;
+
+    void operator()(std::string description,
                     Executable body,
                     Context context = Context()) const;
 
     void operator()(Executable body, Context context = Context()) const;
 
-    [[no_unique_address]] MultiRunTestApi multiRun{true};
-    [[no_unique_address]] RetryTestApi retry{true};
+    MultiRunTestApi multiRun{};
+    RetryTestApi retry{};
 };
 
-struct TestApi {
-    void operator()(TestConfig config,
-                    Executable body,
-                    Context context = Context()) const;
-
-    void operator()(Executable body, Context context = Context()) const;
-
-    [[no_unique_address]] MultiRunTestApi multiRun{false};
-    [[no_unique_address]] RetryTestApi retry{false};
-    [[no_unique_address]] OptionalTestApi optional;
+struct TestApi : public OptionalTestApi {
+    OptionalTestApi optional{};
 };
 
 struct OptionalGroupApi {
-    /** Convenience function for defining an optional group. */
-    void operator()(GroupConfig config,
-                  const Executable& body,
-                  Context context = Context()) const;
+    bool isOptional{false};
 
-    /** Convenience function for defining an anonymous optional group. */
-    void operator()(const Executable& body, Context context = Context()) const;
-};
-
-struct GroupApi {
-    /** Main mechanism for defining groups. */
     void operator()(GroupConfig config,
                     const Executable& body,
                     Context context = Context()) const;
 
-    /** Convenience function for defining an anonymous group. */
-    void operator()(const Executable& body, Context context = Context()) const;
+    void operator()(std::string description,
+                    const Executable& body,
+                    Context context = Context()) const;
 
-    OptionalGroupApi optional;
+    void operator()(const Executable& body, Context context = Context()) const;
+};
+
+struct GroupApi : public OptionalGroupApi {
+    OptionalGroupApi optional{};
 };
 
 struct SetUpApi {
-    /** Main mechanism for defining setUp functions, to be executed before every
-     * test in a group. */
     void operator()(Executable func, Context context = Context()) const;
 };
 
 struct TearDownApi {
-    /** Main mechanism for defining setUp functions, to be executed before every
-     * test in a group. */
     void operator()(Executable func, Context context = Context()) const;
 };
 
@@ -271,21 +193,18 @@ std::vector<TestCase*> getTestCases();
 
 }  // namespace internal
 
-inline constexpr internal::TestApi test;
-inline constexpr internal::GroupApi group;
+inline constexpr internal::TestApi test{
+  .optional = {.isOptional = true,
+               .multiRun = internal::MultiRunTestApi{.isOptional = true},
+               .retry = internal::RetryTestApi{.isOptional = true}},
+};
+inline constexpr internal::GroupApi group{.optional = {.isOptional = true}};
 inline constexpr internal::SetUpApi setUp;
 inline constexpr internal::TearDownApi tearDown;
 
-/** Main mechanism for marking a test as failed.
- *
- * Calling this function inside the main testing thread disrupts the test
- * completely. Calling it in a separate thread will still mark the test as
- * failed, but will not interrupt any thread. */
 void fail(const std::string& message = std::string(),
           Context context = Context());
 
-/** Convenience function for marking a test as failed if a boolean expression
- * does not evaluate to `true`. */
 void expect(bool expr, Context context = Context());
 
 }  // namespace mcga::test

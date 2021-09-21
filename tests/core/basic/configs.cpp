@@ -14,11 +14,13 @@ class TestingDriver : public Driver {
 
     using Driver::Driver;
 
-    void addGroup(GroupConfig config, const Executable& body) override {
+    void addGroup(GroupConfig config,
+                  const Executable& body,
+                  Context context) override {
         groupConfig = std::make_unique<GroupConfig>(std::move(config));
     }
 
-    void addTest(TestConfig config, Executable body) override {
+    void addTest(TestConfig config, Executable body, Context context) override {
         testConfig = std::make_unique<TestConfig>(std::move(config));
     }
 };

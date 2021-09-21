@@ -4,8 +4,8 @@
 
 TEST_CASE("TestCase") {
     mcga::test::test(
-      mcga::test::TestConfig("test").setAttempts(100).setRequiredPassedAttempts(
-        50),
+      mcga::test::TestConfig{
+        .description = "test", .attempts = 100, .requiredPassedAttempts = 50},
       [] {
           std::random_device device;
           std::default_random_engine engine(device());

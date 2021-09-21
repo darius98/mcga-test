@@ -17,9 +17,9 @@ void runTestsOnExecutor(Executor* executor,
     Driver driver(executor);
     Driver::Init(&driver);
     for (auto testCase: tests) {
-        auto config = GroupConfig(testCase->name);
-        config.context = Context(testCase->location);
-        driver.addGroup(std::move(config), testCase->body);
+        driver.addGroup(GroupConfig{.description = testCase->name},
+                        testCase->body,
+                        Context(testCase->location));
     }
     Driver::Clean();
 }

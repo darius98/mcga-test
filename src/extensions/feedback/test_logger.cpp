@@ -79,12 +79,15 @@ void TestLogger::printWarning(const Warning& warning) {
     }
     stream << termcolor::yellow << "Warning: " << warning.message << "\n";
     if (warning.context.has_value()) {
-        stream << "\tat " << warning.context->fileName << ":" << warning.context->line << ":" << warning.context->column << "\n";
+        stream << "\tat " << warning.context->fileName << ":"
+               << warning.context->line << ":" << warning.context->column
+               << "\n";
     }
     for (const auto& note: warning.notes) {
         stream << "\tNote: " << note.message;
         if (note.context.has_value()) {
-            stream << " at " << note.context->fileName << ":" << note.context->line << ":" << note.context->column;
+            stream << " at " << note.context->fileName << ":"
+                   << note.context->line << ":" << note.context->column;
         }
         stream << "\n";
     }

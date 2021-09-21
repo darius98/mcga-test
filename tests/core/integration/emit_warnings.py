@@ -17,17 +17,20 @@ output = proc.stdout.decode("ascii")
 def check_warning(message_pattern, line=0, notes=None):
     pattern = r"Warning\: " + message_pattern + r"\n"
     if line != 0:
-        pattern += r"\tat (.*)tests/core/integration/emit_warnings\.cpp\:" + str(line) + r"\:[0-9]*\n"
+        pattern += r"\tat (.*)tests/core/integration/emit_warnings\.cpp\:" + str(
+            line) + r"\:[0-9]*\n"
     for note in (notes or []):
         pattern += r"\tNote\: " + note[0]
         if note[1] != 0:
-            pattern += r" at (.*)tests/core/integration/emit_warnings\.cpp\:" + str(note[1]) + r"\:[0-9]*"
+            pattern += r" at (.*)tests/core/integration/emit_warnings\.cpp\:" + str(
+                note[1]) + r"\:[0-9]*"
         pattern += r"\n"
     if not re.search(pattern, output):
         print("Test did not emit expected warning with pattern: \"\"\"" + pattern + "\"\"\"")
         print("Output:")
         print(proc.stdout.decode("ascii"))
         exit(1)
+
 
 group_test_case_note = ("In group TestCase", 7)
 group1_note = ("In group group", 11)
@@ -39,10 +42,14 @@ check_warning(r"Called fail\(\) outside a test, ignoring\.", 13,
               [group1_note, group_test_case_note])
 
 check_warning(
-    r"Exception thrown outside a test: exception-in-group", notes=[(r"Unable to execute remainder of tests in this group\.", 0), group1_note, group_test_case_note])
+    r"Exception thrown outside a test: exception-in-group",
+    notes=[(r"Unable to execute remainder of tests in this group\.", 0), group1_note,
+           group_test_case_note])
 
 check_warning(
-    r"Non-exception object thrown outside a test\.", notes=[(r"Unable to execute remainder of tests in this group\.", 0), group2_note, group_test_case_note])
+    r"Non-exception object thrown outside a test\.",
+    notes=[(r"Unable to execute remainder of tests in this group\.", 0), group2_note,
+           group_test_case_note])
 
 set_up_note = ("While running setUp", 15)
 test_note = ("While running test test", 43)
@@ -65,11 +72,15 @@ check_warning(r"Called tearDown\(\) inside a tearDown\(\), ignoring\.", 34, note
 check_warning(r"Called test\(\) inside a tearDown\(\), ignoring\.", 37, notes_inside_teardown)
 check_warning(r"Called group\(\) inside a tearDown\(\), ignoring\.", 40, notes_inside_teardown)
 
-check_warning(r"Called test\(\) from a different thread than the main testing thread, ignoring\.", 68, [group_test_case_note])
-check_warning(r"Called group\(\) from a different thread than the main testing thread, ignoring\.", 71, [group_test_case_note])
-check_warning(r"Called setUp\(\) from a different thread than the main testing thread, ignoring\.", 75, [group_test_case_note])
-check_warning(r"Called tearDown\(\) from a different thread than the main testing thread, ignoring\.", 78, [group_test_case_note])
-
+check_warning(r"Called test\(\) from a different thread than the main testing thread, ignoring\.",
+              68, [group_test_case_note])
+check_warning(r"Called group\(\) from a different thread than the main testing thread, ignoring\.",
+              71, [group_test_case_note])
+check_warning(r"Called setUp\(\) from a different thread than the main testing thread, ignoring\.",
+              75, [group_test_case_note])
+check_warning(
+    r"Called tearDown\(\) from a different thread than the main testing thread, ignoring\.", 78,
+    [group_test_case_note])
 
 if 'test-in-setUp' in proc.stdout.decode():
     print('test-in-setUp was executed!')
