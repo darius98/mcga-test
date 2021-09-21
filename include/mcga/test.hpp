@@ -93,79 +93,133 @@ struct GroupConfig {
 
 namespace internal {
 
+void registerTest(TestConfig config, Executable body, Context context);
+
+void registerGroup(GroupConfig config, const Executable& body, Context context);
+
+template<bool isOptional>
 struct MultiRunTestApi {
-    bool isOptional{false};
-
     void operator()(std::size_t numRuns,
                     TestConfig config,
                     Executable body,
-                    Context context = Context()) const;
+                    Context context = Context()) const {
+        config.attempts = numRuns;
+        config.requiredPassedAttempts = numRuns;
+        config.optional = isOptional;
+        registerTest(std::move(config), std::move(body), std::move(context));
+    }
 
     void operator()(std::size_t numRuns,
                     std::string description,
                     Executable body,
-                    Context context = Context()) const;
+                    Context context = Context()) const {
+        (*this)(numRuns,
+                TestConfig{.description = std::move(description)},
+                std::move(body),
+                std::move(context));
+    }
 
     void operator()(std::size_t numRuns,
                     Executable body,
-                    Context context = Context()) const;
+                    Context context = Context()) const {
+        (*this)(numRuns, TestConfig{}, std::move(body), std::move(context));
+    }
 };
 
+template<bool isOptional>
 struct RetryTestApi {
-    bool isOptional{false};
-
     void operator()(std::size_t attempts,
                     TestConfig config,
                     Executable body,
-                    Context context = Context()) const;
+                    Context context = Context()) const {
+        config.attempts = attempts;
+        config.requiredPassedAttempts = 1;
+        config.optional = isOptional;
+        registerTest(std::move(config), std::move(body), std::move(context));
+    }
 
     void operator()(std::size_t attempts,
                     std::string description,
                     Executable body,
-                    Context context = Context()) const;
+                    Context context = Context()) const {
+        registerTest(TestConfig{.description = std::move(description),
+                                .optional = isOptional,
+                                .attempts = attempts,
+                                .requiredPassedAttempts = 1},
+                     std::move(body),
+                     std::move(context));
+    }
 
-    void operator()(std::size_t numAttempts,
+    void operator()(std::size_t attempts,
                     Executable body,
-                    Context context = Context()) const;
+                    Context context = Context()) const {
+        registerTest(TestConfig{.optional = isOptional,
+                                .attempts = attempts,
+                                .requiredPassedAttempts = 1},
+                     std::move(body),
+                     std::move(context));
+    }
 };
 
+template<bool isOptional>
 struct OptionalTestApi {
-    bool isOptional{false};
-
     void operator()(TestConfig config,
                     Executable body,
-                    Context context = Context()) const;
+                    Context context = Context()) const {
+        config.optional = isOptional;
+        registerTest(std::move(config), std::move(body), std::move(context));
+    }
 
     void operator()(std::string description,
                     Executable body,
-                    Context context = Context()) const;
+                    Context context = Context()) const {
+        registerTest(
+          TestConfig{
+            .description = std::move(description),
+            .optional = isOptional,
+          },
+          std::move(body),
+          std::move(context));
+    }
 
-    void operator()(Executable body, Context context = Context()) const;
+    void operator()(Executable body, Context context = Context()) const {
+        registerTest(TestConfig{.optional = isOptional},
+                     std::move(body),
+                     std::move(context));
+    }
 
-    MultiRunTestApi multiRun{};
-    RetryTestApi retry{};
+    [[no_unique_address]] MultiRunTestApi<isOptional> multiRun;
+    [[no_unique_address]] RetryTestApi<isOptional> retry;
 };
 
-struct TestApi : public OptionalTestApi {
-    OptionalTestApi optional{};
+struct TestApi : public OptionalTestApi<false> {
+    [[no_unique_address]] OptionalTestApi<true> optional;
 };
 
+template<bool isOptional>
 struct OptionalGroupApi {
-    bool isOptional{false};
-
     void operator()(GroupConfig config,
                     const Executable& body,
-                    Context context = Context()) const;
+                    Context context = Context()) const {
+        config.optional = isOptional;
+        registerGroup(std::move(config), body, std::move(context));
+    }
 
     void operator()(std::string description,
                     const Executable& body,
-                    Context context = Context()) const;
+                    Context context = Context()) const {
+        (*this)(GroupConfig{.description = std::move(description)},
+                body,
+                std::move(context));
+    }
 
-    void operator()(const Executable& body, Context context = Context()) const;
+    void operator()(const Executable& body, Context context = Context()) const {
+        (*this)(GroupConfig(), body, std::move(context));
+    }
 };
 
-struct GroupApi : public OptionalGroupApi {
-    OptionalGroupApi optional{};
+struct GroupApi : public OptionalGroupApi<false> {
+    [[no_unique_address]] OptionalGroupApi<true> optional;
 };
 
 struct SetUpApi {
@@ -193,19 +247,20 @@ std::vector<TestCase*> getTestCases();
 
 }  // namespace internal
 
-inline constexpr internal::TestApi test{
-  .optional = {.isOptional = true,
-               .multiRun = internal::MultiRunTestApi{.isOptional = true},
-               .retry = internal::RetryTestApi{.isOptional = true}},
-};
-inline constexpr internal::GroupApi group{.optional = {.isOptional = true}};
+inline constexpr internal::TestApi test;
+inline constexpr internal::GroupApi group;
 inline constexpr internal::SetUpApi setUp;
 inline constexpr internal::TearDownApi tearDown;
 
 void fail(const std::string& message = std::string(),
           Context context = Context());
 
-void expect(bool expr, Context context = Context());
+inline void expect(bool expr, Context context = Context()) {
+    if (!expr) {
+        context.verb = "Expectation failed";
+        fail("", std::move(context));
+    }
+}
 
 }  // namespace mcga::test
 
