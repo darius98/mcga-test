@@ -28,7 +28,7 @@ add_library(mcga_test_obj OBJECT
         src/extensions/feedback/ext.cpp
         src/extensions/feedback/test_logger.cpp
         )
-target_include_directories(mcga_test_obj PRIVATE src)
+target_include_directories(mcga_test_obj PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_link_libraries(mcga_test_obj PUBLIC mcga_cli PRIVATE termcolor)
 
 add_library(mcga_test SHARED $<TARGET_OBJECTS:mcga_test_obj>)
