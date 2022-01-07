@@ -33,9 +33,9 @@ class Executor {
 
     virtual void emitWarning(Warning warning, GroupPtr group);
 
-    std::string stateAsString() const;
+    String stateAsString() const;
 
-    void addFailure(const std::string& failure, Context context);
+    void addFailure(String failure, Context context);
 
     void addCleanup(Executable cleanup);
 
@@ -68,7 +68,7 @@ class Executor {
 
     std::mutex currentExecutionFailureMutex;
     bool currentExecutionIsFailed = false;
-    std::string currentExecutionFailureMessage;
+    String currentExecutionFailureMessage;
     std::optional<Context> currentExecutionFailureContext;
 
     std::vector<Executable> currentExecutionCleanups;

@@ -75,14 +75,14 @@ void TestLogger::printWarning(const Warning& warning) {
         stream << "\r";
         stream.flush();
     }
-    stream << yellow << "Warning: " << warning.message << "\n";
+    stream << yellow << "Warning: " << warning.message.c_str() << "\n";
     if (warning.context.has_value()) {
         stream << "\tat " << warning.context->fileName.c_str() << ":"
                << warning.context->line << ":" << warning.context->column
                << "\n";
     }
     for (const auto& note: warning.notes) {
-        stream << "\tNote: " << note.message;
+        stream << "\tNote: " << note.message.c_str();
         if (note.context.has_value()) {
             stream << " at " << note.context->fileName.c_str() << ":"
                    << note.context->line << ":" << note.context->column;
@@ -153,7 +153,7 @@ void TestLogger::printTestAttemptsInfo(const Test& test) {
 
 void TestLogger::printTestFailure(const Test::ExecutionInfo& info) {
     stream << "\n";
-    auto failure = info.failure;
+    std::string failure = info.failure.c_str();
     // TODO: This should be somewhere else (in utils maybe?)
     size_t pos = 0;
     while ((pos = failure.find('\n', pos)) != std::string::npos) {

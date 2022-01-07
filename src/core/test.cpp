@@ -4,7 +4,7 @@
 
 namespace mcga::test {
 
-void Test::ExecutionInfo::fail(const std::string& _failure,
+void Test::ExecutionInfo::fail(const String& _failure,
                                std::optional<Context> _failureContext,
                                double _timeTicks) {
     if (passed) {

@@ -1,7 +1,6 @@
 #pragma once
 
 #include <optional>
-#include <string>
 #include <vector>
 
 #include "group.hpp"
@@ -36,7 +35,7 @@ class Test : private TestConfig {
 
         /** Human-readable failure message in case the test failed, or empty
          * string if the test passed. */
-        std::string failure;
+        String failure;
 
         /** Context of the failure. */
         std::optional<Context> failureContext;
@@ -49,7 +48,7 @@ class Test : private TestConfig {
          *
          * Note: if this method is called multiple times, subsequent calls do
          * NOT overwrite the first failure message. */
-        void fail(const std::string& _failure,
+        void fail(const String& _failure,
                   std::optional<Context> failureContext = std::nullopt,
                   double timeTicks = -1.0);
     };

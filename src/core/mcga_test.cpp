@@ -35,8 +35,7 @@ MCGA_TEST_EXPORT extern "C" void mcga_test_register_tear_down(Executable body) {
 
 MCGA_TEST_EXPORT extern "C" void mcga_test_register_failure(String message,
                                                             Context context) {
-    Driver::Instance()->addFailure(std::string(message.c_str()),
-                                   std::move(context));
+    Driver::Instance()->addFailure(std::move(message), std::move(context));
 }
 
 MCGA_TEST_EXPORT extern "C" void mcga_test_register_cleanup(Executable exec) {

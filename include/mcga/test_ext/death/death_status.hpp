@@ -1,7 +1,6 @@
 #pragma once
 
 #include <ostream>
-#include <string>
 
 namespace mcga::test::death {
 

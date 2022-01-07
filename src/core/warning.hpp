@@ -1,7 +1,6 @@
 #pragma once
 
 #include <optional>
-#include <string>
 #include <utility>
 #include <vector>
 
@@ -12,23 +11,23 @@ namespace mcga::test {
 
 struct Warning {
     struct Note {
-        std::string message;
+        String message;
         std::optional<Context> context;
 
         Note() = default;
-        Note(std::string message, std::optional<Context> context);
+        Note(String message, std::optional<Context> context);
     };
 
-    std::string message;
+    String message;
     std::optional<Context> context;
     std::vector<Note> notes;
 
     Warning() = default;
-    explicit Warning(std::string message,
+    explicit Warning(String message,
                      std::optional<Context> context = std::nullopt,
                      std::vector<Note> notes = std::vector<Note>());
 
-    Warning& addNote(std::string message, std::optional<Context> context);
+    Warning& addNote(String message, std::optional<Context> context);
 };
 
 }  // namespace mcga::test

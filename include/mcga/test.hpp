@@ -100,10 +100,6 @@ class String {
     [[nodiscard]] const char* c_str() const noexcept {
         return data;
     }
-
-    [[nodiscard]] std::size_t size() const noexcept {
-        return std::strlen(data);
-    }
 };
 
 struct Context {

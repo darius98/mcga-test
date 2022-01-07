@@ -26,13 +26,13 @@ class TestingDriver : public Driver {
 int exitCode = 0;
 TestingDriver* driver;
 
-void expectTestConfig(const std::string& description,
+void expectTestConfig(const String& description,
                       bool optional,
                       double timeTicksLimit,
                       size_t attempts,
                       size_t requiredPassedAttempts) {
-    if (driver->testConfig->description.c_str() != description) {
-        std::cout << "Expected test description to be " << description
+    if (driver->testConfig->description.c_str() != description.c_str()) {
+        std::cout << "Expected test description to be " << description.c_str()
                   << ", got " << driver->testConfig->description.c_str()
                   << "\n";
         exitCode = 1;
@@ -61,9 +61,9 @@ void expectTestConfig(const std::string& description,
     }
 }
 
-void expectGroupConfig(const std::string& description, bool optional) {
-    if (driver->groupConfig->description.c_str() != description) {
-        std::cout << "Expected group description to be " << description
+void expectGroupConfig(const String& description, bool optional) {
+    if (driver->groupConfig->description.c_str() != description.c_str()) {
+        std::cout << "Expected group description to be " << description.c_str()
                   << ", got " << driver->groupConfig->description.c_str()
                   << "\n";
         exitCode = 1;

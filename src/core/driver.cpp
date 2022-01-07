@@ -78,13 +78,13 @@ void Driver::addTearDown(Executable tearDown) {
     groupStack.back()->addTearDown(std::move(tearDown));
 }
 
-void Driver::addFailure(const std::string& failure, Context context) {
+void Driver::addFailure(String failure, Context context) {
     if (!executor->isActive()) {
         emitWarning(Warning("Called fail() outside a test, ignoring.",
                             std::move(context)));
         return;
     }
-    executor->addFailure(failure, std::move(context));
+    executor->addFailure(std::move(failure), std::move(context));
 }
 
 void Driver::addCleanup(Executable cleanup) {
@@ -100,18 +100,19 @@ void Driver::emitWarning(Warning warning) {
     executor->emitWarning(std::move(warning), groupStack.back());
 }
 
-bool Driver::checkMainThreadAndInactive(const std::string& method,
+bool Driver::checkMainThreadAndInactive(const String& method,
                                         const Context& context) {
     if (executor->isActive()) {
-        emitWarning(Warning("Called " + method + "() inside a "
-                              + executor->stateAsString() + "(), ignoring.",
+        emitWarning(Warning("Called " + std::string(method.c_str())
+                              + "() inside a " + std::string(executor->stateAsString().c_str())
+                              + "(), ignoring.",
                             context));
         return false;
     }
     if (testingThreadId
         != std::hash<std::thread::id>()(std::this_thread::get_id())) {
         emitWarning(
-          Warning("Called " + method
+          Warning("Called " + std::string(method.c_str())
                     + "() from a different thread than the main testing "
                       "thread, ignoring.",
                   context));

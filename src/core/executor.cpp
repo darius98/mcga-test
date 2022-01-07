@@ -8,12 +8,17 @@
 
 namespace mcga::test {
 
-class ExpectationFailed : public std::runtime_error {
+class ExpectationFailed : public std::exception {
   public:
+    String message;
     Context context;
 
-    ExpectationFailed(const std::string& what, Context context)
-            : std::runtime_error(what), context(std::move(context)) {
+    ExpectationFailed(String message, Context context)
+            : message(std::move(message)), context(std::move(context)) {
+    }
+
+    [[nodiscard]] const char* what() const noexcept override {
+        return message.c_str();
     }
 };
 
@@ -24,7 +29,7 @@ bool Executor::isActive() const {
     return state != INACTIVE;
 }
 
-std::string Executor::stateAsString() const {
+String Executor::stateAsString() const {
     switch (state) {
         case INSIDE_TEST: return "test";
         case INSIDE_SET_UP: return "setUp";
@@ -37,14 +42,14 @@ void Executor::finalize() {
     api->runHooks<ExtensionApi::BEFORE_DESTROY>();
 }
 
-void Executor::addFailure(const std::string& failure, Context context) {
+void Executor::addFailure(String failure, Context context) {
     // We only kill the thread on failure if we are in the main testing thread
     // and we know we catch this exception.
     if (std::hash<std::thread::id>()(std::this_thread::get_id())
         == currentExecutionThreadId) {
         // TODO: Abort when exceptions are disabled (in non-smooth execution,
         //  inform the test runner process of the failure before aborting).
-        throw ExpectationFailed(failure, std::move(context));
+        throw ExpectationFailed(std::move(failure), std::move(context));
     }
 
     // If the user starts his own threads that entertain failures, it is his

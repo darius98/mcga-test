@@ -34,14 +34,14 @@ class Driver {
 
     virtual void addTearDown(Executable tearDown);
 
-    virtual void addFailure(const std::string& failure, Context context);
+    virtual void addFailure(String failure, Context context);
 
     virtual void addCleanup(Executable cleanup);
 
   private:
     void emitWarning(Warning warning);
 
-    bool checkMainThreadAndInactive(const std::string& method,
+    bool checkMainThreadAndInactive(const String& method,
                                     const Context& context);
 
     Executor* executor = nullptr;
