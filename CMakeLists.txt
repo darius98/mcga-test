@@ -7,8 +7,6 @@ set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 
 option(MCGA_test_tests "Build MCGA Test tests" OFF)
 
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/third_party/termcolor EXCLUDE_FROM_ALL)
-
 add_library(mcga_test_obj OBJECT
         ${CMAKE_CURRENT_SOURCE_DIR}/src/entry_point.cpp
 
@@ -25,6 +23,7 @@ add_library(mcga_test_obj OBJECT
 
         ${CMAKE_CURRENT_SOURCE_DIR}/src/extensions/death/check_death.cpp
 
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/extensions/feedback/color.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/extensions/feedback/ext.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/extensions/feedback/test_logger.cpp
 
@@ -32,7 +31,7 @@ add_library(mcga_test_obj OBJECT
         ${CMAKE_CURRENT_SOURCE_DIR}/src/extensions/mock/libc.cpp
         )
 target_include_directories(mcga_test_obj PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
-target_link_libraries(mcga_test_obj PUBLIC mcga_cli PRIVATE termcolor)
+target_link_libraries(mcga_test_obj PRIVATE mcga_cli)
 
 add_library(mcga_test SHARED $<TARGET_OBJECTS:mcga_test_obj>)
 target_link_libraries(mcga_test PUBLIC mcga_test_obj)

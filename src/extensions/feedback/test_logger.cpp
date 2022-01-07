@@ -3,7 +3,7 @@
 #include <iomanip>
 #include <numeric>
 
-#include <termcolor/termcolor.hpp>
+#include "color.hpp"
 
 #include "core/time_tick.hpp"
 
@@ -48,19 +48,17 @@ void TestLogger::printFinalInformation() {
         stream.flush();
     }
     stream << "\n";
-    stream << "Tests passed: " << termcolor::green << passedTests
-           << termcolor::reset << "\n";
+    stream << "Tests passed: " << green << passedTests << reset << "\n";
     stream << "Tests failed: ";
     if (failedTests == 0) {
-        stream << termcolor::green << failedTests << termcolor::reset;
+        stream << green << failedTests << reset;
     } else if (failedTests == failedOptionalTests) {
-        stream << termcolor::yellow << failedTests << termcolor::reset;
+        stream << yellow << failedTests << reset;
     } else {
-        stream << termcolor::red << failedTests << termcolor::reset;
+        stream << red << failedTests << reset;
     }
     if (failedOptionalTests != 0) {
-        stream << " (" << termcolor::yellow << failedOptionalTests
-               << termcolor::reset << " "
+        stream << " (" << yellow << failedOptionalTests << reset << " "
                << (failedOptionalTests == 1 ? "was" : "were") << " optional)";
     }
     stream << "\n";
@@ -77,7 +75,7 @@ void TestLogger::printWarning(const Warning& warning) {
         stream << "\r";
         stream.flush();
     }
-    stream << termcolor::yellow << "Warning: " << warning.message << "\n";
+    stream << yellow << "Warning: " << warning.message << "\n";
     if (warning.context.has_value()) {
         stream << "\tat " << warning.context->fileName.c_str() << ":"
                << warning.context->line << ":" << warning.context->column
@@ -91,17 +89,17 @@ void TestLogger::printWarning(const Warning& warning) {
         }
         stream << "\n";
     }
-    stream << termcolor::reset;
+    stream << reset;
 }
 
 void TestLogger::printTestPassedOrFailedToken(const Test& test) {
     stream << "[";
     if (test.isPassed()) {
-        stream << termcolor::green << "P" << termcolor::reset;
+        stream << green << "P" << reset;
     } else if (test.isOptional()) {
-        stream << termcolor::yellow << "F" << termcolor::reset;
+        stream << yellow << "F" << reset;
     } else {
-        stream << termcolor::red << "F" << termcolor::reset;
+        stream << red << "F" << reset;
     }
     stream << "]";
 }
@@ -162,14 +160,14 @@ void TestLogger::printTestFailure(const Test::ExecutionInfo& info) {
         failure.replace(pos, 1, "\n\t");
         pos += 2;
     }
-    stream << termcolor::red;
+    stream << red;
     if (info.failureContext.has_value()) {
         stream << info.failureContext->verb.c_str() << " at "
                << info.failureContext->fileName.c_str() << ":"
                << info.failureContext->line << ":"
                << info.failureContext->column << "\n";
     }
-    stream << "\t" << failure << termcolor::reset;
+    stream << "\t" << failure << reset;
 }
 
 void TestLogger::printTestMessage(const Test& test) {
@@ -206,7 +204,7 @@ void TestLogger::updateVolatileLine(const Test& test) {
     }
 
     if (runningTests.size() == 1 && *runningTests.begin() == test.getId()) {
-        stream << "[" << termcolor::yellow << "." << termcolor::reset << "] ";
+        stream << "[" << yellow << "." << reset << "] ";
         printTestAndGroupsDescription(test);
         if (test.getNumAttempts() > 1) {
             stream << " - running attempt " << test.getExecutions().size() + 1
