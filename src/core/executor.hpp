@@ -37,6 +37,8 @@ class Executor {
 
     void addFailure(const std::string& failure, Context context);
 
+    void addCleanup(Executable cleanup);
+
     Test::ExecutionInfo run(const Test& test);
 
   private:
@@ -55,6 +57,7 @@ class Executor {
 
     const Executable* currentSetUp = nullptr;
     const Executable* currentTearDown = nullptr;
+    const Executable* currentCleanup = nullptr;
     const Test* currentTest = nullptr;
 
   private:
@@ -67,6 +70,8 @@ class Executor {
     bool currentExecutionIsFailed = false;
     std::string currentExecutionFailureMessage;
     std::optional<Context> currentExecutionFailureContext;
+
+    std::vector<Executable> currentExecutionCleanups;
 };
 
 }  // namespace mcga::test

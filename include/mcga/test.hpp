@@ -158,6 +158,8 @@ extern "C" void mcga_test_register_tear_down(Executable body);
 extern "C" void mcga_test_register_failure(std::string message,
                                            Context context);
 
+extern "C" void mcga_test_register_cleanup(Executable exec);
+
 template<bool isOptional>
 struct MultiRunTestApi {
     template<executable_t Callable>
@@ -298,22 +300,6 @@ struct GroupApi : public OptionalGroupApi<false> {
     [[no_unique_address]] OptionalGroupApi<true> optional;
 };
 
-struct SetUpApi {
-    template<executable_t Callable>
-    void operator()(Callable func, Context context = Context()) const {
-        mcga_test_register_set_up(
-          Executable(std::move(func), std::move(context)));
-    }
-};
-
-struct TearDownApi {
-    template<executable_t Callable>
-    void operator()(Callable func, Context context = Context()) const {
-        mcga_test_register_tear_down(
-          Executable(std::move(func), std::move(context)));
-    }
-};
-
 struct TestCase {
     TestCase* next;
 
@@ -334,8 +320,24 @@ struct TestCase {
 
 inline constexpr internal::TestApi test;
 inline constexpr internal::GroupApi group;
-inline constexpr internal::SetUpApi setUp;
-inline constexpr internal::TearDownApi tearDown;
+
+template<internal::executable_t Callable>
+void setUp(Callable func, Context context = Context()) {
+    internal::mcga_test_register_set_up(
+      Executable(std::move(func), std::move(context)));
+}
+
+template<internal::executable_t Callable>
+void cleanup(Callable func, Context context = Context()) {
+    internal::mcga_test_register_cleanup(
+      Executable(std::move(func), std::move(context)));
+}
+
+template<internal::executable_t Callable>
+void tearDown(Callable func, Context context = Context()) {
+    internal::mcga_test_register_tear_down(
+      Executable(std::move(func), std::move(context)));
+}
 
 inline void fail(std::string message = std::string(),
                  Context context = Context()) {

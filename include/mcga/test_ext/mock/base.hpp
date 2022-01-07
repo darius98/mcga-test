@@ -5,6 +5,8 @@
 #include <memory>
 #include <type_traits>
 
+#include <mcga/test.hpp>
+
 namespace mcga::test::mock {
 
 namespace internal {
@@ -28,9 +30,6 @@ struct nth<i, H, T...> : nth<i - 1, T...> {};
 extern "C" void* mcga_test_ext_find_next_symbol(const char* name) noexcept;
 
 [[noreturn]] extern "C" void mcga_test_ext_after_noreturn_invoke();
-
-extern "C" void mcga_test_ext_add_after_test_cleanup(void (*cb)(void*),
-                                                     void* data);
 
 }  // namespace internal
 
@@ -62,10 +61,7 @@ class BaseFunctionMock<R(Args...)> {
     template<internal::invocable_with<R, Args...> Callable>
     void replace(Callable callable) {
         replacement = std::move(callable);
-
-        internal::mcga_test_ext_add_after_test_cleanup(
-          [](void* data) { static_cast<BaseFunctionMock<F>*>(data)->reset(); },
-          this);
+        cleanup([this] { this->reset(); });
     }
 };
 

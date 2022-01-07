@@ -58,6 +58,10 @@ void Executor::addFailure(const std::string& failure, Context context) {
     }
 }
 
+void Executor::addCleanup(Executable cleanup) {
+    currentExecutionCleanups.push_back(std::move(cleanup));
+}
+
 void Executor::execute(Test test) {
     for (size_t i = 0; i < test.getNumAttempts(); ++i) {
         onTestExecutionStart(test);
@@ -95,6 +99,12 @@ Test::ExecutionInfo Executor::run(const Test& test) {
         --it;
     }
     state = INSIDE_TEAR_DOWN;
+    for (const auto& cleanup: currentExecutionCleanups) {
+        currentCleanup = &cleanup;
+        runJob(cleanup, &info);
+        currentCleanup = nullptr;
+    }
+    currentExecutionCleanups.clear();
     // Execute tearDown()-s in reverse order, from where setUp()-s stopped.
     for (; it + 1 != testGroupStack.begin(); --it) {
         (*it)->forEachTearDown([&](const Executable& tearDown) {
@@ -153,6 +163,9 @@ void Executor::decorateWarningWithCurrentTestNotes(Warning& warning,
                                                    GroupPtr group) {
     if (currentSetUp) {
         warning.addNote("While running setUp", currentSetUp->context);
+    }
+    if (currentCleanup) {
+        warning.addNote("While running cleanup", currentCleanup->context);
     }
     if (currentTearDown) {
         warning.addNote("While running tearDown", currentTearDown->context);

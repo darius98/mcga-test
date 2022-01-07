@@ -36,6 +36,8 @@ class Driver {
 
     virtual void addFailure(const std::string& failure, Context context);
 
+    virtual void addCleanup(Executable cleanup);
+
   private:
     void emitWarning(Warning warning);
 

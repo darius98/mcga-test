@@ -87,6 +87,15 @@ void Driver::addFailure(const std::string& failure, Context context) {
     executor->addFailure(failure, std::move(context));
 }
 
+void Driver::addCleanup(Executable cleanup) {
+    if (!executor->isActive()) {
+        emitWarning(Warning("Called cleanup() outside a test, ignoring.",
+                            std::move(cleanup.context)));
+        return;
+    }
+    executor->addCleanup(std::move(cleanup));
+}
+
 void Driver::emitWarning(Warning warning) {
     executor->emitWarning(std::move(warning), groupStack.back());
 }

@@ -6,6 +6,8 @@
 
 namespace mcga::test {
 
+std::vector<internal::TestCase*> getTestCases();
+
 void runTests(int argc,
               char** argv,
               const std::vector<internal::TestCase*>& tests,

@@ -38,9 +38,17 @@ MCGA_TEST_EXPORT extern "C" void mcga_test_register_failure(std::string message,
     Driver::Instance()->addFailure(std::move(message), std::move(context));
 }
 
+MCGA_TEST_EXPORT extern "C" void mcga_test_register_cleanup(Executable exec) {
+    Driver::Instance()->addCleanup(std::move(exec));
+}
+
+}  // namespace mcga::test::internal
+
+namespace mcga::test {
+
 // Intentionally not exported, only used internally within the library.
-std::vector<TestCase*> getTestCases() {
-    std::vector<TestCase*> testCasesRegistered;
+std::vector<internal::TestCase*> getTestCases() {
+    std::vector<internal::TestCase*> testCasesRegistered;
     for (auto testCase = registeredTestCasesListHead; testCase != nullptr;
          testCase = testCase->next) {
         testCasesRegistered.push_back(testCase);
@@ -49,4 +57,4 @@ std::vector<TestCase*> getTestCases() {
     return testCasesRegistered;
 }
 
-}  // namespace mcga::test::internal
+}
