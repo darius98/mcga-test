@@ -1,6 +1,7 @@
 #pragma once
 
 #include <optional>
+#include <string>
 #include <vector>
 
 #include "group.hpp"
@@ -66,7 +67,7 @@ class Test : private TestConfig {
     ~Test() = default;
 
     /** See TestConfig#description. */
-    const std::string& getDescription() const;
+    const String& getDescription() const;
 
     /** See TestConfig#sourceLocation. */
     const Context& getContext() const;

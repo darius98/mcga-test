@@ -19,7 +19,7 @@ void runTestsOnExecutor(Executor* executor,
     for (auto testCase: tests) {
         driver.addGroup(
           GroupConfig{.description = testCase->name},
-          Executable(testCase->body, Context(testCase->location)));
+          Executable(testCase->body, testCase->context));
     }
     Driver::Clean();
 }

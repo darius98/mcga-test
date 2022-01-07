@@ -1,36 +1,124 @@
 #pragma once
 
-#include <string>
-#include <type_traits>
-
-#include "mcga/internal/source_location.hpp"
+#include <cstdlib>
+#include <cstring>
+#include <utility>
 
 namespace mcga::test {
 
 namespace internal {
 
-template<class T, class R, class... Args>
-concept invocable_with = requires {
-    std::is_invocable_r_v<R, T, Args...>;
+template<class T, class U>
+struct same_as_impl {
+    static inline constexpr bool value = false;
 };
 
 template<class T>
-concept executable_t = invocable_with<T, void>;
+struct same_as_impl<T, T> {
+    static inline constexpr bool value = true;
+};
+
+template<class T, class U>
+concept same_as = same_as_impl<T, U>::value;
+
+template<class T>
+concept executable_t = requires(const T& obj) {
+    { obj() } -> same_as<void>;
+};
+
+template<class T>
+concept std_string_like = requires(const T& str) {
+    {str.data()} -> same_as<const char*>;
+};
 
 }  // namespace internal
 
-struct Context {
-    std::string verb = "Failed";
-    std::string fileName;
-    std::string functionName;
-    uint32_t line;
-    uint32_t column;
+class String {
+    bool isOwned;
+    const char* data;
 
-    explicit Context(internal::source_location location
-                     = internal::source_location::current())
-            : fileName(location.file_name()),
-              functionName(location.function_name()), line(location.line()),
-              column(location.column()) {
+    static const char* duplicate_str(const char* data) {
+        const auto len = std::strlen(data);
+        const auto dup = static_cast<char*>(std::malloc(len + 1));
+        std::strcpy(dup, data);
+        return dup;
+    }
+
+  public:
+    String(): String("") {
+    }
+
+    String(const char* data): isOwned(false), data(data) {
+    }
+
+    template<int N>
+    String(char (&data)[N]): isOwned(false), data(data) {
+    }
+
+    template<int N>
+    String(const char (&data)[N]): isOwned(false), data(data) {
+    }
+
+    template<internal::std_string_like S>
+    String(const S& data): isOwned(true), data(duplicate_str(data.data())) {
+    }
+
+    String(const String& other)
+            : isOwned(other.isOwned),
+              data(isOwned ? duplicate_str(other.data) : other.data) {
+    }
+
+    String(String&& other) noexcept: isOwned(other.isOwned), data(other.data) {
+        other.isOwned = false;
+    }
+
+    String& operator=(const String& other) {
+        if (this != &other) {
+            this->~String();
+            isOwned = other.isOwned;
+            data = isOwned ? duplicate_str(other.data) : other.data;
+        }
+        return *this;
+    }
+
+    String& operator=(String&& other) noexcept {
+        if (this != &other) {
+            this->~String();
+            isOwned = other.isOwned;
+            data = other.data;
+            other.isOwned = false;
+        }
+        return *this;
+    }
+
+    ~String() {
+        if (isOwned) {
+            std::free((void*)data);
+        }
+    }
+
+    [[nodiscard]] const char* c_str() const noexcept {
+        return data;
+    }
+
+    [[nodiscard]] std::size_t size() const noexcept {
+        return std::strlen(data);
+    }
+};
+
+struct Context {
+    String verb{"Failed"};
+    String fileName;
+    String functionName;
+    int line;
+    int column;
+
+    explicit Context(const char* fileName = __builtin_FILE(),
+                     const char* functionName = __builtin_FUNCTION(),
+                     int line = __builtin_LINE(),
+                     int column = __builtin_COLUMN())
+            : fileName(fileName), functionName(functionName), line(line),
+              column(column) {
     }
 };
 
@@ -87,7 +175,7 @@ struct TestConfig {
      *
      * A test should provide a concise, yet clear and explicit description, both
      * for future maintainers of the test and UIs of this library. */
-    std::string description;
+    String description;
 
     /** Whether this test is optional.
      *
@@ -114,13 +202,13 @@ struct TestConfig {
      *
      * This item should be configured for non-deterministic tests, together with
      * #requiredPassedAttempts. */
-    std::size_t attempts = 1;
+    int attempts = 1;
 
     /** The number of attempts that must be passed for the test to be considered
      * passed overall.
      *
      * This should be at most equal to #attempts. */
-    std::size_t requiredPassedAttempts = 1;
+    int requiredPassedAttempts = 1;
 };
 
 /** Structure defining the configuration for a group.
@@ -132,7 +220,7 @@ struct GroupConfig {
      * A group should provide a concise, yet clear and explicit description,
      * both for future maintainers of the group and user interfaces of this
      * library. */
-    std::string description;
+    String description;
 
     /** Flag that marks this whole group as optional.
      *
@@ -155,15 +243,14 @@ extern "C" void mcga_test_register_set_up(Executable body);
 
 extern "C" void mcga_test_register_tear_down(Executable body);
 
-extern "C" void mcga_test_register_failure(std::string message,
-                                           Context context);
+extern "C" void mcga_test_register_failure(String message, Context context);
 
 extern "C" void mcga_test_register_cleanup(Executable exec);
 
 template<bool isOptional>
 struct MultiRunTestApi {
     template<executable_t Callable>
-    void operator()(std::size_t numRuns,
+    void operator()(int numRuns,
                     TestConfig config,
                     Callable body,
                     Context context = Context()) const {
@@ -175,8 +262,8 @@ struct MultiRunTestApi {
     }
 
     template<executable_t Callable>
-    void operator()(std::size_t numRuns,
-                    std::string description,
+    void operator()(int numRuns,
+                    String description,
                     Callable body,
                     Context context = Context()) const {
         (*this)(numRuns,
@@ -186,7 +273,7 @@ struct MultiRunTestApi {
     }
 
     template<executable_t Callable>
-    void operator()(std::size_t numRuns,
+    void operator()(int numRuns,
                     Callable body,
                     Context context = Context()) const {
         (*this)(numRuns, TestConfig{}, std::move(body), std::move(context));
@@ -196,7 +283,7 @@ struct MultiRunTestApi {
 template<bool isOptional>
 struct RetryTestApi {
     template<executable_t Callable>
-    void operator()(std::size_t attempts,
+    void operator()(int attempts,
                     TestConfig config,
                     Callable body,
                     Context context = Context()) const {
@@ -208,8 +295,8 @@ struct RetryTestApi {
     }
 
     template<executable_t Callable>
-    void operator()(std::size_t attempts,
-                    std::string description,
+    void operator()(int attempts,
+                    String description,
                     Callable body,
                     Context context = Context()) const {
         mcga_test_register_test(
@@ -221,7 +308,7 @@ struct RetryTestApi {
     }
 
     template<executable_t Callable>
-    void operator()(std::size_t attempts,
+    void operator()(int attempts,
                     Callable body,
                     Context context = Context()) const {
         mcga_test_register_test(
@@ -244,7 +331,7 @@ struct OptionalTestApi {
     }
 
     template<executable_t Callable>
-    void operator()(std::string description,
+    void operator()(String description,
                     Callable body,
                     Context context = Context()) const {
         mcga_test_register_test(
@@ -282,7 +369,7 @@ struct OptionalGroupApi {
     }
 
     template<executable_t Callable>
-    void operator()(std::string description,
+    void operator()(String description,
                     Callable body,
                     Context context = Context()) const {
         (*this)(GroupConfig{.description = std::move(description)},
@@ -306,12 +393,11 @@ struct TestCase {
     void (*body)();
 
     const char* name;
-    internal::source_location location;
+    Context context;
 
-    TestCase(void (*body)(),
-             const char* name,
-             internal::source_location location) noexcept
-            : body(body), name(name), location(location), next(nullptr) {
+    TestCase(void (*body)(), const char* name, Context context) noexcept
+            : body(body), name(name), context(std::move(context)),
+              next(nullptr) {
         mcga_test_register_test_case(this);
     }
 };
@@ -339,8 +425,7 @@ void tearDown(Callable func, Context context = Context()) {
       Executable(std::move(func), std::move(context)));
 }
 
-inline void fail(std::string message = std::string(),
-                 Context context = Context()) {
+inline void fail(String message = String(), Context context = Context()) {
     internal::mcga_test_register_failure(std::move(message),
                                          std::move(context));
 }
@@ -366,6 +451,6 @@ inline void expect(bool expr, Context context = Context()) {
     ::mcga::test::internal::TestCase INTERNAL_TEST_CASE_UNIQ(TestCaseReg)(     \
       INTERNAL_TEST_CASE_UNIQ(TestCaseCls)::testCase,                          \
       "" description,                                                          \
-      ::mcga::test::internal::source_location::current());                     \
+      ::mcga::test::Context());                                                \
     }                                                                          \
     void INTERNAL_TEST_CASE_UNIQ(TestCaseCls)::testCase()

@@ -1,5 +1,7 @@
 #include "mcga/test.hpp"
 
+#include <atomic>
+
 TEST_CASE("TestCase") {
     mcga::test::test("test", [] {
         std::atomic_uint64_t numSpins = 0;

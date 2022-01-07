@@ -79,14 +79,14 @@ void TestLogger::printWarning(const Warning& warning) {
     }
     stream << termcolor::yellow << "Warning: " << warning.message << "\n";
     if (warning.context.has_value()) {
-        stream << "\tat " << warning.context->fileName << ":"
+        stream << "\tat " << warning.context->fileName.c_str() << ":"
                << warning.context->line << ":" << warning.context->column
                << "\n";
     }
     for (const auto& note: warning.notes) {
         stream << "\tNote: " << note.message;
         if (note.context.has_value()) {
-            stream << " at " << note.context->fileName << ":"
+            stream << " at " << note.context->fileName.c_str() << ":"
                    << note.context->line << ":" << note.context->column;
         }
         stream << "\n";
@@ -110,7 +110,7 @@ void TestLogger::printTestAndGroupsDescription(const Test& test) {
     std::vector<std::string> groupDescriptions;
     GroupPtr group = test.getGroup();
     while (group != nullptr) {
-        std::string groupDescription = group->getDescription();
+        std::string groupDescription = group->getDescription().c_str();
         if (!groupDescription.empty()) {
             groupDescriptions.push_back(groupDescription);
         }
@@ -126,7 +126,7 @@ void TestLogger::printTestAndGroupsDescription(const Test& test) {
     if (!groupDescription.empty()) {
         groupDescription += "::";
     }
-    stream << groupDescription << test.getDescription();
+    stream << groupDescription << test.getDescription().c_str();
 }
 
 void TestLogger::printTestExecutionTime(const Test& test) {
@@ -164,8 +164,8 @@ void TestLogger::printTestFailure(const Test::ExecutionInfo& info) {
     }
     stream << termcolor::red;
     if (info.failureContext.has_value()) {
-        stream << info.failureContext->verb << " at "
-               << info.failureContext->fileName << ":"
+        stream << info.failureContext->verb.c_str() << " at "
+               << info.failureContext->fileName.c_str() << ":"
                << info.failureContext->line << ":"
                << info.failureContext->column << "\n";
     }

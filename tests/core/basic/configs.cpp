@@ -31,9 +31,10 @@ void expectTestConfig(const std::string& description,
                       double timeTicksLimit,
                       size_t attempts,
                       size_t requiredPassedAttempts) {
-    if (driver->testConfig->description != description) {
+    if (driver->testConfig->description.c_str() != description) {
         std::cout << "Expected test description to be " << description
-                  << ", got " << driver->testConfig->description << "\n";
+                  << ", got " << driver->testConfig->description.c_str()
+                  << "\n";
         exitCode = 1;
     }
     if (driver->testConfig->optional != optional) {
@@ -61,9 +62,10 @@ void expectTestConfig(const std::string& description,
 }
 
 void expectGroupConfig(const std::string& description, bool optional) {
-    if (driver->groupConfig->description != description) {
+    if (driver->groupConfig->description.c_str() != description) {
         std::cout << "Expected group description to be " << description
-                  << ", got " << driver->groupConfig->description << "\n";
+                  << ", got " << driver->groupConfig->description.c_str()
+                  << "\n";
         exitCode = 1;
     }
     if (driver->groupConfig->optional != optional) {

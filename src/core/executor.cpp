@@ -75,12 +75,12 @@ Executor::Type Executor::getType() const {
 }
 
 Test::ExecutionInfo Executor::run(const Test& test) {
+    std::vector<GroupPtr> testGroupStack = test.getGroupStack();
+    std::vector<GroupPtr>::iterator it;
     currentTest = &test;
     state = INSIDE_SET_UP;
     Test::ExecutionInfo info;
     auto startTime = std::chrono::high_resolution_clock::now();
-    std::vector<GroupPtr> testGroupStack = test.getGroupStack();
-    std::vector<GroupPtr>::iterator it;
     // Execute setUp()-s, in the order of the group stack.
     for (it = testGroupStack.begin(); it != testGroupStack.end(); ++it) {
         (*it)->forEachSetUp([&](const Executable& setUp) {
@@ -169,11 +169,13 @@ void Executor::decorateWarningWithCurrentTestNotes(Warning& warning,
         warning.addNote("While running tearDown", currentTearDown->context);
     }
     if (currentTest) {
-        warning.addNote("While running test " + currentTest->getDescription(),
+        warning.addNote("While running test "
+                          + std::string(currentTest->getDescription().c_str()),
                         currentTest->getContext());
     }
     while (group != nullptr) {
-        warning.addNote("In group " + group->getDescription(),
+        warning.addNote("In group "
+                          + std::string(group->getDescription().c_str()),
                         group->getContext());
         group = group->getParentGroup();
     }

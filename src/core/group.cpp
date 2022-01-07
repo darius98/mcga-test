@@ -7,7 +7,7 @@ Group::Group(GroupConfig config, Context context, Ptr parentGroup, int id)
           parentGroup(std::move(parentGroup)), id(id) {
 }
 
-const std::string& Group::getDescription() const {
+const String& Group::getDescription() const {
     return description;
 }
 

@@ -31,7 +31,7 @@ class Group : private GroupConfig {
     Group(GroupConfig config, Context context, Ptr parentGroup, int id);
 
     /** See GroupConfig#description. */
-    [[nodiscard]] const std::string& getDescription() const;
+    [[nodiscard]] const String& getDescription() const;
 
     /** See GroupConfig#sourceLocation. */
     [[nodiscard]] const Context& getContext() const;
@@ -53,7 +53,7 @@ class Group : private GroupConfig {
      * stack. */
     void addSetUp(Executable func);
 
-    template<internal::executable_t Callable>
+    template<class Callable>
     void forEachSetUp(Callable callable) const {
         for (const auto& setUp: setUpFuncs) {
             if (!callable(setUp)) {
@@ -70,7 +70,7 @@ class Group : private GroupConfig {
     void addTearDown(Executable func);
 
     /** Call the tear-down functions of this group, in reverse order. */
-    template<internal::executable_t Callable>
+    template<class Callable>
     void forEachTearDown(Callable callable) const {
         for (auto it = tearDownFuncs.rbegin(); it != tearDownFuncs.rend();
              it++) {

@@ -20,7 +20,7 @@ Test::Test(TestConfig config, Executable body, GroupPtr group, int id)
           group(std::move(group)), id(id) {
 }
 
-const std::string& Test::getDescription() const {
+const String& Test::getDescription() const {
     return description;
 }
 
