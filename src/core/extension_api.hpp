@@ -23,10 +23,7 @@ class ExtensionApi {
         // These two are always called in the orchestrator process.
         BEFORE_TEST_EXECUTION = 3,
         AFTER_TEST_EXECUTION = 4,
-        // These are called inside the executor process in non-smooth execution.
-        BEFORE_TEST_SETUP = 5,
-        AFTER_TEST_TEARDOWN = 6,
-        BEFORE_DESTROY = 7,
+        BEFORE_DESTROY = 5,
     };
 
     ExtensionApi() = default;
@@ -54,8 +51,6 @@ class ExtensionApi {
     std::tuple<std::vector<GroupHook>,
                std::vector<TestHook>,
                std::vector<WarningHook>,
-               std::vector<TestHook>,
-               std::vector<TestHook>,
                std::vector<TestHook>,
                std::vector<TestHook>,
                std::vector<GlobalHook>>

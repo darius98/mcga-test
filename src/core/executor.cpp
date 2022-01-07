@@ -77,7 +77,6 @@ Executor::Type Executor::getType() const {
 Test::ExecutionInfo Executor::run(const Test& test) {
     currentTest = &test;
     state = INSIDE_SET_UP;
-    api->runHooks<ExtensionApi::BEFORE_TEST_SETUP>(test);
     Test::ExecutionInfo info;
     auto startTime = std::chrono::high_resolution_clock::now();
     std::vector<GroupPtr> testGroupStack = test.getGroupStack();
@@ -119,7 +118,6 @@ Test::ExecutionInfo Executor::run(const Test& test) {
     if (info.timeTicks > test.getTimeTicksLimit()) {
         info.fail("Execution timed out.");
     }
-    api->runHooks<ExtensionApi::AFTER_TEST_TEARDOWN>(test);
     state = INACTIVE;
     currentTest = nullptr;
     return info;
