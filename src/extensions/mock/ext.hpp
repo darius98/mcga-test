@@ -9,4 +9,4 @@ class MockExtension : public Extension {
     void init(ExtensionApi* api) override;
 };
 
-}  // namespace mcga::test::feedback
+}  // namespace mcga::test::mock

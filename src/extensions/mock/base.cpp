@@ -12,16 +12,18 @@ static std::map<void*, void (*)(void*)> after_test_cleanups;
 
 namespace mcga::test::mock::internal {
 
-MCGA_TEST_EXPORT void* find_next_symbol(const char* name) noexcept {
+MCGA_TEST_EXPORT extern "C" void*
+  mcga_test_ext_find_next_symbol(const char* name) noexcept {
     return dlsym(RTLD_NEXT, name);
 }
 
-MCGA_TEST_EXPORT void after_noreturn_invoke() {
+MCGA_TEST_EXPORT extern "C" void mcga_test_ext_after_noreturn_invoke() {
     throw std::runtime_error(
       "Replacement for function marked [[noreturn]] returned.");
 }
 
-MCGA_TEST_EXPORT void add_after_test_cleanup(void (*cb)(void*), void* data) {
+MCGA_TEST_EXPORT extern "C" void
+  mcga_test_ext_add_after_test_cleanup(void (*cb)(void*), void* data) {
     after_test_cleanups.emplace(data, cb);
 }
 

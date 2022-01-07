@@ -1,5 +1,7 @@
 #pragma once
 
+#include "core/export.hpp"
+
 #define MCGA_CAT(a, b) MCGA_INTERNAL_CAT(a, b)
 #define MCGA_INTERNAL_CAT(a, b) a##b
 
@@ -133,8 +135,8 @@
                                   BeforeInvoke,                                \
                                   AfterInvokeArgs,                             \
                                   AfterInvoke)                                 \
-    extern "C" typename decltype((mock_group).Func)::return_t Func(            \
-      INTERNAL_PARAMS(decltype((mock_group).Func), NArgs) AfterParams) {       \
+    MCGA_TEST_EXPORT extern "C" typename decltype((mock_group).Func)::return_t \
+      Func(INTERNAL_PARAMS(decltype((mock_group).Func), NArgs) AfterParams) {  \
         BeforeInvoke(mock_group)                                               \
           .Func.invoke(INTERNAL_FORWARD_ARGS(decltype((mock_group).Func),      \
                                              NArgs) AfterInvokeArgs);          \
@@ -152,7 +154,7 @@
       ,                                                                        \
       ,                                                                        \
       ,                                                                        \
-      ::mcga::test::mock::internal::after_noreturn_invoke();)
+      ::mcga::test::mock::internal::mcga_test_ext_after_noreturn_invoke();)
 
 #define DECLARE_VA_FUNCTION(mock_group, Func, NArgs)                           \
     INTERNAL_DECLARE_FUNCTION(                                                 \

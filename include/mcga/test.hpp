@@ -1,18 +1,23 @@
 #pragma once
 
-#include <functional>
 #include <string>
+#include <type_traits>
 
 #include "mcga/internal/source_location.hpp"
 
 namespace mcga::test {
 
-/** Type of function widely used throughout the library.
- *
- * This defines the simple concept of a function that can be executed with no
- * parameters and returns nothing. TestCase, test, group, setUp and tearDown are
- * all constructed from Executable. */
-using Executable = std::function<void()>;
+namespace internal {
+
+template<class T, class R, class... Args>
+concept invocable_with = requires {
+    std::is_invocable_r_v<R, T, Args...>;
+};
+
+template<class T>
+concept executable_t = invocable_with<T, void>;
+
+}  // namespace internal
 
 struct Context {
     std::string verb = "Failed";
@@ -26,6 +31,51 @@ struct Context {
             : fileName(location.file_name()),
               functionName(location.function_name()), line(location.line()),
               column(location.column()) {
+    }
+};
+
+struct Executable {
+    void (*body)(void*);
+    void (*dtor)(void*);
+    void* data;
+    Context context;
+
+    template<internal::executable_t Callable>
+    explicit Executable(Callable callable, Context context)
+            : body([](void* d) { (*static_cast<Callable*>(d))(); }),
+              dtor([](void* d) { delete static_cast<Callable*>(d); }),
+              data(new Callable(std::move(callable))),
+              context(std::move(context)) {
+    }
+
+    Executable(const Executable&) = delete;
+
+    Executable& operator=(const Executable&) = delete;
+
+    Executable(Executable&& other) noexcept
+            : body(other.body), dtor(other.dtor), data(other.data),
+              context(std::move(other.context)) {
+        other.data = nullptr;
+    }
+
+    Executable& operator=(Executable&& other) noexcept {
+        if (this != &other) {
+            dtor(data);
+            body = other.body;
+            dtor = other.dtor;
+            data = other.data;
+            context = std::move(other.context);
+            other.data = nullptr;
+        }
+        return *this;
+    }
+
+    ~Executable() {
+        dtor(data);
+    }
+
+    void operator()() const {
+        body(data);
     }
 };
 
@@ -97,36 +147,35 @@ struct TestCase;
 
 extern "C" void mcga_test_register_test_case(TestCase* testCase);
 
-extern "C" void
-  mcga_test_register_test(TestConfig config, Executable body, Context context);
+extern "C" void mcga_test_register_test(TestConfig config, Executable body);
 
-extern "C" void mcga_test_register_group(GroupConfig config,
-                                         const Executable& body,
-                                         Context context);
+extern "C" void mcga_test_register_group(GroupConfig config, Executable body);
 
-extern "C" void mcga_test_register_set_up(Executable body, Context context);
+extern "C" void mcga_test_register_set_up(Executable body);
 
-extern "C" void mcga_test_register_tear_down(Executable body, Context context);
+extern "C" void mcga_test_register_tear_down(Executable body);
 
 extern "C" void mcga_test_register_failure(std::string message,
                                            Context context);
 
 template<bool isOptional>
 struct MultiRunTestApi {
+    template<executable_t Callable>
     void operator()(std::size_t numRuns,
                     TestConfig config,
-                    Executable body,
+                    Callable body,
                     Context context = Context()) const {
         config.attempts = numRuns;
         config.requiredPassedAttempts = numRuns;
         config.optional = isOptional;
-        mcga_test_register_test(
-          std::move(config), std::move(body), std::move(context));
+        mcga_test_register_test(std::move(config),
+                                Executable(body, std::move(context)));
     }
 
+    template<executable_t Callable>
     void operator()(std::size_t numRuns,
                     std::string description,
-                    Executable body,
+                    Callable body,
                     Context context = Context()) const {
         (*this)(numRuns,
                 TestConfig{.description = std::move(description)},
@@ -134,8 +183,9 @@ struct MultiRunTestApi {
                 std::move(context));
     }
 
+    template<executable_t Callable>
     void operator()(std::size_t numRuns,
-                    Executable body,
+                    Callable body,
                     Context context = Context()) const {
         (*this)(numRuns, TestConfig{}, std::move(body), std::move(context));
     }
@@ -143,67 +193,71 @@ struct MultiRunTestApi {
 
 template<bool isOptional>
 struct RetryTestApi {
+    template<executable_t Callable>
     void operator()(std::size_t attempts,
                     TestConfig config,
-                    Executable body,
+                    Callable body,
                     Context context = Context()) const {
         config.attempts = attempts;
         config.requiredPassedAttempts = 1;
         config.optional = isOptional;
         mcga_test_register_test(
-          std::move(config), std::move(body), std::move(context));
+          std::move(config), Executable(std::move(body), std::move(context)));
     }
 
+    template<executable_t Callable>
     void operator()(std::size_t attempts,
                     std::string description,
-                    Executable body,
+                    Callable body,
                     Context context = Context()) const {
         mcga_test_register_test(
           TestConfig{.description = std::move(description),
                      .optional = isOptional,
                      .attempts = attempts,
                      .requiredPassedAttempts = 1},
-          std::move(body),
-          std::move(context));
+          Executable(std::move(body), std::move(context)));
     }
 
+    template<executable_t Callable>
     void operator()(std::size_t attempts,
-                    Executable body,
+                    Callable body,
                     Context context = Context()) const {
-        mcga_test_register_test(TestConfig{.optional = isOptional,
-                                           .attempts = attempts,
-                                           .requiredPassedAttempts = 1},
-                                std::move(body),
-                                std::move(context));
+        mcga_test_register_test(
+          TestConfig{.optional = isOptional,
+                     .attempts = attempts,
+                     .requiredPassedAttempts = 1},
+          Executable(std::move(body), std::move(context)));
     }
 };
 
 template<bool isOptional>
 struct OptionalTestApi {
+    template<executable_t Callable>
     void operator()(TestConfig config,
-                    Executable body,
+                    Callable body,
                     Context context = Context()) const {
         config.optional = isOptional;
         mcga_test_register_test(
-          std::move(config), std::move(body), std::move(context));
+          std::move(config), Executable(std::move(body), std::move(context)));
     }
 
+    template<executable_t Callable>
     void operator()(std::string description,
-                    Executable body,
+                    Callable body,
                     Context context = Context()) const {
         mcga_test_register_test(
           TestConfig{
             .description = std::move(description),
             .optional = isOptional,
           },
-          std::move(body),
-          std::move(context));
+          Executable(std::move(body), std::move(context)));
     }
 
-    void operator()(Executable body, Context context = Context()) const {
-        mcga_test_register_test(TestConfig{.optional = isOptional},
-                                std::move(body),
-                                std::move(context));
+    template<executable_t Callable>
+    void operator()(Callable body, Context context = Context()) const {
+        mcga_test_register_test(
+          TestConfig{.optional = isOptional},
+          Executable(std::move(body), std::move(context)));
     }
 
     [[no_unique_address]] MultiRunTestApi<isOptional> multiRun;
@@ -216,23 +270,27 @@ struct TestApi : public OptionalTestApi<false> {
 
 template<bool isOptional>
 struct OptionalGroupApi {
+    template<executable_t Callable>
     void operator()(GroupConfig config,
-                    const Executable& body,
+                    Callable body,
                     Context context = Context()) const {
         config.optional = isOptional;
-        mcga_test_register_group(std::move(config), body, std::move(context));
+        mcga_test_register_group(
+          std::move(config), Executable(std::move(body), std::move(context)));
     }
 
+    template<executable_t Callable>
     void operator()(std::string description,
-                    const Executable& body,
+                    Callable body,
                     Context context = Context()) const {
         (*this)(GroupConfig{.description = std::move(description)},
-                body,
+                std::move(body),
                 std::move(context));
     }
 
-    void operator()(const Executable& body, Context context = Context()) const {
-        (*this)(GroupConfig(), body, std::move(context));
+    template<executable_t Callable>
+    void operator()(Callable body, Context context = Context()) const {
+        (*this)(GroupConfig(), std::move(body), std::move(context));
     }
 };
 
@@ -241,14 +299,18 @@ struct GroupApi : public OptionalGroupApi<false> {
 };
 
 struct SetUpApi {
-    void operator()(Executable func, Context context = Context()) const {
-        mcga_test_register_set_up(std::move(func), std::move(context));
+    template<executable_t Callable>
+    void operator()(Callable func, Context context = Context()) const {
+        mcga_test_register_set_up(
+          Executable(std::move(func), std::move(context)));
     }
 };
 
 struct TearDownApi {
-    void operator()(Executable func, Context context = Context()) const {
-        mcga_test_register_tear_down(std::move(func), std::move(context));
+    template<executable_t Callable>
+    void operator()(Callable func, Context context = Context()) const {
+        mcga_test_register_tear_down(
+          Executable(std::move(func), std::move(context)));
     }
 };
 

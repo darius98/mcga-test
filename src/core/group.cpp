@@ -27,11 +27,11 @@ GroupPtr Group::getParentGroup() const {
     return parentGroup;
 }
 
-void Group::addSetUp(UserTestExecutable func) {
+void Group::addSetUp(Executable func) {
     setUpFuncs.push_back(std::move(func));
 }
 
-void Group::addTearDown(UserTestExecutable func) {
+void Group::addTearDown(Executable func) {
     tearDownFuncs.push_back(std::move(func));
 }
 

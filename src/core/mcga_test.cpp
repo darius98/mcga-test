@@ -9,35 +9,32 @@ static mcga::test::internal::TestCase* registeredTestCasesListHead = nullptr;
 
 namespace mcga::test::internal {
 
-MCGA_TEST_EXPORT extern "C" void mcga_test_register_test_case(TestCase* testCase) {
+MCGA_TEST_EXPORT extern "C" void
+  mcga_test_register_test_case(TestCase* testCase) {
     testCase->next = registeredTestCasesListHead;
     registeredTestCasesListHead = testCase;
 }
 
-MCGA_TEST_EXPORT extern "C" void
-  mcga_test_register_test(TestConfig config, Executable body, Context context) {
-    Driver::Instance()->addTest(
-      std::move(config), std::move(body), std::move(context));
+MCGA_TEST_EXPORT extern "C" void mcga_test_register_test(TestConfig config,
+                                                         Executable body) {
+    Driver::Instance()->addTest(std::move(config), std::move(body));
 }
 
-MCGA_TEST_EXPORT extern "C" void
-  mcga_test_register_group(GroupConfig config, const Executable& body, Context context) {
-    Driver::Instance()->addGroup(std::move(config), body, std::move(context));
+MCGA_TEST_EXPORT extern "C" void mcga_test_register_group(GroupConfig config,
+                                                          Executable body) {
+    Driver::Instance()->addGroup(std::move(config), std::move(body));
 }
 
-MCGA_TEST_EXPORT extern "C" void mcga_test_register_set_up(Executable body,
-                                               Context context) {
-    Driver::Instance()->addSetUp(
-      UserTestExecutable{std::move(body), std::move(context)});
+MCGA_TEST_EXPORT extern "C" void mcga_test_register_set_up(Executable body) {
+    Driver::Instance()->addSetUp(std::move(body));
 }
 
-MCGA_TEST_EXPORT extern "C" void mcga_test_register_tear_down(Executable body,
-                                                  Context context) {
-    Driver::Instance()->addTearDown(
-      UserTestExecutable{std::move(body), std::move(context)});
+MCGA_TEST_EXPORT extern "C" void mcga_test_register_tear_down(Executable body) {
+    Driver::Instance()->addTearDown(std::move(body));
 }
 
-MCGA_TEST_EXPORT extern "C" void mcga_test_register_failure(std::string message, Context context) {
+MCGA_TEST_EXPORT extern "C" void mcga_test_register_failure(std::string message,
+                                                            Context context) {
     Driver::Instance()->addFailure(std::move(message), std::move(context));
 }
 
@@ -52,4 +49,4 @@ std::vector<TestCase*> getTestCases() {
     return testCasesRegistered;
 }
 
-}  // namespace mcga::test
+}  // namespace mcga::test::internal

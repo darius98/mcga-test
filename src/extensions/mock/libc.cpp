@@ -1,13 +1,12 @@
 #include "mcga/test_ext/mock/libc.hpp"
 
-#include "core/export.hpp"
 #include "pp_codegen.hpp"
 
 namespace mcga::test::mock {
 
-MCGA_TEST_EXPORT LibCMocks libc;
+MCGA_TEST_EXPORT LibCMocks libc asm("_mcga_test_ext_libc_mock");
 
-} // namespace mcga::test::mock
+}  // namespace mcga::test::mock
 
 using mcga::test::mock::libc;
 

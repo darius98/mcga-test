@@ -10,30 +10,33 @@
 
 using namespace mcga::proc;
 
-namespace mcga::test::death {
+namespace mcga::test::internal {
 
-MCGA_TEST_EXPORT DeathStatus checkDeath(const Executable& func,
-                                        double timeTicksLimit) {
+MCGA_TEST_EXPORT extern "C" void mcga_test_ext_check_death(
+  Executable func, double timeTicksLimit, death::DeathStatus* status) {
     if (Driver::Instance()->getExecutorType() == Executor::SMOOTH) {
         // TODO: Don't fail() here, implement the skip() functionality instead!
         fail("Death extension matchers & the checkDeath function do not work"
              " when using a smooth executor.");
-        return {-1, -1};
+        *status = {-1, -1};
+        return;
     }
 
-    WorkerSubprocess proc(TimeTicksToNanoseconds(timeTicksLimit),
-                          [func](std::unique_ptr<PipeWriter> writer) {
-                              func();
-                              writer->sendMessage(1);
-                          });
+    WorkerSubprocess proc(
+      TimeTicksToNanoseconds(timeTicksLimit),
+      [func = std::move(func)](std::unique_ptr<PipeWriter> writer) {
+          func();
+          writer->sendMessage(1);
+      });
 
     while (!proc.isFinished()) {
         std::this_thread::sleep_for(std::chrono::milliseconds{5});
     }
     if (proc.getNextMessage(1).isInvalid()) {
-        return {proc.getReturnCode(), proc.getSignal()};
+        *status = {proc.getReturnCode(), proc.getSignal()};
+    } else {
+        *status = {-1, -1};
     }
-    return {-1, -1};
 }
 
-}  // namespace mcga::test::death
+}  // namespace mcga::test::internal

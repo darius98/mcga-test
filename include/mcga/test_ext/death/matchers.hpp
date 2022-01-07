@@ -30,8 +30,9 @@ class ExitsWithCodeMatcher {
             : codeMatcher(std::move(codeMatcher)) {
     }
 
-    bool matches(const Executable& func) {
-        status = checkDeath(func);
+    template<class Callable>
+    bool matches(Callable func) {
+        status = checkDeath(std::move(func));
         return codeMatcher.matches(status.getExitCode());
     }
 
@@ -55,7 +56,8 @@ class ExitsMatcher {
             : zero(matchers::isZero), nonZero(matchers::isNotZero) {
     }
 
-    bool matches(const Executable& func) {
+    template<class Callable>
+    bool matches(Callable func) {
         status = checkDeath(func);
         return status.exited();
     }

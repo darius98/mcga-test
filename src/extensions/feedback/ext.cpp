@@ -60,12 +60,11 @@ void FeedbackExtension::init(ExtensionApi* api) {
     if (socketPathArgument->appeared()) {
         initSocketStream(api, socketPathArgument->get_value());
     }
-    api->addHook<ExtensionApi::AFTER_TEST_EXECUTION>(
-      [this](const Test& test) {
-          if (test.isExecuted() && !test.isPassed() && !test.isOptional()) {
-              exitCode = 1;
-          }
-      });
+    api->addHook<ExtensionApi::AFTER_TEST_EXECUTION>([this](const Test& test) {
+        if (test.isExecuted() && !test.isPassed() && !test.isOptional()) {
+            exitCode = 1;
+        }
+    });
     api->addHook<ExtensionApi::ON_WARNING>(
       [this](const Warning& warning) { exitCode = 1; });
 }
@@ -89,19 +88,17 @@ void FeedbackExtension::addPipeHooks(PipeWriter* pipe, ExtensionApi* api) {
                           test.getNumRequiredPassedAttempts());
     });
 
-    api->addHook<ExtensionApi::BEFORE_TEST_EXECUTION>([pipe](
-                                                          const Test& test) {
+    api->addHook<ExtensionApi::BEFORE_TEST_EXECUTION>([pipe](const Test& test) {
         pipe->sendMessage(PipeMessageType::TEST_EXECUTION_START, test.getId());
     });
 
-    api->addHook<ExtensionApi::AFTER_TEST_EXECUTION>(
-      [pipe](const Test& test) {
-          pipe->sendMessage(PipeMessageType::TEST_EXECUTION_FINISH,
-                            test.getId(),
-                            test.getExecutions().back().timeTicks,
-                            test.getExecutions().back().passed,
-                            test.getExecutions().back().failure);
-      });
+    api->addHook<ExtensionApi::AFTER_TEST_EXECUTION>([pipe](const Test& test) {
+        pipe->sendMessage(PipeMessageType::TEST_EXECUTION_FINISH,
+                          test.getId(),
+                          test.getExecutions().back().timeTicks,
+                          test.getExecutions().back().passed,
+                          test.getExecutions().back().failure);
+    });
 
     api->addHook<ExtensionApi::BEFORE_DESTROY>(
       [pipe]() { pipe->sendMessage(PipeMessageType::DONE); });

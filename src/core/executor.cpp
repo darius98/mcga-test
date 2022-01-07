@@ -80,9 +80,9 @@ Test::ExecutionInfo Executor::run(const Test& test) {
     std::vector<GroupPtr>::iterator it;
     // Execute setUp()-s, in the order of the group stack.
     for (it = testGroupStack.begin(); it != testGroupStack.end(); ++it) {
-        (*it)->forEachSetUp([&](const UserTestExecutable& setUp) {
+        (*it)->forEachSetUp([&](const Executable& setUp) {
             currentSetUp = &setUp;
-            runJob(setUp.func, &info, setUp.context);
+            runJob(setUp, &info);
             currentSetUp = nullptr;
             // If a setUp() fails, do not execute the rest.
             return info.passed;
@@ -91,15 +91,15 @@ Test::ExecutionInfo Executor::run(const Test& test) {
     state = INSIDE_TEST;
     if (info.passed) {
         // Only run the test if all setUp()-s passed without exception.
-        runJob([&test] { test.run(); }, &info, test.getContext());
+        runJob(test.getBody(), &info);
         --it;
     }
     state = INSIDE_TEAR_DOWN;
     // Execute tearDown()-s in reverse order, from where setUp()-s stopped.
     for (; it + 1 != testGroupStack.begin(); --it) {
-        (*it)->forEachTearDown([&](const UserTestExecutable& tearDown) {
+        (*it)->forEachTearDown([&](const Executable& tearDown) {
             currentTearDown = &tearDown;
-            runJob(tearDown.func, &info, tearDown.context);
+            runJob(tearDown, &info);
             currentTearDown = nullptr;
             return true;
         });
@@ -119,9 +119,7 @@ void Executor::emitWarning(Warning warning, GroupPtr group) {
     onWarning(std::move(warning), std::move(group));
 }
 
-void Executor::runJob(const Executable& job,
-                      Test::ExecutionInfo* execution,
-                      const Context& jobContext) {
+void Executor::runJob(const Executable& job, Test::ExecutionInfo* execution) {
     currentExecutionThreadId
       = std::hash<std::thread::id>()(std::this_thread::get_id());
     currentExecutionIsFailed = false;
@@ -134,9 +132,9 @@ void Executor::runJob(const Executable& job,
         execution->fail(failure.what(), failure.context);
     } catch (const std::exception& e) {
         execution->fail("Uncaught exception: " + std::string(e.what()),
-                        jobContext);
+                        job.context);
     } catch (...) {
-        execution->fail("Uncaught non-exception type.", jobContext);
+        execution->fail("Uncaught non-exception type.", job.context);
     }
 
     std::lock_guard guard(currentExecutionFailureMutex);

@@ -40,9 +40,7 @@ class Executor {
     Test::ExecutionInfo run(const Test& test);
 
   private:
-    void runJob(const Executable& job,
-                Test::ExecutionInfo* execution,
-                const Context& jobContext);
+    void runJob(const Executable& job, Test::ExecutionInfo* execution);
 
   protected:
     void decorateWarningWithCurrentTestNotes(Warning& warning, GroupPtr group);
@@ -55,8 +53,8 @@ class Executor {
 
     ExtensionApi* api;
 
-    const UserTestExecutable* currentSetUp = nullptr;
-    const UserTestExecutable* currentTearDown = nullptr;
+    const Executable* currentSetUp = nullptr;
+    const Executable* currentTearDown = nullptr;
     const Test* currentTest = nullptr;
 
   private:

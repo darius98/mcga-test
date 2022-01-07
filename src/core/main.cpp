@@ -17,9 +17,9 @@ void runTestsOnExecutor(Executor* executor,
     Driver driver(executor);
     Driver::Init(&driver);
     for (auto testCase: tests) {
-        driver.addGroup(GroupConfig{.description = testCase->name},
-                        testCase->body,
-                        Context(testCase->location));
+        driver.addGroup(
+          GroupConfig{.description = testCase->name},
+          Executable(testCase->body, Context(testCase->location)));
     }
     Driver::Clean();
 }

@@ -269,6 +269,6 @@ struct LibCMocks {
     // clang-format on
 };
 
-extern LibCMocks libc;
+extern "C" LibCMocks libc asm("_mcga_test_ext_libc_mock");
 
 }  // namespace mcga::test::mock

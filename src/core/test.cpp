@@ -15,10 +15,9 @@ void Test::ExecutionInfo::fail(const std::string& _failure,
     }
 }
 
-Test::Test(
-  TestConfig config, Executable body, Context context, GroupPtr group, int id)
-        : TestConfig(std::move(config)), context(std::move(context)),
-          body(std::move(body)), group(std::move(group)), id(id) {
+Test::Test(TestConfig config, Executable body, GroupPtr group, int id)
+        : TestConfig(std::move(config)), body(std::move(body)),
+          group(std::move(group)), id(id) {
 }
 
 const std::string& Test::getDescription() const {
@@ -26,7 +25,7 @@ const std::string& Test::getDescription() const {
 }
 
 const Context& Test::getContext() const {
-    return context;
+    return body.context;
 }
 
 bool Test::isOptional() const {
@@ -62,8 +61,8 @@ int Test::getId() const {
     return id;
 }
 
-void Test::run() const {
-    body();
+const Executable& Test::getBody() const {
+    return body;
 }
 
 bool Test::isExecuted() const {

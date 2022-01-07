@@ -55,11 +55,7 @@ class Test : private TestConfig {
 
     /** Default constructor from a TestConfig and the metadata received from the
      * testing Driver. */
-    Test(TestConfig config,
-         Executable body,
-         Context context,
-         GroupPtr group,
-         int id);
+    Test(TestConfig config, Executable body, GroupPtr group, int id);
 
     Test(Test&&) = default;
     Test& operator=(Test&&) = default;
@@ -102,7 +98,7 @@ class Test : private TestConfig {
      * Should only be called by Executor and its sub-/helper-classes, after
      * running all required set-ups and before all required tear-downs.
      */
-    void run() const;
+    const Executable& getBody() const;
 
     /** Check whether the number of executions registered is the same as
      * getNumAttempts(). */
@@ -137,7 +133,6 @@ class Test : private TestConfig {
     void addExecution(const ExecutionInfo& info);
 
   private:
-    Context context;
     Executable body;
     GroupPtr group;
     int id;

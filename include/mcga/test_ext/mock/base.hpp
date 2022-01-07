@@ -25,11 +25,12 @@ struct nth<0, H, T...> {
 template<int i, class H, class... T>
 struct nth<i, H, T...> : nth<i - 1, T...> {};
 
-void* find_next_symbol(const char* name) noexcept;
+extern "C" void* mcga_test_ext_find_next_symbol(const char* name) noexcept;
 
-[[noreturn]] void after_noreturn_invoke();
+[[noreturn]] extern "C" void mcga_test_ext_after_noreturn_invoke();
 
-void add_after_test_cleanup(void (*cb)(void*), void* data);
+extern "C" void mcga_test_ext_add_after_test_cleanup(void (*cb)(void*),
+                                                     void* data);
 
 }  // namespace internal
 
@@ -62,9 +63,9 @@ class BaseFunctionMock<R(Args...)> {
     void replace(Callable callable) {
         replacement = std::move(callable);
 
-        internal::add_after_test_cleanup([](void* data) {
-            static_cast<BaseFunctionMock<F>*>(data)->reset();
-        }, this);
+        internal::mcga_test_ext_add_after_test_cleanup(
+          [](void* data) { static_cast<BaseFunctionMock<F>*>(data)->reset(); },
+          this);
     }
 };
 
@@ -87,8 +88,8 @@ class FunctionMock<R(Args...)> : public BaseFunctionMock<R(Args...)> {
             return this->replacement(args...);
         } else {
             if (original == nullptr) {
-                original
-                  = reinterpret_cast<F*>(internal::find_next_symbol(symbol));
+                original = reinterpret_cast<F*>(
+                  internal::mcga_test_ext_find_next_symbol(symbol));
             }
             return original(args...);
         }

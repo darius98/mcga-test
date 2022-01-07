@@ -26,14 +26,13 @@ class Driver {
 
     [[nodiscard]] Executor::Type getExecutorType() const;
 
-    virtual void
-      addGroup(GroupConfig config, const Executable& body, Context context);
+    virtual void addGroup(GroupConfig config, Executable body);
 
-    virtual void addTest(TestConfig config, Executable body, Context context);
+    virtual void addTest(TestConfig config, Executable body);
 
-    virtual void addSetUp(UserTestExecutable setUp);
+    virtual void addSetUp(Executable setUp);
 
-    virtual void addTearDown(UserTestExecutable tearDown);
+    virtual void addTearDown(Executable tearDown);
 
     virtual void addFailure(const std::string& failure, Context context);
 
