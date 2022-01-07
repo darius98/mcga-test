@@ -156,7 +156,7 @@ void TestLogger::printTestAttemptsInfo(const Test& test) {
 void TestLogger::printTestFailure(const Test::ExecutionInfo& info) {
     stream << "\n";
     auto failure = info.failure;
-    // TODO(darius98): This should be somewhere else (in utils maybe?)
+    // TODO: This should be somewhere else (in utils maybe?)
     size_t pos = 0;
     while ((pos = failure.find('\n', pos)) != std::string::npos) {
         failure.replace(pos, 1, "\n\t");

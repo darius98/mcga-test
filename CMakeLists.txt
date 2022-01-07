@@ -7,26 +7,30 @@ set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 
 option(MCGA_test_tests "Build MCGA Test tests" OFF)
 
-add_subdirectory(third_party/termcolor EXCLUDE_FROM_ALL)
+add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/third_party/termcolor EXCLUDE_FROM_ALL)
 
 add_library(mcga_test_obj OBJECT
-        src/entry_point.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/entry_point.cpp
 
-        src/core/box_executor.cpp
-        src/core/driver.cpp
-        src/core/executor.cpp
-        src/core/group.cpp
-        src/core/main.cpp
-        src/core/mcga_test.cpp
-        src/core/scan_executor.cpp
-        src/core/time_tick.cpp
-        src/core/test.cpp
-        src/core/warning.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/core/box_executor.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/core/driver.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/core/executor.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/core/group.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/core/main.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/core/mcga_test.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/core/scan_executor.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/core/time_tick.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/core/test.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/core/warning.cpp
 
-        src/extensions/death/check_death.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/extensions/death/check_death.cpp
 
-        src/extensions/feedback/ext.cpp
-        src/extensions/feedback/test_logger.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/extensions/feedback/ext.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/extensions/feedback/test_logger.cpp
+
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/extensions/mock/base.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/extensions/mock/ext.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/extensions/mock/libc.cpp
         )
 target_include_directories(mcga_test_obj PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_link_libraries(mcga_test_obj PUBLIC mcga_cli PRIVATE termcolor)

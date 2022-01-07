@@ -18,7 +18,7 @@ MCGA_TEST_EXPORT DeathStatus checkDeath(const Executable& func,
         // TODO: Don't fail() here, implement the skip() functionality instead!
         fail("Death extension matchers & the checkDeath function do not work"
              " when using a smooth executor.");
-        return DeathStatus(-1, -1);
+        return {-1, -1};
     }
 
     WorkerSubprocess proc(TimeTicksToNanoseconds(timeTicksLimit),
@@ -30,11 +30,10 @@ MCGA_TEST_EXPORT DeathStatus checkDeath(const Executable& func,
     while (!proc.isFinished()) {
         std::this_thread::sleep_for(std::chrono::milliseconds{5});
     }
-    if (proc.getNextMessage(32).isInvalid()) {
-        // The exit was ok.
-        return DeathStatus(proc.getReturnCode(), proc.getSignal());
+    if (proc.getNextMessage(1).isInvalid()) {
+        return {proc.getReturnCode(), proc.getSignal()};
     }
-    return DeathStatus(-1, -1);
+    return {-1, -1};
 }
 
 }  // namespace mcga::test::death

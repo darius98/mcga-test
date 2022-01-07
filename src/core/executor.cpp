@@ -42,12 +42,14 @@ void Executor::addFailure(const std::string& failure, Context context) {
     // and we know we catch this exception.
     if (std::hash<std::thread::id>()(std::this_thread::get_id())
         == currentExecutionThreadId) {
+        // TODO: Abort when exceptions are disabled (in non-smooth execution,
+        //  inform the test runner process of the failure before aborting).
         throw ExpectationFailed(failure, std::move(context));
     }
 
     // If the user starts his own threads that entertain failures, it is his
     // responsibility to make sure his threads die on failure (we have no
-    // control)
+    // control).
     std::lock_guard guard(currentExecutionFailureMutex);
     if (!currentExecutionIsFailed) {
         currentExecutionIsFailed = true;
@@ -71,6 +73,7 @@ Executor::Type Executor::getType() const {
 Test::ExecutionInfo Executor::run(const Test& test) {
     currentTest = &test;
     state = INSIDE_SET_UP;
+    api->runHooks<ExtensionApi::BEFORE_TEST_SETUP>(test);
     Test::ExecutionInfo info;
     auto startTime = std::chrono::high_resolution_clock::now();
     std::vector<GroupPtr> testGroupStack = test.getGroupStack();
@@ -102,12 +105,11 @@ Test::ExecutionInfo Executor::run(const Test& test) {
         });
     }
     auto endTime = std::chrono::high_resolution_clock::now();
-    auto nanosecondsElapsed
-      = duration_cast<std::chrono::nanoseconds>(endTime - startTime).count();
-    info.timeTicks = 1.0 * nanosecondsElapsed / GetTimeTickLength().count();
+    info.timeTicks = NanosecondsToTimeTicks(endTime - startTime);
     if (info.timeTicks > test.getTimeTicksLimit()) {
         info.fail("Execution timed out.");
     }
+    api->runHooks<ExtensionApi::AFTER_TEST_TEARDOWN>(test);
     state = INACTIVE;
     currentTest = nullptr;
     return info;
@@ -177,11 +179,11 @@ void Executor::onTestDiscovered(const Test& test) {
 }
 
 void Executor::onTestExecutionStart(const Test& test) {
-    api->runHooks<ExtensionApi::ON_TEST_EXECUTION_START>(test);
+    api->runHooks<ExtensionApi::BEFORE_TEST_EXECUTION>(test);
 }
 
 void Executor::onTestExecutionFinish(const Test& test) {
-    api->runHooks<ExtensionApi::ON_TEST_EXECUTION_FINISH>(test);
+    api->runHooks<ExtensionApi::AFTER_TEST_EXECUTION>(test);
 }
 
 }  // namespace mcga::test

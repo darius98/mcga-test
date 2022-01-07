@@ -60,7 +60,7 @@ void FeedbackExtension::init(ExtensionApi* api) {
     if (socketPathArgument->appeared()) {
         initSocketStream(api, socketPathArgument->get_value());
     }
-    api->addHook<ExtensionApi::ON_TEST_EXECUTION_FINISH>(
+    api->addHook<ExtensionApi::AFTER_TEST_EXECUTION>(
       [this](const Test& test) {
           if (test.isExecuted() && !test.isPassed() && !test.isOptional()) {
               exitCode = 1;
@@ -89,12 +89,12 @@ void FeedbackExtension::addPipeHooks(PipeWriter* pipe, ExtensionApi* api) {
                           test.getNumRequiredPassedAttempts());
     });
 
-    api->addHook<ExtensionApi::ON_TEST_EXECUTION_START>([pipe](
+    api->addHook<ExtensionApi::BEFORE_TEST_EXECUTION>([pipe](
                                                           const Test& test) {
         pipe->sendMessage(PipeMessageType::TEST_EXECUTION_START, test.getId());
     });
 
-    api->addHook<ExtensionApi::ON_TEST_EXECUTION_FINISH>(
+    api->addHook<ExtensionApi::AFTER_TEST_EXECUTION>(
       [pipe](const Test& test) {
           pipe->sendMessage(PipeMessageType::TEST_EXECUTION_FINISH,
                             test.getId(),
@@ -114,10 +114,10 @@ void FeedbackExtension::addPipeHooks(PipeWriter* pipe, ExtensionApi* api) {
 void FeedbackExtension::initLogging(ExtensionApi* api) {
     logger = make_unique<TestLogger>(std::cout, !noLiveLogging->get_value());
 
-    api->addHook<ExtensionApi::ON_TEST_EXECUTION_START>(
+    api->addHook<ExtensionApi::BEFORE_TEST_EXECUTION>(
       [this](const Test& test) { logger->onTestExecutionStart(test); });
 
-    api->addHook<ExtensionApi::ON_TEST_EXECUTION_FINISH>(
+    api->addHook<ExtensionApi::AFTER_TEST_EXECUTION>(
       [this](const Test& test) { logger->onTestExecutionFinish(test); });
 
     api->addHook<ExtensionApi::BEFORE_DESTROY>(

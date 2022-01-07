@@ -5,45 +5,43 @@
 
 #include <iostream>
 
-namespace mcga::test {
+static mcga::test::internal::TestCase* registeredTestCasesListHead = nullptr;
 
-namespace internal {
+namespace mcga::test::internal {
 
-MCGA_TEST_EXPORT void
-  registerTest(TestConfig config, Executable body, Context context) {
+MCGA_TEST_EXPORT extern "C" void mcga_test_register_test_case(TestCase* testCase) {
+    testCase->next = registeredTestCasesListHead;
+    registeredTestCasesListHead = testCase;
+}
+
+MCGA_TEST_EXPORT extern "C" void
+  mcga_test_register_test(TestConfig config, Executable body, Context context) {
     Driver::Instance()->addTest(
       std::move(config), std::move(body), std::move(context));
 }
 
-MCGA_TEST_EXPORT void
-  registerGroup(GroupConfig config, const Executable& body, Context context) {
+MCGA_TEST_EXPORT extern "C" void
+  mcga_test_register_group(GroupConfig config, const Executable& body, Context context) {
     Driver::Instance()->addGroup(std::move(config), body, std::move(context));
 }
 
-MCGA_TEST_EXPORT void SetUpApi::operator()(Executable func,
-                                           Context context) const {
+MCGA_TEST_EXPORT extern "C" void mcga_test_register_set_up(Executable body,
+                                               Context context) {
     Driver::Instance()->addSetUp(
-      UserTestExecutable{std::move(func), std::move(context)});
+      UserTestExecutable{std::move(body), std::move(context)});
 }
 
-MCGA_TEST_EXPORT void TearDownApi::operator()(Executable func,
-                                              Context context) const {
+MCGA_TEST_EXPORT extern "C" void mcga_test_register_tear_down(Executable body,
+                                                  Context context) {
     Driver::Instance()->addTearDown(
-      UserTestExecutable{std::move(func), std::move(context)});
+      UserTestExecutable{std::move(body), std::move(context)});
 }
 
-static TestCase* registeredTestCasesListHead = nullptr;
-
-MCGA_TEST_EXPORT
-TestCase::TestCase(void (*body)(),
-                   const char* name,
-                   internal::source_location location) noexcept
-        : body(body), name(name), location(location),
-          next(registeredTestCasesListHead) {
-    registeredTestCasesListHead = this;
+MCGA_TEST_EXPORT extern "C" void mcga_test_register_failure(std::string message, Context context) {
+    Driver::Instance()->addFailure(std::move(message), std::move(context));
 }
 
-MCGA_TEST_EXPORT
+// Intentionally not exported, only used internally within the library.
 std::vector<TestCase*> getTestCases() {
     std::vector<TestCase*> testCasesRegistered;
     for (auto testCase = registeredTestCasesListHead; testCase != nullptr;
@@ -52,12 +50,6 @@ std::vector<TestCase*> getTestCases() {
     }
     std::reverse(testCasesRegistered.begin(), testCasesRegistered.end());
     return testCasesRegistered;
-}
-
-}  // namespace internal
-
-MCGA_TEST_EXPORT void fail(const std::string& message, Context context) {
-    Driver::Instance()->addFailure(message, std::move(context));
 }
 
 }  // namespace mcga::test

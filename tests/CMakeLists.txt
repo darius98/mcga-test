@@ -1,12 +1,19 @@
 add_custom_target(mcga_test_check COMMAND ${CMAKE_CTEST_COMMAND})
+message(STATUS "${CMAKE_CTEST_COMMAND}")
 
 function(add_unit_test TEST_NAME)
+    cmake_parse_arguments(P "NO_EXECUTOR_TYPE" "" "" ${ARGN})
     set(UNIT_TEST mcga_test_unit_${TEST_NAME})
-    add_executable(${UNIT_TEST} ${ARGN})
-    target_link_libraries(${UNIT_TEST} mcga_test)
+    add_executable(${UNIT_TEST} ${P_UNPARSED_ARGUMENTS})
+    target_link_libraries(${UNIT_TEST} mcga_test_static)
     add_dependencies(mcga_test_check ${UNIT_TEST})
 
-    add_test(NAME ${UNIT_TEST} COMMAND ${UNIT_TEST})
+    if (P_NO_EXECUTOR_TYPE)
+        add_test(NAME ${UNIT_TEST} COMMAND ${UNIT_TEST})
+    else ()
+        add_test(NAME ${UNIT_TEST}_boxed COMMAND ${UNIT_TEST} --executor=boxed)
+        add_test(NAME ${UNIT_TEST}_smooth COMMAND ${UNIT_TEST} --executor=smooth)
+    endif ()
 endfunction()
 
 function(add_integration_test TEST_NAME)
@@ -17,7 +24,7 @@ function(add_integration_test TEST_NAME)
     set_target_properties(${INTEGRATION_TEST_BIN} PROPERTIES
             RUNTIME_OUTPUT_NAME ${TEST_NAME}
             )
-    target_link_libraries(${INTEGRATION_TEST_BIN} mcga_test)
+    target_link_libraries(${INTEGRATION_TEST_BIN} mcga_test_static)
     add_dependencies(mcga_test_check ${INTEGRATION_TEST_BIN})
 
     if (P_NO_EXECUTOR_TYPE)
@@ -45,4 +52,10 @@ function(add_basic_test TEST_NAME)
 endfunction()
 
 add_subdirectory(core)
-add_subdirectory(extensions/death)
+
+add_unit_test(extension_death NO_EXECUTOR_TYPE
+        extensions/death/check_death_test.cpp
+        extensions/death/matchers_test.cpp)
+
+add_unit_test(extension_mock
+        extensions/mock/function_mock_test.cpp)

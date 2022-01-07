@@ -11,20 +11,22 @@ namespace mcga::test {
 
 class ExtensionApi {
   public:
-    using OnGroupDiscovered = std::function<void(GroupPtr)>;
-    using OnTestDiscovered = std::function<void(const Test&)>;
-    using OnWarning = std::function<void(const Warning&)>;
-    using OnTestExecutionStart = std::function<void(const Test&)>;
-    using OnTestExecutionFinish = std::function<void(const Test&)>;
-    using BeforeDestroy = std::function<void()>;
+    using GlobalHook = std::function<void()>;
+    using TestHook = std::function<void(const Test&)>;
+    using GroupHook = std::function<void(GroupPtr)>;
+    using WarningHook = std::function<void(const Warning&)>;
 
     enum Type : std::uint8_t {
         ON_GROUP_DISCOVERED = 0,
         ON_TEST_DISCOVERED = 1,
         ON_WARNING = 2,
-        ON_TEST_EXECUTION_START = 3,
-        ON_TEST_EXECUTION_FINISH = 4,
-        BEFORE_DESTROY = 5,
+        // These two are always called in the orchestrator process.
+        BEFORE_TEST_EXECUTION = 3,
+        AFTER_TEST_EXECUTION = 4,
+        // These are called inside the executor process in non-smooth execution.
+        BEFORE_TEST_SETUP = 5,
+        AFTER_TEST_TEARDOWN = 6,
+        BEFORE_DESTROY = 7,
     };
 
     ExtensionApi() = default;
@@ -49,12 +51,14 @@ class ExtensionApi {
         }
     }
 
-    std::tuple<std::vector<OnGroupDiscovered>,
-               std::vector<OnTestDiscovered>,
-               std::vector<OnWarning>,
-               std::vector<OnTestExecutionStart>,
-               std::vector<OnTestExecutionFinish>,
-               std::vector<BeforeDestroy>>
+    std::tuple<std::vector<GroupHook>,
+               std::vector<TestHook>,
+               std::vector<WarningHook>,
+               std::vector<TestHook>,
+               std::vector<TestHook>,
+               std::vector<TestHook>,
+               std::vector<TestHook>,
+               std::vector<GlobalHook>>
       hooks;
 
     friend class Executor;
