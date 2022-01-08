@@ -24,14 +24,13 @@ class Test : private TestConfig {
     /** Simple helper structure that holds the execution information for a
      * test. */
     struct ExecutionInfo {
+        enum: char {PASSED = 0, FAILED = 1} status = PASSED;
+
         /** Number of time ticks the execution took.
          *
          * Is `-1` by default, signaling that the number of time ticks was not
          * computable for this execution. */
         double timeTicks = -1.0;
-
-        /** Whether the test passed or not. */
-        bool passed = true;
 
         /** Human-readable failure message in case the test failed, or empty
          * string if the test passed. */

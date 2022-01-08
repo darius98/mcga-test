@@ -93,11 +93,11 @@ Test::ExecutionInfo Executor::run(const Test& test) {
             runJob(setUp, &info);
             currentSetUp = nullptr;
             // If a setUp() fails, do not execute the rest.
-            return info.passed;
+            return info.status == Test::ExecutionInfo::PASSED;
         });
     }
     state = INSIDE_TEST;
-    if (info.passed) {
+    if (info.status == Test::ExecutionInfo::PASSED) {
         // Only run the test if all setUp()-s passed without exception.
         runJob(test.getBody(), &info);
         --it;

@@ -95,8 +95,8 @@ void FeedbackExtension::addPipeHooks(PipeWriter* pipe, ExtensionApi* api) {
     api->addHook<ExtensionApi::AFTER_TEST_EXECUTION>([pipe](const Test& test) {
         pipe->sendMessage(PipeMessageType::TEST_EXECUTION_FINISH,
                           test.getId(),
+                          test.getExecutions().back().status,
                           test.getExecutions().back().timeTicks,
-                          test.getExecutions().back().passed,
                           test.getExecutions().back().failure);
     });
 

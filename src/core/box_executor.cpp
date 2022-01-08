@@ -49,7 +49,7 @@ void BoxExecutor::executeBoxed(const Test& test,
     currentTestingSubprocessPipe = std::move(pipe);
     Test::ExecutionInfo info = run(test);
     currentTestingSubprocessPipe->sendMessage(
-      DONE, info.timeTicks, info.passed, info.failure, info.failureContext);
+      DONE, info.status, info.timeTicks, info.failure, info.failureContext);
 }
 
 std::unique_ptr<WorkerSubprocess>
@@ -101,7 +101,7 @@ bool BoxExecutor::tryCloseBox(Box* box) {
                 onWarning(message.read<Warning>(), nullptr);
                 continue;
             }
-            message >> info.timeTicks >> info.passed >> info.failure
+            message >> info.status >> info.timeTicks >> info.failure
               >> info.failureContext;
             break;
         }

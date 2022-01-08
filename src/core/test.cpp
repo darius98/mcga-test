@@ -7,8 +7,8 @@ namespace mcga::test {
 void Test::ExecutionInfo::fail(const String& _failure,
                                std::optional<Context> _failureContext,
                                double _timeTicks) {
-    if (passed) {
-        passed = false;
+    if (status == PASSED) {
+        status = FAILED;
         failure = _failure;
         failureContext = std::move(_failureContext);
         timeTicks = _timeTicks;
@@ -76,7 +76,7 @@ bool Test::isPassed() const {
 size_t Test::getNumPassedAttempts() const {
     int numPassedExecutions = 0;
     for (const auto& info: executions) {
-        numPassedExecutions += (info.passed ? 1 : 0);
+        numPassedExecutions += (info.status == ExecutionInfo::PASSED ? 1 : 0);
     }
     return numPassedExecutions;
 }
@@ -113,7 +113,7 @@ double Test::getTotalTimeTicks() const {
 
 std::optional<Test::ExecutionInfo> Test::getLastFailure() const {
     for (auto it = executions.rbegin(); it != executions.rend(); ++it) {
-        if (!it->passed) {
+        if (it->status == ExecutionInfo::FAILED) {
             return *it;
         }
     }
