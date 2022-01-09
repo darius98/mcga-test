@@ -8,12 +8,11 @@
 
 namespace mcga::test::mock::internal {
 
-MCGA_TEST_EXPORT extern "C" void*
-  mcga_test_ext_find_next_symbol(const char* name) noexcept {
+MCGA_TEST_EXPORT void* find_next_symbol(const char* name) noexcept {
     return dlsym(RTLD_NEXT, name);
 }
 
-MCGA_TEST_EXPORT extern "C" void mcga_test_ext_after_noreturn_invoke() {
+MCGA_TEST_EXPORT void after_noreturn_invoke() {
     throw std::runtime_error(
       "Replacement for function marked [[noreturn]] returned.");
 }

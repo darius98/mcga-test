@@ -27,9 +27,9 @@ struct nth<0, H, T...> {
 template<int i, class H, class... T>
 struct nth<i, H, T...> : nth<i - 1, T...> {};
 
-extern "C" void* mcga_test_ext_find_next_symbol(const char* name) noexcept;
+void* find_next_symbol(const char* name) noexcept;
 
-[[noreturn]] extern "C" void mcga_test_ext_after_noreturn_invoke();
+[[noreturn]] void after_noreturn_invoke();
 
 }  // namespace internal
 
@@ -84,8 +84,8 @@ class FunctionMock<R(Args...)> : public BaseFunctionMock<R(Args...)> {
             return this->replacement(args...);
         } else {
             if (original == nullptr) {
-                original = reinterpret_cast<F*>(
-                  internal::mcga_test_ext_find_next_symbol(symbol));
+                original
+                  = reinterpret_cast<F*>(internal::find_next_symbol(symbol));
             }
             return original(args...);
         }

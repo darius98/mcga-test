@@ -1,9 +1,9 @@
 #include "mcga/test.hpp"
 
-TEST_CASE("TestCase1") {
+auto testCase1 = mcga::test::TestCase{"TestCase1"} + [] {
     mcga::test::test("test", [] {});
-}
+};
 
-TEST_CASE("TestCase2") {
+auto testCase2 = mcga::test::TestCase{"TestCase2"} + [] {
     mcga::test::test("test", [] {});
-}
+};

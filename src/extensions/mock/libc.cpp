@@ -4,7 +4,7 @@
 
 namespace mcga::test::mock {
 
-MCGA_TEST_EXPORT LibCMocks libc asm("_mcga_test_ext_libc_mock");
+MCGA_TEST_EXPORT LibCMocks libc;
 
 }  // namespace mcga::test::mock
 

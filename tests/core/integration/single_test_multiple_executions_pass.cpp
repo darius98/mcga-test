@@ -2,7 +2,7 @@
 
 #include <random>
 
-TEST_CASE("TestCase") {
+auto testCase = mcga::test::TestCase{"TestCase"} + [] {
     mcga::test::test(mcga::test::TestConfig{.description = "test",
                                             .attempts = 100,
                                             .requiredPassedAttempts = 10},
@@ -13,4 +13,4 @@ TEST_CASE("TestCase") {
                              mcga::test::fail("Got 0.");
                          }
                      });
-}
+};

@@ -10,7 +10,7 @@ using namespace mcga::test;
 using namespace mcga::matchers;
 using namespace mcga::test::death;
 
-TEST_CASE("Death extension: matchers") {
+static auto t = TestCase{"Death extension: matchers"} + [] {
     auto funcExit0 = [] { exit(0); };
     auto funcExit17 = [] { exit(17); };
     auto funcNoExit = [] {};
@@ -121,4 +121,4 @@ TEST_CASE("Death extension: matchers") {
                  EXPECT_MATCHER_FAILS(status, hasExitedWithNonZeroCode);
              });
     });
-}
+};

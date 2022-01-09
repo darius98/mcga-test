@@ -8,7 +8,7 @@
 using namespace mcga::test;
 using namespace mcga::matchers;
 
-TEST_CASE("mock extension") {
+static auto t = TestCase{"mock extension"} + [] {
     size_t arg = 0;
 
     const auto malloc_replacement = [&](size_t n) {
@@ -178,4 +178,4 @@ TEST_CASE("mock extension") {
             expect(err.what(), isEqualTo("Something else"));
         }
     });
-}
+};

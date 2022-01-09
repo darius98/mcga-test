@@ -5,9 +5,9 @@
 
 namespace mcga::test::internal {
 
-extern "C" void mcga_test_ext_check_death(Executable func,
-                                          double timeTicksLimit,
-                                          death::DeathStatus* status);
+void check_death(Executable func,
+                 double timeTicksLimit,
+                 death::DeathStatus* status);
 
 }
 
@@ -18,7 +18,7 @@ DeathStatus checkDeath(Callable func,
                        double timeTicksLimit = 1,
                        Context context = Context()) {
     DeathStatus status;
-    internal::mcga_test_ext_check_death(
+    internal::check_death(
       Executable(std::move(func), std::move(context)), timeTicksLimit, &status);
     return status;
 }

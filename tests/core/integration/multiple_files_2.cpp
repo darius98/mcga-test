@@ -1,5 +1,5 @@
 #include "mcga/test.hpp"
 
-TEST_CASE("TestCase2") {
+static auto t = mcga::test::TestCase{"TestCase2"} + [] {
     mcga::test::test("test", [] {});
-}
+};

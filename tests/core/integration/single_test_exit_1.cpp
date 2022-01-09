@@ -2,6 +2,6 @@
 
 #include <cstdlib>
 
-TEST_CASE("TestCase") {
+auto testCase = mcga::test::TestCase{"TestCase"} + [] {
     mcga::test::test("test", [] { exit(1); });
-}
+};

@@ -28,7 +28,7 @@ concept executable_t = requires(const T& obj) {
 
 template<class T>
 concept std_string_like = requires(const T& str) {
-    {str.data()} -> same_as<const char*>;
+    { str.data() } -> same_as<const char*>;
 };
 
 }  // namespace internal
@@ -45,18 +45,18 @@ class String {
     }
 
   public:
-    String(): String("") {
+    String() noexcept: String("") {
     }
 
-    String(const char* data): isOwned(false), data(data) {
-    }
-
-    template<int N>
-    String(char (&data)[N]): isOwned(false), data(data) {
+    String(const char* data) noexcept: isOwned(false), data(data) {
     }
 
     template<int N>
-    String(const char (&data)[N]): isOwned(false), data(data) {
+    String(char (&data)[N]) noexcept: isOwned(false), data(data) {
+    }
+
+    template<int N>
+    String(const char (&data)[N]) noexcept: isOwned(false), data(data) {
     }
 
     template<internal::std_string_like S>
@@ -225,23 +225,23 @@ struct GroupConfig {
     bool optional = false;
 };
 
-namespace internal {
-
 struct TestCase;
 
-extern "C" void mcga_test_register_test_case(TestCase* testCase);
+namespace internal {
 
-extern "C" void mcga_test_register_test(TestConfig config, Executable body);
+void register_test_case(TestCase* testCase) noexcept;
 
-extern "C" void mcga_test_register_group(GroupConfig config, Executable body);
+void register_test(TestConfig config, Executable body);
 
-extern "C" void mcga_test_register_set_up(Executable body);
+void register_group(GroupConfig config, Executable body);
 
-extern "C" void mcga_test_register_tear_down(Executable body);
+void register_set_up(Executable body);
 
-extern "C" void mcga_test_register_failure(String message, Context context);
+void register_tear_down(Executable body);
 
-extern "C" void mcga_test_register_cleanup(Executable exec);
+void register_failure(String message, Context context);
+
+void register_cleanup(Executable exec);
 
 template<bool isOptional>
 struct MultiRunTestApi {
@@ -253,7 +253,7 @@ struct MultiRunTestApi {
         config.attempts = numRuns;
         config.requiredPassedAttempts = numRuns;
         config.optional = isOptional;
-        mcga_test_register_test(std::move(config),
+        register_test(std::move(config),
                                 Executable(body, std::move(context)));
     }
 
@@ -286,7 +286,7 @@ struct RetryTestApi {
         config.attempts = attempts;
         config.requiredPassedAttempts = 1;
         config.optional = isOptional;
-        mcga_test_register_test(
+        register_test(
           std::move(config), Executable(std::move(body), std::move(context)));
     }
 
@@ -295,7 +295,7 @@ struct RetryTestApi {
                     String description,
                     Callable body,
                     Context context = Context()) const {
-        mcga_test_register_test(
+        register_test(
           TestConfig{.description = std::move(description),
                      .optional = isOptional,
                      .attempts = attempts,
@@ -307,7 +307,7 @@ struct RetryTestApi {
     void operator()(int attempts,
                     Callable body,
                     Context context = Context()) const {
-        mcga_test_register_test(
+        register_test(
           TestConfig{.optional = isOptional,
                      .attempts = attempts,
                      .requiredPassedAttempts = 1},
@@ -322,7 +322,7 @@ struct OptionalTestApi {
                     Callable body,
                     Context context = Context()) const {
         config.optional = isOptional;
-        mcga_test_register_test(
+        register_test(
           std::move(config), Executable(std::move(body), std::move(context)));
     }
 
@@ -330,7 +330,7 @@ struct OptionalTestApi {
     void operator()(String description,
                     Callable body,
                     Context context = Context()) const {
-        mcga_test_register_test(
+        register_test(
           TestConfig{
             .description = std::move(description),
             .optional = isOptional,
@@ -340,7 +340,7 @@ struct OptionalTestApi {
 
     template<executable_t Callable>
     void operator()(Callable body, Context context = Context()) const {
-        mcga_test_register_test(
+        register_test(
           TestConfig{.optional = isOptional},
           Executable(std::move(body), std::move(context)));
     }
@@ -360,7 +360,7 @@ struct OptionalGroupApi {
                     Callable body,
                     Context context = Context()) const {
         config.optional = isOptional;
-        mcga_test_register_group(
+        register_group(
           std::move(config), Executable(std::move(body), std::move(context)));
     }
 
@@ -383,46 +383,62 @@ struct GroupApi : public OptionalGroupApi<false> {
     [[no_unique_address]] OptionalGroupApi<true> optional;
 };
 
+}  // namespace internal
+
 struct TestCase {
-    TestCase* next;
+    TestCase* next = nullptr;
 
-    void (*body)();
-
-    const char* name;
+    String name;
+    void (*body)() = nullptr;
     Context context;
 
-    TestCase(void (*body)(), const char* name, Context context) noexcept
-            : body(body), name(name), context(std::move(context)),
-              next(nullptr) {
-        mcga_test_register_test_case(this);
+    explicit TestCase(String name, Context context = Context()) noexcept
+            : name(std::move(name)), body(nullptr),
+              context(std::move(context)) {
+    }
+
+    explicit TestCase(Context context = Context()) noexcept
+            : name(""), body(nullptr), context(std::move(context)) {
+    }
+
+    TestCase(TestCase&& other) noexcept
+            : name(std::move(other.name)), body(other.body),
+              context(std::move(other.context)) {
+        internal::register_test_case(this);
+    }
+    TestCase(const TestCase&) = delete;
+    TestCase& operator=(const TestCase&) = delete;
+    TestCase& operator=(TestCase&&) = delete;
+
+    TestCase&& operator+(void (*body_)()) && noexcept {
+        body = body_;
+        return std::move(*this);
     }
 };
-
-}  // namespace internal
 
 inline constexpr internal::TestApi test;
 inline constexpr internal::GroupApi group;
 
 template<internal::executable_t Callable>
 void setUp(Callable func, Context context = Context()) {
-    internal::mcga_test_register_set_up(
+    internal::register_set_up(
       Executable(std::move(func), std::move(context)));
 }
 
 template<internal::executable_t Callable>
 void cleanup(Callable func, Context context = Context()) {
-    internal::mcga_test_register_cleanup(
+    internal::register_cleanup(
       Executable(std::move(func), std::move(context)));
 }
 
 template<internal::executable_t Callable>
 void tearDown(Callable func, Context context = Context()) {
-    internal::mcga_test_register_tear_down(
+    internal::register_tear_down(
       Executable(std::move(func), std::move(context)));
 }
 
 inline void fail(String message = String(), Context context = Context()) {
-    internal::mcga_test_register_failure(std::move(message),
+    internal::register_failure(std::move(message),
                                          std::move(context));
 }
 
@@ -434,19 +450,3 @@ inline void expect(bool expr, Context context = Context()) {
 }
 
 }  // namespace mcga::test
-
-#define INTERNAL_TEST_CASE_CAT(a, b) a##b
-#define INTERNAL_TEST_CASE_CAT2(a, b) INTERNAL_TEST_CASE_CAT(a, b)
-#define INTERNAL_TEST_CASE_UNIQ(a) INTERNAL_TEST_CASE_CAT2(a, __LINE__)
-
-#define TEST_CASE(description)                                                 \
-    namespace {                                                                \
-    struct INTERNAL_TEST_CASE_UNIQ(TestCaseCls) {                              \
-        static void testCase();                                                \
-    };                                                                         \
-    ::mcga::test::internal::TestCase INTERNAL_TEST_CASE_UNIQ(TestCaseReg)(     \
-      INTERNAL_TEST_CASE_UNIQ(TestCaseCls)::testCase,                          \
-      "" description,                                                          \
-      ::mcga::test::Context());                                                \
-    }                                                                          \
-    void INTERNAL_TEST_CASE_UNIQ(TestCaseCls)::testCase()

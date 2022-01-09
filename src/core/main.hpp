@@ -6,11 +6,11 @@
 
 namespace mcga::test {
 
-std::vector<internal::TestCase*> getTestCases();
+std::vector<TestCase*> getTestCases();
 
 void runTests(int argc,
               char** argv,
-              const std::vector<internal::TestCase*>& tests,
+              const std::vector<TestCase*>& tests,
               const std::vector<Extension*>& extensions);
 
 }  // namespace mcga::test

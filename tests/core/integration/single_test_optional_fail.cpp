@@ -1,6 +1,6 @@
 #include "mcga/test.hpp"
 
-TEST_CASE("TestCase") {
+auto testCase = mcga::test::TestCase{"TestCase"} + [] {
     // Directly an optional test
     mcga::test::test.optional(
       "test", [] { mcga::test::fail("1 + 1 == 3 is not true"); });
@@ -10,4 +10,4 @@ TEST_CASE("TestCase") {
         mcga::test::test("non-optional-test",
                          [] { mcga::test::fail("1 + 1 == 3 is not true"); });
     });
-}
+};

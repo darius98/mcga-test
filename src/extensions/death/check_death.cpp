@@ -12,8 +12,9 @@ using namespace mcga::proc;
 
 namespace mcga::test::internal {
 
-MCGA_TEST_EXPORT extern "C" void mcga_test_ext_check_death(
-  Executable func, double timeTicksLimit, death::DeathStatus* status) {
+MCGA_TEST_EXPORT void check_death(Executable func,
+                                  double timeTicksLimit,
+                                  death::DeathStatus* status) {
     if (Driver::Instance()->getExecutorType() == Executor::SMOOTH) {
         // TODO: Don't fail() here, implement the skip() functionality instead!
         fail("Death extension matchers & the checkDeath function do not work"
