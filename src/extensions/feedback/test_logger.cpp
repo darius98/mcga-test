@@ -163,9 +163,8 @@ void TestLogger::printTestFailure(const Test::ExecutionInfo& info) {
     stream << red;
     if (info.context.has_value()) {
         stream << info.context->verb.c_str() << " at "
-               << info.context->fileName.c_str() << ":"
-               << info.context->line << ":"
-               << info.context->column << "\n";
+               << info.context->fileName.c_str() << ":" << info.context->line
+               << ":" << info.context->column << "\n";
     }
     stream << "\t" << failure << reset;
 }

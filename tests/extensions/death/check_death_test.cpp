@@ -12,7 +12,9 @@ using namespace mcga::test::death;
 
 static auto t = TestCase{"Death extension: check death"} + [] {
     test("exit code 0", [] {
-        auto func = [] { exit(0); };
+        auto func = [] {
+            exit(0);
+        };
 
         auto status = checkDeath(func);
         expect(status.exitedOrKilled(), isTrue);
@@ -22,7 +24,9 @@ static auto t = TestCase{"Death extension: check death"} + [] {
     });
 
     test("exit code 1", [] {
-        auto func = [] { exit(1); };
+        auto func = [] {
+            exit(1);
+        };
 
         auto status = checkDeath(func);
         expect(status.exitedOrKilled(), isTrue);
@@ -32,7 +36,9 @@ static auto t = TestCase{"Death extension: check death"} + [] {
     });
 
     test("kill by signal SIGTERM", [] {
-        auto func = [] { raise(SIGTERM); };
+        auto func = [] {
+            raise(SIGTERM);
+        };
 
         auto status = checkDeath(func);
         expect(status.exitedOrKilled(), isTrue);
@@ -42,7 +48,9 @@ static auto t = TestCase{"Death extension: check death"} + [] {
     });
 
     test("kill by signal SIGUSR1", [] {
-        auto func = [] { raise(SIGUSR1); };
+        auto func = [] {
+            raise(SIGUSR1);
+        };
 
         auto status = checkDeath(func);
         expect(status.exitedOrKilled(), isTrue);

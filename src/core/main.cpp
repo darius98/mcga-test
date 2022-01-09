@@ -17,9 +17,8 @@ void runTestsOnExecutor(Executor* executor,
     Driver driver(executor);
     Driver::Init(&driver);
     for (auto testCase: tests) {
-        driver.addGroup(
-          GroupConfig{.description = testCase->name},
-          Executable(testCase->body, testCase->context));
+        driver.addGroup(GroupConfig{.description = testCase->name},
+                        Executable(testCase->body, testCase->context));
     }
     Driver::Clean();
 }
@@ -48,7 +47,9 @@ void runTests(int argc,
                          "type is 'smooth'.")
         .set_default_value("1")
         .set_implicit_value_generator(
-          [] { return std::to_string(std::thread::hardware_concurrency()); },
+          [] {
+              return std::to_string(std::thread::hardware_concurrency());
+          },
           "Number of CPUs ("
             + std::to_string(std::thread::hardware_concurrency()) + ")"));
 

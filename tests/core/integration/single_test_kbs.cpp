@@ -2,5 +2,8 @@
 
 #include <csignal>
 
-auto testCase = mcga::test::TestCase{"TestCase"} +
-  [] { mcga::test::test("test", [] { raise(SIGTERM); }); };
+auto testCase = mcga::test::TestCase{"TestCase"} + [] {
+    mcga::test::test("test", [] {
+        raise(SIGTERM);
+    });
+};

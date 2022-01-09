@@ -65,8 +65,9 @@ void FeedbackExtension::init(ExtensionApi* api) {
             exitCode = 1;
         }
     });
-    api->addHook<ExtensionApi::ON_WARNING>(
-      [this](const Warning& warning) { exitCode = 1; });
+    api->addHook<ExtensionApi::ON_WARNING>([this](const Warning& warning) {
+        exitCode = 1;
+    });
 }
 
 void FeedbackExtension::addPipeHooks(PipeWriter* pipe, ExtensionApi* api) {
@@ -101,8 +102,9 @@ void FeedbackExtension::addPipeHooks(PipeWriter* pipe, ExtensionApi* api) {
                           test.getExecutions().back().context);
     });
 
-    api->addHook<ExtensionApi::BEFORE_DESTROY>(
-      [pipe]() { pipe->sendMessage(PipeMessageType::DONE); });
+    api->addHook<ExtensionApi::BEFORE_DESTROY>([pipe]() {
+        pipe->sendMessage(PipeMessageType::DONE);
+    });
 
     api->addHook<ExtensionApi::ON_WARNING>([pipe](const Warning& warning) {
         pipe->sendMessage(PipeMessageType::WARNING, warning);
@@ -112,17 +114,21 @@ void FeedbackExtension::addPipeHooks(PipeWriter* pipe, ExtensionApi* api) {
 void FeedbackExtension::initLogging(ExtensionApi* api) {
     logger = make_unique<TestLogger>(std::cout, !noLiveLogging->get_value());
 
-    api->addHook<ExtensionApi::BEFORE_TEST_EXECUTION>(
-      [this](const Test& test) { logger->onTestExecutionStart(test); });
+    api->addHook<ExtensionApi::BEFORE_TEST_EXECUTION>([this](const Test& test) {
+        logger->onTestExecutionStart(test);
+    });
 
-    api->addHook<ExtensionApi::AFTER_TEST_EXECUTION>(
-      [this](const Test& test) { logger->onTestExecutionFinish(test); });
+    api->addHook<ExtensionApi::AFTER_TEST_EXECUTION>([this](const Test& test) {
+        logger->onTestExecutionFinish(test);
+    });
 
-    api->addHook<ExtensionApi::BEFORE_DESTROY>(
-      [this]() { logger->printFinalInformation(); });
+    api->addHook<ExtensionApi::BEFORE_DESTROY>([this]() {
+        logger->printFinalInformation();
+    });
 
-    api->addHook<ExtensionApi::ON_WARNING>(
-      [this](const Warning& warning) { logger->printWarning(warning); });
+    api->addHook<ExtensionApi::ON_WARNING>([this](const Warning& warning) {
+        logger->printWarning(warning);
+    });
 }
 
 void FeedbackExtension::initFileStream(ExtensionApi* api,

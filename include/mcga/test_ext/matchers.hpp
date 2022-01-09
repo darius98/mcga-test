@@ -23,7 +23,7 @@ void expect(const T& obj, M matcher, Context context = Context()) {
 
 template<class T, matchers::EqualityMatchableFor<T> Val>
 void expect(const T& obj, Val expected, Context context = Context()) {
-    expect(obj, matchers::isEqualTo(expected), context);
+    expect(obj, matchers::isEqualTo(expected), std::move(context));
 }
 
 }  // namespace mcga::test

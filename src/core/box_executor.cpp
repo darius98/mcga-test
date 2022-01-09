@@ -114,11 +114,12 @@ bool BoxExecutor::tryCloseBox(Box* box) {
 
 void BoxExecutor::ensureEmptyBoxes(size_t requiredEmpty) {
     while (activeBoxes.size() > numBoxes - requiredEmpty) {
-        activeBoxes.erase(
-          remove_if(activeBoxes.begin(),
-                    activeBoxes.end(),
-                    [this](Box& box) { return this->tryCloseBox(&box); }),
-          activeBoxes.end());
+        activeBoxes.erase(remove_if(activeBoxes.begin(),
+                                    activeBoxes.end(),
+                                    [this](Box& box) {
+                                        return this->tryCloseBox(&box);
+                                    }),
+                          activeBoxes.end());
         std::this_thread::sleep_for(loopSleepTime);
     }
 }

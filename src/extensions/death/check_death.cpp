@@ -14,12 +14,13 @@ namespace mcga::test::internal {
 
 MCGA_TEST_EXPORT void check_death(Executable func,
                                   double timeTicksLimit,
-                                  death::DeathStatus* status) {
+                                  int* exitCode,
+                                  int* exitSignal) {
+    *exitCode = *exitSignal = -1;
     if (Driver::Instance()->getExecutorType() == Executor::SMOOTH) {
         // TODO: Don't fail() here, implement the skip() functionality instead!
         fail("Death extension matchers & the checkDeath function do not work"
              " when using a smooth executor.");
-        *status = {-1, -1};
         return;
     }
 
@@ -34,9 +35,8 @@ MCGA_TEST_EXPORT void check_death(Executable func,
         std::this_thread::sleep_for(std::chrono::milliseconds{5});
     }
     if (proc.getNextMessage(1).isInvalid()) {
-        *status = {proc.getReturnCode(), proc.getSignal()};
-    } else {
-        *status = {-1, -1};
+        *exitCode = proc.getReturnCode();
+        *exitSignal = proc.getSignal();
     }
 }
 

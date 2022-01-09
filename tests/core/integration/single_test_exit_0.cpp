@@ -3,5 +3,7 @@
 #include <cstdlib>
 
 auto testCase = mcga::test::TestCase{"TestCase"} + [] {
-    mcga::test::test("test", [] { exit(0); });
+    mcga::test::test("test", [] {
+        exit(0);
+    });
 };

@@ -59,3 +59,4 @@ add_unit_test(extension_death NO_EXECUTOR_TYPE
 
 add_unit_test(extension_mock
         extensions/mock/function_mock_test.cpp)
+target_link_libraries(mcga_test_unit_extension_mock mcga_mock)

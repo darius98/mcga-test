@@ -7,7 +7,8 @@ namespace mcga::test::internal {
 
 void check_death(Executable func,
                  double timeTicksLimit,
-                 death::DeathStatus* status);
+                 int* exitCode,
+                 int* exitSignal);
 
 }
 
@@ -17,10 +18,12 @@ template<internal::executable_t Callable>
 DeathStatus checkDeath(Callable func,
                        double timeTicksLimit = 1,
                        Context context = Context()) {
-    DeathStatus status;
-    internal::check_death(
-      Executable(std::move(func), std::move(context)), timeTicksLimit, &status);
-    return status;
+    int exitCode, exitSignal;
+    internal::check_death(Executable(std::move(func), std::move(context)),
+                          timeTicksLimit,
+                          &exitCode,
+                          &exitSignal);
+    return DeathStatus{exitCode, exitSignal};
 }
 
 }  // namespace mcga::test::death

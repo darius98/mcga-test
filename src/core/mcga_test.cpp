@@ -9,19 +9,16 @@ static mcga::test::TestCase* registeredTestCasesListHead = nullptr;
 
 namespace mcga::test::internal {
 
-MCGA_TEST_EXPORT void
-  register_test_case(TestCase* testCase) noexcept {
+MCGA_TEST_EXPORT void register_test_case(TestCase* testCase) noexcept {
     testCase->next = registeredTestCasesListHead;
     registeredTestCasesListHead = testCase;
 }
 
-MCGA_TEST_EXPORT void register_test(TestConfig config,
-                                                         Executable body) {
+MCGA_TEST_EXPORT void register_test(TestConfig config, Executable body) {
     Driver::Instance()->addTest(std::move(config), std::move(body));
 }
 
-MCGA_TEST_EXPORT void register_group(GroupConfig config,
-                                                          Executable body) {
+MCGA_TEST_EXPORT void register_group(GroupConfig config, Executable body) {
     Driver::Instance()->addGroup(std::move(config), std::move(body));
 }
 
@@ -33,8 +30,7 @@ MCGA_TEST_EXPORT void register_tear_down(Executable body) {
     Driver::Instance()->addTearDown(std::move(body));
 }
 
-MCGA_TEST_EXPORT void register_failure(String message,
-                                                            Context context) {
+MCGA_TEST_EXPORT void register_failure(String message, Context context) {
     Driver::Instance()->addFailure(std::move(message), std::move(context));
 }
 

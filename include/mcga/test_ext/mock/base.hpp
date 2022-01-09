@@ -61,7 +61,9 @@ class BaseFunctionMock<R(Args...)> {
     template<internal::invocable_with<R, Args...> Callable>
     void replace(Callable callable) {
         replacement = std::move(callable);
-        cleanup([this] { this->reset(); });
+        cleanup([this] {
+            this->reset();
+        });
     }
 };
 

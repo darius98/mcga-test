@@ -1,5 +1,6 @@
 #pragma once
 
+#include <concepts>
 #include <cstdlib>
 #include <cstring>
 #include <utility>
@@ -8,27 +9,14 @@ namespace mcga::test {
 
 namespace internal {
 
-template<class T, class U>
-struct same_as_impl {
-    static inline constexpr bool value = false;
-};
-
-template<class T>
-struct same_as_impl<T, T> {
-    static inline constexpr bool value = true;
-};
-
-template<class T, class U>
-concept same_as = same_as_impl<T, U>::value;
-
 template<class T>
 concept executable_t = requires(const T& obj) {
-    { obj() } -> same_as<void>;
+    { obj() } -> std::same_as<void>;
 };
 
 template<class T>
 concept std_string_like = requires(const T& str) {
-    { str.data() } -> same_as<const char*>;
+    { str.data() } -> std::same_as<const char*>;
 };
 
 }  // namespace internal
@@ -126,8 +114,12 @@ struct Executable {
 
     template<internal::executable_t Callable>
     explicit Executable(Callable callable, Context context)
-            : body([](void* d) { (*static_cast<Callable*>(d))(); }),
-              dtor([](void* d) { delete static_cast<Callable*>(d); }),
+            : body([](void* d) {
+                  (*static_cast<Callable*>(d))();
+              }),
+              dtor([](void* d) {
+                  delete static_cast<Callable*>(d);
+              }),
               data(new Callable(std::move(callable))),
               context(std::move(context)) {
     }
@@ -253,8 +245,7 @@ struct MultiRunTestApi {
         config.attempts = numRuns;
         config.requiredPassedAttempts = numRuns;
         config.optional = isOptional;
-        register_test(std::move(config),
-                                Executable(body, std::move(context)));
+        register_test(std::move(config), Executable(body, std::move(context)));
     }
 
     template<executable_t Callable>
@@ -286,8 +277,8 @@ struct RetryTestApi {
         config.attempts = attempts;
         config.requiredPassedAttempts = 1;
         config.optional = isOptional;
-        register_test(
-          std::move(config), Executable(std::move(body), std::move(context)));
+        register_test(std::move(config),
+                      Executable(std::move(body), std::move(context)));
     }
 
     template<executable_t Callable>
@@ -295,23 +286,21 @@ struct RetryTestApi {
                     String description,
                     Callable body,
                     Context context = Context()) const {
-        register_test(
-          TestConfig{.description = std::move(description),
-                     .optional = isOptional,
-                     .attempts = attempts,
-                     .requiredPassedAttempts = 1},
-          Executable(std::move(body), std::move(context)));
+        register_test(TestConfig{.description = std::move(description),
+                                 .optional = isOptional,
+                                 .attempts = attempts,
+                                 .requiredPassedAttempts = 1},
+                      Executable(std::move(body), std::move(context)));
     }
 
     template<executable_t Callable>
     void operator()(int attempts,
                     Callable body,
                     Context context = Context()) const {
-        register_test(
-          TestConfig{.optional = isOptional,
-                     .attempts = attempts,
-                     .requiredPassedAttempts = 1},
-          Executable(std::move(body), std::move(context)));
+        register_test(TestConfig{.optional = isOptional,
+                                 .attempts = attempts,
+                                 .requiredPassedAttempts = 1},
+                      Executable(std::move(body), std::move(context)));
     }
 };
 
@@ -322,8 +311,8 @@ struct OptionalTestApi {
                     Callable body,
                     Context context = Context()) const {
         config.optional = isOptional;
-        register_test(
-          std::move(config), Executable(std::move(body), std::move(context)));
+        register_test(std::move(config),
+                      Executable(std::move(body), std::move(context)));
     }
 
     template<executable_t Callable>
@@ -340,9 +329,8 @@ struct OptionalTestApi {
 
     template<executable_t Callable>
     void operator()(Callable body, Context context = Context()) const {
-        register_test(
-          TestConfig{.optional = isOptional},
-          Executable(std::move(body), std::move(context)));
+        register_test(TestConfig{.optional = isOptional},
+                      Executable(std::move(body), std::move(context)));
     }
 
     [[no_unique_address]] MultiRunTestApi<isOptional> multiRun;
@@ -360,8 +348,8 @@ struct OptionalGroupApi {
                     Callable body,
                     Context context = Context()) const {
         config.optional = isOptional;
-        register_group(
-          std::move(config), Executable(std::move(body), std::move(context)));
+        register_group(std::move(config),
+                       Executable(std::move(body), std::move(context)));
     }
 
     template<executable_t Callable>
@@ -421,14 +409,12 @@ inline constexpr internal::GroupApi group;
 
 template<internal::executable_t Callable>
 void setUp(Callable func, Context context = Context()) {
-    internal::register_set_up(
-      Executable(std::move(func), std::move(context)));
+    internal::register_set_up(Executable(std::move(func), std::move(context)));
 }
 
 template<internal::executable_t Callable>
 void cleanup(Callable func, Context context = Context()) {
-    internal::register_cleanup(
-      Executable(std::move(func), std::move(context)));
+    internal::register_cleanup(Executable(std::move(func), std::move(context)));
 }
 
 template<internal::executable_t Callable>
@@ -438,8 +424,7 @@ void tearDown(Callable func, Context context = Context()) {
 }
 
 inline void fail(String message = String(), Context context = Context()) {
-    internal::register_failure(std::move(message),
-                                         std::move(context));
+    internal::register_failure(std::move(message), std::move(context));
 }
 
 inline void expect(bool expr, Context context = Context()) {
