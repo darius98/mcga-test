@@ -24,7 +24,7 @@ class Test : private TestConfig {
     /** Simple helper structure that holds the execution information for a
      * test. */
     struct ExecutionInfo {
-        enum: char {PASSED = 0, FAILED = 1} status = PASSED;
+        enum Status : char { PASSED = 0, FAILED = 1 } status = PASSED;
 
         /** Number of time ticks the execution took.
          *
@@ -32,24 +32,26 @@ class Test : private TestConfig {
          * computable for this execution. */
         double timeTicks = -1.0;
 
-        /** Human-readable failure message in case the test failed, or empty
-         * string if the test passed. */
-        String failure;
+        /** Human-readable message for the status of the test (explanation for
+         * failure or skip etc.). */
+        String message = "OK";
 
-        /** Context of the failure. */
-        std::optional<Context> failureContext;
+        /** Context where the status changed, in case it's not PASSED. Only
+         * when available (e.g. it's not available for tests failed with
+         * timeout). */
+        std::optional<Context> context = std::nullopt;
 
-        /** Default constructor. */
-        ExecutionInfo() = default;
-
-        /** Shorthand method for marking the test execution as failed and saving
-         * a failure message.
+        /** Shorthand method for marking the test execution as failed.
          *
          * Note: if this method is called multiple times, subsequent calls do
          * NOT overwrite the first failure message. */
-        void fail(const String& _failure,
-                  std::optional<Context> failureContext = std::nullopt,
-                  double timeTicks = -1.0);
+        void fail(const String& failureMessage,
+                  std::optional<Context> failureContext = std::nullopt);
+
+        /** Shorthand for merging one execution info into another.
+         *
+         * Note: if the execution is already failed, does nothing. */
+        void merge(ExecutionInfo&& other);
     };
 
     /** Default constructor from a TestConfig and the metadata received from the
@@ -101,7 +103,7 @@ class Test : private TestConfig {
 
     /** Check whether the number of executions registered is the same as
      * getNumAttempts(). */
-    bool isExecuted() const;
+    bool isFinished() const;
 
     /** Check whether the execution Info marks the test as passed or failed. */
     bool isPassed() const;

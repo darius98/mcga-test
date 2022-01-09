@@ -22,7 +22,7 @@ void TestLogger::onTestExecutionFinish(const Test& test) {
     runningTests.erase(test.getId());
     updateVolatileLine(test);
 
-    if (!test.isExecuted()) {
+    if (!test.isFinished()) {
         return;
     }
 
@@ -153,7 +153,7 @@ void TestLogger::printTestAttemptsInfo(const Test& test) {
 
 void TestLogger::printTestFailure(const Test::ExecutionInfo& info) {
     stream << "\n";
-    std::string failure = info.failure.c_str();
+    std::string failure = info.message.c_str();
     // TODO: This should be somewhere else (in utils maybe?)
     size_t pos = 0;
     while ((pos = failure.find('\n', pos)) != std::string::npos) {
@@ -161,11 +161,11 @@ void TestLogger::printTestFailure(const Test::ExecutionInfo& info) {
         pos += 2;
     }
     stream << red;
-    if (info.failureContext.has_value()) {
-        stream << info.failureContext->verb.c_str() << " at "
-               << info.failureContext->fileName.c_str() << ":"
-               << info.failureContext->line << ":"
-               << info.failureContext->column << "\n";
+    if (info.context.has_value()) {
+        stream << info.context->verb.c_str() << " at "
+               << info.context->fileName.c_str() << ":"
+               << info.context->line << ":"
+               << info.context->column << "\n";
     }
     stream << "\t" << failure << reset;
 }

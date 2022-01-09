@@ -21,7 +21,7 @@ enum PipeMessageType : uint8_t {
     WARNING = 5,
 };
 
-int FeedbackExtension::getReturnCode() {
+int FeedbackExtension::getReturnCode() const {
     return exitCode;
 }
 
@@ -61,7 +61,7 @@ void FeedbackExtension::init(ExtensionApi* api) {
         initSocketStream(api, socketPathArgument->get_value());
     }
     api->addHook<ExtensionApi::AFTER_TEST_EXECUTION>([this](const Test& test) {
-        if (test.isExecuted() && !test.isPassed() && !test.isOptional()) {
+        if (test.isFinished() && !test.isPassed() && !test.isOptional()) {
             exitCode = 1;
         }
     });
@@ -97,7 +97,8 @@ void FeedbackExtension::addPipeHooks(PipeWriter* pipe, ExtensionApi* api) {
                           test.getId(),
                           test.getExecutions().back().status,
                           test.getExecutions().back().timeTicks,
-                          test.getExecutions().back().failure);
+                          test.getExecutions().back().message,
+                          test.getExecutions().back().context);
     });
 
     api->addHook<ExtensionApi::BEFORE_DESTROY>(

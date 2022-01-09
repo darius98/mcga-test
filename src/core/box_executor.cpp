@@ -49,7 +49,7 @@ void BoxExecutor::executeBoxed(const Test& test,
     currentTestingSubprocessPipe = std::move(pipe);
     Test::ExecutionInfo info = run(test);
     currentTestingSubprocessPipe->sendMessage(
-      DONE, info.status, info.timeTicks, info.failure, info.failureContext);
+      DONE, info.status, info.timeTicks, info.message, info.context);
 }
 
 std::unique_ptr<WorkerSubprocess>
@@ -72,27 +72,23 @@ bool BoxExecutor::tryCloseBox(Box* box) {
         return false;
     }
 
-    auto timeTicksElapsed
-      = 1.0 * process->elapsedTime().count() / GetTimeTickLength().count();
+    info.timeTicks = NanosecondsToTimeTicks(process->elapsedTime());
 
     if (finishStatus == Subprocess::NON_ZERO_EXIT) {
         info.fail("Test exited with code "
                     + std::to_string(process->getReturnCode()),
-                  std::nullopt,
-                  timeTicksElapsed);
+                  std::nullopt);
     } else if (finishStatus == Subprocess::SIGNAL_EXIT) {
         info.fail("Test killed by signal "
                     + std::to_string(process->getSignal()),
-                  std::nullopt,
-                  timeTicksElapsed);
+                  std::nullopt);
     } else if (finishStatus == Subprocess::TIMEOUT) {
-        info.fail("Test execution timed out.", std::nullopt, timeTicksElapsed);
+        info.fail("Test execution timed out.", std::nullopt);
     } else if (finishStatus == Subprocess::ZERO_EXIT) {
         while (true) {
             Message message = process->getNextMessage(1);
             if (message.isInvalid()) {
-                info.fail(
-                  "Unexpected 0-code exit.", std::nullopt, timeTicksElapsed);
+                info.fail("Unexpected 0-code exit.", std::nullopt);
                 break;
             }
             auto messageType = message.read<PipeMessageType>();
@@ -101,14 +97,14 @@ bool BoxExecutor::tryCloseBox(Box* box) {
                 onWarning(message.read<Warning>(), nullptr);
                 continue;
             }
-            message >> info.status >> info.timeTicks >> info.failure
-              >> info.failureContext;
+            message >> info.status >> info.timeTicks >> info.message
+              >> info.context;
             break;
         }
     }
     test.addExecution(info);
     onTestExecutionFinish(test);
-    if (!test.isExecuted()) {
+    if (!test.isFinished()) {
         onTestExecutionStart(test);
         box->second = this->startExecution(test);
         return false;

@@ -9,7 +9,7 @@ namespace mcga::test::feedback {
 
 class FeedbackExtension : public Extension {
   public:
-    int getReturnCode();
+    int getReturnCode() const;
 
     void registerCommandLineArgs(cli::Parser* parser) override;
 

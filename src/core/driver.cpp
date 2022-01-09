@@ -1,8 +1,7 @@
 #include "driver.hpp"
 
-#include <thread>
-
 #include "mcga/test.hpp"
+#include "utils.hpp"
 
 namespace mcga::test {
 
@@ -103,14 +102,13 @@ void Driver::emitWarning(Warning warning) {
 bool Driver::checkMainThreadAndInactive(const String& method,
                                         const Context& context) {
     if (executor->isActive()) {
-        emitWarning(Warning("Called " + std::string(method.c_str())
-                              + "() inside a " + std::string(executor->stateAsString().c_str())
-                              + "(), ignoring.",
-                            context));
+        emitWarning(Warning(
+          "Called " + std::string(method.c_str()) + "() inside a "
+            + std::string(executor->stateAsString().c_str()) + "(), ignoring.",
+          context));
         return false;
     }
-    if (testingThreadId
-        != std::hash<std::thread::id>()(std::this_thread::get_id())) {
+    if (testingThreadId != current_thread_id()) {
         emitWarning(
           Warning("Called " + std::string(method.c_str())
                     + "() from a different thread than the main testing "

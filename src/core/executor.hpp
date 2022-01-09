@@ -66,10 +66,8 @@ class Executor {
     State state = INACTIVE;
     std::size_t currentExecutionThreadId = 0;
 
-    std::mutex currentExecutionFailureMutex;
-    bool currentExecutionIsFailed = false;
-    String currentExecutionFailureMessage;
-    std::optional<Context> currentExecutionFailureContext;
+    std::mutex currentExecutionStatusMutex;
+    Test::ExecutionInfo currentExecution;
 
     std::vector<Executable> currentExecutionCleanups;
 };

@@ -4,6 +4,7 @@
 
 #include "disallow_copy_and_move.hpp"
 #include "executor.hpp"
+#include "utils.hpp"
 
 namespace mcga::test {
 
@@ -44,10 +45,9 @@ class Driver {
     bool checkMainThreadAndInactive(const String& method,
                                     const Context& context);
 
-    Executor* executor = nullptr;
+    Executor* executor;
 
-    std::size_t testingThreadId
-      = std::hash<std::thread::id>()(std::this_thread::get_id());
+    std::size_t testingThreadId = current_thread_id();
     std::vector<GroupPtr> groupStack = {};
     int currentTestId = 0;
     int currentGroupId = 0;

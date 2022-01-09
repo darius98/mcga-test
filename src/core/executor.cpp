@@ -5,6 +5,7 @@
 #include <thread>
 
 #include "time_tick.hpp"
+#include "utils.hpp"
 
 namespace mcga::test {
 
@@ -45,8 +46,7 @@ void Executor::finalize() {
 void Executor::addFailure(String failure, Context context) {
     // We only kill the thread on failure if we are in the main testing thread
     // and we know we catch this exception.
-    if (std::hash<std::thread::id>()(std::this_thread::get_id())
-        == currentExecutionThreadId) {
+    if (current_thread_id() == currentExecutionThreadId) {
         // TODO: Abort when exceptions are disabled (in non-smooth execution,
         //  inform the test runner process of the failure before aborting).
         throw ExpectationFailed(std::move(failure), std::move(context));
@@ -55,12 +55,8 @@ void Executor::addFailure(String failure, Context context) {
     // If the user starts his own threads that entertain failures, it is his
     // responsibility to make sure his threads die on failure (we have no
     // control).
-    std::lock_guard guard(currentExecutionFailureMutex);
-    if (!currentExecutionIsFailed) {
-        currentExecutionIsFailed = true;
-        currentExecutionFailureMessage = failure;
-        currentExecutionFailureContext = std::move(context);
-    }
+    std::lock_guard guard(currentExecutionStatusMutex);
+    currentExecution.fail(failure, std::move(context));
 }
 
 void Executor::addCleanup(Executable cleanup) {
@@ -133,11 +129,11 @@ void Executor::emitWarning(Warning warning, GroupPtr group) {
 }
 
 void Executor::runJob(const Executable& job, Test::ExecutionInfo* execution) {
-    currentExecutionThreadId
-      = std::hash<std::thread::id>()(std::this_thread::get_id());
-    currentExecutionIsFailed = false;
-    currentExecutionFailureMessage = "";
-    currentExecutionFailureContext = std::nullopt;
+    currentExecutionThreadId = current_thread_id();
+    currentExecution
+      = Test::ExecutionInfo{.status = Test::ExecutionInfo::PASSED,
+                            .message = "OK",
+                            .context = std::nullopt};
 
     try {
         job();
@@ -150,11 +146,8 @@ void Executor::runJob(const Executable& job, Test::ExecutionInfo* execution) {
         execution->fail("Uncaught non-exception type.", job.context);
     }
 
-    std::lock_guard guard(currentExecutionFailureMutex);
-    if (currentExecutionIsFailed) {
-        execution->fail(currentExecutionFailureMessage,
-                        currentExecutionFailureContext);
-    }
+    std::lock_guard guard(currentExecutionStatusMutex);
+    execution->merge(std::move(currentExecution));
 }
 
 void Executor::onWarning(Warning warning, GroupPtr group) {

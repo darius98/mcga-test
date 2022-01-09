@@ -4,14 +4,20 @@
 
 namespace mcga::test {
 
-void Test::ExecutionInfo::fail(const String& _failure,
-                               std::optional<Context> _failureContext,
-                               double _timeTicks) {
+void Test::ExecutionInfo::fail(const String& failureMessage,
+                               std::optional<Context> failureContext) {
     if (status == PASSED) {
         status = FAILED;
-        failure = _failure;
-        failureContext = std::move(_failureContext);
-        timeTicks = _timeTicks;
+        message = failureMessage;
+        context = std::move(failureContext);
+    }
+}
+
+void Test::ExecutionInfo::merge(ExecutionInfo&& other) {
+    if (status == PASSED) {
+        status = other.status;
+        message = std::move(other.message);
+        context = std::move(other.context);
     }
 }
 
@@ -65,7 +71,7 @@ const Executable& Test::getBody() const {
     return body;
 }
 
-bool Test::isExecuted() const {
+bool Test::isFinished() const {
     return executions.size() == attempts;
 }
 
