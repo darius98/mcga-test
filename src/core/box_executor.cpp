@@ -12,7 +12,7 @@ using mcga::proc::WorkerSubprocess;
 
 namespace mcga::test {
 
-enum PipeMessageType {
+enum PipeMessageType : char {
     WARNING,
     DONE,
 };
