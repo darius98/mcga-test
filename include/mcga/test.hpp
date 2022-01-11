@@ -1,36 +1,47 @@
 #pragma once
 
-#include <concepts>
-#include <cstdlib>
-#include <cstring>
-#include <utility>
-
 namespace mcga::test {
 
 namespace internal {
 
+template<class T, class U>
+inline constexpr bool same_as_impl = false;
+
+template<class T>
+inline constexpr bool same_as_impl<T, T> = true;
+
+template<class T, class U>
+concept same_as = same_as_impl<T, U>;
+
 template<class T>
 concept executable_t = requires(const T& obj) {
-    { obj() } -> std::same_as<void>;
+    { obj() } -> same_as<void>;
 };
 
 template<class T>
 concept std_string_like = requires(const T& str) {
-    { str.data() } -> std::same_as<const char*>;
+    { str.data() } -> same_as<const char*>;
 };
+
+const char* duplicate_str(const char* data);
+
+void delete_str(const char* data);
+
+template<class T>
+constexpr T&& move(T&& t) noexcept {
+    return static_cast<T&&>(t);
+}
+
+template<class T>
+constexpr T&& move(T& t) noexcept {
+    return static_cast<T&&>(t);
+}
 
 }  // namespace internal
 
 class String {
     bool isOwned;
     const char* data;
-
-    static const char* duplicate_str(const char* data) {
-        const auto len = std::strlen(data);
-        const auto dup = static_cast<char*>(std::malloc(len + 1));
-        std::strcpy(dup, data);
-        return dup;
-    }
 
   public:
     String() noexcept: String("") {
@@ -48,12 +59,13 @@ class String {
     }
 
     template<internal::std_string_like S>
-    String(const S& data): isOwned(true), data(duplicate_str(data.data())) {
+    String(const S& data)
+            : isOwned(true), data(internal::duplicate_str(data.data())) {
     }
 
     String(const String& other)
             : isOwned(other.isOwned),
-              data(isOwned ? duplicate_str(other.data) : other.data) {
+              data(isOwned ? internal::duplicate_str(other.data) : other.data) {
     }
 
     String(String&& other) noexcept: isOwned(other.isOwned), data(other.data) {
@@ -64,7 +76,7 @@ class String {
         if (this != &other) {
             this->~String();
             isOwned = other.isOwned;
-            data = isOwned ? duplicate_str(other.data) : other.data;
+            data = isOwned ? internal::duplicate_str(other.data) : other.data;
         }
         return *this;
     }
@@ -81,7 +93,7 @@ class String {
 
     ~String() {
         if (isOwned) {
-            std::free((void*)data);
+            internal::delete_str(data);
         }
     }
 
@@ -102,7 +114,7 @@ struct Context {
                      const char* functionName = __builtin_FUNCTION(),
                      int line = __builtin_LINE(),
                      int column = __builtin_COLUMN())
-            : verb(std::move(verb)), fileName(fileName),
+            : verb(internal::move(verb)), fileName(fileName),
               functionName(functionName), line(line), column(column) {
     }
 };
@@ -121,8 +133,8 @@ struct Executable {
               dtor([](void* d) {
                   delete static_cast<Callable*>(d);
               }),
-              data(new Callable(std::move(callable))),
-              context(std::move(context)) {
+              data(new Callable(internal::move(callable))),
+              context(internal::move(context)) {
     }
 
     Executable(const Executable&) = delete;
@@ -131,7 +143,7 @@ struct Executable {
 
     Executable(Executable&& other) noexcept
             : body(other.body), dtor(other.dtor), data(other.data),
-              context(std::move(other.context)) {
+              context(internal::move(other.context)) {
         other.data = nullptr;
     }
 
@@ -141,7 +153,7 @@ struct Executable {
             body = other.body;
             dtor = other.dtor;
             data = other.data;
-            context = std::move(other.context);
+            context = internal::move(other.context);
             other.data = nullptr;
         }
         return *this;
@@ -248,7 +260,7 @@ struct MultiRunTestApi {
         config.attempts = numRuns;
         config.requiredPassedAttempts = numRuns;
         config.optional = isOptional;
-        register_test(std::move(config), Executable(body, std::move(context)));
+        register_test(move(config), Executable(body, move(context)));
     }
 
     template<executable_t Callable>
@@ -257,16 +269,16 @@ struct MultiRunTestApi {
                     Callable body,
                     Context context = Context()) const {
         (*this)(numRuns,
-                TestConfig{.description = std::move(description)},
-                std::move(body),
-                std::move(context));
+                TestConfig{.description = move(description)},
+                move(body),
+                move(context));
     }
 
     template<executable_t Callable>
     void operator()(int numRuns,
                     Callable body,
                     Context context = Context()) const {
-        (*this)(numRuns, TestConfig{}, std::move(body), std::move(context));
+        (*this)(numRuns, TestConfig{}, move(body), move(context));
     }
 };
 
@@ -280,8 +292,7 @@ struct RetryTestApi {
         config.attempts = attempts;
         config.requiredPassedAttempts = 1;
         config.optional = isOptional;
-        register_test(std::move(config),
-                      Executable(std::move(body), std::move(context)));
+        register_test(move(config), Executable(move(body), move(context)));
     }
 
     template<executable_t Callable>
@@ -289,11 +300,11 @@ struct RetryTestApi {
                     String description,
                     Callable body,
                     Context context = Context()) const {
-        register_test(TestConfig{.description = std::move(description),
+        register_test(TestConfig{.description = move(description),
                                  .optional = isOptional,
                                  .attempts = attempts,
                                  .requiredPassedAttempts = 1},
-                      Executable(std::move(body), std::move(context)));
+                      Executable(move(body), move(context)));
     }
 
     template<executable_t Callable>
@@ -303,7 +314,7 @@ struct RetryTestApi {
         register_test(TestConfig{.optional = isOptional,
                                  .attempts = attempts,
                                  .requiredPassedAttempts = 1},
-                      Executable(std::move(body), std::move(context)));
+                      Executable(move(body), move(context)));
     }
 };
 
@@ -314,8 +325,7 @@ struct OptionalTestApi {
                     Callable body,
                     Context context = Context()) const {
         config.optional = isOptional;
-        register_test(std::move(config),
-                      Executable(std::move(body), std::move(context)));
+        register_test(move(config), Executable(move(body), move(context)));
     }
 
     template<executable_t Callable>
@@ -324,16 +334,16 @@ struct OptionalTestApi {
                     Context context = Context()) const {
         register_test(
           TestConfig{
-            .description = std::move(description),
+            .description = move(description),
             .optional = isOptional,
           },
-          Executable(std::move(body), std::move(context)));
+          Executable(move(body), move(context)));
     }
 
     template<executable_t Callable>
     void operator()(Callable body, Context context = Context()) const {
         register_test(TestConfig{.optional = isOptional},
-                      Executable(std::move(body), std::move(context)));
+                      Executable(move(body), move(context)));
     }
 
     [[no_unique_address]] MultiRunTestApi<isOptional> multiRun;
@@ -351,22 +361,21 @@ struct OptionalGroupApi {
                     Callable body,
                     Context context = Context()) const {
         config.optional = isOptional;
-        register_group(std::move(config),
-                       Executable(std::move(body), std::move(context)));
+        register_group(move(config), Executable(move(body), move(context)));
     }
 
     template<executable_t Callable>
     void operator()(String description,
                     Callable body,
                     Context context = Context()) const {
-        (*this)(GroupConfig{.description = std::move(description)},
-                std::move(body),
-                std::move(context));
+        (*this)(GroupConfig{.description = move(description)},
+                move(body),
+                move(context));
     }
 
     template<executable_t Callable>
     void operator()(Callable body, Context context = Context()) const {
-        (*this)(GroupConfig(), std::move(body), std::move(context));
+        (*this)(GroupConfig(), move(body), move(context));
     }
 };
 
@@ -384,17 +393,17 @@ struct TestCase {
     Context context;
 
     explicit TestCase(String name, Context context = Context()) noexcept
-            : name(std::move(name)), body(nullptr),
-              context(std::move(context)) {
+            : name(internal::move(name)), body(nullptr),
+              context(internal::move(context)) {
     }
 
     explicit TestCase(Context context = Context()) noexcept
-            : name(""), body(nullptr), context(std::move(context)) {
+            : name(""), body(nullptr), context(internal::move(context)) {
     }
 
     TestCase(TestCase&& other) noexcept
-            : name(std::move(other.name)), body(other.body),
-              context(std::move(other.context)) {
+            : name(internal::move(other.name)), body(other.body),
+              context(internal::move(other.context)) {
         internal::register_test_case(this);
     }
     TestCase(const TestCase&) = delete;
@@ -403,7 +412,7 @@ struct TestCase {
 
     TestCase&& operator+(void (*body_)()) && noexcept {
         body = body_;
-        return std::move(*this);
+        return internal::move(*this);
     }
 };
 
@@ -412,33 +421,36 @@ inline constexpr internal::GroupApi group;
 
 template<internal::executable_t Callable>
 void setUp(Callable func, Context context = Context()) {
-    internal::register_set_up(Executable(std::move(func), std::move(context)));
+    internal::register_set_up(
+      Executable(internal::move(func), internal::move(context)));
 }
 
 template<internal::executable_t Callable>
 void cleanup(Callable func, Context context = Context()) {
-    internal::register_cleanup(Executable(std::move(func), std::move(context)));
+    internal::register_cleanup(
+      Executable(internal::move(func), internal::move(context)));
 }
 
 template<internal::executable_t Callable>
 void tearDown(Callable func, Context context = Context()) {
     internal::register_tear_down(
-      Executable(std::move(func), std::move(context)));
+      Executable(internal::move(func), internal::move(context)));
 }
 
 inline void fail(String message = String(), Context context = Context()) {
-    internal::register_failure(std::move(message), std::move(context));
+    internal::register_failure(internal::move(message),
+                               internal::move(context));
 }
 
 inline void skip(String message = String(),
                  Context context = Context("Skipped")) {
-    internal::register_skip(std::move(message), std::move(context));
+    internal::register_skip(internal::move(message), internal::move(context));
 }
 
 inline void expect(bool expr, Context context = Context()) {
     if (!expr) {
         context.verb = "Expectation failed";
-        fail("", std::move(context));
+        fail("", internal::move(context));
     }
 }
 

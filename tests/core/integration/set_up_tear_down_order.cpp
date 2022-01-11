@@ -1,5 +1,7 @@
 #include "mcga/test.hpp"
 
+#include <cstdio>
+
 auto testCase = mcga::test::TestCase{"TestCase"} + [] {
     mcga::test::setUp([] {
         printf("first-set-up\n");

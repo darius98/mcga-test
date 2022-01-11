@@ -256,7 +256,7 @@ class MCGATestIntegrationSmoothTestCase(MCGATestIntegrationMixin):
 
     def test_single_test_multiple_executions_skip(self):
         # Skipped tests are not printed by default.
-        self.run_test_bin(tests_passed=0, tests_failed=0, tests_skipped=1,
+        self.run_test_bin(tests_passed=0, tests_failed=0, tests_skipped=1, timeout=10,
                           expect_output_not_contains=[
                               "TestCase::test",
                               "Skipped at",
@@ -266,10 +266,10 @@ class MCGATestIntegrationSmoothTestCase(MCGATestIntegrationMixin):
             self.output_test_line("S", "TestCase::test", approx=True, approx_fail=True) +
             "Skipped at .*/tests/core/integration/single_test_multiple_executions_skip\\.cpp:8:11\n"
             "\tevery-time")
-        self.run_test_bin(tests_passed=0, tests_failed=0, tests_skipped=1,
+        self.run_test_bin(tests_passed=0, tests_failed=0, tests_skipped=1, timeout=10,
                           extra_args=["--print-skipped"],
                           expect_output_contains=output_pattern)
-        self.run_test_bin(tests_passed=0, tests_failed=0, tests_skipped=1,
+        self.run_test_bin(tests_passed=0, tests_failed=0, tests_skipped=1, timeout=10,
                           extra_args=["--print-skipped", "--fail-on-skip"], expect_fail=True,
                           expect_output_contains=output_pattern)
 

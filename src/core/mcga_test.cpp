@@ -3,11 +3,23 @@
 #include "driver.hpp"
 #include "export.hpp"
 
-#include <iostream>
+#include <cstring>
+#include <cstdlib>
 
 static mcga::test::TestCase* registeredTestCasesListHead = nullptr;
 
 namespace mcga::test::internal {
+
+MCGA_TEST_EXPORT const char* duplicate_str(const char* data) {
+    const auto len = std::strlen(data);
+    const auto dup = static_cast<char*>(std::malloc(len + 1));
+    std::strcpy(dup, data);
+    return dup;
+}
+
+MCGA_TEST_EXPORT void delete_str(const char* data) {
+    std::free((void*)data);
+}
 
 MCGA_TEST_EXPORT void register_test_case(TestCase* testCase) noexcept {
     testCase->next = registeredTestCasesListHead;
