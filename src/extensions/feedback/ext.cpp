@@ -31,6 +31,16 @@ void FeedbackExtension::registerCommandLineArgs(Parser* parser) {
         .set_help_group("Feedback")
         .set_description("Disable STDOUT logging for this test run")
         .set_short_name("q"));
+    skipIsFail = parser->add_flag(
+      FlagSpec("fail-on-skip")
+        .set_help_group("Feedback")
+        .set_description("Consider skipped tests as failed."));
+    printSkipped = parser->add_flag(
+      FlagSpec("print-skipped")
+        .set_help_group("Feedback")
+        .set_description(
+          "Print the information for skipped tests. "
+          "If --fail-on-skip is used, this is automatically enabled."));
     fileNameArgument = parser->add_argument(
       ArgumentSpec("stream-to-file")
         .set_help_group("Feedback")
@@ -61,8 +71,11 @@ void FeedbackExtension::init(ExtensionApi* api) {
         initSocketStream(api, socketPathArgument->get_value());
     }
     api->addHook<ExtensionApi::AFTER_TEST_EXECUTION>([this](const Test& test) {
-        if (test.isFinished() && !test.isPassed() && !test.isOptional()) {
-            exitCode = 1;
+        if (test.isFinished() && !test.isOptional()) {
+            if (test.isFailed()
+                || (test.isSkipped() && skipIsFail->get_value())) {
+                exitCode = 1;
+            }
         }
     });
     api->addHook<ExtensionApi::ON_WARNING>([this](const Warning& warning) {
@@ -112,7 +125,10 @@ void FeedbackExtension::addPipeHooks(PipeWriter* pipe, ExtensionApi* api) {
 }
 
 void FeedbackExtension::initLogging(ExtensionApi* api) {
-    logger = make_unique<TestLogger>(std::cout, !noLiveLogging->get_value());
+    logger = make_unique<TestLogger>(std::cout,
+                                     !noLiveLogging->get_value(),
+                                     skipIsFail->get_value()
+                                       || printSkipped->get_value());
 
     api->addHook<ExtensionApi::BEFORE_TEST_EXECUTION>([this](const Test& test) {
         logger->onTestExecutionStart(test);

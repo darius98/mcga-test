@@ -77,13 +77,17 @@ void Driver::addTearDown(Executable tearDown) {
     groupStack.back()->addTearDown(std::move(tearDown));
 }
 
-void Driver::addFailure(String failure, Context context) {
+void Driver::addFailure(Test::ExecutionInfo info) {
     if (!executor->isActive()) {
-        emitWarning(Warning("Called fail() outside a test, ignoring.",
-                            std::move(context)));
+        emitWarning(
+          Warning("Called "
+                    + std::string(
+                      info.status == Test::ExecutionInfo::FAILED ? "fail" : "skip")
+                    + "() outside a test, ignoring.",
+                  std::move(info.context)));
         return;
     }
-    executor->addFailure(std::move(failure), std::move(context));
+    executor->addFailure(std::move(info));
 }
 
 void Driver::addCleanup(Executable cleanup) {

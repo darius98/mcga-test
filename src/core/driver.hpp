@@ -35,7 +35,7 @@ class Driver {
 
     virtual void addTearDown(Executable tearDown);
 
-    virtual void addFailure(String failure, Context context);
+    virtual void addFailure(Test::ExecutionInfo info);
 
     virtual void addCleanup(Executable cleanup);
 

@@ -30,6 +30,8 @@ class FeedbackExtension : public Extension {
     std::unique_ptr<proc::PipeWriter> socketWriter = nullptr;
 
     cli::Flag quietFlag;
+    cli::Flag skipIsFail;
+    cli::Flag printSkipped;
     cli::Argument fileNameArgument;
     cli::Argument socketPathArgument;
     cli::Flag noLiveLogging;

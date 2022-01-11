@@ -24,7 +24,7 @@ class Test : private TestConfig {
     /** Simple helper structure that holds the execution information for a
      * test. */
     struct ExecutionInfo {
-        enum Status : char { PASSED = 0, FAILED = 1 } status = PASSED;
+        enum Status : char { PASSED = 0, FAILED = 1, SKIPPED = 2 } status = PASSED;
 
         /** Number of time ticks the execution took.
          *
@@ -52,6 +52,8 @@ class Test : private TestConfig {
          *
          * Note: if the execution is already failed, does nothing. */
         void merge(ExecutionInfo&& other);
+
+        bool isPassed() const;
     };
 
     /** Default constructor from a TestConfig and the metadata received from the
@@ -105,11 +107,24 @@ class Test : private TestConfig {
      * getNumAttempts(). */
     bool isFinished() const;
 
-    /** Check whether the execution Info marks the test as passed or failed. */
+    /** Check whether the execution info marks the test as passed. */
     bool isPassed() const;
+
+    /** Check whether the execution info marks the test as skipped. For a test
+     * to be considered skipped, all executions must be marked as passed or
+     * skipped. */
+    bool isSkipped() const;
+
+    /** Check whether the execution info marks the test as passed or failed. A
+     * test is failed if it's neither passed nor skipped (at least one execution
+     * is failed). */
+    bool isFailed() const;
 
     /** The number of attempts passed. */
     std::size_t getNumPassedAttempts() const;
+
+    /** The number of attempts skipped. */
+    std::size_t getNumSkippedAttempts() const;
 
     /** The average number of time ticks per execution (only counting executions
      * where the number of time ticks is computable).
@@ -125,7 +140,8 @@ class Test : private TestConfig {
 
     /** Get the error message for the last failed execution, or empty string if
      * all executions passed. */
-    std::optional<Test::ExecutionInfo> getLastFailure() const;
+    std::optional<Test::ExecutionInfo>
+      getLastExecutionWithStatus(ExecutionInfo::Status status) const;
 
     /** Get the array of executions. */
     const std::vector<ExecutionInfo>& getExecutions() const;
@@ -139,6 +155,8 @@ class Test : private TestConfig {
     int id;
 
     std::vector<ExecutionInfo> executions;
+    int numPassedExecutions = 0;
+    int numSkippedExecutions = 0;
 };
 
 }  // namespace mcga::test

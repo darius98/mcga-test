@@ -6,7 +6,7 @@ namespace mcga::test {
 
 void Test::ExecutionInfo::fail(const String& failureMessage,
                                std::optional<Context> failureContext) {
-    if (status == PASSED) {
+    if (isPassed()) {
         status = FAILED;
         message = failureMessage;
         context = std::move(failureContext);
@@ -14,11 +14,16 @@ void Test::ExecutionInfo::fail(const String& failureMessage,
 }
 
 void Test::ExecutionInfo::merge(ExecutionInfo&& other) {
-    if (status == PASSED) {
+    if (isPassed() || (status != SKIPPED && other.status == SKIPPED)) {
         status = other.status;
         message = std::move(other.message);
         context = std::move(other.context);
+        return;
     }
+}
+
+bool Test::ExecutionInfo::isPassed() const {
+    return status == PASSED;
 }
 
 Test::Test(TestConfig config, Executable body, GroupPtr group, int id)
@@ -76,15 +81,25 @@ bool Test::isFinished() const {
 }
 
 bool Test::isPassed() const {
-    return getNumPassedAttempts() >= getNumRequiredPassedAttempts();
+    return numPassedExecutions >= requiredPassedAttempts;
+}
+
+bool Test::isSkipped() const {
+    return numPassedExecutions < requiredPassedAttempts
+      && numSkippedExecutions > 0
+      && numPassedExecutions + numSkippedExecutions == attempts;
+}
+
+bool Test::isFailed() const {
+    return !isPassed() && !isSkipped();
 }
 
 size_t Test::getNumPassedAttempts() const {
-    int numPassedExecutions = 0;
-    for (const auto& info: executions) {
-        numPassedExecutions += (info.status == ExecutionInfo::PASSED ? 1 : 0);
-    }
     return numPassedExecutions;
+}
+
+size_t Test::getNumSkippedAttempts() const {
+    return numSkippedExecutions;
 }
 
 double Test::getAvgTimeTicksForExecution() const {
@@ -117,9 +132,10 @@ double Test::getTotalTimeTicks() const {
     return totalTimeTicks;
 }
 
-std::optional<Test::ExecutionInfo> Test::getLastFailure() const {
+std::optional<Test::ExecutionInfo>
+  Test::getLastExecutionWithStatus(ExecutionInfo::Status status) const {
     for (auto it = executions.rbegin(); it != executions.rend(); ++it) {
-        if (it->status == ExecutionInfo::FAILED) {
+        if (it->status == status) {
             return *it;
         }
     }
@@ -132,6 +148,12 @@ const std::vector<Test::ExecutionInfo>& Test::getExecutions() const {
 
 void Test::addExecution(const ExecutionInfo& info) {
     executions.push_back(info);
+    if (info.status == ExecutionInfo::PASSED) {
+        numPassedExecutions += 1;
+    }
+    if (info.status == ExecutionInfo::SKIPPED) {
+        numSkippedExecutions += 1;
+    }
 }
 
 }  // namespace mcga::test

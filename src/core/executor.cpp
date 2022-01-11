@@ -9,17 +9,15 @@
 
 namespace mcga::test {
 
-class ExpectationFailed : public std::exception {
+class Interrupt : public std::exception {
   public:
-    String message;
-    Context context;
+    Test::ExecutionInfo info;
 
-    ExpectationFailed(String message, Context context)
-            : message(std::move(message)), context(std::move(context)) {
+    explicit Interrupt(Test::ExecutionInfo info): info(std::move(info)) {
     }
 
     [[nodiscard]] const char* what() const noexcept override {
-        return message.c_str();
+        return info.message.c_str();
     }
 };
 
@@ -43,20 +41,20 @@ void Executor::finalize() {
     api->runHooks<ExtensionApi::BEFORE_DESTROY>();
 }
 
-void Executor::addFailure(String failure, Context context) {
+void Executor::addFailure(Test::ExecutionInfo info) {
     // We only kill the thread on failure if we are in the main testing thread
     // and we know we catch this exception.
     if (current_thread_id() == currentExecutionThreadId) {
         // TODO: Abort when exceptions are disabled (in non-smooth execution,
         //  inform the test runner process of the failure before aborting).
-        throw ExpectationFailed(std::move(failure), std::move(context));
+        throw Interrupt(std::move(info));
     }
 
     // If the user starts his own threads that entertain failures, it is his
     // responsibility to make sure his threads die on failure (we have no
     // control).
     std::lock_guard guard(currentExecutionStatusMutex);
-    currentExecution.fail(failure, std::move(context));
+    currentExecution.merge(std::move(info));
 }
 
 void Executor::addCleanup(Executable cleanup) {
@@ -76,14 +74,14 @@ Executor::Type Executor::getType() const {
 }
 
 Test::ExecutionInfo Executor::run(const Test& test) {
-    std::vector<GroupPtr> testGroupStack = test.getGroupStack();
+    std::vector<GroupPtr> groups = test.getGroupStack();
     std::vector<GroupPtr>::iterator it;
     currentTest = &test;
     state = INSIDE_SET_UP;
     Test::ExecutionInfo info;
     auto startTime = std::chrono::high_resolution_clock::now();
     // Execute setUp()-s, in the order of the group stack.
-    for (it = testGroupStack.begin(); it != testGroupStack.end(); ++it) {
+    for (it = groups.begin(); info.isPassed() && it != groups.end(); ++it) {
         (*it)->forEachSetUp([&](const Executable& setUp) {
             currentSetUp = &setUp;
             runJob(setUp, &info);
@@ -93,10 +91,9 @@ Test::ExecutionInfo Executor::run(const Test& test) {
         });
     }
     state = INSIDE_TEST;
-    if (info.status == Test::ExecutionInfo::PASSED) {
+    if (info.isPassed()) {
         // Only run the test if all setUp()-s passed without exception.
         runJob(test.getBody(), &info);
-        --it;
     }
     state = INSIDE_TEAR_DOWN;
     for (const auto& cleanup: currentExecutionCleanups) {
@@ -106,7 +103,7 @@ Test::ExecutionInfo Executor::run(const Test& test) {
     }
     currentExecutionCleanups.clear();
     // Execute tearDown()-s in reverse order, from where setUp()-s stopped.
-    for (; it + 1 != testGroupStack.begin(); --it) {
+    for (--it; it + 1 != groups.begin(); --it) {
         (*it)->forEachTearDown([&](const Executable& tearDown) {
             currentTearDown = &tearDown;
             runJob(tearDown, &info);
@@ -137,8 +134,8 @@ void Executor::runJob(const Executable& job, Test::ExecutionInfo* execution) {
 
     try {
         job();
-    } catch (const ExpectationFailed& failure) {
-        execution->fail(failure.what(), failure.context);
+    } catch (Interrupt& interruption) {
+        execution->merge(std::move(interruption.info));
     } catch (const std::exception& e) {
         execution->fail("Uncaught exception: " + std::string(e.what()),
                         job.context);

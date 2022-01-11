@@ -1,6 +1,8 @@
 add_custom_target(mcga_test_check COMMAND ${CMAKE_CTEST_COMMAND})
 message(STATUS "${CMAKE_CTEST_COMMAND}")
 
+include(FindThreads)
+
 function(add_unit_test TEST_NAME)
     cmake_parse_arguments(P "NO_EXECUTOR_TYPE" "" "" ${ARGN})
     set(UNIT_TEST mcga_test_unit_${TEST_NAME})
@@ -17,29 +19,14 @@ function(add_unit_test TEST_NAME)
 endfunction()
 
 function(add_integration_test TEST_NAME)
-    cmake_parse_arguments(P "NO_EXECUTOR_TYPE" "SCRIPT" "SOURCES" ${ARGN})
     set(INTEGRATION_TEST mcga_test_integration_${TEST_NAME})
     set(INTEGRATION_TEST_BIN ${INTEGRATION_TEST}_binary)
-    add_executable(${INTEGRATION_TEST_BIN} ${P_SOURCES})
+    add_executable(${INTEGRATION_TEST_BIN} ${ARGN})
     set_target_properties(${INTEGRATION_TEST_BIN} PROPERTIES
             RUNTIME_OUTPUT_NAME ${TEST_NAME}
             )
-    target_link_libraries(${INTEGRATION_TEST_BIN} mcga_test_static)
+    target_link_libraries(${INTEGRATION_TEST_BIN} mcga_test_static ${CMAKE_THREAD_LIBS_INIT})
     add_dependencies(mcga_test_check ${INTEGRATION_TEST_BIN})
-
-    if (P_NO_EXECUTOR_TYPE)
-        add_test(NAME ${INTEGRATION_TEST}
-                COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/${P_SCRIPT}
-                WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
-    else ()
-        add_test(NAME ${INTEGRATION_TEST}_boxed
-                COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/${P_SCRIPT} boxed
-                WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
-
-        add_test(NAME ${INTEGRATION_TEST}_smooth
-                COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/${P_SCRIPT} smooth
-                WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
-    endif ()
 endfunction()
 
 function(add_basic_test TEST_NAME)
@@ -52,11 +39,4 @@ function(add_basic_test TEST_NAME)
 endfunction()
 
 add_subdirectory(core)
-
-add_unit_test(extension_death NO_EXECUTOR_TYPE
-        extensions/death/check_death_test.cpp
-        extensions/death/matchers_test.cpp)
-
-add_unit_test(extension_mock
-        extensions/mock/function_mock_test.cpp)
-target_link_libraries(mcga_test_unit_extension_mock mcga_mock)
+add_subdirectory(extensions)

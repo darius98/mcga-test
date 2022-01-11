@@ -8,9 +8,21 @@ static auto t = TestCase{"TestCase"} + [] {
     // fail() top-level
     fail("fail-top-level");
 
+    // cleanup() top-level
+    cleanup([] {});
+
+    // skip() top-level
+    skip("skip-top-level");
+
     group("group", [] {
         // fail() in group
         fail("fail-in-group");
+
+        // cleanup() in group
+        cleanup([] {});
+
+        // skip() in group
+        skip("skip-in-group");
 
         setUp([] {
             // setUp() in setUp()

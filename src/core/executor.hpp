@@ -35,7 +35,7 @@ class Executor {
 
     String stateAsString() const;
 
-    void addFailure(String failure, Context context);
+    void addFailure(Test::ExecutionInfo info);
 
     void addCleanup(Executable cleanup);
 

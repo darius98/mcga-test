@@ -9,13 +9,19 @@
 
 namespace mcga::test::feedback {
 
-TestLogger::TestLogger(std::ostream& stream, bool liveLogging)
-        : stream(stream), liveLogging(liveLogging) {
+TestLogger::TestLogger(std::ostream& stream,
+                       bool liveLogging,
+                       bool printSkipped)
+        : stream(stream), liveLogging(liveLogging), printSkipped(printSkipped) {
 }
 
 void TestLogger::onTestExecutionStart(const Test& test) {
     runningTests.insert(test.getId());
     updateVolatileLine(test);
+
+    // Flush before a test. If not, buffered output might get printed by both
+    // the orchestrator and the worker process in non-smooth execution.
+    std::cout.flush();
 }
 
 void TestLogger::onTestExecutionFinish(const Test& test) {
@@ -31,6 +37,8 @@ void TestLogger::onTestExecutionFinish(const Test& test) {
     }
     if (test.isPassed()) {
         ++passedTests;
+    } else if (test.isSkipped()) {
+        ++skippedTests;
     } else {
         ++failedTests;
         if (test.isOptional()) {
@@ -39,14 +47,13 @@ void TestLogger::onTestExecutionFinish(const Test& test) {
     }
     ++loggedTests;
 
-    printTestMessage(test);
+    if (!test.isSkipped() || printSkipped) {
+        printTestMessage(test);
+    }
 }
 
 void TestLogger::printFinalInformation() {
-    if (isLastLineVolatile) {
-        stream << "\r";
-        stream.flush();
-    }
+    clearVolatileLine();
     stream << "\n";
     stream << "Tests passed: " << green << passedTests << reset << "\n";
     stream << "Tests failed: ";
@@ -62,19 +69,18 @@ void TestLogger::printFinalInformation() {
                << (failedOptionalTests == 1 ? "was" : "were") << " optional)";
     }
     stream << "\n";
+    if (skippedTests != 0) {
+        stream << "Tests skipped: " << yellow << skippedTests << reset << "\n";
+    }
     stream << "Total recorded testing time: " << std::fixed
            << std::setprecision(3) << totalTimeTicks << " ticks ("
            << TimeTicksToNanoseconds(totalTimeTicks).count() * 1.0
         * std::milli::den / std::nano::den
            << " ms)\n";
-    isLastLineVolatile = false;
 }
 
 void TestLogger::printWarning(const Warning& warning) {
-    if (isLastLineVolatile) {
-        stream << "\r";
-        stream.flush();
-    }
+    clearVolatileLine();
     stream << yellow << "Warning: " << warning.message.c_str() << "\n";
     if (warning.context.has_value()) {
         stream << "\tat " << warning.context->fileName.c_str() << ":"
@@ -92,12 +98,20 @@ void TestLogger::printWarning(const Warning& warning) {
     stream << reset;
 }
 
-void TestLogger::printTestPassedOrFailedToken(const Test& test) {
+void TestLogger::clearVolatileLine() {
+    if (isLastLineVolatile) {
+        stream << "\r";
+        stream.flush();
+    }
+    isLastLineVolatile = false;
+}
+
+void TestLogger::printTestStatus(const Test& test) {
     stream << "[";
     if (test.isPassed()) {
         stream << green << "P" << reset;
-    } else if (test.isOptional()) {
-        stream << yellow << "F" << reset;
+    } else if (test.isSkipped() || test.isOptional()) {
+        stream << yellow << (test.isSkipped() ? "S" : "F") << reset;
     } else {
         stream << red << "F" << reset;
     }
@@ -153,29 +167,26 @@ void TestLogger::printTestAttemptsInfo(const Test& test) {
 
 void TestLogger::printTestFailure(const Test::ExecutionInfo& info) {
     stream << "\n";
-    std::string failure = info.message.c_str();
+    std::string message = info.message.c_str();
     // TODO: This should be somewhere else (in utils maybe?)
     size_t pos = 0;
-    while ((pos = failure.find('\n', pos)) != std::string::npos) {
-        failure.replace(pos, 1, "\n\t");
+    while ((pos = message.find('\n', pos)) != std::string::npos) {
+        message.replace(pos, 1, "\n\t");
         pos += 2;
     }
-    stream << red;
+    stream << (info.status == Test::ExecutionInfo::SKIPPED ? yellow : red);
     if (info.context.has_value()) {
         stream << info.context->verb.c_str() << " at "
                << info.context->fileName.c_str() << ":" << info.context->line
                << ":" << info.context->column << "\n";
     }
-    stream << "\t" << failure << reset;
+    stream << "\t" << message << reset;
 }
 
 void TestLogger::printTestMessage(const Test& test) {
-    if (isLastLineVolatile) {
-        stream << "\r";
-        stream.flush();
-    }
+    clearVolatileLine();
 
-    printTestPassedOrFailedToken(test);
+    printTestStatus(test);
     stream << " ";
     printTestAndGroupsDescription(test);
     stream << " - ";
@@ -184,24 +195,25 @@ void TestLogger::printTestMessage(const Test& test) {
         stream << ' ';
         printTestAttemptsInfo(test);
     }
-    const auto lastFailure = test.getLastFailure();
-    if (!test.isPassed() && lastFailure.has_value()) {
-        printTestFailure(lastFailure.value());
+    std::optional<Test::ExecutionInfo> execution;
+    if (test.isFailed()) {
+        execution
+          = test.getLastExecutionWithStatus(Test::ExecutionInfo::FAILED);
+    } else {
+        execution
+          = test.getLastExecutionWithStatus(Test::ExecutionInfo::SKIPPED);
+    }
+    if (execution.has_value()) {
+        printTestFailure(execution.value());
     }
     stream << "\n";
-    isLastLineVolatile = false;
 }
 
 void TestLogger::updateVolatileLine(const Test& test) {
-    if (!liveLogging) {
+    if (!liveLogging || !is_terminal(stream)) {
         return;
     }
-
-    if (isLastLineVolatile) {
-        stream << "\r";
-        stream.flush();
-    }
-
+    clearVolatileLine();
     if (runningTests.size() == 1 && *runningTests.begin() == test.getId()) {
         stream << "[" << yellow << "." << reset << "] ";
         printTestAndGroupsDescription(test);

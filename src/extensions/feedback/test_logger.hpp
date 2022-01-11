@@ -10,7 +10,9 @@ namespace mcga::test::feedback {
 
 class TestLogger {
   public:
-    explicit TestLogger(std::ostream& stream, bool liveLogging);
+    explicit TestLogger(std::ostream& stream,
+                        bool liveLogging,
+                        bool printSkipped);
 
     void onTestExecutionStart(const Test& test);
 
@@ -21,7 +23,9 @@ class TestLogger {
     void printFinalInformation();
 
   private:
-    void printTestPassedOrFailedToken(const Test& test);
+    void clearVolatileLine();
+
+    void printTestStatus(const Test& test);
 
     void printTestAndGroupsDescription(const Test& test);
 
@@ -39,9 +43,11 @@ class TestLogger {
 
     std::set<int> runningTests;
     bool liveLogging;
+    bool printSkipped;
     bool isLastLineVolatile = false;
     double totalTimeTicks = 0;
     int passedTests = 0;
+    int skippedTests = 0;
     int failedTests = 0;
     int failedOptionalTests = 0;
     int loggedTests = 0;

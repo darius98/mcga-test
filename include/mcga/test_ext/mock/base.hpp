@@ -62,7 +62,7 @@ class BaseFunctionMock<R(Args...)> {
     void replace(Callable callable) {
         replacement = std::move(callable);
         cleanup([this] {
-            this->reset();
+            reset();
         });
     }
 };

@@ -91,18 +91,19 @@ class String {
 };
 
 struct Context {
-    String verb{"Failed"};
+    String verb;
     String fileName;
     String functionName;
     int line;
     int column;
 
-    explicit Context(const char* fileName = __builtin_FILE(),
+    explicit Context(String verb = "Failed",
+                     const char* fileName = __builtin_FILE(),
                      const char* functionName = __builtin_FUNCTION(),
                      int line = __builtin_LINE(),
                      int column = __builtin_COLUMN())
-            : fileName(fileName), functionName(functionName), line(line),
-              column(column) {
+            : verb(std::move(verb)), fileName(fileName),
+              functionName(functionName), line(line), column(column) {
     }
 };
 
@@ -232,6 +233,8 @@ void register_set_up(Executable body);
 void register_tear_down(Executable body);
 
 void register_failure(String message, Context context);
+
+void register_skip(String message, Context context);
 
 void register_cleanup(Executable exec);
 
@@ -425,6 +428,11 @@ void tearDown(Callable func, Context context = Context()) {
 
 inline void fail(String message = String(), Context context = Context()) {
     internal::register_failure(std::move(message), std::move(context));
+}
+
+inline void skip(String message = String(),
+                 Context context = Context("Skipped")) {
+    internal::register_skip(std::move(message), std::move(context));
 }
 
 inline void expect(bool expr, Context context = Context()) {

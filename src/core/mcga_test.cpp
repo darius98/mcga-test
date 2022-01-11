@@ -31,7 +31,17 @@ MCGA_TEST_EXPORT void register_tear_down(Executable body) {
 }
 
 MCGA_TEST_EXPORT void register_failure(String message, Context context) {
-    Driver::Instance()->addFailure(std::move(message), std::move(context));
+    Driver::Instance()->addFailure(
+      Test::ExecutionInfo{.status = Test::ExecutionInfo::FAILED,
+                          .message = std::move(message),
+                          .context = std::move(context)});
+}
+
+MCGA_TEST_EXPORT void register_skip(String message, Context context) {
+    Driver::Instance()->addFailure(
+      Test::ExecutionInfo{.status = Test::ExecutionInfo::SKIPPED,
+                          .message = std::move(message),
+                          .context = std::move(context)});
 }
 
 MCGA_TEST_EXPORT void register_cleanup(Executable exec) {
