@@ -2,13 +2,13 @@
 
 #include "pp_codegen.hpp"
 
-namespace mcga::test::mock {
+namespace mcga::test {
 
 MCGA_TEST_EXPORT LibCMocks libc;
 
-}  // namespace mcga::test::mock
+}  // namespace mcga::test
 
-using mcga::test::mock::libc;
+using mcga::test::libc;
 
 DECLARE_NORETURN_FUNCTION(libc, abort, 0)
 DECLARE_FUNCTION(libc, abs, 1)

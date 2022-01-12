@@ -2,7 +2,7 @@
 
 #include <ostream>
 
-namespace mcga::test::death {
+namespace mcga::test {
 
 class DeathStatus {
   public:
@@ -46,4 +46,4 @@ class DeathStatus {
     }
 };
 
-}  // namespace mcga::test::death
+}  // namespace mcga::test

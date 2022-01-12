@@ -7,7 +7,7 @@
 
 #include <mcga/test.hpp>
 
-namespace mcga::test::mock {
+namespace mcga::test {
 
 namespace internal {
 
@@ -115,4 +115,4 @@ class FunctionMock<R(Args..., ...)>
     }
 };
 
-}  // namespace mcga::test::mock
+}  // namespace mcga::test

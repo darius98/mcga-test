@@ -12,7 +12,7 @@ void check_death(Executable func,
 
 }
 
-namespace mcga::test::death {
+namespace mcga::test {
 
 template<internal::executable_t Callable>
 DeathStatus checkDeath(Callable func,
@@ -26,4 +26,4 @@ DeathStatus checkDeath(Callable func,
     return DeathStatus{exitCode, exitSignal};
 }
 
-}  // namespace mcga::test::death
+}  // namespace mcga::test

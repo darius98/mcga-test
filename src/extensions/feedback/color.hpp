@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-namespace mcga::test::feedback {
+namespace mcga::test {
 
 bool is_terminal(const std::ostream& stream);
 
@@ -33,4 +33,4 @@ std::ostream& on_magenta(std::ostream& stream);
 std::ostream& on_cyan(std::ostream& stream);
 std::ostream& on_white(std::ostream& stream);
 
-}  // namespace mcga::test::feedback
+}  // namespace mcga::test

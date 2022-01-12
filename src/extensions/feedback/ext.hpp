@@ -5,7 +5,7 @@
 #include "core/extension.hpp"
 #include "test_logger.hpp"
 
-namespace mcga::test::feedback {
+namespace mcga::test {
 
 class FeedbackExtension : public Extension {
   public:
@@ -37,4 +37,4 @@ class FeedbackExtension : public Extension {
     cli::Flag noLiveLogging;
 };
 
-}  // namespace mcga::test::feedback
+}  // namespace mcga::test

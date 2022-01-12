@@ -21,19 +21,19 @@ static auto t = TestCase{"mock extension"} + [] {
     });
 
     test("replacement function is called", [&] {
-        expect(mock::libc.abort.is_replaced(), isFalse);
-        expect(mock::libc.malloc.is_replaced(), isFalse);
-        mock::libc.malloc.replace(malloc_replacement);
-        expect(mock::libc.abort.is_replaced(), isFalse);
-        expect(mock::libc.malloc.is_replaced(), isTrue);
+        expect(libc.abort.is_replaced(), isFalse);
+        expect(libc.malloc.is_replaced(), isFalse);
+        libc.malloc.replace(malloc_replacement);
+        expect(libc.abort.is_replaced(), isFalse);
+        expect(libc.malloc.is_replaced(), isTrue);
 
         expect(malloc(14), isEqualTo(nullptr));
         expect(arg, isEqualTo(14));
     });
 
     test("replacement function from previous test is not called", [&] {
-        expect(mock::libc.abort.is_replaced(), isFalse);
-        expect(mock::libc.malloc.is_replaced(), isFalse);
+        expect(libc.abort.is_replaced(), isFalse);
+        expect(libc.malloc.is_replaced(), isFalse);
 
         auto ptr = malloc(14);
         expect(ptr, isNotEqualTo(nullptr));
@@ -42,36 +42,36 @@ static auto t = TestCase{"mock extension"} + [] {
     });
 
     test("replacement function is not called before replace", [&] {
-        expect(mock::libc.abort.is_replaced(), isFalse);
-        expect(mock::libc.malloc.is_replaced(), isFalse);
+        expect(libc.abort.is_replaced(), isFalse);
+        expect(libc.malloc.is_replaced(), isFalse);
 
         auto ptr = malloc(14);
         expect(ptr, isNotEqualTo(nullptr));
         expect(arg, isZero);
         free(ptr);
 
-        mock::libc.malloc.replace(malloc_replacement);
+        libc.malloc.replace(malloc_replacement);
 
-        expect(mock::libc.abort.is_replaced(), isFalse);
-        expect(mock::libc.malloc.is_replaced(), isTrue);
+        expect(libc.abort.is_replaced(), isFalse);
+        expect(libc.malloc.is_replaced(), isTrue);
 
         expect(malloc(14), isEqualTo(nullptr));
         expect(arg, isEqualTo(14));
     });
 
     test("replacement function is not called after reset", [&] {
-        expect(mock::libc.abort.is_replaced(), isFalse);
-        expect(mock::libc.malloc.is_replaced(), isFalse);
-        mock::libc.malloc.replace(malloc_replacement);
-        expect(mock::libc.abort.is_replaced(), isFalse);
-        expect(mock::libc.malloc.is_replaced(), isTrue);
+        expect(libc.abort.is_replaced(), isFalse);
+        expect(libc.malloc.is_replaced(), isFalse);
+        libc.malloc.replace(malloc_replacement);
+        expect(libc.abort.is_replaced(), isFalse);
+        expect(libc.malloc.is_replaced(), isTrue);
 
         expect(malloc(14), isEqualTo(nullptr));
         expect(arg, isEqualTo(14));
 
-        mock::libc.malloc.reset();
-        expect(mock::libc.abort.is_replaced(), isFalse);
-        expect(mock::libc.malloc.is_replaced(), isFalse);
+        libc.malloc.reset();
+        expect(libc.abort.is_replaced(), isFalse);
+        expect(libc.malloc.is_replaced(), isFalse);
 
         arg = 0;
 
@@ -82,13 +82,13 @@ static auto t = TestCase{"mock extension"} + [] {
     });
 
     test("replacement for noreturn function", [&] {
-        expect(mock::libc.abort.is_replaced(), isFalse);
-        expect(mock::libc.malloc.is_replaced(), isFalse);
-        mock::libc.abort.replace([&] {
+        expect(libc.abort.is_replaced(), isFalse);
+        expect(libc.malloc.is_replaced(), isFalse);
+        libc.abort.replace([&] {
             throw std::runtime_error("Something");
         });
-        expect(mock::libc.abort.is_replaced(), isTrue);
-        expect(mock::libc.malloc.is_replaced(), isFalse);
+        expect(libc.abort.is_replaced(), isTrue);
+        expect(libc.malloc.is_replaced(), isFalse);
 
         try {
             std::abort();
@@ -98,11 +98,11 @@ static auto t = TestCase{"mock extension"} + [] {
     });
 
     test("replacement for noreturn function that returns", [&] {
-        expect(mock::libc.abort.is_replaced(), isFalse);
-        expect(mock::libc.malloc.is_replaced(), isFalse);
-        mock::libc.abort.replace([&] {});
-        expect(mock::libc.abort.is_replaced(), isTrue);
-        expect(mock::libc.malloc.is_replaced(), isFalse);
+        expect(libc.abort.is_replaced(), isFalse);
+        expect(libc.malloc.is_replaced(), isFalse);
+        libc.abort.replace([&] {});
+        expect(libc.abort.is_replaced(), isTrue);
+        expect(libc.malloc.is_replaced(), isFalse);
 
         try {
             std::abort();
@@ -114,7 +114,7 @@ static auto t = TestCase{"mock extension"} + [] {
     });
 
     test("replacement for function with variadic arguments", [&] {
-        mock::libc.printf.replace([&](const char* fmt, va_list va) {
+        libc.printf.replace([&](const char* fmt, va_list va) {
             expect(fmt, isEqualTo("%d %d"));
             expect(va_arg(va, int), 3);
             expect(va_arg(va, int), 4);
@@ -125,11 +125,11 @@ static auto t = TestCase{"mock extension"} + [] {
     });
 
     test("multiple mocks in same test", [&] {
-        mock::libc.malloc.replace(malloc_replacement);
-        mock::libc.abort.replace([&] {
+        libc.malloc.replace(malloc_replacement);
+        libc.abort.replace([&] {
             throw std::runtime_error("Something");
         });
-        mock::libc.printf.replace([&](const char* fmt, va_list va) {
+        libc.printf.replace([&](const char* fmt, va_list va) {
             expect(fmt, isEqualTo("%d %d"));
             expect(va_arg(va, int), 3);
             expect(va_arg(va, int), 4);
@@ -158,13 +158,13 @@ static auto t = TestCase{"mock extension"} + [] {
     });
 
     test("mock replaced multiple times in same test", [&] {
-        expect(mock::libc.abort.is_replaced(), isFalse);
-        expect(mock::libc.malloc.is_replaced(), isFalse);
-        mock::libc.abort.replace([&] {
+        expect(libc.abort.is_replaced(), isFalse);
+        expect(libc.malloc.is_replaced(), isFalse);
+        libc.abort.replace([&] {
             throw std::runtime_error("Something");
         });
-        expect(mock::libc.abort.is_replaced(), isTrue);
-        expect(mock::libc.malloc.is_replaced(), isFalse);
+        expect(libc.abort.is_replaced(), isTrue);
+        expect(libc.malloc.is_replaced(), isFalse);
 
         try {
             std::abort();
@@ -172,11 +172,11 @@ static auto t = TestCase{"mock extension"} + [] {
             expect(err.what(), isEqualTo("Something"));
         }
 
-        mock::libc.abort.replace([&] {
+        libc.abort.replace([&] {
             throw std::runtime_error("Something else");
         });
-        expect(mock::libc.abort.is_replaced(), isTrue);
-        expect(mock::libc.malloc.is_replaced(), isFalse);
+        expect(libc.abort.is_replaced(), isTrue);
+        expect(libc.malloc.is_replaced(), isFalse);
 
         try {
             std::abort();

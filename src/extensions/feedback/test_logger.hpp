@@ -6,7 +6,7 @@
 #include "core/test.hpp"
 #include "core/warning.hpp"
 
-namespace mcga::test::feedback {
+namespace mcga::test {
 
 class TestLogger {
   public:
@@ -53,4 +53,4 @@ class TestLogger {
     int loggedTests = 0;
 };
 
-}  // namespace mcga::test::feedback
+}  // namespace mcga::test

@@ -4,12 +4,12 @@
 #include <unistd.h>
 
 void write_if_colorized(std::ostream& stream, const char* ansi_seq) {
-    if (mcga::test::feedback::is_terminal(stream)) {
+    if (mcga::test::is_terminal(stream)) {
         stream << ansi_seq;
     }
 }
 
-namespace mcga::test::feedback {
+namespace mcga::test {
 
 bool is_terminal(const std::ostream& stream) {
     if (&stream == &std::cout) {
@@ -136,4 +136,4 @@ std::ostream& on_white(std::ostream& stream) {
     return stream;
 }
 
-}  // namespace mcga::test::feedback
+}  // namespace mcga::test

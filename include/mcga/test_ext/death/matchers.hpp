@@ -4,7 +4,7 @@
 #include "death_status.hpp"
 #include "mcga/matchers.hpp"
 
-namespace mcga::test::death {
+namespace mcga::test {
 
 namespace internal {
 
@@ -150,4 +150,4 @@ constexpr auto hasExitedWithCode(const T& exitCode) {
     }
 }
 
-}  // namespace mcga::test::death
+}  // namespace mcga::test

@@ -10,7 +10,7 @@ using mcga::proc::createLocalClientSocket;
 using mcga::proc::PipeWriter;
 using mcga::test::Test;
 
-namespace mcga::test::feedback {
+namespace mcga::test {
 
 enum PipeMessageType : uint8_t {
     GROUP_DISCOVERED = 0,
@@ -160,4 +160,4 @@ void FeedbackExtension::initSocketStream(ExtensionApi* api,
     addPipeHooks(socketWriter.get(), api);
 }
 
-}  // namespace mcga::test::feedback
+}  // namespace mcga::test

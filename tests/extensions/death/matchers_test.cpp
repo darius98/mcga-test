@@ -8,7 +8,6 @@
 
 using namespace mcga::test;
 using namespace mcga::matchers;
-using namespace mcga::test::death;
 
 static auto t = TestCase{"Death extension: matchers"} + [] {
     auto funcExit0 = [] {

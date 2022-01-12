@@ -10,7 +10,7 @@
 #include <cwchar>
 #include <cwctype>
 
-namespace mcga::test::mock {
+namespace mcga::test {
 
 struct LibCMocks {
     // clang-format off
@@ -271,4 +271,4 @@ struct LibCMocks {
 
 extern LibCMocks libc;
 
-}  // namespace mcga::test::mock
+}  // namespace mcga::test

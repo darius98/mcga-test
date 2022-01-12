@@ -7,7 +7,7 @@
 
 #include "core/time_tick.hpp"
 
-namespace mcga::test::feedback {
+namespace mcga::test {
 
 TestLogger::TestLogger(std::ostream& stream,
                        bool liveLogging,
@@ -236,4 +236,4 @@ void TestLogger::updateVolatileLine(const Test& test) {
     isLastLineVolatile = true;
 }
 
-}  // namespace mcga::test::feedback
+}  // namespace mcga::test

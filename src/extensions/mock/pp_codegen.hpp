@@ -154,7 +154,7 @@
       ,                                                                        \
       ,                                                                        \
       ,                                                                        \
-      ::mcga::test::mock::internal::after_noreturn_invoke();)
+      ::mcga::test::internal::after_noreturn_invoke();)
 
 #define DECLARE_VA_FUNCTION(mock_group, Func, NArgs)                           \
     INTERNAL_DECLARE_FUNCTION(                                                 \
