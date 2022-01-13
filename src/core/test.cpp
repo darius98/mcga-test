@@ -1,6 +1,7 @@
 #include "test.hpp"
 
 #include <algorithm>
+#include <numeric>
 
 namespace mcga::test {
 
@@ -33,6 +34,29 @@ Test::Test(TestConfig config, Executable body, GroupPtr group, int id)
 
 const String& Test::getDescription() const {
     return description;
+}
+
+std::string Test::getFullDescription() const {
+    std::vector<std::string> groupDescriptions;
+    GroupPtr group = getGroup();
+    while (group != nullptr) {
+        std::string groupDescription = group->getDescription().c_str();
+        if (!groupDescription.empty()) {
+            groupDescriptions.push_back(groupDescription);
+        }
+        group = group->getParentGroup();
+    }
+    std::string groupDescription
+      = std::accumulate(groupDescriptions.rbegin(),
+                        groupDescriptions.rend(),
+                        std::string(""),
+                        [](const std::string& a, const std::string& b) {
+                            return a.empty() ? b : (a + "::" + b);
+                        });
+    if (!groupDescription.empty()) {
+        groupDescription += "::";
+    }
+    return groupDescription + getDescription().c_str();
 }
 
 const Context& Test::getContext() const {
@@ -146,14 +170,14 @@ const std::vector<Test::ExecutionInfo>& Test::getExecutions() const {
     return executions;
 }
 
-void Test::addExecution(const ExecutionInfo& info) {
-    executions.push_back(info);
+void Test::addExecution(ExecutionInfo info) {
     if (info.status == ExecutionInfo::PASSED) {
         numPassedExecutions += 1;
     }
     if (info.status == ExecutionInfo::SKIPPED) {
         numSkippedExecutions += 1;
     }
+    executions.push_back(std::move(info));
 }
 
 }  // namespace mcga::test

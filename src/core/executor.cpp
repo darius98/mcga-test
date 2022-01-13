@@ -62,8 +62,11 @@ void Executor::addCleanup(Executable cleanup) {
 }
 
 void Executor::execute(Test test) {
-    for (size_t i = 0; i < test.getNumAttempts(); ++i) {
-        onTestExecutionStart(test);
+    while (true) {
+        addHooksExecutions(test);
+        if (test.isFinished()) {
+            break;
+        }
         test.addExecution(run(test));
         onTestExecutionFinish(test);
     }
@@ -176,16 +179,33 @@ void Executor::decorateWarningWithCurrentTestNotes(Warning& warning,
     }
 }
 
-void Executor::onGroupDiscovered(GroupPtr group) {
-    api->runHooks<ExtensionApi::ON_GROUP_DISCOVERED>(std::move(group));
+void Executor::addHooksExecutions(Test& test) {
+    while (true) {
+        auto execution = onTestExecutionStart(test);
+        if (!execution.has_value()) {
+            break;
+        }
+        test.addExecution(*std::move(execution));
+        onTestExecutionFinish(test);
+        if (test.isFinished()) {
+            break;
+        }
+    }
+}
+
+void Executor::onGroupDiscovered(const GroupPtr& group) {
+    api->runHooks<ExtensionApi::ON_GROUP_DISCOVERED>(group);
 }
 
 void Executor::onTestDiscovered(const Test& test) {
     api->runHooks<ExtensionApi::ON_TEST_DISCOVERED>(test);
 }
 
-void Executor::onTestExecutionStart(const Test& test) {
-    api->runHooks<ExtensionApi::BEFORE_TEST_EXECUTION>(test);
+std::optional<Test::ExecutionInfo>
+  Executor::onTestExecutionStart(const Test& test) {
+    std::optional<Test::ExecutionInfo> info;
+    api->runHooks<ExtensionApi::BEFORE_TEST_EXECUTION>(test, info);
+    return info;
 }
 
 void Executor::onTestExecutionFinish(const Test& test) {

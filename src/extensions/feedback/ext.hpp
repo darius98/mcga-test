@@ -18,17 +18,13 @@ class FeedbackExtension : public Extension {
 
     void initLogging(ExtensionApi* api);
 
-    void initFileStream(ExtensionApi* api, const std::string& fileName);
-
     void initSocketStream(ExtensionApi* api, const std::string& socketPath);
 
     std::unique_ptr<TestLogger> logger = nullptr;
-    std::unique_ptr<proc::PipeWriter> fileWriter = nullptr;
     std::unique_ptr<proc::PipeWriter> socketWriter = nullptr;
 
     cli::Flag quietFlag;
     cli::Flag printSkipped;
-    cli::Argument fileNameArgument;
     cli::Argument socketPathArgument;
     cli::Flag noLiveLogging;
 };

@@ -2,6 +2,7 @@
 
 #include <cstdint>
 
+#include <optional>
 #include <stdexcept>
 
 #include "test.hpp"
@@ -13,6 +14,8 @@ class ExtensionApi {
   public:
     using GlobalHook = std::function<void()>;
     using TestHook = std::function<void(const Test&)>;
+    using TestExecutionHook
+      = std::function<void(const Test&, std::optional<Test::ExecutionInfo>&)>;
     using GroupHook = std::function<void(GroupPtr)>;
     using WarningHook = std::function<void(const Warning&)>;
 
@@ -51,7 +54,7 @@ class ExtensionApi {
     std::tuple<std::vector<GroupHook>,
                std::vector<TestHook>,
                std::vector<WarningHook>,
-               std::vector<TestHook>,
+               std::vector<TestExecutionHook>,
                std::vector<TestHook>,
                std::vector<GlobalHook>>
       hooks;

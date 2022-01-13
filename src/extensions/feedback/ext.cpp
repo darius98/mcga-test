@@ -31,12 +31,6 @@ void FeedbackExtension::registerCommandLineArgs(Parser* parser) {
       FlagSpec("print-skipped")
         .set_help_group("Feedback")
         .set_description("Print the information for skipped tests."));
-    fileNameArgument = parser->add_argument(
-      ArgumentSpec("stream-to-file")
-        .set_help_group("Feedback")
-        .set_description("A file with write access for piping the test "
-                         "results as they become available.")
-        .set_default_value(""));
     socketPathArgument = parser->add_argument(
       ArgumentSpec("stream-to-socket")
         .set_help_group("Feedback")
@@ -53,9 +47,6 @@ void FeedbackExtension::registerCommandLineArgs(Parser* parser) {
 void FeedbackExtension::init(ExtensionApi* api) {
     if (!quietFlag->get_value()) {
         initLogging(api);
-    }
-    if (fileNameArgument->appeared()) {
-        initFileStream(api, fileNameArgument->get_value());
     }
     if (socketPathArgument->appeared()) {
         initSocketStream(api, socketPathArgument->get_value());
@@ -81,9 +72,11 @@ void FeedbackExtension::addPipeHooks(PipeWriter* pipe, ExtensionApi* api) {
                           test.getNumRequiredPassedAttempts());
     });
 
-    api->addHook<ExtensionApi::BEFORE_TEST_EXECUTION>([pipe](const Test& test) {
-        pipe->sendMessage(PipeMessageType::TEST_EXECUTION_START, test.getId());
-    });
+    api->addHook<ExtensionApi::BEFORE_TEST_EXECUTION>(
+      [pipe](const Test& test, std::optional<Test::ExecutionInfo>&) {
+          pipe->sendMessage(PipeMessageType::TEST_EXECUTION_START,
+                            test.getId());
+      });
 
     api->addHook<ExtensionApi::AFTER_TEST_EXECUTION>([pipe](const Test& test) {
         pipe->sendMessage(PipeMessageType::TEST_EXECUTION_FINISH,
@@ -107,9 +100,10 @@ void FeedbackExtension::initLogging(ExtensionApi* api) {
     logger = make_unique<TestLogger>(
       std::cout, !noLiveLogging->get_value(), printSkipped->get_value());
 
-    api->addHook<ExtensionApi::BEFORE_TEST_EXECUTION>([this](const Test& test) {
-        logger->onTestExecutionStart(test);
-    });
+    api->addHook<ExtensionApi::BEFORE_TEST_EXECUTION>(
+      [this](const Test& test, std::optional<Test::ExecutionInfo>&) {
+          logger->onTestExecutionStart(test);
+      });
 
     api->addHook<ExtensionApi::AFTER_TEST_EXECUTION>([this](const Test& test) {
         logger->onTestExecutionFinish(test);
@@ -122,12 +116,6 @@ void FeedbackExtension::initLogging(ExtensionApi* api) {
     api->addHook<ExtensionApi::ON_WARNING>([this](const Warning& warning) {
         logger->printWarning(warning);
     });
-}
-
-void FeedbackExtension::initFileStream(ExtensionApi* api,
-                                       const std::string& fileName) {
-    fileWriter = std::unique_ptr<PipeWriter>(PipeWriter::OpenFile(fileName));
-    addPipeHooks(fileWriter.get(), api);
 }
 
 void FeedbackExtension::initSocketStream(ExtensionApi* api,

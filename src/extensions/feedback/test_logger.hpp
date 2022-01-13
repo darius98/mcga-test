@@ -27,8 +27,6 @@ class TestLogger {
 
     void printTestStatus(const Test& test);
 
-    void printTestAndGroupsDescription(const Test& test);
-
     void printTestExecutionTime(const Test& test);
 
     void printTestAttemptsInfo(const Test& test);

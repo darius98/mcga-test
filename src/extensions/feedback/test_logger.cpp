@@ -120,29 +120,6 @@ void TestLogger::printTestStatus(const Test& test) {
     stream << "]";
 }
 
-void TestLogger::printTestAndGroupsDescription(const Test& test) {
-    std::vector<std::string> groupDescriptions;
-    GroupPtr group = test.getGroup();
-    while (group != nullptr) {
-        std::string groupDescription = group->getDescription().c_str();
-        if (!groupDescription.empty()) {
-            groupDescriptions.push_back(groupDescription);
-        }
-        group = group->getParentGroup();
-    }
-    std::string groupDescription
-      = std::accumulate(groupDescriptions.rbegin(),
-                        groupDescriptions.rend(),
-                        std::string(""),
-                        [](const std::string& a, const std::string& b) {
-                            return a.empty() ? b : (a + "::" + b);
-                        });
-    if (!groupDescription.empty()) {
-        groupDescription += "::";
-    }
-    stream << groupDescription << test.getDescription().c_str();
-}
-
 void TestLogger::printTestExecutionTime(const Test& test) {
     if (test.getAvgTimeTicksForExecution() != -1.0) {
         stream
@@ -189,9 +166,7 @@ void TestLogger::printTestMessage(const Test& test) {
     clearVolatileLine();
 
     printTestStatus(test);
-    stream << " ";
-    printTestAndGroupsDescription(test);
-    stream << " - ";
+    stream << " " << test.getFullDescription() << " - ";
     printTestExecutionTime(test);
     if (test.getNumAttempts() > 1) {
         stream << ' ';
@@ -217,8 +192,7 @@ void TestLogger::updateVolatileLine(const Test& test) {
     }
     clearVolatileLine();
     if (runningTests.size() == 1 && *runningTests.begin() == test.getId()) {
-        stream << "[" << yellow << "." << reset << "] ";
-        printTestAndGroupsDescription(test);
+        stream << "[" << yellow << "." << reset << "] " << test.getFullDescription();
         if (test.getNumAttempts() > 1) {
             stream << " - running attempt " << test.getExecutions().size() + 1
                    << " of " << test.getNumAttempts() << ", passed "

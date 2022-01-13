@@ -23,9 +23,11 @@ BoxExecutor::BoxExecutor(ExtensionApi* api, size_t numBoxes)
 
 void BoxExecutor::execute(Test test) {
     ensureEmptyBoxes(1);
-    onTestExecutionStart(test);
-    auto firstExecution = startExecution(test);
-    activeBoxes.emplace_back(std::move(test), std::move(firstExecution));
+    addHooksExecutions(test);
+    if (!test.isFinished()) {
+        auto execProcess = startExecution(test);
+        activeBoxes.emplace_back(std::move(test), std::move(execProcess));
+    }
 }
 
 void BoxExecutor::finalize() {
@@ -105,9 +107,11 @@ bool BoxExecutor::tryCloseBox(Box* box) {
     test.addExecution(info);
     onTestExecutionFinish(test);
     if (!test.isFinished()) {
-        onTestExecutionStart(test);
-        box->second = startExecution(test);
-        return false;
+        addHooksExecutions(test);
+        if (!test.isFinished()) {
+            box->second = startExecution(test);
+            return false;
+        }
     }
     return true;
 }

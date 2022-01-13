@@ -47,10 +47,13 @@ class Executor {
   protected:
     void decorateWarningWithCurrentTestNotes(Warning& warning, GroupPtr group);
 
+    void addHooksExecutions(Test& test);
+
     void onWarning(Warning warning, GroupPtr group);
-    void onGroupDiscovered(GroupPtr group);
+    void onGroupDiscovered(const GroupPtr& group);
     void onTestDiscovered(const Test& test);
-    void onTestExecutionStart(const Test& test);
+    [[nodiscard]] std::optional<Test::ExecutionInfo>
+      onTestExecutionStart(const Test& test);
     void onTestExecutionFinish(const Test& test);
 
     ExtensionApi* api;

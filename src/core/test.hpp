@@ -1,6 +1,7 @@
 #pragma once
 
 #include <optional>
+#include <string>
 #include <vector>
 
 #include "group.hpp"
@@ -70,6 +71,8 @@ class Test : private TestConfig {
 
     /** See TestConfig#description. */
     const String& getDescription() const;
+
+    std::string getFullDescription() const;
 
     /** See TestConfig#sourceLocation. */
     const Context& getContext() const;
@@ -147,7 +150,7 @@ class Test : private TestConfig {
     const std::vector<ExecutionInfo>& getExecutions() const;
 
     /** Add an execution to the test. */
-    void addExecution(const ExecutionInfo& info);
+    void addExecution(ExecutionInfo info);
 
   private:
     Executable body;
