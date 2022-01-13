@@ -29,6 +29,8 @@ add_library(mcga_test_obj OBJECT
         ${CMAKE_CURRENT_SOURCE_DIR}/src/extensions/feedback/ext.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/extensions/feedback/test_logger.cpp
 
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/extensions/filter/ext.cpp
+
         ${CMAKE_CURRENT_SOURCE_DIR}/src/extensions/mock/base.cpp)
 target_link_libraries(mcga_test_obj PRIVATE mcga_cli)
 

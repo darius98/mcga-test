@@ -33,7 +33,7 @@ class Executor {
 
     virtual void emitWarning(Warning warning, GroupPtr group);
 
-    String stateAsString() const;
+    std::string stateAsString() const;
 
     void addFailure(Test::ExecutionInfo info);
 

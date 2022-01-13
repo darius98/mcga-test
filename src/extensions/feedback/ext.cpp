@@ -21,26 +21,16 @@ enum PipeMessageType : uint8_t {
     WARNING = 5,
 };
 
-int FeedbackExtension::getReturnCode() const {
-    return exitCode;
-}
-
 void FeedbackExtension::registerCommandLineArgs(Parser* parser) {
     quietFlag = parser->add_flag(
       FlagSpec("quiet")
         .set_help_group("Feedback")
         .set_description("Disable STDOUT logging for this test run")
         .set_short_name("q"));
-    skipIsFail = parser->add_flag(
-      FlagSpec("fail-on-skip")
-        .set_help_group("Feedback")
-        .set_description("Consider skipped tests as failed."));
     printSkipped = parser->add_flag(
       FlagSpec("print-skipped")
         .set_help_group("Feedback")
-        .set_description(
-          "Print the information for skipped tests. "
-          "If --fail-on-skip is used, this is automatically enabled."));
+        .set_description("Print the information for skipped tests."));
     fileNameArgument = parser->add_argument(
       ArgumentSpec("stream-to-file")
         .set_help_group("Feedback")
@@ -70,17 +60,6 @@ void FeedbackExtension::init(ExtensionApi* api) {
     if (socketPathArgument->appeared()) {
         initSocketStream(api, socketPathArgument->get_value());
     }
-    api->addHook<ExtensionApi::AFTER_TEST_EXECUTION>([this](const Test& test) {
-        if (test.isFinished() && !test.isOptional()) {
-            if (test.isFailed()
-                || (test.isSkipped() && skipIsFail->get_value())) {
-                exitCode = 1;
-            }
-        }
-    });
-    api->addHook<ExtensionApi::ON_WARNING>([this](const Warning& warning) {
-        exitCode = 1;
-    });
 }
 
 void FeedbackExtension::addPipeHooks(PipeWriter* pipe, ExtensionApi* api) {
@@ -125,10 +104,8 @@ void FeedbackExtension::addPipeHooks(PipeWriter* pipe, ExtensionApi* api) {
 }
 
 void FeedbackExtension::initLogging(ExtensionApi* api) {
-    logger = make_unique<TestLogger>(std::cout,
-                                     !noLiveLogging->get_value(),
-                                     skipIsFail->get_value()
-                                       || printSkipped->get_value());
+    logger = make_unique<TestLogger>(
+      std::cout, !noLiveLogging->get_value(), printSkipped->get_value());
 
     api->addHook<ExtensionApi::BEFORE_TEST_EXECUTION>([this](const Test& test) {
         logger->onTestExecutionStart(test);
@@ -158,6 +135,42 @@ void FeedbackExtension::initSocketStream(ExtensionApi* api,
     socketWriter
       = std::unique_ptr<PipeWriter>(createLocalClientSocket(socketPath));
     addPipeHooks(socketWriter.get(), api);
+}
+
+int ExitCodeExtension::getExitCode() const {
+    return exitCode;
+}
+
+void ExitCodeExtension::registerCommandLineArgs(cli::Parser* parser) {
+    skipIsFail = parser->add_flag(
+      FlagSpec("fail-on-skip")
+        .set_help_group("Feedback")
+        .set_description("Consider skipped tests as failed."));
+}
+
+void ExitCodeExtension::init(ExtensionApi* api) {
+    api->addHook<ExtensionApi::AFTER_TEST_EXECUTION>([this](const Test& test) {
+        if (test.isFinished() && !test.isOptional()) {
+            if (test.isFailed()
+                || (test.isSkipped() && skipIsFail->get_value())) {
+                exitCode = 1;
+            }
+        }
+        if (test.isFinished() && test.isSkipped()) {
+            skippedAnyTests = true;
+        }
+        if (test.isFinished() && test.isPassed()) {
+            passedAnyTests = true;
+        }
+    });
+    api->addHook<ExtensionApi::ON_WARNING>([this](const Warning& warning) {
+        exitCode = 1;
+    });
+    api->addHook<ExtensionApi::BEFORE_DESTROY>([this] {
+        if (skippedAnyTests && !passedAnyTests) {
+            exitCode = 1;
+        }
+    });
 }
 
 }  // namespace mcga::test

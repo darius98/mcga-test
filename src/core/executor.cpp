@@ -28,7 +28,7 @@ bool Executor::isActive() const {
     return state != INACTIVE;
 }
 
-String Executor::stateAsString() const {
+std::string Executor::stateAsString() const {
     switch (state) {
         case INSIDE_TEST: return "test";
         case INSIDE_SET_UP: return "setUp";

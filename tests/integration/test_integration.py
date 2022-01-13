@@ -43,8 +43,9 @@ class MCGATestIntegrationMixin(unittest.TestCase):
         self._last_test_args = test_args
         self._last_test_output = output
         self.assertEqual(proc.returncode != 0, expect_fail,
-                         "Expected process to exit with code {}, but exited with {} instead.".format(
-                             expect_fail, proc.returncode))
+                         "Expected process to exit with code {}, but exited with {} instead. "
+                         "Output was: \"\"\"{}\"\"\"".format(
+                             1 if expect_fail else 0, proc.returncode, output))
         summary_snippet = "Tests passed: " + str(tests_passed) + "\nTests failed: " + str(
             tests_failed)
         if tests_failed_optional is not None:
@@ -79,12 +80,12 @@ class MCGATestIntegrationMixin(unittest.TestCase):
     def check_warning(self, message_pattern, line=0, notes=None):
         pattern = r"Warning\: " + message_pattern + r"\n"
         if line != 0:
-            pattern += r"\tat (.*)tests/core/integration/emit_warnings\.cpp\:" + str(
+            pattern += r"\tat (.*)tests/integration/emit_warnings\.cpp\:" + str(
                 line) + r"\:[0-9]*\n"
         for note in (notes or []):
             pattern += r"\tNote\: " + note[0]
             if note[1] != 0:
-                pattern += r" at (.*)tests/core/integration/emit_warnings\.cpp\:" + str(
+                pattern += r" at (.*)tests/integration/emit_warnings\.cpp\:" + str(
                     note[1]) + r"\:[0-9]*"
             pattern += r"\n"
         self.check_output(re.compile(pattern))
@@ -194,93 +195,117 @@ class MCGATestIntegrationSmoothTestCase(MCGATestIntegrationMixin):
             self.output_test_pattern("P", "TestCase2::test"),
         ])
 
-    def test_single_test_fail(self):
+    def test_fail(self):
         self.run_test_bin(expect_fail=True, tests_passed=0, tests_failed=1, expect_output_contains=[
             self.output_test_pattern("F", "TestCase::test"),
         ])
 
-    def test_single_test_fail_thread(self):
+    def test_fail_in_thread(self):
         self.run_test_bin(expect_fail=True, tests_passed=0, tests_failed=1, expect_output_contains=[
             self.output_test_pattern("F", "TestCase::test"),
         ])
 
-    def test_single_test_skip(self):
+    def test_skipped_test(self):
         # Skipped tests are not printed by default.
-        self.run_test_bin(tests_passed=0, tests_failed=0, tests_skipped=1,
+        self.run_test_bin(tests_passed=1, tests_failed=0, tests_skipped=1,
+                          expect_output_contains=[
+                              self.output_test_pattern("P", "TestCase::test-1"),
+                          ],
                           expect_output_not_contains=[
-                              "TestCase::test",
+                              "TestCase::test-2",
                               "Skipped at",
                               "skip-this-test",
                           ])
         output_pattern = re.compile(
-            self.output_test_line("S", "TestCase::test") +
-            "Skipped at .*/tests/core/integration/single_test_skip\\.cpp:5:9\n"
+            self.output_test_line("S", "TestCase::test-2") +
+            "Skipped at .*/tests/integration/skipped_test\\.cpp:7:9\n"
             "\tskip-this-test")
-        self.run_test_bin(tests_passed=0, tests_failed=0, tests_skipped=1,
+        self.run_test_bin(tests_passed=1, tests_failed=0, tests_skipped=1,
                           extra_args=["--print-skipped"],
-                          expect_output_contains=output_pattern)
-        self.run_test_bin(tests_passed=0, tests_failed=0, tests_skipped=1,
+                          expect_output_contains=[
+                              self.output_test_pattern("P", "TestCase::test-1"),
+                              output_pattern,
+                          ])
+        self.run_test_bin(tests_passed=1, tests_failed=0, tests_skipped=1,
                           extra_args=["--print-skipped", "--fail-on-skip"], expect_fail=True,
-                          expect_output_contains=output_pattern)
+                          expect_output_contains=[
+                              self.output_test_pattern("P", "TestCase::test-1"),
+                              output_pattern,
+                          ])
 
-    def test_single_test_skip_thread(self):
+    def test_skipped_test_thread(self):
         # Skipped tests are not printed by default.
-        self.run_test_bin(tests_passed=0, tests_failed=0, tests_skipped=1,
+        self.run_test_bin(tests_passed=1, tests_failed=0, tests_skipped=1,
+                          expect_output_contains=[
+                              self.output_test_pattern("P", "TestCase::test-1"),
+                          ],
                           expect_output_not_contains=[
-                              "TestCase::test",
+                              "TestCase::test-2",
                               "Skipped at",
                               "In a different thread",
                           ])
         output_pattern = re.compile(
-            self.output_test_line("S", "TestCase::test") +
-            "Skipped at .*/tests/core/integration/single_test_skip_thread\\.cpp:8:13\n"
+            self.output_test_line("S", "TestCase::test-2") +
+            "Skipped at .*/tests/integration/skipped_test_thread\\.cpp:10:13\n"
             "\tIn a different thread")
-        self.run_test_bin(tests_passed=0, tests_failed=0, tests_skipped=1,
+        self.run_test_bin(tests_passed=1, tests_failed=0, tests_skipped=1,
                           extra_args=["--print-skipped"],
-                          expect_output_contains=output_pattern)
-        self.run_test_bin(tests_passed=0, tests_failed=0, tests_skipped=1,
+                          expect_output_contains=[
+                              self.output_test_pattern("P", "TestCase::test-1"),
+                              output_pattern,
+                          ])
+        self.run_test_bin(tests_passed=1, tests_failed=0, tests_skipped=1,
                           extra_args=["--print-skipped", "--fail-on-skip"], expect_fail=True,
-                          expect_output_contains=output_pattern)
+                          expect_output_contains=[
+                              self.output_test_pattern("P", "TestCase::test-1"),
+                              output_pattern,
+                          ])
 
-    def test_single_test_multiple_executions_fail(self):
+    def test_multiple_executions_fail(self):
         self.run_test_bin(expect_fail=True, timeout=10, tests_passed=0, tests_failed=1,
                           expect_output_contains=[
                               self.output_test_pattern("F", "TestCase::test", approx=True,
                                                        approx_fail=True),
                           ])
 
-    def test_single_test_multiple_executions_pass(self):
+    def test_multiple_executions_pass(self):
         self.run_test_bin(timeout=10, tests_passed=1, tests_failed=0, expect_output_contains=[
             self.output_test_pattern("P", "TestCase::test", approx=True),
         ])
 
-    def test_single_test_multiple_executions_skip(self):
+    def test_multiple_executions_skip(self):
         # Skipped tests are not printed by default.
-        self.run_test_bin(tests_passed=0, tests_failed=0, tests_skipped=1, timeout=10,
+        self.run_test_bin(tests_passed=1, tests_failed=0, tests_skipped=1, timeout=10,
+                          expect_output_contains=[
+                              self.output_test_pattern("P", "TestCase::test-1"),
+                          ],
                           expect_output_not_contains=[
-                              "TestCase::test",
+                              "TestCase::test-2",
                               "Skipped at",
                               "every-time",
                           ])
         output_pattern = re.compile(
-            self.output_test_line("S", "TestCase::test", approx=True, approx_fail=True) +
-            "Skipped at .*/tests/core/integration/single_test_multiple_executions_skip\\.cpp:8:11\n"
+            self.output_test_line("S", "TestCase::test-2", approx=True, approx_fail=True) +
+            "Skipped at .*/tests/integration/multiple_executions_skip\\.cpp:10:26\n"
             "\tevery-time")
-        self.run_test_bin(tests_passed=0, tests_failed=0, tests_skipped=1, timeout=10,
+        self.run_test_bin(tests_passed=1, tests_failed=0, tests_skipped=1, timeout=10,
                           extra_args=["--print-skipped"],
-                          expect_output_contains=output_pattern)
-        self.run_test_bin(tests_passed=0, tests_failed=0, tests_skipped=1, timeout=10,
+                          expect_output_contains=[
+                              self.output_test_pattern("P", "TestCase::test-1"),
+                              output_pattern,
+                          ])
+        self.run_test_bin(tests_passed=1, tests_failed=0, tests_skipped=1, timeout=10,
                           extra_args=["--print-skipped", "--fail-on-skip"], expect_fail=True,
                           expect_output_contains=output_pattern)
 
-    def test_single_test_optional_fail(self):
+    def test_optional_fail(self):
         self.run_test_bin(tests_passed=0, tests_failed=2, tests_failed_optional=2,
                           expect_output_contains=[
                               self.output_test_pattern("F", "TestCase::test"),
                               self.output_test_pattern("F", "TestCase::opt-group::non-opt-test"),
                           ])
 
-    def test_single_test_pass(self):
+    def test_pass(self):
         self.run_test_bin(tests_passed=1, tests_failed=0, expect_output_contains=[
             self.output_test_pattern("P", "TestCase::test"),
         ])
@@ -317,7 +342,7 @@ class MCGATestIntegrationSmoothTestCase(MCGATestIntegrationMixin):
                        "second-tear-down\n"
                        "first-tear-down\n"
                        + self.output_test_line("F", "TestCase::test") +
-                       "Failed at .*tests/core/integration/fail_in_set_up\\.cpp:17:13\n"
+                       "Failed at .*tests/integration/fail_in_set_up\\.cpp:17:13\n"
                        "\tfail-in-second-setup\n")
         ], expect_output_not_contains=[
             "third-set-up",
@@ -338,7 +363,7 @@ class MCGATestIntegrationSmoothTestCase(MCGATestIntegrationMixin):
                        "second-tear-down\n"
                        "first-tear-down\n"
                        + self.output_test_line("F", "TestCase::test") +
-                       "Failed at .*tests/core/integration/fail_in_tear_down\\.cpp:25:13\n"
+                       "Failed at .*tests/integration/fail_in_tear_down\\.cpp:25:13\n"
                        "\tfail-in-third-teardown\n"),
         ])
 
@@ -350,54 +375,62 @@ class MCGATestIntegrationSmoothTestCase(MCGATestIntegrationMixin):
                        "second-tear-down\n"
                        "first-tear-down\n"
                        + self.output_test_line("F", "TestCase::group::test") +
-                       "Failed at .*tests/core/integration/fail_in_cleanup\\.cpp:10:13\n"
+                       "Failed at .*tests/integration/fail_in_cleanup\\.cpp:10:13\n"
                        "\tfail-in-cleanup\n"),
         ])
 
     def test_skip_in_set_up(self):
         # Skipped tests are not printed by default.
-        self.run_test_bin(tests_passed=0, tests_failed=0, tests_skipped=1,
-                          expect_output_contains="set-up\ntear-down\n",
+        self.run_test_bin(tests_passed=1, tests_failed=0, tests_skipped=1,
+                          expect_output_contains=[
+                              self.output_test_pattern("P", "TestCase::test-1"),
+                              "set-up\ntear-down\n",
+                          ],
                           expect_output_not_contains=[
-                              "TestCase::test",
+                              "TestCase::test-2",
                               "Skipped at",
                               "skip-in-set-up",
                               "test-body",
                               "fail-in-test-body",
                           ])
         output_pattern = re.compile(
+            self.output_test_line("P", "TestCase::test-1") +
             "set-up\n"
             "tear-down\n"
-            + self.output_test_line("S", "TestCase::test") +
-            "Skipped at .*/tests/core/integration/skip_in_set_up\\.cpp:8:9\n"
+            + self.output_test_line("S", "TestCase::test-2") +
+            "Skipped at .*/tests/integration/skip_in_set_up\\.cpp:11:13\n"
             "\tskip-in-set-up")
-        self.run_test_bin(tests_passed=0, tests_failed=0, tests_skipped=1,
+        self.run_test_bin(tests_passed=1, tests_failed=0, tests_skipped=1,
                           extra_args=["--print-skipped"],
                           expect_output_contains=output_pattern,
                           expect_output_not_contains=["test-body", "fail-in-test-body"])
-        self.run_test_bin(tests_passed=0, tests_failed=0, tests_skipped=1,
+        self.run_test_bin(tests_passed=1, tests_failed=0, tests_skipped=1,
                           extra_args=["--print-skipped", "--fail-on-skip"], expect_fail=True,
                           expect_output_contains=output_pattern,
                           expect_output_not_contains=["test-body", "fail-in-test-body"])
 
     def test_skip_in_tear_down(self):
         # Skipped tests are not printed by default.
-        self.run_test_bin(tests_passed=0, tests_failed=0, tests_skipped=1,
+        self.run_test_bin(tests_passed=1, tests_failed=0, tests_skipped=1,
+                          expect_output_contains=[
+                              self.output_test_pattern("P", "TestCase::test-1"),
+                          ],
                           expect_output_not_contains=[
-                              "TestCase::test",
+                              "TestCase::test-2",
                               "Skipped at",
                               "skip-in-tear-down",
                               "fail-in-test-body",
                           ])
         output_pattern = re.compile(
-            self.output_test_line("S", "TestCase::test") +
-            "Skipped at .*/tests/core/integration/skip_in_tear_down\\.cpp:7:9\n"
+            self.output_test_line("P", "TestCase::test-1") +
+            self.output_test_line("S", "TestCase::test-2") +
+            "Skipped at .*/tests/integration/skip_in_tear_down\\.cpp:10:13\n"
             "\tskip-in-tear-down")
-        self.run_test_bin(tests_passed=0, tests_failed=0, tests_skipped=1,
+        self.run_test_bin(tests_passed=1, tests_failed=0, tests_skipped=1,
                           extra_args=["--print-skipped"],
                           expect_output_contains=output_pattern,
                           expect_output_not_contains="fail-in-test-body")
-        self.run_test_bin(tests_passed=0, tests_failed=0, tests_skipped=1,
+        self.run_test_bin(tests_passed=1, tests_failed=0, tests_skipped=1,
                           extra_args=["--print-skipped", "--fail-on-skip"], expect_fail=True,
                           expect_output_contains=output_pattern,
                           expect_output_not_contains="fail-in-test-body")
@@ -406,25 +439,25 @@ class MCGATestIntegrationSmoothTestCase(MCGATestIntegrationMixin):
 class MCGATestIntegrationBoxedTestCase(MCGATestIntegrationSmoothTestCase):
     executor_type = "boxed"
 
-    def test_single_test_exit_0(self):
+    def test_exit_0(self):
         self.run_test_bin(expect_fail=True, tests_passed=0, tests_failed=1, expect_output_contains=[
             self.output_test_pattern("F", "TestCase::test"),
             "\tUnexpected 0-code exit.",
         ])
 
-    def test_single_test_exit_1(self):
+    def test_exit_1(self):
         self.run_test_bin(expect_fail=True, tests_passed=0, tests_failed=1, expect_output_contains=[
             self.output_test_pattern("F", "TestCase::test"),
             "\tTest exited with code 1",
         ])
 
-    def test_single_test_kbs(self):
+    def test_kbs(self):
         self.run_test_bin(expect_fail=True, tests_passed=0, tests_failed=1, expect_output_contains=[
             self.output_test_pattern("F", "TestCase::test"),
             "\tTest killed by signal 15",
         ])
 
-    def test_single_test_timeout(self):
+    def test_timeout(self):
         self.run_test_bin(expect_fail=True, timeout=10, tests_passed=0, tests_failed=1,
                           expect_output_contains=[
                               self.output_test_pattern("F", "TestCase::test"),

@@ -108,7 +108,7 @@ bool Driver::checkMainThreadAndInactive(const String& method,
     if (executor->isActive()) {
         emitWarning(Warning(
           "Called " + std::string(method.c_str()) + "() inside a "
-            + std::string(executor->stateAsString().c_str()) + "(), ignoring.",
+            + executor->stateAsString() + "(), ignoring.",
           context));
         return false;
     }

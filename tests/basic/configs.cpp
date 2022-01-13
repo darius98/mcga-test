@@ -1,8 +1,8 @@
 #include <iostream>
 #include <type_traits>
 
-#include "../../../src/core/driver.hpp"
-#include "../../../src/core/scan_executor.hpp"
+#include "core/driver.hpp"
+#include "core/scan_executor.hpp"
 #include "mcga/test.hpp"
 
 using namespace mcga::test;

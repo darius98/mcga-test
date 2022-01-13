@@ -54,7 +54,9 @@ void TestLogger::onTestExecutionFinish(const Test& test) {
 
 void TestLogger::printFinalInformation() {
     clearVolatileLine();
-    stream << "\n";
+    if (loggedTests > 0) {
+        stream << "\n";
+    }
     stream << "Tests passed: " << green << passedTests << reset << "\n";
     stream << "Tests failed: ";
     if (failedTests == 0) {
