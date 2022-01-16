@@ -7,6 +7,7 @@
 #include <cstdlib>
 
 static mcga::test::TestCase* registeredTestCasesListHead = nullptr;
+static mcga::test::TestCase* registeredTestCasesListTail = nullptr;
 
 namespace mcga::test::internal {
 
@@ -22,8 +23,12 @@ MCGA_TEST_EXPORT void delete_str(const char* data) {
 }
 
 MCGA_TEST_EXPORT void register_test_case(TestCase* testCase) noexcept {
-    testCase->next = registeredTestCasesListHead;
-    registeredTestCasesListHead = testCase;
+    if (registeredTestCasesListTail != nullptr) {
+        registeredTestCasesListTail->next = testCase;
+    } else {
+        registeredTestCasesListHead = testCase;
+    }
+    registeredTestCasesListTail = testCase;
 }
 
 MCGA_TEST_EXPORT void register_test(TestConfig config, Executable body) {
@@ -65,14 +70,8 @@ MCGA_TEST_EXPORT void register_cleanup(Executable exec) {
 namespace mcga::test {
 
 // Intentionally not exported, only used internally within the library.
-std::vector<TestCase*> getTestCases() {
-    std::vector<TestCase*> testCasesRegistered;
-    for (auto testCase = registeredTestCasesListHead; testCase != nullptr;
-         testCase = testCase->next) {
-        testCasesRegistered.push_back(testCase);
-    }
-    std::reverse(testCasesRegistered.begin(), testCasesRegistered.end());
-    return testCasesRegistered;
+TestCase* getTestCasesListHead() {
+    return registeredTestCasesListHead;
 }
 
 }  // namespace mcga::test

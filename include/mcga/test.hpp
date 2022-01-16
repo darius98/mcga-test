@@ -44,18 +44,19 @@ class String {
     const char* data;
 
   public:
-    String() noexcept: String("") {
+    constexpr String() noexcept: String("") {
     }
 
-    String(const char* data) noexcept: isOwned(false), data(data) {
-    }
-
-    template<int N>
-    String(char (&data)[N]) noexcept: isOwned(false), data(data) {
+    constexpr String(const char* data) noexcept: isOwned(false), data(data) {
     }
 
     template<int N>
-    String(const char (&data)[N]) noexcept: isOwned(false), data(data) {
+    constexpr String(char (&data)[N]) noexcept: isOwned(false), data(data) {
+    }
+
+    template<int N>
+    constexpr String(const char (&data)[N]) noexcept
+            : isOwned(false), data(data) {
     }
 
     template<internal::std_string_like S>
@@ -63,16 +64,17 @@ class String {
             : isOwned(true), data(internal::duplicate_str(data.data())) {
     }
 
-    String(const String& other)
+    constexpr String(const String& other)
             : isOwned(other.isOwned),
               data(isOwned ? internal::duplicate_str(other.data) : other.data) {
     }
 
-    String(String&& other) noexcept: isOwned(other.isOwned), data(other.data) {
+    constexpr String(String&& other) noexcept
+            : isOwned(other.isOwned), data(other.data) {
         other.isOwned = false;
     }
 
-    String& operator=(const String& other) {
+    constexpr String& operator=(const String& other) {
         if (this != &other) {
             this->~String();
             isOwned = other.isOwned;
@@ -81,7 +83,7 @@ class String {
         return *this;
     }
 
-    String& operator=(String&& other) noexcept {
+    constexpr String& operator=(String&& other) noexcept {
         if (this != &other) {
             this->~String();
             isOwned = other.isOwned;
@@ -91,13 +93,13 @@ class String {
         return *this;
     }
 
-    ~String() {
+    constexpr ~String() {
         if (isOwned) {
             internal::delete_str(data);
         }
     }
 
-    [[nodiscard]] const char* c_str() const noexcept {
+    [[nodiscard]] constexpr const char* c_str() const noexcept {
         return data;
     }
 };
