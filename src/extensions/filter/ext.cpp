@@ -82,7 +82,7 @@ static bool matchLocationFilter(const std::tuple<std::regex, int, int>& filter,
                                 bool exclude,
                                 const mcga::test::Test& test) {
     const auto& [file, line, col] = filter;
-    bool matches = std::regex_search(test.getContext().fileName.c_str(), file);
+    bool matches = std::regex_search(test.getContext().fileName, file);
     if (line != -1) {
         matches &= (line == test.getContext().line);
     }

@@ -51,16 +51,11 @@ class String {
     }
 
     template<int N>
-    constexpr String(char (&data)[N]) noexcept: isOwned(false), data(data) {
-    }
-
-    template<int N>
     constexpr String(const char (&data)[N]) noexcept
             : isOwned(false), data(data) {
     }
 
-    template<internal::std_string_like S>
-    String(const S& data)
+    String(const internal::std_string_like auto& data)
             : isOwned(true), data(internal::duplicate_str(data.data())) {
     }
 
@@ -105,19 +100,19 @@ class String {
 };
 
 struct Context {
-    String verb;
-    String fileName;
-    String functionName;
+    const char* verb;
+    const char* fileName;
+    const char* functionName;
     int line;
     int column;
 
-    explicit Context(String verb = "Failed",
+    explicit Context(const char* verb = "Failed",
                      const char* fileName = __builtin_FILE(),
                      const char* functionName = __builtin_FUNCTION(),
                      int line = __builtin_LINE(),
                      int column = __builtin_COLUMN())
-            : verb(internal::move(verb)), fileName(fileName),
-              functionName(functionName), line(line), column(column) {
+            : verb(verb), fileName(fileName), functionName(functionName),
+              line(line), column(column) {
     }
 };
 
@@ -128,15 +123,14 @@ struct Executable {
     Context context;
 
     template<internal::executable_t Callable>
-    explicit Executable(Callable callable, Context context)
+    Executable(Callable callable, const Context& context)
             : body([](void* d) {
                   (*static_cast<Callable*>(d))();
               }),
               dtor([](void* d) {
                   delete static_cast<Callable*>(d);
               }),
-              data(new Callable(internal::move(callable))),
-              context(internal::move(context)) {
+              data(new Callable(internal::move(callable))), context(context) {
     }
 
     Executable(const Executable&) = delete;
@@ -145,7 +139,7 @@ struct Executable {
 
     Executable(Executable&& other) noexcept
             : body(other.body), dtor(other.dtor), data(other.data),
-              context(internal::move(other.context)) {
+              context(other.context) {
         other.data = nullptr;
     }
 
@@ -155,7 +149,7 @@ struct Executable {
             body = other.body;
             dtor = other.dtor;
             data = other.data;
-            context = internal::move(other.context);
+            context = other.context;
             other.data = nullptr;
         }
         return *this;
@@ -254,98 +248,89 @@ void register_cleanup(Executable exec);
 
 template<bool isOptional>
 struct MultiRunTestApi {
-    template<executable_t Callable>
     void operator()(int numRuns,
                     TestConfig config,
-                    Callable body,
+                    executable_t auto body,
                     Context context = Context()) const {
         config.attempts = numRuns;
         config.requiredPassedAttempts = numRuns;
         config.optional = isOptional;
-        register_test(move(config), Executable(body, move(context)));
+        register_test(move(config), Executable(move(body), context));
     }
 
-    template<executable_t Callable>
     void operator()(int numRuns,
                     String description,
-                    Callable body,
+                    executable_t auto body,
                     Context context = Context()) const {
         (*this)(numRuns,
                 TestConfig{.description = move(description)},
                 move(body),
-                move(context));
+                context);
     }
 
-    template<executable_t Callable>
     void operator()(int numRuns,
-                    Callable body,
+                    executable_t auto body,
                     Context context = Context()) const {
-        (*this)(numRuns, TestConfig{}, move(body), move(context));
+        (*this)(numRuns, TestConfig{}, move(body), context);
     }
 };
 
 template<bool isOptional>
 struct RetryTestApi {
-    template<executable_t Callable>
     void operator()(int attempts,
                     TestConfig config,
-                    Callable body,
+                    executable_t auto body,
                     Context context = Context()) const {
         config.attempts = attempts;
         config.requiredPassedAttempts = 1;
         config.optional = isOptional;
-        register_test(move(config), Executable(move(body), move(context)));
+        register_test(move(config), Executable(move(body), context));
     }
 
-    template<executable_t Callable>
     void operator()(int attempts,
                     String description,
-                    Callable body,
+                    executable_t auto body,
                     Context context = Context()) const {
         register_test(TestConfig{.description = move(description),
                                  .optional = isOptional,
                                  .attempts = attempts,
                                  .requiredPassedAttempts = 1},
-                      Executable(move(body), move(context)));
+                      Executable(move(body), context));
     }
 
-    template<executable_t Callable>
     void operator()(int attempts,
-                    Callable body,
+                    executable_t auto body,
                     Context context = Context()) const {
         register_test(TestConfig{.optional = isOptional,
                                  .attempts = attempts,
                                  .requiredPassedAttempts = 1},
-                      Executable(move(body), move(context)));
+                      Executable(move(body), context));
     }
 };
 
 template<bool isOptional>
 struct OptionalTestApi {
-    template<executable_t Callable>
     void operator()(TestConfig config,
-                    Callable body,
+                    executable_t auto body,
                     Context context = Context()) const {
         config.optional = isOptional;
-        register_test(move(config), Executable(move(body), move(context)));
+        register_test(move(config), Executable(move(body), context));
     }
 
-    template<executable_t Callable>
     void operator()(String description,
-                    Callable body,
+                    executable_t auto body,
                     Context context = Context()) const {
         register_test(
           TestConfig{
             .description = move(description),
             .optional = isOptional,
           },
-          Executable(move(body), move(context)));
+          Executable(move(body), context));
     }
 
-    template<executable_t Callable>
-    void operator()(Callable body, Context context = Context()) const {
+    void operator()(executable_t auto body, Context context = Context()) const {
         register_test(TestConfig{.optional = isOptional},
-                      Executable(move(body), move(context)));
+                      Executable(move(body), context));
     }
 
     [[no_unique_address]] MultiRunTestApi<isOptional> multiRun;
@@ -358,26 +343,23 @@ struct TestApi : public OptionalTestApi<false> {
 
 template<bool isOptional>
 struct OptionalGroupApi {
-    template<executable_t Callable>
     void operator()(GroupConfig config,
-                    Callable body,
+                    internal::executable_t auto body,
                     Context context = Context()) const {
         config.optional = isOptional;
-        register_group(move(config), Executable(move(body), move(context)));
+        register_group(move(config), Executable(move(body), context));
     }
 
-    template<executable_t Callable>
     void operator()(String description,
-                    Callable body,
+                    internal::executable_t auto body,
                     Context context = Context()) const {
-        (*this)(GroupConfig{.description = move(description)},
-                move(body),
-                move(context));
+        (*this)(
+          GroupConfig{.description = move(description)}, move(body), context);
     }
 
-    template<executable_t Callable>
-    void operator()(Callable body, Context context = Context()) const {
-        (*this)(GroupConfig(), move(body), move(context));
+    void operator()(internal::executable_t auto body,
+                    Context context = Context()) const {
+        (*this)(GroupConfig(), move(body), context);
     }
 };
 
@@ -390,22 +372,20 @@ struct GroupApi : public OptionalGroupApi<false> {
 struct TestCase {
     TestCase* next = nullptr;
 
-    String name;
+    const char* name;
     void (*body)() = nullptr;
     Context context;
 
-    explicit TestCase(String name, Context context = Context()) noexcept
-            : name(internal::move(name)), body(nullptr),
-              context(internal::move(context)) {
+    explicit TestCase(const char* name, Context context = Context()) noexcept
+            : name(name), body(nullptr), context(context) {
     }
 
     explicit TestCase(Context context = Context()) noexcept
-            : name(""), body(nullptr), context(internal::move(context)) {
+            : name(""), body(nullptr), context(context) {
     }
 
     TestCase(TestCase&& other) noexcept
-            : name(internal::move(other.name)), body(other.body),
-              context(internal::move(other.context)) {
+            : name(other.name), body(other.body), context(other.context) {
         internal::register_test_case(this);
     }
     TestCase(const TestCase&) = delete;
@@ -414,45 +394,37 @@ struct TestCase {
 
     TestCase&& operator+(void (*body_)()) && noexcept {
         body = body_;
-        return internal::move(*this);
+        return static_cast<TestCase&&>(*this);
     }
 };
 
 inline constexpr internal::TestApi test;
 inline constexpr internal::GroupApi group;
 
-template<internal::executable_t Callable>
-void setUp(Callable func, Context context = Context()) {
-    internal::register_set_up(
-      Executable(internal::move(func), internal::move(context)));
+void setUp(internal::executable_t auto func, Context context = Context()) {
+    internal::register_set_up(Executable(internal::move(func), context));
 }
 
-template<internal::executable_t Callable>
-void cleanup(Callable func, Context context = Context()) {
-    internal::register_cleanup(
-      Executable(internal::move(func), internal::move(context)));
+void cleanup(internal::executable_t auto func, Context context = Context()) {
+    internal::register_cleanup(Executable(internal::move(func), context));
 }
 
-template<internal::executable_t Callable>
-void tearDown(Callable func, Context context = Context()) {
-    internal::register_tear_down(
-      Executable(internal::move(func), internal::move(context)));
+void tearDown(internal::executable_t auto func, Context context = Context()) {
+    internal::register_tear_down(Executable(internal::move(func), context));
 }
 
 inline void fail(String message = String(), Context context = Context()) {
-    internal::register_failure(internal::move(message),
-                               internal::move(context));
+    internal::register_failure(internal::move(message), context);
 }
 
 inline void skip(String message = String(),
                  Context context = Context("Skipped")) {
-    internal::register_skip(internal::move(message), internal::move(context));
+    internal::register_skip(internal::move(message), context);
 }
 
-inline void expect(bool expr, Context context = Context()) {
+inline void expect(bool expr, Context context = Context("Expectation failed")) {
     if (!expr) {
-        context.verb = "Expectation failed";
-        fail("", internal::move(context));
+        fail("", context);
     }
 }
 
