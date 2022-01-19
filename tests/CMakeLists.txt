@@ -28,7 +28,7 @@ endfunction()
 function(add_basic_test TEST_NAME)
     set(BASIC_TEST mcga_test_basic_${TEST_NAME})
     add_executable(${BASIC_TEST} ${ARGN})
-    target_link_libraries(${BASIC_TEST} PUBLIC mcga_test_static)
+    target_link_libraries(${BASIC_TEST} PUBLIC mcga_test)
     add_dependencies(mcga_test_check ${BASIC_TEST})
 
     add_test(NAME ${BASIC_TEST} COMMAND ${BASIC_TEST})

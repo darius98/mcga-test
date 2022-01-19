@@ -23,21 +23,19 @@ class Driver {
 
     MCGA_DISALLOW_COPY_AND_MOVE(Driver);
 
-    ~Driver() = default;
-
     [[nodiscard]] Executor::Type getExecutorType() const;
 
-    virtual void addGroup(GroupConfig config, Executable body);
+    void addGroup(GroupConfig config, Executable body);
 
-    virtual void addTest(TestConfig config, Executable body);
+    void addTest(TestConfig config, Executable body);
 
-    virtual void addSetUp(Executable setUp);
+    void addSetUp(Executable setUp);
 
-    virtual void addTearDown(Executable tearDown);
+    void addTearDown(Executable tearDown);
 
-    virtual void addFailure(Test::ExecutionInfo info);
+    void addFailure(Test::ExecutionInfo info);
 
-    virtual void addCleanup(Executable cleanup);
+    void addCleanup(Executable cleanup);
 
   private:
     void emitWarning(Warning warning);
