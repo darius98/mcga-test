@@ -3,8 +3,8 @@
 #include "driver.hpp"
 #include "export.hpp"
 
-#include <cstring>
 #include <cstdlib>
+#include <cstring>
 
 static mcga::test::TestCase* registeredTestCasesListHead = nullptr;
 static mcga::test::TestCase* registeredTestCasesListTail = nullptr;
@@ -51,14 +51,14 @@ MCGA_TEST_EXPORT void register_failure(String message, Context context) {
     Driver::Instance()->addFailure(
       Test::ExecutionInfo{.status = Test::ExecutionInfo::FAILED,
                           .message = std::move(message),
-                          .context = std::move(context)});
+                          .context = context});
 }
 
 MCGA_TEST_EXPORT void register_skip(String message, Context context) {
     Driver::Instance()->addFailure(
       Test::ExecutionInfo{.status = Test::ExecutionInfo::SKIPPED,
                           .message = std::move(message),
-                          .context = std::move(context)});
+                          .context = context});
 }
 
 MCGA_TEST_EXPORT void register_cleanup(Executable exec) {

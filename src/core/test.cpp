@@ -10,7 +10,7 @@ void Test::ExecutionInfo::fail(const String& failureMessage,
     if (isPassed()) {
         status = FAILED;
         message = failureMessage;
-        context = std::move(failureContext);
+        context = failureContext;
     }
 }
 
@@ -18,7 +18,7 @@ void Test::ExecutionInfo::merge(ExecutionInfo&& other) {
     if (isPassed() || (status != SKIPPED && other.status == SKIPPED)) {
         status = other.status;
         message = std::move(other.message);
-        context = std::move(other.context);
+        context = other.context;
         return;
     }
 }
@@ -38,13 +38,13 @@ const String& Test::getDescription() const {
 
 std::string Test::getFullDescription() const {
     std::vector<std::string> groupDescriptions;
-    GroupPtr group = getGroup();
-    while (group != nullptr) {
-        std::string groupDescription = group->getDescription().c_str();
+    GroupPtr parent = getGroup();
+    while (parent != nullptr) {
+        std::string groupDescription = parent->getDescription().c_str();
         if (!groupDescription.empty()) {
             groupDescriptions.push_back(groupDescription);
         }
-        group = group->getParentGroup();
+        parent = parent->getParentGroup();
     }
     std::string groupDescription
       = std::accumulate(groupDescriptions.rbegin(),

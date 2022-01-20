@@ -33,7 +33,7 @@ class FeedbackExtension : public Extension {
 
 class ExitCodeExtension : public Extension {
   public:
-    int getExitCode() const;
+    [[nodiscard]] int getExitCode() const;
 
     void registerCommandLineArgs(cli::Parser* parser) override;
 

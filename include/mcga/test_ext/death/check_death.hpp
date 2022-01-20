@@ -19,7 +19,7 @@ DeathStatus checkDeath(Callable func,
                        double timeTicksLimit = 1,
                        Context context = Context()) {
     int exitCode, exitSignal;
-    internal::check_death(Executable(std::move(func), std::move(context)),
+    internal::check_death(Executable(std::move(func), context),
                           timeTicksLimit,
                           &exitCode,
                           &exitSignal);

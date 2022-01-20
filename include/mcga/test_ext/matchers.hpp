@@ -18,12 +18,12 @@ void expect(const T& obj, M matcher, Context context = Context()) {
     description.appendRawString("'\nWhich is ");
     matcher.describeFailure(&description);
     context.verb = "Expectation failed";
-    fail(description.toString(), std::move(context));
+    fail(description.toString(), context);
 }
 
 template<class T, matchers::EqualityMatchableFor<T> Val>
 void expect(const T& obj, Val expected, Context context = Context()) {
-    expect(obj, matchers::isEqualTo(expected), std::move(context));
+    expect(obj, matchers::isEqualTo(expected), context);
 }
 
 }  // namespace mcga::test

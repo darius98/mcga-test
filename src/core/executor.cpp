@@ -41,7 +41,7 @@ void Executor::finalize() {
 }
 
 void Executor::addFailure(Test::ExecutionInfo info) {
-    // We only kill the thread on failure if we are in the main testing thread
+    // We only kill the thread on failure if we are in the main testing thread,
     // and we know we catch this exception.
     if (current_thread_id() == currentExecutionThreadId) {
         // TODO: Abort when exceptions are disabled (in non-smooth execution,

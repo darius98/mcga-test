@@ -53,8 +53,7 @@ class ExtensionApi {
                std::vector<TestHook>,
                std::vector<WarningHook>,
                std::vector<TestExecutionHook>,
-               std::vector<TestHook>,
-               std::vector<GlobalHook>>
+               std::vector<TestHook>>
       hooks;
 
     friend class Executor;

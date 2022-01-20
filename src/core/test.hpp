@@ -54,7 +54,7 @@ class Test : private TestConfig {
          * Note: if the execution is already failed, does nothing. */
         void merge(ExecutionInfo&& other);
 
-        bool isPassed() const;
+        [[nodiscard]] bool isPassed() const;
     };
 
     /** Default constructor from a TestConfig and the metadata received from the
@@ -70,84 +70,84 @@ class Test : private TestConfig {
     ~Test() = default;
 
     /** See TestConfig#description. */
-    const String& getDescription() const;
+    [[nodiscard]] const String& getDescription() const;
 
-    std::string getFullDescription() const;
+    [[nodiscard]] std::string getFullDescription() const;
 
     /** See TestConfig#sourceLocation. */
-    const Context& getContext() const;
+    [[nodiscard]] const Context& getContext() const;
 
     /** See TestConfig#optional. */
-    bool isOptional() const;
+    [[nodiscard]] bool isOptional() const;
 
     /** See TestConfig#timeTicksLimit. */
-    double getTimeTicksLimit() const;
+    [[nodiscard]] double getTimeTicksLimit() const;
 
     /** See TestConfig#attempts. */
-    std::size_t getNumAttempts() const;
+    [[nodiscard]] std::size_t getNumAttempts() const;
 
     /** See TestConfig#numRequiredPassedAttempts. */
-    std::size_t getNumRequiredPassedAttempts() const;
+    [[nodiscard]] std::size_t getNumRequiredPassedAttempts() const;
 
     /** The group that contains this test. */
-    GroupPtr getGroup() const;
+    [[nodiscard]] GroupPtr getGroup() const;
 
     /** The groups, in order from the global scope to the nearest, that
      * contain this test. */
-    std::vector<GroupPtr> getGroupStack() const;
+    [[nodiscard]] std::vector<GroupPtr> getGroupStack() const;
 
     /** Globally unique, incremental identifier of the test. */
-    int getId() const;
+    [[nodiscard]] int getId() const;
 
     /** Execute the test body.
      *
      * Should only be called by Executor and its sub-/helper-classes, after
      * running all required set-ups and before all required tear-downs.
      */
-    const Executable& getBody() const;
+    [[nodiscard]] const Executable& getBody() const;
 
     /** Check whether the number of executions registered is the same as
      * getNumAttempts(). */
-    bool isFinished() const;
+    [[nodiscard]] bool isFinished() const;
 
     /** Check whether the execution info marks the test as passed. */
-    bool isPassed() const;
+    [[nodiscard]] bool isPassed() const;
 
     /** Check whether the execution info marks the test as skipped. For a test
      * to be considered skipped, all executions must be marked as passed or
      * skipped. */
-    bool isSkipped() const;
+    [[nodiscard]] bool isSkipped() const;
 
     /** Check whether the execution info marks the test as passed or failed. A
      * test is failed if it's neither passed nor skipped (at least one execution
      * is failed). */
-    bool isFailed() const;
+    [[nodiscard]] bool isFailed() const;
 
     /** The number of attempts passed. */
-    std::size_t getNumPassedAttempts() const;
+    [[nodiscard]] std::size_t getNumPassedAttempts() const;
 
     /** The number of attempts skipped. */
-    std::size_t getNumSkippedAttempts() const;
+    [[nodiscard]] std::size_t getNumSkippedAttempts() const;
 
     /** The average number of time ticks per execution (only counting executions
      * where the number of time ticks is computable).
      *
      * Note: If the time is not computable for any execution, returns -1. */
-    double getAvgTimeTicksForExecution() const;
+    [[nodiscard]] double getAvgTimeTicksForExecution() const;
 
     /** The total number of time ticks used (only counting executions where the
      * number of time ticks is computable).
      *
      * Note: If the time is not computable for any execution, returns -1. */
-    double getTotalTimeTicks() const;
+    [[nodiscard]] double getTotalTimeTicks() const;
 
     /** Get the error message for the last failed execution, or empty string if
      * all executions passed. */
-    std::optional<Test::ExecutionInfo>
+    [[nodiscard]] std::optional<Test::ExecutionInfo>
       getLastExecutionWithStatus(ExecutionInfo::Status status) const;
 
     /** Get the array of executions. */
-    const std::vector<ExecutionInfo>& getExecutions() const;
+    [[nodiscard]] const std::vector<ExecutionInfo>& getExecutions() const;
 
     /** Add an execution to the test. */
     void addExecution(ExecutionInfo info);

@@ -11,7 +11,7 @@ class FilterExtension : public Extension {
     void init(ExtensionApi* api) override;
 
   private:
-    bool shouldSkipTest(const Test& test) const;
+    [[nodiscard]] bool shouldSkipTest(const Test& test) const;
 
     std::vector<std::function<bool(const Test&)>> filters;
 

@@ -6,27 +6,28 @@ namespace mcga::test {
 
 class DeathStatus {
   public:
-    DeathStatus() = default;
-    DeathStatus(int exitCode, int signal): exitCode(exitCode), signal(signal) {
+    constexpr DeathStatus() = default;
+    constexpr DeathStatus(int exitCode, int signal)
+            : exitCode(exitCode), signal(signal) {
     }
 
-    bool exitedOrKilled() const {
+    [[nodiscard]] constexpr bool exitedOrKilled() const {
         return exitCode >= 0 || killedBySignal();
     }
 
-    bool exited() const {
+    [[nodiscard]] constexpr bool exited() const {
         return exitCode >= 0 && !killedBySignal();
     }
 
-    bool killedBySignal() const {
+    [[nodiscard]] constexpr bool killedBySignal() const {
         return signal > 0;
     }
 
-    int getExitCode() const {
+    [[nodiscard]] constexpr int getExitCode() const {
         return exitCode;
     }
 
-    int getSignal() const {
+    [[nodiscard]] constexpr int getSignal() const {
         return signal;
     }
 
