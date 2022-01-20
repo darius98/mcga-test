@@ -17,15 +17,13 @@ class Executor {
         BOXED,
     };
 
-    explicit Executor(ExtensionApi* api);
-
     MCGA_DISALLOW_COPY_AND_MOVE(Executor);
 
     virtual ~Executor() = default;
 
-    bool isActive() const;
+    [[nodiscard]] bool isActive() const;
 
-    virtual Type getType() const;
+    [[nodiscard]] Type getType() const;
 
     virtual void execute(Test test);
 
@@ -33,7 +31,7 @@ class Executor {
 
     virtual void emitWarning(Warning warning, GroupPtr group);
 
-    std::string stateAsString() const;
+    [[nodiscard]] std::string stateAsString() const;
 
     void addFailure(Test::ExecutionInfo info);
 
@@ -45,19 +43,17 @@ class Executor {
     void runJob(const Executable& job, Test::ExecutionInfo* execution);
 
   protected:
+    Executor(ExtensionApi* api, Type type);
+
     void decorateWarningWithCurrentTestNotes(Warning& warning, GroupPtr group);
 
     void addHooksExecutions(Test& test);
 
     void onWarning(Warning warning, GroupPtr group);
-    void onGroupDiscovered(const GroupPtr& group);
-    void onTestDiscovered(const Test& test);
-    [[nodiscard]] std::optional<Test::ExecutionInfo>
-      onTestExecutionStart(const Test& test);
-    void onTestExecutionFinish(const Test& test);
 
     ExtensionApi* api;
 
+    const Type type;
     const Executable* currentSetUp = nullptr;
     const Executable* currentTearDown = nullptr;
     const Executable* currentCleanup = nullptr;
@@ -73,6 +69,11 @@ class Executor {
     Test::ExecutionInfo currentExecution;
 
     std::vector<Executable> currentExecutionCleanups;
+};
+
+class SmoothExecutor: public Executor {
+  public:
+    explicit SmoothExecutor(ExtensionApi* api);
 };
 
 }  // namespace mcga::test

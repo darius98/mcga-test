@@ -13,6 +13,8 @@ class FeedbackExtension : public Extension {
 
     void init(ExtensionApi* api) override;
 
+    void destroy() override;
+
   private:
     static void addPipeHooks(proc::PipeWriter* pipe, ExtensionApi* api);
 
@@ -36,6 +38,8 @@ class ExitCodeExtension : public Extension {
     void registerCommandLineArgs(cli::Parser* parser) override;
 
     void init(ExtensionApi* api) override;
+
+    void destroy() override;
 
   private:
     int exitCode = 0;

@@ -19,11 +19,12 @@ class Driver {
 
     static void Clean();
 
-    explicit Driver(Executor* executor);
-
+    Driver() = default;
     MCGA_DISALLOW_COPY_AND_MOVE(Driver);
 
     [[nodiscard]] Executor::Type getExecutorType() const;
+
+    void setExecutor(Executor* executor);
 
     void addGroup(GroupConfig config, Executable body);
 
@@ -43,7 +44,7 @@ class Driver {
     bool checkMainThreadAndInactive(const String& method,
                                     const Context& context);
 
-    Executor* executor;
+    Executor* executor = nullptr;
 
     std::size_t testingThreadId = current_thread_id();
     std::vector<GroupPtr> groupStack = {};

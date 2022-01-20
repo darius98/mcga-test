@@ -21,7 +21,7 @@ class Interrupt : public std::exception {
     }
 };
 
-Executor::Executor(ExtensionApi* api): api(api) {
+Executor::Executor(ExtensionApi* api, Type type): api(api), type(type) {
 }
 
 bool Executor::isActive() const {
@@ -38,7 +38,6 @@ std::string Executor::stateAsString() const {
 }
 
 void Executor::finalize() {
-    api->runHooks<ExtensionApi::BEFORE_DESTROY>();
 }
 
 void Executor::addFailure(Test::ExecutionInfo info) {
@@ -68,12 +67,12 @@ void Executor::execute(Test test) {
             break;
         }
         test.addExecution(run(test));
-        onTestExecutionFinish(test);
+        api->runHooks<ExtensionApi::AFTER_TEST_EXECUTION>(test);
     }
 }
 
 Executor::Type Executor::getType() const {
-    return SMOOTH;
+    return type;
 }
 
 Test::ExecutionInfo Executor::run(const Test& test) {
@@ -181,35 +180,19 @@ void Executor::decorateWarningWithCurrentTestNotes(Warning& warning,
 
 void Executor::addHooksExecutions(Test& test) {
     while (true) {
-        auto execution = onTestExecutionStart(test);
+        std::optional<Test::ExecutionInfo> execution;
+        api->runHooks<ExtensionApi::BEFORE_TEST_EXECUTION>(test, execution);
         if (!execution.has_value()) {
             break;
         }
         test.addExecution(*std::move(execution));
-        onTestExecutionFinish(test);
+        api->runHooks<ExtensionApi::AFTER_TEST_EXECUTION>(test);
         if (test.isFinished()) {
             break;
         }
     }
 }
 
-void Executor::onGroupDiscovered(const GroupPtr& group) {
-    api->runHooks<ExtensionApi::ON_GROUP_DISCOVERED>(group);
-}
-
-void Executor::onTestDiscovered(const Test& test) {
-    api->runHooks<ExtensionApi::ON_TEST_DISCOVERED>(test);
-}
-
-std::optional<Test::ExecutionInfo>
-  Executor::onTestExecutionStart(const Test& test) {
-    std::optional<Test::ExecutionInfo> info;
-    api->runHooks<ExtensionApi::BEFORE_TEST_EXECUTION>(test, info);
-    return info;
-}
-
-void Executor::onTestExecutionFinish(const Test& test) {
-    api->runHooks<ExtensionApi::AFTER_TEST_EXECUTION>(test);
-}
+SmoothExecutor::SmoothExecutor(ExtensionApi* api): Executor(api, SMOOTH) {}
 
 }  // namespace mcga::test

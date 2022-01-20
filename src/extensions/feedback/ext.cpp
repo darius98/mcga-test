@@ -53,6 +53,15 @@ void FeedbackExtension::init(ExtensionApi* api) {
     }
 }
 
+void FeedbackExtension::destroy() {
+    if (logger != nullptr) {
+        logger->printFinalInformation();
+    }
+    if (socketWriter != nullptr) {
+        socketWriter->sendMessage(PipeMessageType::DONE);
+    }
+}
+
 void FeedbackExtension::addPipeHooks(PipeWriter* pipe, ExtensionApi* api) {
     api->addHook<ExtensionApi::ON_GROUP_DISCOVERED>([pipe](GroupPtr group) {
         pipe->sendMessage(PipeMessageType::GROUP_DISCOVERED,
@@ -87,10 +96,6 @@ void FeedbackExtension::addPipeHooks(PipeWriter* pipe, ExtensionApi* api) {
                           test.getExecutions().back().context);
     });
 
-    api->addHook<ExtensionApi::BEFORE_DESTROY>([pipe]() {
-        pipe->sendMessage(PipeMessageType::DONE);
-    });
-
     api->addHook<ExtensionApi::ON_WARNING>([pipe](const Warning& warning) {
         pipe->sendMessage(PipeMessageType::WARNING, warning);
     });
@@ -107,10 +112,6 @@ void FeedbackExtension::initLogging(ExtensionApi* api) {
 
     api->addHook<ExtensionApi::AFTER_TEST_EXECUTION>([this](const Test& test) {
         logger->onTestExecutionFinish(test);
-    });
-
-    api->addHook<ExtensionApi::BEFORE_DESTROY>([this]() {
-        logger->printFinalInformation();
     });
 
     api->addHook<ExtensionApi::ON_WARNING>([this](const Warning& warning) {
@@ -154,11 +155,12 @@ void ExitCodeExtension::init(ExtensionApi* api) {
     api->addHook<ExtensionApi::ON_WARNING>([this](const Warning& warning) {
         exitCode = 1;
     });
-    api->addHook<ExtensionApi::BEFORE_DESTROY>([this] {
-        if (skippedAnyTests && !passedAnyTests) {
-            exitCode = 1;
-        }
-    });
+}
+
+void ExitCodeExtension::destroy() {
+    if (skippedAnyTests && !passedAnyTests) {
+        exitCode = 1;
+    }
 }
 
 }  // namespace mcga::test

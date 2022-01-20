@@ -28,8 +28,6 @@ class BoxExecutor : public Executor {
 
     void emitWarning(Warning warning, GroupPtr group) override;
 
-    Type getType() const override;
-
   private:
     void executeBoxed(const Test& test, std::unique_ptr<proc::PipeWriter> pipe);
 

@@ -23,10 +23,8 @@ class ExtensionApi {
         ON_GROUP_DISCOVERED = 0,
         ON_TEST_DISCOVERED = 1,
         ON_WARNING = 2,
-        // These two are always called in the orchestrator process.
         BEFORE_TEST_EXECUTION = 3,
         AFTER_TEST_EXECUTION = 4,
-        BEFORE_DESTROY = 5,
     };
 
     ExtensionApi() = default;
@@ -60,6 +58,8 @@ class ExtensionApi {
       hooks;
 
     friend class Executor;
+    friend class BoxExecutor;
+    friend class ScanExecutor;
 };
 
 }  // namespace mcga::test

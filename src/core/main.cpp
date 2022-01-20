@@ -12,12 +12,25 @@ using mcga::cli::Parser;
 
 namespace mcga::test {
 
-void runTestsOnExecutor(Executor* executor, TestCase* testCasesListHead) {
-    Driver driver(executor);
-    Driver::Init(&driver);
+static void runExecutor(Driver* driver, TestCase* testCasesListHead) {
     for (TestCase* t = testCasesListHead; t != nullptr; t = t->next) {
-        driver.addGroup(GroupConfig{.description = t->name},
-                        Executable(t->body, t->context));
+        driver->addGroup(GroupConfig{.description = t->name},
+                         Executable(t->body, t->context));
+    }
+}
+
+static void runTestsOnExecutor(Executor* scanner,
+                               Executor* runner,
+                               TestCase* testCasesListHead,
+                               int testRepeatMultiplier) {
+    Driver driver;
+    Driver::Init(&driver);
+    for (int i = 0; i < testRepeatMultiplier; i++) {
+        driver.setExecutor(scanner);
+        runExecutor(&driver, testCasesListHead);
+        driver.setExecutor(runner);
+        runExecutor(&driver, testCasesListHead);
+        driver.setExecutor(nullptr);
     }
     Driver::Clean();
 }
@@ -51,6 +64,10 @@ void runTests(int argc,
           },
           "Number of CPUs ("
             + std::to_string(std::thread::hardware_concurrency()) + ")"));
+    auto testRepeatMultiplierArg = parser.add_numeric_argument<int>(
+      NumericArgumentSpec("repeat")
+        .set_description("Repeat the tests multiple times.")
+        .set_default_value("1"));
 
     for (Extension* extension: extensions) {
         extension->registerCommandLineArgs(&parser);
@@ -58,24 +75,27 @@ void runTests(int argc,
 
     parser.parse(argc, argv);
 
+    const auto testRepeatMultiplier = testRepeatMultiplierArg->get_value();
+
     ExtensionApi api;
     for (Extension* extension: extensions) {
         extension->init(&api);
     }
 
     ScanExecutor scanner(&api);
-    runTestsOnExecutor(&scanner, testCasesListHead);
 
     switch (executorTypeArg->get_value()) {
         case Executor::SMOOTH: {
-            Executor executor(&api);
-            runTestsOnExecutor(&executor, testCasesListHead);
+            SmoothExecutor executor(&api);
+            runTestsOnExecutor(
+              &scanner, &executor, testCasesListHead, testRepeatMultiplier);
             break;
         }
         case Executor::BOXED: {
             auto numBoxes = std::max(maxParallelTestsArg->get_value(), 1ul);
             BoxExecutor executor(&api, numBoxes);
-            runTestsOnExecutor(&executor, testCasesListHead);
+            runTestsOnExecutor(
+              &scanner, &executor, testCasesListHead, testRepeatMultiplier);
             break;
         }
         default: {

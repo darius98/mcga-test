@@ -14,15 +14,18 @@ void Driver::Init(Driver* _instance) {
 }
 
 void Driver::Clean() {
-    instance->executor->finalize();
     instance = nullptr;
-}
-
-Driver::Driver(Executor* executor): executor(executor) {
 }
 
 Executor::Type Driver::getExecutorType() const {
     return executor->getType();
+}
+
+void Driver::setExecutor(Executor* executor_) {
+    if (executor != nullptr) {
+        executor->finalize();
+    }
+    executor = executor_;
 }
 
 void Driver::addGroup(GroupConfig config, Executable body) {
@@ -33,7 +36,7 @@ void Driver::addGroup(GroupConfig config, Executable body) {
     ++currentGroupId;
     GroupPtr parentGroup = groupStack.empty() ? nullptr : groupStack.back();
     GroupPtr group = make_shared<Group>(
-      std::move(config), std::move(body.context), parentGroup, currentGroupId);
+      std::move(config), body.context, parentGroup, currentGroupId);
 
     groupStack.push_back(group);
     try {
@@ -79,12 +82,10 @@ void Driver::addTearDown(Executable tearDown) {
 
 void Driver::addFailure(Test::ExecutionInfo info) {
     if (!executor->isActive()) {
-        emitWarning(
-          Warning("Called "
-                    + std::string(
-                      info.status == Test::ExecutionInfo::FAILED ? "fail" : "skip")
-                    + "() outside a test, ignoring.",
-                  std::move(info.context)));
+        emitWarning(Warning(info.status == Test::ExecutionInfo::FAILED
+                              ? "Called fail() outside a test, ignoring."
+                              : "Called skip() outside a test, ignoring.",
+                            info.context));
         return;
     }
     executor->addFailure(std::move(info));
@@ -93,7 +94,7 @@ void Driver::addFailure(Test::ExecutionInfo info) {
 void Driver::addCleanup(Executable cleanup) {
     if (!executor->isActive()) {
         emitWarning(Warning("Called cleanup() outside a test, ignoring.",
-                            std::move(cleanup.context)));
+                            cleanup.context));
         return;
     }
     executor->addCleanup(std::move(cleanup));
@@ -106,10 +107,10 @@ void Driver::emitWarning(Warning warning) {
 bool Driver::checkMainThreadAndInactive(const String& method,
                                         const Context& context) {
     if (executor->isActive()) {
-        emitWarning(Warning(
-          "Called " + std::string(method.c_str()) + "() inside a "
-            + executor->stateAsString() + "(), ignoring.",
-          context));
+        emitWarning(Warning("Called " + std::string(method.c_str())
+                              + "() inside a " + executor->stateAsString()
+                              + "(), ignoring.",
+                            context));
         return false;
     }
     if (testingThreadId != current_thread_id()) {

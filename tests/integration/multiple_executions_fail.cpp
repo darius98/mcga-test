@@ -5,7 +5,7 @@
 auto testCase = mcga::test::TestCase{"TestCase"} + [] {
     mcga::test::test(
       mcga::test::TestConfig{
-        .description = "test", .attempts = 100, .requiredPassedAttempts = 50},
+        .description = "test", .attempts = 10, .requiredPassedAttempts = 5},
       [] {
           std::random_device device;
           std::default_random_engine engine(device());

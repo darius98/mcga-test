@@ -18,7 +18,7 @@ enum PipeMessageType : char {
 };
 
 BoxExecutor::BoxExecutor(ExtensionApi* api, size_t numBoxes)
-        : Executor(api), numBoxes(numBoxes) {
+        : Executor(api, BOXED), numBoxes(numBoxes) {
 }
 
 void BoxExecutor::execute(Test test) {
@@ -32,11 +32,6 @@ void BoxExecutor::execute(Test test) {
 
 void BoxExecutor::finalize() {
     ensureEmptyBoxes(numBoxes);
-    Executor::finalize();
-}
-
-Executor::Type BoxExecutor::getType() const {
-    return BOXED;
 }
 
 void BoxExecutor::emitWarning(Warning warning, GroupPtr group) {
@@ -105,7 +100,7 @@ bool BoxExecutor::tryCloseBox(Box* box) {
         }
     }
     test.addExecution(info);
-    onTestExecutionFinish(test);
+    api->runHooks<ExtensionApi::AFTER_TEST_EXECUTION>(test);
     if (!test.isFinished()) {
         addHooksExecutions(test);
         if (!test.isFinished()) {

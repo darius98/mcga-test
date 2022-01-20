@@ -102,8 +102,7 @@ void TestLogger::printWarning(const Warning& warning) {
 
 void TestLogger::clearVolatileLine() {
     if (isLastLineVolatile) {
-        stream << "\r";
-        stream.flush();
+        stream << "\r\033[K" << std::flush;
     }
     isLastLineVolatile = false;
 }

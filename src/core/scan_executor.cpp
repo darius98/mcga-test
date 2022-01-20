@@ -2,7 +2,7 @@
 
 namespace mcga::test {
 
-ScanExecutor::ScanExecutor(ExtensionApi* api): Executor(api) {
+ScanExecutor::ScanExecutor(ExtensionApi* api): Executor(api, SCAN) {
 }
 
 void ScanExecutor::execute(Test test) {
@@ -11,17 +11,9 @@ void ScanExecutor::execute(Test test) {
             continue;
         }
         discoveredGroups.insert(group->getId());
-        onGroupDiscovered(group);
+        api->runHooks<ExtensionApi::ON_GROUP_DISCOVERED>(group);
     }
-    onTestDiscovered(test);
-}
-
-Executor::Type ScanExecutor::getType() const {
-    return SCAN;
-}
-
-void ScanExecutor::finalize() {
-    // Intentionally don't run destroy hooks for this executor.
+    api->runHooks<ExtensionApi::ON_TEST_DISCOVERED>(test);
 }
 
 }  // namespace mcga::test

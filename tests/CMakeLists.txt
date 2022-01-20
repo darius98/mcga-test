@@ -50,7 +50,6 @@ add_integration_test(fail_in_thread integration/fail_in_thread.cpp)
 add_integration_test(skipped_test integration/skipped_test.cpp)
 add_integration_test(skipped_test_thread integration/skipped_test_thread.cpp)
 add_integration_test(single_file_multiple_cases integration/multiple_test_cases.cpp)
-add_integration_test(multiple_files integration/multiple_files_1.cpp integration/multiple_files_2.cpp)
 add_integration_test(multiple_tests_one_fails integration/multiple_tests_one_fails.cpp)
 add_integration_test(emit_warnings integration/emit_warnings.cpp)
 add_integration_test(set_up_tear_down_order integration/set_up_tear_down_order.cpp)
@@ -59,6 +58,18 @@ add_integration_test(fail_in_tear_down integration/fail_in_tear_down.cpp)
 add_integration_test(fail_in_cleanup integration/fail_in_cleanup.cpp)
 add_integration_test(skip_in_set_up integration/skip_in_set_up.cpp)
 add_integration_test(skip_in_tear_down integration/skip_in_tear_down.cpp)
+add_integration_test(empty integration/empty.cpp)
+
+add_library(mcga_test_integration_multiple_files_lib_1 OBJECT integration/multiple_files.cpp)
+target_compile_definitions(mcga_test_integration_multiple_files_lib_1 PRIVATE MCGA_TEST_INTEGRATION_MULTIPLE_FILES=1)
+add_library(mcga_test_integration_multiple_files_lib_2 OBJECT integration/multiple_files.cpp)
+target_compile_definitions(mcga_test_integration_multiple_files_lib_2 PRIVATE MCGA_TEST_INTEGRATION_MULTIPLE_FILES=2)
+add_library(mcga_test_integration_multiple_files_lib_3 OBJECT integration/multiple_files.cpp)
+target_compile_definitions(mcga_test_integration_multiple_files_lib_3 PRIVATE MCGA_TEST_INTEGRATION_MULTIPLE_FILES=3)
+add_integration_test(multiple_files
+        $<TARGET_OBJECTS:mcga_test_integration_multiple_files_lib_1>
+        $<TARGET_OBJECTS:mcga_test_integration_multiple_files_lib_2>
+        $<TARGET_OBJECTS:mcga_test_integration_multiple_files_lib_3>)
 
 add_test(NAME mcga_test_integration_tests
         COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/integration/test_integration.py

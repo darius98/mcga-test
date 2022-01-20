@@ -17,10 +17,6 @@ class ScanExecutor : public Executor {
 
     void execute(Test test) override;
 
-    [[nodiscard]] Type getType() const override;
-
-    void finalize() override;
-
   private:
     std::set<int> discoveredGroups;
 };
