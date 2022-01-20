@@ -269,6 +269,6 @@ struct LibCMocks {
     // clang-format on
 };
 
-extern LibCMocks libc;
+extern constinit LibCMocks libc;
 
 }  // namespace mcga::test

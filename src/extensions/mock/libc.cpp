@@ -4,7 +4,7 @@
 
 namespace mcga::test {
 
-MCGA_TEST_EXPORT LibCMocks libc;
+MCGA_TEST_EXPORT constinit LibCMocks libc;
 
 }  // namespace mcga::test
 
