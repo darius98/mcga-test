@@ -240,132 +240,9 @@ void register_set_up(Executable body);
 
 void register_tear_down(Executable body);
 
-void register_failure(String message, Context context);
-
-void register_skip(String message, Context context);
+void register_interrupt(bool isFail, String message, Context context);
 
 void register_cleanup(Executable exec);
-
-template<bool isOptional>
-struct MultiRunTestApi {
-    void operator()(int numRuns,
-                    TestConfig config,
-                    executable_t auto body,
-                    Context context = Context()) const {
-        config.attempts = numRuns;
-        config.requiredPassedAttempts = numRuns;
-        config.optional = isOptional;
-        register_test(move(config), Executable(move(body), context));
-    }
-
-    void operator()(int numRuns,
-                    String description,
-                    executable_t auto body,
-                    Context context = Context()) const {
-        (*this)(numRuns,
-                TestConfig{.description = move(description)},
-                move(body),
-                context);
-    }
-
-    void operator()(int numRuns,
-                    executable_t auto body,
-                    Context context = Context()) const {
-        (*this)(numRuns, TestConfig{}, move(body), context);
-    }
-};
-
-template<bool isOptional>
-struct RetryTestApi {
-    void operator()(int attempts,
-                    TestConfig config,
-                    executable_t auto body,
-                    Context context = Context()) const {
-        config.attempts = attempts;
-        config.requiredPassedAttempts = 1;
-        config.optional = isOptional;
-        register_test(move(config), Executable(move(body), context));
-    }
-
-    void operator()(int attempts,
-                    String description,
-                    executable_t auto body,
-                    Context context = Context()) const {
-        register_test(TestConfig{.description = move(description),
-                                 .optional = isOptional,
-                                 .attempts = attempts,
-                                 .requiredPassedAttempts = 1},
-                      Executable(move(body), context));
-    }
-
-    void operator()(int attempts,
-                    executable_t auto body,
-                    Context context = Context()) const {
-        register_test(TestConfig{.optional = isOptional,
-                                 .attempts = attempts,
-                                 .requiredPassedAttempts = 1},
-                      Executable(move(body), context));
-    }
-};
-
-template<bool isOptional>
-struct OptionalTestApi {
-    void operator()(TestConfig config,
-                    executable_t auto body,
-                    Context context = Context()) const {
-        config.optional = isOptional;
-        register_test(move(config), Executable(move(body), context));
-    }
-
-    void operator()(String description,
-                    executable_t auto body,
-                    Context context = Context()) const {
-        register_test(
-          TestConfig{
-            .description = move(description),
-            .optional = isOptional,
-          },
-          Executable(move(body), context));
-    }
-
-    void operator()(executable_t auto body, Context context = Context()) const {
-        register_test(TestConfig{.optional = isOptional},
-                      Executable(move(body), context));
-    }
-
-    [[no_unique_address]] MultiRunTestApi<isOptional> multiRun;
-    [[no_unique_address]] RetryTestApi<isOptional> retry;
-};
-
-struct TestApi : public OptionalTestApi<false> {
-    [[no_unique_address]] OptionalTestApi<true> optional;
-};
-
-template<bool isOptional>
-struct OptionalGroupApi {
-    void operator()(GroupConfig config,
-                    internal::executable_t auto body,
-                    Context context = Context()) const {
-        config.optional = isOptional;
-        register_group(move(config), Executable(move(body), context));
-    }
-
-    void operator()(String description,
-                    internal::executable_t auto body,
-                    Context context = Context()) const {
-        (*this)(
-          GroupConfig{.description = move(description)}, move(body), context);
-    }
-
-    void operator()(internal::executable_t auto body,
-                    Context context = Context()) const {
-        (*this)(GroupConfig(), move(body), context);
-    }
-};
-
-struct GroupApi : public OptionalGroupApi<false> {
-    [[no_unique_address]] OptionalGroupApi<true> optional;
-};
 
 }  // namespace internal
 
@@ -398,8 +275,41 @@ struct TestCase {
     }
 };
 
-inline constexpr internal::TestApi test;
-inline constexpr internal::GroupApi group;
+void group(internal::executable_t auto body, Context context = Context()) {
+    internal::register_group({}, Executable(internal::move(body), context));
+}
+
+void group(String description,
+           internal::executable_t auto body,
+           Context context = Context()) {
+    internal::register_group({.description = internal::move(description)},
+                             Executable(internal::move(body), context));
+}
+
+void group(GroupConfig config,
+           internal::executable_t auto body,
+           Context context = Context()) {
+    internal::register_group(internal::move(config),
+                             Executable(internal::move(body), context));
+}
+
+void test(internal::executable_t auto body, Context context = Context()) {
+    internal::register_test({}, Executable(internal::move(body), context));
+}
+
+void test(String description,
+          internal::executable_t auto body,
+          Context context = Context()) {
+    internal::register_test({.description = internal::move(description)},
+                            Executable(internal::move(body), context));
+}
+
+void test(TestConfig config,
+          internal::executable_t auto body,
+          Context context = Context()) {
+    internal::register_test(internal::move(config),
+                            Executable(internal::move(body), context));
+}
 
 void setUp(internal::executable_t auto func, Context context = Context()) {
     internal::register_set_up(Executable(internal::move(func), context));
@@ -414,12 +324,12 @@ void tearDown(internal::executable_t auto func, Context context = Context()) {
 }
 
 inline void fail(String message = String(), Context context = Context()) {
-    internal::register_failure(internal::move(message), context);
+    internal::register_interrupt(true, internal::move(message), context);
 }
 
 inline void skip(String message = String(),
                  Context context = Context("Skipped")) {
-    internal::register_skip(internal::move(message), context);
+    internal::register_interrupt(false, internal::move(message), context);
 }
 
 inline void expect(bool expr, Context context = Context("Expectation failed")) {

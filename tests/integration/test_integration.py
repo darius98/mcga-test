@@ -249,7 +249,7 @@ class MCGATestIntegrationSmoothTestCase(MCGATestIntegrationMixin):
             expect_fail=True, timeout=10, tests_passed=0, tests_failed=1,
             output=[
                 self.output_test_line("F", "TestCase::test", approx=True, approx_fail=True),
-                "Failed at .*tests/integration/multiple_executions_fail\\.cpp:13:15",
+                "Failed at .*tests/integration/multiple_executions_fail\\.cpp:11:15",
                 "\tGot 0\\.",
             ])
 
@@ -264,7 +264,7 @@ class MCGATestIntegrationSmoothTestCase(MCGATestIntegrationMixin):
         expected_output = [
             self.output_test_line("P", "TestCase::test-1"),
             self.output_test_line("S", "TestCase::test-2", approx=True, approx_fail=True),
-            "Skipped at .*/tests/integration/multiple_executions_skip\\.cpp:10:26",
+            "Skipped at .*/tests/integration/multiple_executions_skip\\.cpp:9:11",
             "\tevery-time",
         ]
         self.run_test(tests_passed=1, tests_failed=0, tests_skipped=1, output=expected_output,

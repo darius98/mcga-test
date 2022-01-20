@@ -25,17 +25,6 @@ function(add_integration_test TEST_NAME)
     add_dependencies(mcga_test_check mcga_test_integration_${TEST_NAME})
 endfunction()
 
-function(add_basic_test TEST_NAME)
-    set(BASIC_TEST mcga_test_basic_${TEST_NAME})
-    add_executable(${BASIC_TEST} ${ARGN})
-    target_link_libraries(${BASIC_TEST} PUBLIC mcga_test)
-    add_dependencies(mcga_test_check ${BASIC_TEST})
-
-    add_test(NAME ${BASIC_TEST} COMMAND ${BASIC_TEST})
-endfunction()
-
-add_basic_test(core_configs basic/configs.cpp)
-
 add_integration_test(pass integration/pass.cpp)
 add_integration_test(fail integration/fail.cpp)
 add_integration_test(optional_fail integration/optional_fail.cpp)
