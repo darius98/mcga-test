@@ -7,7 +7,11 @@ set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 
 option(MCGA_test_tests "Build MCGA Test tests" OFF)
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src ${CMAKE_CURRENT_SOURCE_DIR}/include)
+if (NOT TARGET mcga_cli)
+    include(FetchContent)
+    FetchContent_Declare(mcga_cli URL https://github.com/darius98/mcga_cli/archive/refs/heads/master.zip)
+    FetchContent_MakeAvailable(mcga_cli)
+endif ()
 
 add_library(mcga_test_obj OBJECT
         ${CMAKE_CURRENT_SOURCE_DIR}/src/entry_point.cpp
@@ -33,14 +37,20 @@ add_library(mcga_test_obj OBJECT
 
         ${CMAKE_CURRENT_SOURCE_DIR}/src/extensions/mock/base.cpp)
 target_link_libraries(mcga_test_obj PRIVATE mcga_cli)
+target_include_directories(mcga_test_obj
+        PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src
+        PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 add_library(mcga_test SHARED $<TARGET_OBJECTS:mcga_test_obj>)
-target_link_libraries(mcga_test PRIVATE mcga_cli)
+target_link_libraries(mcga_test PRIVATE mcga_cli PUBLIC mcga_test_obj)
 
 add_library(mcga_test_static STATIC $<TARGET_OBJECTS:mcga_test_obj>)
-target_link_libraries(mcga_test_static PRIVATE mcga_cli)
+target_link_libraries(mcga_test_static PRIVATE mcga_cli PUBLIC mcga_test_obj)
 
 add_library(mcga_mock STATIC ${CMAKE_CURRENT_SOURCE_DIR}/src/extensions/mock/libc.cpp)
+target_include_directories(mcga_mock
+        PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src
+        PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 install(TARGETS mcga_test DESTINATION lib)
 install(TARGETS mcga_test_static DESTINATION lib)

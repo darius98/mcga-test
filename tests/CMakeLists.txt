@@ -1,5 +1,4 @@
 add_custom_target(mcga_test_check COMMAND ${CMAKE_CTEST_COMMAND})
-message(STATUS "${CMAKE_CTEST_COMMAND}")
 
 include(FindThreads)
 
