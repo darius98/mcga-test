@@ -93,22 +93,26 @@ class FunctionMock<R(Args...)> : public BaseFunctionMock<R(Args...)> {
     using F = typename BaseFunctionMock<R(Args...)>::F;
 
     const char* symbol;
-    F* original = nullptr;
+    F* original_ = nullptr;
 
   public:
     explicit constexpr FunctionMock(const char* symbol) noexcept
             : symbol(symbol) {
     }
 
+    F* original() {
+        if (original_ == nullptr) {
+            original_
+              = reinterpret_cast<F*>(internal::find_next_symbol(symbol));
+        }
+        return original_;
+    }
+
     R invoke(Args... args) {
         if (this->replacement != nullptr) {
             return this->replacement(this->replacementData, args...);
         } else {
-            if (original == nullptr) {
-                original
-                  = reinterpret_cast<F*>(internal::find_next_symbol(symbol));
-            }
-            return original(args...);
+            return original()(args...);
         }
     }
 };
