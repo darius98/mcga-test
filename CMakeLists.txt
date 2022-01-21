@@ -12,6 +12,11 @@ if (NOT TARGET mcga_cli)
     FetchContent_Declare(mcga_cli URL https://github.com/darius98/mcga-cli/archive/refs/heads/master.zip)
     FetchContent_MakeAvailable(mcga_cli)
 endif ()
+if (NOT TARGET mcga_proc)
+    include(FetchContent)
+    FetchContent_Declare(mcga_proc URL https://github.com/darius98/mcga-proc/archive/refs/heads/master.zip)
+    FetchContent_MakeAvailable(mcga_proc)
+endif ()
 
 add_library(mcga_test_obj OBJECT
         ${CMAKE_CURRENT_SOURCE_DIR}/src/entry_point.cpp
@@ -36,16 +41,16 @@ add_library(mcga_test_obj OBJECT
         ${CMAKE_CURRENT_SOURCE_DIR}/src/extensions/filter/ext.cpp
 
         ${CMAKE_CURRENT_SOURCE_DIR}/src/extensions/mock/base.cpp)
-target_link_libraries(mcga_test_obj PRIVATE mcga_cli)
+target_link_libraries(mcga_test_obj PRIVATE mcga_cli PRIVATE mcga_proc)
 target_include_directories(mcga_test_obj
         PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src
         PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 add_library(mcga_test SHARED $<TARGET_OBJECTS:mcga_test_obj>)
-target_link_libraries(mcga_test PRIVATE mcga_cli PUBLIC mcga_test_obj)
+target_link_libraries(mcga_test PUBLIC mcga_test_obj)
 
 add_library(mcga_test_static STATIC $<TARGET_OBJECTS:mcga_test_obj>)
-target_link_libraries(mcga_test_static PRIVATE mcga_cli PUBLIC mcga_test_obj)
+target_link_libraries(mcga_test_static PUBLIC mcga_test_obj)
 
 add_library(mcga_mock STATIC ${CMAKE_CURRENT_SOURCE_DIR}/src/extensions/mock/libc.cpp)
 target_include_directories(mcga_mock
