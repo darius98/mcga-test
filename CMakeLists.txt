@@ -9,7 +9,7 @@ option(MCGA_test_tests "Build MCGA Test tests" OFF)
 
 if (NOT TARGET mcga_cli)
     include(FetchContent)
-    FetchContent_Declare(mcga_cli URL https://github.com/darius98/mcga_cli/archive/refs/heads/master.zip)
+    FetchContent_Declare(mcga_cli URL https://github.com/darius98/mcga-cli/archive/refs/heads/master.zip)
     FetchContent_MakeAvailable(mcga_cli)
 endif ()
 
