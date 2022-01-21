@@ -38,9 +38,7 @@ add_library(mcga_test_obj OBJECT
         ${CMAKE_CURRENT_SOURCE_DIR}/src/extensions/feedback/ext.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/extensions/feedback/test_logger.cpp
 
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/extensions/filter/ext.cpp
-
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/extensions/mock/base.cpp)
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/extensions/filter/ext.cpp)
 target_link_libraries(mcga_test_obj PRIVATE mcga_cli PRIVATE mcga_proc)
 target_include_directories(mcga_test_obj
         PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src
@@ -52,7 +50,9 @@ target_link_libraries(mcga_test PUBLIC mcga_test_obj)
 add_library(mcga_test_static STATIC $<TARGET_OBJECTS:mcga_test_obj>)
 target_link_libraries(mcga_test_static PUBLIC mcga_test_obj)
 
-add_library(mcga_mock STATIC ${CMAKE_CURRENT_SOURCE_DIR}/src/extensions/mock/libc.cpp)
+add_library(mcga_mock SHARED
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/extensions/mock/base.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/extensions/mock/libc.cpp)
 target_include_directories(mcga_mock
         PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src
         PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
