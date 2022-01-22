@@ -135,6 +135,12 @@ void ExitCodeExtension::registerCommandLineArgs(cli::Parser* parser) {
       FlagSpec("fail-on-skip")
         .set_help_group("Feedback")
         .set_description("Consider skipped tests as failed."));
+    ignoreWarnings = parser->add_flag(
+      FlagSpec("ignore-warnings")
+        .set_help_group("Feedback")
+        .set_description(
+          "When this flag is set, a test run where all tests pass, but "
+          "warnings were generated will exit with code 0 instead of 1."));
 }
 
 void ExitCodeExtension::init(ExtensionApi* api) {
@@ -152,9 +158,11 @@ void ExitCodeExtension::init(ExtensionApi* api) {
             passedAnyTests = true;
         }
     });
-    api->addHook<ExtensionApi::ON_WARNING>([this](const Warning& warning) {
-        exitCode = 1;
-    });
+    if (!ignoreWarnings->get_value()) {
+        api->addHook<ExtensionApi::ON_WARNING>([this](const Warning& warning) {
+            exitCode = 1;
+        });
+    }
 }
 
 void ExitCodeExtension::destroy() {

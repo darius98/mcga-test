@@ -47,6 +47,7 @@ class ExitCodeExtension : public Extension {
     bool passedAnyTests = false;
 
     cli::Flag skipIsFail;
+    cli::Flag ignoreWarnings;
 };
 
 }  // namespace mcga::test

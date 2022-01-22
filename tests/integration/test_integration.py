@@ -177,6 +177,16 @@ class MCGATestIntegrationSmoothTestCase(MCGATestIntegrationMixin):
             91,
             [group_test_case_note])
 
+        # Doesn't fail with --ignore-warnings enabled
+        self.run_test(tests_passed=1, tests_failed=0, extra_args=["--ignore-warnings"],
+                      expect_output_not_contains=[
+                          "test-in-setUp",
+                          "test-in-test",
+                          "test-in-tearDown",
+                          "test-in-thread",
+                          "test-in-group-in-thread",
+                      ])
+
     def test_multiple_files(self):
         self.run_test(tests_passed=3, tests_failed=0, output=[
             self.output_test_line("P", "TestCase1::test"),
