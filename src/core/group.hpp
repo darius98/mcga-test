@@ -1,6 +1,5 @@
 #pragma once
 
-#include <memory>
 #include <vector>
 
 #include "mcga/test.hpp"
@@ -24,11 +23,33 @@ class Group : private GroupConfig {
   public:
     /** The pointer type that should be passed around when working with a
      * Group. */
-    using Ptr = std::shared_ptr<Group>;
+    class Ptr {
+        Group* raw = nullptr;
 
-    /** Default constructor from the upgraded GroupConfig and extra metadata
-     * received from the testing Driver. Very similar to Test#Test().*/
-    Group(GroupConfig config, Context context, Ptr parentGroup, int id);
+        explicit Ptr(Group* group);
+
+      public:
+        explicit Ptr();
+        Ptr(std::nullptr_t) noexcept {}
+        Ptr(const Ptr& other) noexcept;
+        Ptr(Ptr&& other) noexcept;
+        Ptr& operator=(const Ptr& other) noexcept;
+        Ptr& operator=(Ptr&& other) noexcept;
+        ~Ptr();
+
+        Group* operator->() noexcept;
+        const Group* operator->() const noexcept;
+        Group& operator*() noexcept;
+        const Group& operator*() const noexcept;
+
+        bool operator==(std::nullptr_t) const noexcept;
+        bool operator!=(std::nullptr_t) const noexcept;
+
+        friend class Group;
+    };
+
+    static Ptr
+      make(GroupConfig config, Context context, Ptr parentGroup, int id);
 
     /** See GroupConfig#description. */
     [[nodiscard]] const String& getDescription() const;
@@ -45,6 +66,8 @@ class Group : private GroupConfig {
     /** Pointer to the Group that contains this, or `nullptr` if the current
      * group represents a TestCase. */
     [[nodiscard]] Ptr getParentGroup() const;
+
+    [[nodiscard]] bool hasParentGroup() const;
 
     /** Add a set-up function to this group.
      *
@@ -81,12 +104,22 @@ class Group : private GroupConfig {
     }
 
   private:
+    int refCount = 0;
     Ptr parentGroup;
     int id;
 
     Context context;
     std::vector<Executable> setUpFuncs;
     std::vector<Executable> tearDownFuncs;
+
+    /** Default constructor from the upgraded GroupConfig and extra metadata
+     * received from the testing Driver. Very similar to Test#Test().*/
+    Group(GroupConfig config, Context context, Ptr parentGroup, int id);
+
+    void increment();
+    void decrement();
+
+    friend class Group::Ptr;
 };
 
 using GroupPtr = Group::Ptr;

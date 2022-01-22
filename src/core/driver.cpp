@@ -35,7 +35,7 @@ void Driver::addGroup(GroupConfig config, Executable body) {
 
     ++currentGroupId;
     GroupPtr parentGroup = groupStack.empty() ? nullptr : groupStack.back();
-    GroupPtr group = make_shared<Group>(
+    GroupPtr group = Group::make(
       std::move(config), body.context, parentGroup, currentGroupId);
 
     groupStack.push_back(group);
