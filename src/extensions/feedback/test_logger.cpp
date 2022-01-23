@@ -6,6 +6,7 @@
 #include "color.hpp"
 
 #include "core/time_tick.hpp"
+#include "extensions/filter/test_description.hpp"
 
 namespace mcga::test {
 
@@ -164,7 +165,7 @@ void TestLogger::printTestMessage(const Test& test) {
     clearVolatileLine();
 
     printTestStatus(test);
-    stream << " " << test.getFullDescription() << " - ";
+    stream << " " << getTestFullDescription(test) << " - ";
     printTestExecutionTime(test);
     if (test.getNumAttempts() > 1) {
         stream << ' ';
@@ -185,7 +186,7 @@ void TestLogger::updateVolatileLine(const Test& test) {
     clearVolatileLine();
     if (runningTests.size() == 1 && *runningTests.begin() == test.getId()) {
         stream << "[" << yellow << "." << reset << "] "
-               << test.getFullDescription();
+               << getTestFullDescription(test);
         if (test.getNumAttempts() > 1) {
             stream << " - running attempt " << test.getNumExecutedAttempts() + 1
                    << " of " << test.getNumAttempts() << ", passed "

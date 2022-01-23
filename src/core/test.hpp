@@ -1,7 +1,6 @@
 #pragma once
 
 #include <optional>
-#include <string>
 
 #include "group.hpp"
 #include "mcga/test.hpp"
@@ -70,8 +69,6 @@ class Test : private TestConfig {
 
     /** See TestConfig#description. */
     [[nodiscard]] const String& getDescription() const;
-
-    [[nodiscard]] std::string getFullDescription() const;
 
     /** See TestConfig#sourceLocation. */
     [[nodiscard]] const Context& getContext() const;

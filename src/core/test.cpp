@@ -37,29 +37,6 @@ const String& Test::getDescription() const {
     return description;
 }
 
-std::string Test::getFullDescription() const {
-    std::vector<std::string> groupDescriptions;
-    GroupPtr parent = getGroup();
-    while (parent != nullptr) {
-        std::string groupDescription = parent->getDescription().c_str();
-        if (!groupDescription.empty()) {
-            groupDescriptions.push_back(groupDescription);
-        }
-        parent = parent->getParentGroup();
-    }
-    std::string groupDescription
-      = std::accumulate(groupDescriptions.rbegin(),
-                        groupDescriptions.rend(),
-                        std::string(""),
-                        [](const std::string& a, const std::string& b) {
-                            return a.empty() ? b : (a + "::" + b);
-                        });
-    if (!groupDescription.empty()) {
-        groupDescription += "::";
-    }
-    return groupDescription + getDescription().c_str();
-}
-
 const Context& Test::getContext() const {
     return body.context;
 }

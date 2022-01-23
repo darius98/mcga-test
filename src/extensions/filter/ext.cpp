@@ -1,5 +1,7 @@
 #include "ext.hpp"
 
+#include "test_description.hpp"
+
 #include <charconv>
 
 static bool needs_regex_escape(char ch) {
@@ -74,7 +76,7 @@ static std::tuple<std::regex, int, int>
 static bool matchDescriptionFilter(const std::regex& filter,
                                    bool exclude,
                                    const mcga::test::Test& test) {
-    return std::regex_search(test.getFullDescription(), filter) == exclude;
+    return std::regex_search(getTestFullDescription(test), filter) == exclude;
 }
 
 // Returns whether the test should be skipped.
