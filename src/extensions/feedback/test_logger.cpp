@@ -170,14 +170,8 @@ void TestLogger::printTestMessage(const Test& test) {
         stream << ' ';
         printTestAttemptsInfo(test);
     }
-    std::optional<Test::ExecutionInfo> execution;
-    if (test.isFailed()) {
-        execution
-          = test.getLastExecutionWithStatus(Test::ExecutionInfo::FAILED);
-    } else {
-        execution
-          = test.getLastExecutionWithStatus(Test::ExecutionInfo::SKIPPED);
-    }
+    const auto& execution = test.isFailed() ? test.getLastFailedExecution()
+                                            : test.getLastSkippedExecution();
     if (execution.has_value()) {
         printTestFailure(execution.value());
     }

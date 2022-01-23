@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <numeric>
+#include <vector>
 
 namespace mcga::test {
 
@@ -92,7 +93,7 @@ const Executable& Test::getBody() const {
 }
 
 bool Test::isFinished() const {
-    return executions.size() == attempts;
+    return getNumExecutedAttempts() == attempts;
 }
 
 bool Test::isPassed() const {
@@ -110,7 +111,7 @@ bool Test::isFailed() const {
 }
 
 size_t Test::getNumExecutedAttempts() const {
-    return executions.size();
+    return numExecutedAttempts;
 }
 
 size_t Test::getNumPassedAttempts() const {
@@ -122,57 +123,49 @@ size_t Test::getNumSkippedAttempts() const {
 }
 
 double Test::getAvgTimeTicksForExecution() const {
-    int numCountedExecutions = 0;
-    double total = 0;
-    for (const auto& info: executions) {
-        if (info.timeTicks != -1) {
-            total += info.timeTicks;
-            numCountedExecutions += 1;
-        }
+    if (numTimedExecutions == 0) {
+        return -1;
     }
-    if (numCountedExecutions > 0) {
-        return total / numCountedExecutions;
-    }
-    return -1;
+    return trackedExecutionTimeTicks / numTimedExecutions;
 }
 
 double Test::getTotalTimeTicks() const {
-    int numCountedExecutions = 0;
-    double totalTimeTicks = 0;
-    for (const auto& info: executions) {
-        if (info.timeTicks != -1) {
-            totalTimeTicks += info.timeTicks;
-            numCountedExecutions += 1;
-        }
+    if (numTimedExecutions == 0) {
+        return -1;
     }
-    if (numCountedExecutions == 0) {
-        totalTimeTicks = -1;
-    }
-    return totalTimeTicks;
+    return trackedExecutionTimeTicks;
 }
 
 const Test::ExecutionInfo& Test::getLastExecution() const {
-    return executions.back();
+    return lastExecution;
 }
 
-std::optional<Test::ExecutionInfo>
-  Test::getLastExecutionWithStatus(ExecutionInfo::Status status) const {
-    for (auto it = executions.rbegin(); it != executions.rend(); ++it) {
-        if (it->status == status) {
-            return *it;
-        }
-    }
-    return std::nullopt;
+const std::optional<Test::ExecutionInfo>& Test::getLastFailedExecution() const {
+    return lastFailedExecution;
+}
+
+const std::optional<Test::ExecutionInfo>&
+  Test::getLastSkippedExecution() const {
+    return lastSkippedExecution;
 }
 
 void Test::addExecution(ExecutionInfo info) {
     if (info.status == ExecutionInfo::PASSED) {
         numPassedExecutions += 1;
     }
+    if (info.status == ExecutionInfo::FAILED) {
+        lastFailedExecution = info;
+    }
     if (info.status == ExecutionInfo::SKIPPED) {
         numSkippedExecutions += 1;
+        lastSkippedExecution = info;
     }
-    executions.push_back(std::move(info));
+    numExecutedAttempts += 1;
+    if (info.timeTicks != -1) {
+        numTimedExecutions += 1;
+        trackedExecutionTimeTicks += info.timeTicks;
+    }
+    lastExecution = std::move(info);
 }
 
 }  // namespace mcga::test

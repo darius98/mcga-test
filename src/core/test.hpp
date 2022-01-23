@@ -2,7 +2,6 @@
 
 #include <optional>
 #include <string>
-#include <vector>
 
 #include "group.hpp"
 #include "mcga/test.hpp"
@@ -142,10 +141,11 @@ class Test : private TestConfig {
 
     [[nodiscard]] const ExecutionInfo& getLastExecution() const;
 
-    /** Get the error message for the last failed execution, or empty string if
-     * all executions passed. */
-    [[nodiscard]] std::optional<Test::ExecutionInfo>
-      getLastExecutionWithStatus(ExecutionInfo::Status status) const;
+    [[nodiscard]] const std::optional<Test::ExecutionInfo>&
+      getLastFailedExecution() const;
+
+    [[nodiscard]] const std::optional<Test::ExecutionInfo>&
+      getLastSkippedExecution() const;
 
     /** Add an execution to the test. */
     void addExecution(ExecutionInfo info);
@@ -155,9 +155,14 @@ class Test : private TestConfig {
     GroupPtr group;
     int id;
 
-    std::vector<ExecutionInfo> executions;
+    int numExecutedAttempts = 0;
     int numPassedExecutions = 0;
     int numSkippedExecutions = 0;
+    int numTimedExecutions = 0;
+    double trackedExecutionTimeTicks = 0;
+    ExecutionInfo lastExecution;
+    std::optional<Test::ExecutionInfo> lastFailedExecution = std::nullopt;
+    std::optional<Test::ExecutionInfo> lastSkippedExecution = std::nullopt;
 };
 
 }  // namespace mcga::test
