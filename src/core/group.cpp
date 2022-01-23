@@ -1,16 +1,28 @@
 #include "group.hpp"
+#include "memory.hpp"
+
+#include <new>
 
 namespace mcga::test {
 
 Group::Ptr::Ptr(Group* group): raw(group) {
-    raw->increment();
+    raw->refCount++;
+}
+
+void Group::Ptr::del() {
+    if (raw != nullptr) {
+        if (--raw->refCount == 0) {
+            raw->~Group();
+            deallocate_group(raw);
+        }
+    }
 }
 
 Group::Ptr::Ptr() = default;
 
 Group::Ptr::Ptr(const Ptr& other) noexcept: raw(other.raw) {
     if (raw != nullptr) {
-        raw->increment();
+        raw->refCount++;
     }
 }
 
@@ -20,12 +32,10 @@ Group::Ptr::Ptr(Ptr&& other) noexcept: raw(other.raw) {
 
 Group::Ptr& Group::Ptr::operator=(const Ptr& other) noexcept {
     if (this != &other) {
-        if (raw != nullptr) {
-            raw->decrement();
-        }
+        del();
         raw = other.raw;
         if (raw != nullptr) {
-            raw->increment();
+            raw->refCount++;
         }
     }
     return *this;
@@ -33,9 +43,7 @@ Group::Ptr& Group::Ptr::operator=(const Ptr& other) noexcept {
 
 Group::Ptr& Group::Ptr::operator=(Ptr&& other) noexcept {
     if (this != &other) {
-        if (raw != nullptr) {
-            raw->decrement();
-        }
+        del();
         raw = other.raw;
         other.raw = nullptr;
     }
@@ -43,9 +51,7 @@ Group::Ptr& Group::Ptr::operator=(Ptr&& other) noexcept {
 }
 
 Group::Ptr::~Ptr() {
-    if (raw != nullptr) {
-        raw->decrement();
-    }
+    del();
 }
 
 Group* Group::Ptr::operator->() noexcept {
@@ -74,7 +80,10 @@ bool Group::Ptr::operator!=(std::nullptr_t) const noexcept {
 
 Group::Ptr
   Group::make(GroupConfig config, Context context, Ptr parentGroup, int id) {
-    return Ptr(new Group(std::move(config), context, std::move(parentGroup), id));
+    const auto storage = allocate_group();
+    const auto group = new (storage)
+      Group(std::move(config), context, std::move(parentGroup), id);
+    return Ptr(group);
 }
 
 Group::Group(GroupConfig config, Context context, Ptr parentGroup, int id)
@@ -121,17 +130,7 @@ void Group::addSetUp(Executable func) {
 }
 
 void Group::addTearDown(Executable func) {
-    tearDownFuncs.push_back(std::move(func));
-}
-
-void Group::increment() {
-    refCount++;
-}
-
-void Group::decrement() {
-    if (--refCount == 0) {
-        delete this;
-    }
+    tearDownsFuncs.push_front(std::move(func));
 }
 
 }  // namespace mcga::test

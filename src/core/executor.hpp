@@ -68,7 +68,7 @@ class Executor {
     std::mutex currentExecutionStatusMutex;
     Test::ExecutionInfo currentExecution;
 
-    std::vector<Executable> currentExecutionCleanups;
+    CallbackList currentExecutionCleanups;
 };
 
 class SmoothExecutor: public Executor {

@@ -1,8 +1,8 @@
 #pragma once
 
-#include <vector>
+#include <utility>
 
-#include "mcga/test.hpp"
+#include "callback_list.hpp"
 
 namespace mcga::test {
 
@@ -28,9 +28,12 @@ class Group : private GroupConfig {
 
         explicit Ptr(Group* group);
 
+        void del();
+
       public:
         explicit Ptr();
-        Ptr(std::nullptr_t) noexcept {}
+        Ptr(std::nullptr_t) noexcept {
+        }
         Ptr(const Ptr& other) noexcept;
         Ptr(Ptr&& other) noexcept;
         Ptr& operator=(const Ptr& other) noexcept;
@@ -95,9 +98,8 @@ class Group : private GroupConfig {
     /** Call the tear-down functions of this group, in reverse order. */
     template<class Callable>
     void forEachTearDown(Callable callable) const {
-        for (auto it = tearDownFuncs.rbegin(); it != tearDownFuncs.rend();
-             it++) {
-            if (!callable(*it)) {
+        for (const auto& tearDown: tearDownFuncs) {
+            if (!callable(tearDown)) {
                 break;
             }
         }
@@ -105,19 +107,16 @@ class Group : private GroupConfig {
 
   private:
     int refCount = 0;
-    Ptr parentGroup;
     int id;
+    Ptr parentGroup;
 
     Context context;
-    std::vector<Executable> setUpFuncs;
-    std::vector<Executable> tearDownFuncs;
+    CallbackList setUpFuncs;
+    CallbackList tearDownFuncs;
 
     /** Default constructor from the upgraded GroupConfig and extra metadata
      * received from the testing Driver. Very similar to Test#Test().*/
     Group(GroupConfig config, Context context, Ptr parentGroup, int id);
-
-    void increment();
-    void decrement();
 
     friend class Group::Ptr;
 };
