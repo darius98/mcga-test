@@ -193,7 +193,7 @@ void TestLogger::updateVolatileLine(const Test& test) {
         stream << "[" << yellow << "." << reset << "] "
                << test.getFullDescription();
         if (test.getNumAttempts() > 1) {
-            stream << " - running attempt " << test.getExecutions().size() + 1
+            stream << " - running attempt " << test.getNumExecutedAttempts() + 1
                    << " of " << test.getNumAttempts() << ", passed "
                    << test.getNumPassedAttempts() << " so far...";
         } else {

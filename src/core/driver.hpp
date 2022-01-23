@@ -1,7 +1,5 @@
 #pragma once
 
-#include <thread>
-
 #include "disallow_copy_and_move.hpp"
 #include "executor.hpp"
 #include "utils.hpp"
@@ -47,7 +45,7 @@ class Driver {
     Executor* executor = nullptr;
 
     std::size_t testingThreadId = current_thread_id();
-    std::vector<GroupPtr> groupStack = {};
+    GroupPtr currentGroup;
     int currentTestId = 0;
     int currentGroupId = 0;
 };

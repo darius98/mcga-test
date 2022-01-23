@@ -24,8 +24,8 @@ struct Warning {
 
     Warning() = default;
     explicit Warning(String message,
-                     std::optional<Context> context = std::nullopt,
-                     std::vector<Note> notes = std::vector<Note>());
+                     std::optional<Context> context = {},
+                     std::vector<Note> notes = {});
 
     Warning& addNote(String message, std::optional<Context> context);
 };

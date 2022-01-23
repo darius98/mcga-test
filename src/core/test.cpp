@@ -109,6 +109,10 @@ bool Test::isFailed() const {
     return !isPassed() && !isSkipped();
 }
 
+size_t Test::getNumExecutedAttempts() const {
+    return executions.size();
+}
+
 size_t Test::getNumPassedAttempts() const {
     return numPassedExecutions;
 }
@@ -147,6 +151,10 @@ double Test::getTotalTimeTicks() const {
     return totalTimeTicks;
 }
 
+const Test::ExecutionInfo& Test::getLastExecution() const {
+    return executions.back();
+}
+
 std::optional<Test::ExecutionInfo>
   Test::getLastExecutionWithStatus(ExecutionInfo::Status status) const {
     for (auto it = executions.rbegin(); it != executions.rend(); ++it) {
@@ -155,10 +163,6 @@ std::optional<Test::ExecutionInfo>
         }
     }
     return std::nullopt;
-}
-
-const std::vector<Test::ExecutionInfo>& Test::getExecutions() const {
-    return executions;
 }
 
 void Test::addExecution(ExecutionInfo info) {

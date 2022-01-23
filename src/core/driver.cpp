@@ -34,11 +34,11 @@ void Driver::addGroup(GroupConfig config, Executable body) {
     }
 
     ++currentGroupId;
-    GroupPtr parentGroup = groupStack.empty() ? nullptr : groupStack.back();
+    GroupPtr parentGroup = currentGroup;
     GroupPtr group = Group::make(
       std::move(config), body.context, parentGroup, currentGroupId);
 
-    groupStack.push_back(group);
+    currentGroup = group;
     try {
         body();
     } catch (const std::exception& e) {
@@ -54,30 +54,29 @@ void Driver::addGroup(GroupConfig config, Executable body) {
           {Warning::Note("Unable to execute remainder of tests in this group.",
                          std::nullopt)}));
     }
-    groupStack.pop_back();
+    currentGroup = currentGroup->getParentGroup();
 }
 
 void Driver::addTest(TestConfig config, Executable body) {
     if (!checkMainThreadAndInactive("test", body.context)) {
         return;
     }
-    GroupPtr parentGroup = groupStack.back();
     executor->execute(
-      Test(std::move(config), std::move(body), parentGroup, ++currentTestId));
+      Test(std::move(config), std::move(body), currentGroup, ++currentTestId));
 }
 
 void Driver::addSetUp(Executable setUp) {
     if (!checkMainThreadAndInactive("setUp", setUp.context)) {
         return;
     }
-    groupStack.back()->addSetUp(std::move(setUp));
+    currentGroup->addSetUp(std::move(setUp));
 }
 
 void Driver::addTearDown(Executable tearDown) {
     if (!checkMainThreadAndInactive("tearDown", tearDown.context)) {
         return;
     }
-    groupStack.back()->addTearDown(std::move(tearDown));
+    currentGroup->addTearDown(std::move(tearDown));
 }
 
 void Driver::addFailure(Test::ExecutionInfo info) {
@@ -101,7 +100,7 @@ void Driver::addCleanup(Executable cleanup) {
 }
 
 void Driver::emitWarning(Warning warning) {
-    executor->emitWarning(std::move(warning), groupStack.back());
+    executor->emitWarning(std::move(warning), currentGroup);
 }
 
 bool Driver::checkMainThreadAndInactive(const String& method,

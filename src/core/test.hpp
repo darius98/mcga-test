@@ -119,6 +119,9 @@ class Test : private TestConfig {
      * is failed). */
     [[nodiscard]] bool isFailed() const;
 
+    /** The number of attempts executed (passed, failed or skipped). */
+    [[nodiscard]] std::size_t getNumExecutedAttempts() const;
+
     /** The number of attempts passed. */
     [[nodiscard]] std::size_t getNumPassedAttempts() const;
 
@@ -137,13 +140,12 @@ class Test : private TestConfig {
      * Note: If the time is not computable for any execution, returns -1. */
     [[nodiscard]] double getTotalTimeTicks() const;
 
+    [[nodiscard]] const ExecutionInfo& getLastExecution() const;
+
     /** Get the error message for the last failed execution, or empty string if
      * all executions passed. */
     [[nodiscard]] std::optional<Test::ExecutionInfo>
       getLastExecutionWithStatus(ExecutionInfo::Status status) const;
-
-    /** Get the array of executions. */
-    [[nodiscard]] const std::vector<ExecutionInfo>& getExecutions() const;
 
     /** Add an execution to the test. */
     void addExecution(ExecutionInfo info);
