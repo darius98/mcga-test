@@ -5,14 +5,21 @@ namespace mcga::test {
 ScanExecutor::ScanExecutor(ExtensionApi* api): Executor(api, SCAN) {
 }
 
-void ScanExecutor::execute(Test test) {
-    for (const GroupPtr& group: test.getGroupStack()) {
-        if (discoveredGroups.count(group->getId()) == 0) {
-            continue;
-        }
+void ScanExecutor::discoverGroup(GroupPtr group) {
+    if (group == nullptr) {
+        return;
+    }
+    if (group->hasParentGroup()) {
+        discoverGroup(group->getParentGroup());
+    }
+    if (!discoveredGroups.count(group->getId())) {
         discoveredGroups.insert(group->getId());
         api->runHooks<ExtensionApi::ON_GROUP_DISCOVERED>(group);
     }
+}
+
+void ScanExecutor::execute(Test test) {
+    discoverGroup(test.getGroup());
     api->runHooks<ExtensionApi::ON_TEST_DISCOVERED>(test);
 }
 

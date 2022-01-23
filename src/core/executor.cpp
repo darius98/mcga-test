@@ -57,7 +57,7 @@ void Executor::addFailure(Test::ExecutionInfo info) {
 }
 
 void Executor::addCleanup(Executable cleanup) {
-    currentExecutionCleanups.push_back(std::move(cleanup));
+    cleanups.push_back(std::move(cleanup));
 }
 
 void Executor::execute(Test test) {
@@ -75,43 +75,54 @@ Executor::Type Executor::getType() const {
     return type;
 }
 
+GroupPtr Executor::runSetUps(GroupPtr group, Test::ExecutionInfo* info) {
+    if (group == nullptr) {
+        return nullptr;
+    }
+    if (group->hasParentGroup()) {
+        auto ret = runSetUps(group->getParentGroup(), info);
+        if (!info->isPassed()) {
+            return ret;
+        }
+    }
+    group->forEachSetUp([&](const Executable& setUp) {
+        currentSetUp = &setUp;
+        runJob(setUp, info);
+        currentSetUp = nullptr;
+        // If a setUp() fails, do not execute the rest.
+        return info->status == Test::ExecutionInfo::PASSED;
+    });
+    return group;
+}
+
 Test::ExecutionInfo Executor::run(const Test& test) {
-    std::vector<GroupPtr> groups = test.getGroupStack();
-    std::vector<GroupPtr>::iterator it;
     currentTest = &test;
     state = INSIDE_SET_UP;
     Test::ExecutionInfo info;
     auto startTime = std::chrono::high_resolution_clock::now();
     // Execute setUp()-s, in the order of the group stack.
-    for (it = groups.begin(); info.isPassed() && it != groups.end(); ++it) {
-        (*it)->forEachSetUp([&](const Executable& setUp) {
-            currentSetUp = &setUp;
-            runJob(setUp, &info);
-            currentSetUp = nullptr;
-            // If a setUp() fails, do not execute the rest.
-            return info.status == Test::ExecutionInfo::PASSED;
-        });
-    }
+    auto lastGroup = runSetUps(test.getGroup(), &info);
     state = INSIDE_TEST;
     if (info.isPassed()) {
         // Only run the test if all setUp()-s passed without exception.
         runJob(test.getBody(), &info);
     }
     state = INSIDE_TEAR_DOWN;
-    for (const auto& cleanup: currentExecutionCleanups) {
+    for (const auto& cleanup: cleanups) {
         currentCleanup = &cleanup;
         runJob(cleanup, &info);
         currentCleanup = nullptr;
     }
-    currentExecutionCleanups.clear();
+    cleanups.clear();
     // Execute tearDown()-s in reverse order, from where setUp()-s stopped.
-    for (--it; it + 1 != groups.begin(); --it) {
-        (*it)->forEachTearDown([&](const Executable& tearDown) {
+    while (lastGroup != nullptr) {
+        lastGroup->forEachTearDown([&](const Executable& tearDown) {
             currentTearDown = &tearDown;
             runJob(tearDown, &info);
             currentTearDown = nullptr;
             return true;
         });
+        lastGroup = lastGroup->getParentGroup();
     }
     auto endTime = std::chrono::high_resolution_clock::now();
     info.timeTicks = NanosecondsToTimeTicks(endTime - startTime);
@@ -127,7 +138,7 @@ void Executor::emitWarning(Warning warning, GroupPtr group) {
     onWarning(std::move(warning), std::move(group));
 }
 
-void Executor::runJob(const Executable& job, Test::ExecutionInfo* execution) {
+void Executor::runJob(const Executable& job, Test::ExecutionInfo* info) {
     currentExecutionThreadId = current_thread_id();
     currentExecution
       = Test::ExecutionInfo{.status = Test::ExecutionInfo::PASSED,
@@ -137,16 +148,15 @@ void Executor::runJob(const Executable& job, Test::ExecutionInfo* execution) {
     try {
         job();
     } catch (Interrupt& interruption) {
-        execution->merge(std::move(interruption.info));
+        info->merge(std::move(interruption.info));
     } catch (const std::exception& e) {
-        execution->fail("Uncaught exception: " + std::string(e.what()),
-                        job.context);
+        info->fail("Uncaught exception: " + std::string(e.what()), job.context);
     } catch (...) {
-        execution->fail("Uncaught non-exception type.", job.context);
+        info->fail("Uncaught non-exception type.", job.context);
     }
 
     std::lock_guard guard(currentExecutionStatusMutex);
-    execution->merge(std::move(currentExecution));
+    info->merge(std::move(currentExecution));
 }
 
 void Executor::onWarning(Warning warning, GroupPtr group) {
@@ -193,6 +203,7 @@ void Executor::addHooksExecutions(Test& test) {
     }
 }
 
-SmoothExecutor::SmoothExecutor(ExtensionApi* api): Executor(api, SMOOTH) {}
+SmoothExecutor::SmoothExecutor(ExtensionApi* api): Executor(api, SMOOTH) {
+}
 
 }  // namespace mcga::test

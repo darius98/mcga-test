@@ -83,15 +83,6 @@ GroupPtr Test::getGroup() const {
     return group;
 }
 
-std::vector<GroupPtr> Test::getGroupStack() const {
-    std::vector<GroupPtr> groupStack(1, getGroup());
-    while (groupStack.back()->hasParentGroup()) {
-        groupStack.push_back(groupStack.back()->getParentGroup());
-    }
-    reverse(groupStack.begin(), groupStack.end());
-    return groupStack;
-}
-
 int Test::getId() const {
     return id;
 }

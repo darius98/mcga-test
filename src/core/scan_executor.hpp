@@ -18,6 +18,8 @@ class ScanExecutor : public Executor {
     void execute(Test test) override;
 
   private:
+    void discoverGroup(GroupPtr group);
+
     std::set<int> discoveredGroups;
 };
 

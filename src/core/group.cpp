@@ -126,11 +126,11 @@ bool Group::hasParentGroup() const {
 }
 
 void Group::addSetUp(Executable func) {
-    setUpFuncs.push_back(std::move(func));
+    setUps.push_back(std::move(func));
 }
 
 void Group::addTearDown(Executable func) {
-    tearDownsFuncs.push_front(std::move(func));
+    tearDowns.push_front(std::move(func));
 }
 
 }  // namespace mcga::test

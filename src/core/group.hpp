@@ -81,7 +81,7 @@ class Group : private GroupConfig {
 
     template<class Callable>
     void forEachSetUp(Callable callable) const {
-        for (const auto& setUp: setUpFuncs) {
+        for (const auto& setUp: setUps) {
             if (!callable(setUp)) {
                 break;
             }
@@ -98,7 +98,7 @@ class Group : private GroupConfig {
     /** Call the tear-down functions of this group, in reverse order. */
     template<class Callable>
     void forEachTearDown(Callable callable) const {
-        for (const auto& tearDown: tearDownFuncs) {
+        for (const auto& tearDown: tearDowns) {
             if (!callable(tearDown)) {
                 break;
             }
@@ -111,8 +111,8 @@ class Group : private GroupConfig {
     Ptr parentGroup;
 
     Context context;
-    CallbackList setUpFuncs;
-    CallbackList tearDownFuncs;
+    CallbackList setUps;
+    CallbackList tearDowns;
 
     /** Default constructor from the upgraded GroupConfig and extra metadata
      * received from the testing Driver. Very similar to Test#Test().*/

@@ -92,10 +92,6 @@ class Test : private TestConfig {
     /** The group that contains this test. */
     [[nodiscard]] GroupPtr getGroup() const;
 
-    /** The groups, in order from the global scope to the nearest, that
-     * contain this test. */
-    [[nodiscard]] std::vector<GroupPtr> getGroupStack() const;
-
     /** Globally unique, incremental identifier of the test. */
     [[nodiscard]] int getId() const;
 

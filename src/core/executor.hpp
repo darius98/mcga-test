@@ -40,7 +40,10 @@ class Executor {
     Test::ExecutionInfo run(const Test& test);
 
   private:
-    void runJob(const Executable& job, Test::ExecutionInfo* execution);
+    // Note: Returns the last group for which at least one set-up was executed.
+    GroupPtr runSetUps(GroupPtr group, Test::ExecutionInfo* info);
+
+    void runJob(const Executable& job, Test::ExecutionInfo* info);
 
   protected:
     Executor(ExtensionApi* api, Type type);
@@ -68,7 +71,7 @@ class Executor {
     std::mutex currentExecutionStatusMutex;
     Test::ExecutionInfo currentExecution;
 
-    CallbackList currentExecutionCleanups;
+    CallbackList cleanups;
 };
 
 class SmoothExecutor: public Executor {
