@@ -2,10 +2,10 @@
 
 #include <optional>
 #include <utility>
-#include <vector>
 
 #include "mcga/proc.hpp"
 #include "mcga/test.hpp"
+#include "memory.hpp"
 
 namespace mcga::test {
 
@@ -20,14 +20,13 @@ struct Warning {
 
     String message;
     std::optional<Context> context;
-    std::vector<Note> notes;
+    IntrusiveList<Warning::Note, WarningNoteAllocator> notes;
 
     Warning() = default;
-    explicit Warning(String message,
-                     std::optional<Context> context = {},
-                     std::vector<Note> notes = {});
+    explicit Warning(String message, std::optional<Context> context = {});
 
-    Warning& addNote(String message, std::optional<Context> context);
+    Warning& addNote(String message, std::optional<Context> context = {}) &;
+    Warning&& addNote(String message, std::optional<Context> context = {}) &&;
 };
 
 }  // namespace mcga::test
@@ -63,19 +62,6 @@ inline Message::BytesConsumer&
 }
 
 template<>
-inline Message& Message::operator>>(mcga::test::Warning& obj) {
-    (*this) >> obj.message >> obj.context >> obj.notes;
-    return *this;
-}
-
-template<>
-inline Message::BytesConsumer&
-  Message::BytesConsumer::add(const mcga::test::Warning& obj) {
-    add(obj.message, obj.context, obj.notes);
-    return *this;
-}
-
-template<>
 inline Message& Message::operator>>(mcga::test::Warning::Note& obj) {
     (*this) >> obj.message >> obj.context;
     return *this;
@@ -85,6 +71,27 @@ template<>
 inline Message::BytesConsumer&
   Message::BytesConsumer::add(const mcga::test::Warning::Note& obj) {
     add(obj.message, obj.context);
+    return *this;
+}
+
+template<>
+inline Message& Message::operator>>(mcga::test::Warning& obj) {
+    (*this) >> obj.message >> obj.context;
+    auto numNotes = read<std::size_t>();
+    for (std::size_t i = 0; i < numNotes; i++) {
+        obj.notes.push_back(read<mcga::test::Warning::Note>());
+    }
+    return *this;
+}
+
+template<>
+inline Message::BytesConsumer&
+  Message::BytesConsumer::add(const mcga::test::Warning& obj) {
+    add(obj.message, obj.context);
+    add(obj.notes.getSizeSlow());
+    for (const auto& note: obj.notes) {
+        add(note);
+    }
     return *this;
 }
 

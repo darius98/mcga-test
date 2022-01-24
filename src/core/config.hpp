@@ -12,5 +12,7 @@ namespace mcga::test {
 
 inline constexpr auto numStaticGroups = MCGA_TEST_PRE_ALLOCATED_GROUPS;
 inline constexpr auto numStaticCallbacks = MCGA_TEST_PRE_ALLOCATED_CALLBACKS;
+inline constexpr auto numStaticWarningNotes
+  = MCGA_TEST_PRE_ALLOCATED_GROUPS + 1;
 
 }  // namespace mcga::test

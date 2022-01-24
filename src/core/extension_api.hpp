@@ -4,6 +4,7 @@
 
 #include <optional>
 #include <stdexcept>
+#include <vector>
 
 #include "test.hpp"
 #include "warning.hpp"
@@ -34,7 +35,7 @@ class ExtensionApi {
     ExtensionApi& operator=(const ExtensionApi&) = default;
     ExtensionApi& operator=(ExtensionApi&&) = default;
 
-    virtual ~ExtensionApi() = default;
+    ~ExtensionApi() = default;
 
     template<Type t, class H>
     void addHook(H&& hook) {

@@ -27,7 +27,6 @@ add_library(mcga_test_obj OBJECT
         ${CMAKE_CURRENT_SOURCE_DIR}/src/entry_point.cpp
 
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/box_executor.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/core/callback_list.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/driver.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/executor.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/group.cpp

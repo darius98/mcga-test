@@ -42,17 +42,16 @@ void Driver::addGroup(GroupConfig config, Executable body) {
     try {
         body();
     } catch (const std::exception& e) {
-        emitWarning(Warning(
-          "Exception thrown outside a test: " + std::string(e.what()),
-          std::nullopt,
-          {Warning::Note("Unable to execute remainder of tests in this group.",
-                         std::nullopt)}));
+        emitWarning(
+          Warning("Exception thrown outside a test: " + std::string(e.what()),
+                  std::nullopt)
+            .addNote("Unable to execute remainder of tests in this group.",
+                     std::nullopt));
     } catch (...) {
-        emitWarning(Warning(
-          "Non-exception object thrown outside a test.",
-          std::nullopt,
-          {Warning::Note("Unable to execute remainder of tests in this group.",
-                         std::nullopt)}));
+        emitWarning(
+          Warning("Non-exception object thrown outside a test.", std::nullopt)
+            .addNote("Unable to execute remainder of tests in this group.",
+                     std::nullopt));
     }
     currentGroup = currentGroup->getParentGroup();
 }

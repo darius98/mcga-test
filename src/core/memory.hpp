@@ -1,11 +1,24 @@
 #pragma once
 
+#include "mcga/test.hpp"
+#include "intrusive_list.hpp"
+
 namespace mcga::test {
 
-void* allocate_group();
-void deallocate_group(void*);
+struct GroupAllocator {
+    [[nodiscard]] static void* allocate();
+    static void deallocate(void* ptr);
+};
 
-void* allocate_callback();
-void deallocate_callback(void*);
+struct ExecutableAllocator {
+    [[nodiscard]] static void* allocate();
+    static void deallocate(void* ptr);
+};
+using CallbackList = IntrusiveList<Executable, ExecutableAllocator>;
+
+struct WarningNoteAllocator {
+    [[nodiscard]] static void* allocate();
+    static void deallocate(void* ptr);
+};
 
 }  // namespace mcga::test

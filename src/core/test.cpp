@@ -2,7 +2,6 @@
 
 #include <algorithm>
 #include <numeric>
-#include <vector>
 
 namespace mcga::test {
 

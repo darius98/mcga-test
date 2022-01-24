@@ -13,7 +13,7 @@ void Group::Ptr::del() {
     if (raw != nullptr) {
         if (--raw->refCount == 0) {
             raw->~Group();
-            deallocate_group(raw);
+            GroupAllocator{}.deallocate(raw);
         }
     }
 }
@@ -80,7 +80,7 @@ bool Group::Ptr::operator!=(std::nullptr_t) const noexcept {
 
 Group::Ptr
   Group::make(GroupConfig config, Context context, Ptr parentGroup, int id) {
-    const auto storage = allocate_group();
+    const auto storage = GroupAllocator{}.allocate();
     const auto group = new (storage)
       Group(std::move(config), context, std::move(parentGroup), id);
     return Ptr(group);

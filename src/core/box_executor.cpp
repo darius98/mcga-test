@@ -36,7 +36,7 @@ void BoxExecutor::finalize() {
 void BoxExecutor::emitWarning(Warning warning, GroupPtr group) {
     if (isActive()) {
         decorateWarningWithCurrentTestNotes(warning, group);
-        currentTestingSubprocessPipe->sendMessage(WARNING, warning);
+        currentTestingSubprocessPipe->sendMessage(WARNING, std::move(warning));
     }
 }
 

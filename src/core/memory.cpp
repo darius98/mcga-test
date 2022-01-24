@@ -4,6 +4,7 @@
 
 #include "config.hpp"
 #include "group.hpp"
+#include "warning.hpp"
 
 namespace mcga::test {
 
@@ -53,22 +54,33 @@ template<class T, int N>
 using BufferFor = Buffer<sizeof(T), alignof(T), N>;
 
 static BufferFor<Group, numStaticGroups> staticGroups;
-static BufferFor<Callback, numStaticCallbacks> staticCallbacks;
+static BufferFor<CallbackList::node, numStaticCallbacks> staticCallbacks;
+static BufferFor<IntrusiveList<Warning::Note, WarningNoteAllocator>::node,
+                 numStaticWarningNotes>
+  staticWarningNotes;
 
-void* allocate_group() {
+void* GroupAllocator::allocate() {
     return staticGroups.allocate();
 }
 
-void deallocate_group(void* group) {
-    staticGroups.deallocate(group);
+void GroupAllocator::deallocate(void* ptr) {
+    staticGroups.deallocate(ptr);
 }
 
-void* allocate_callback() {
+void* ExecutableAllocator::allocate() {
     return staticCallbacks.allocate();
 }
 
-void deallocate_callback(void* callback) {
-    staticCallbacks.deallocate(callback);
+void ExecutableAllocator::deallocate(void* ptr) {
+    staticCallbacks.deallocate(ptr);
+}
+
+void* WarningNoteAllocator::allocate() {
+    return staticWarningNotes.allocate();
+}
+
+void WarningNoteAllocator::deallocate(void* ptr) {
+    staticWarningNotes.deallocate(ptr);
 }
 
 }  // namespace mcga::test
