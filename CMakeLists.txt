@@ -41,7 +41,9 @@ add_library(mcga_test_obj OBJECT
         ${CMAKE_CURRENT_SOURCE_DIR}/src/extensions/death/check_death.cpp
 
         ${CMAKE_CURRENT_SOURCE_DIR}/src/extensions/feedback/color.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/extensions/feedback/ext.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/extensions/feedback/exit_code_extension.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/extensions/feedback/socket_streaming_extension.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/extensions/feedback/stdout_logging_extension.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/extensions/feedback/test_logger.cpp
 
         ${CMAKE_CURRENT_SOURCE_DIR}/src/extensions/filter/ext.cpp)

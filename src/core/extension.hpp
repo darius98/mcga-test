@@ -1,35 +1,35 @@
 #pragma once
 
-#include "disallow_copy_and_move.hpp"
+#include <array>
+
 #include "extension_api.hpp"
-
-namespace mcga::cli {
-
-// Forward declare this, so projects that don't want to or can't use traditional
-// command line arguments, or simply don't want to pull in the dependency on
-// mcga::cli are free to do so, by overwriting the entry point of the library.
-struct Parser;
-
-}
 
 namespace mcga::test {
 
-class Extension {
-  public:
-    Extension() = default;
-
-    MCGA_DISALLOW_COPY_AND_MOVE(Extension);
-
-    virtual ~Extension() = default;
-
-    virtual void registerCommandLineArgs(mcga::cli::Parser* /*parser*/) {
-    }
-
-    virtual void init(ExtensionApi* /*api*/) {
-    }
-
-    virtual void destroy() {
-    }
+struct Extension {
+    void* data;
+    void (*init)(void*, ExtensionApi* api);
+    void (*destroy)(void*);
 };
+
+template<class T>
+Extension makeExtension(T* ext) {
+    return {
+      .data = ext,
+      .init =
+        [](void* raw, ExtensionApi* api) {
+            static_cast<T*>(raw)->init(api);
+        },
+      .destroy =
+        [](void* raw) {
+            static_cast<T*>(raw)->destroy();
+        },
+    };
+}
+
+template<class... T>
+auto makeExtensionArray(T*... ext) {
+    return std::array<Extension, sizeof...(T)>{makeExtension(ext)...};
+}
 
 }  // namespace mcga::test

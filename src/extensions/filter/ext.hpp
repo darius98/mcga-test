@@ -6,11 +6,13 @@
 
 namespace mcga::test {
 
-class FilterExtension : public Extension {
+class FilterExtension {
   public:
-    void registerCommandLineArgs(cli::Parser* parser) override;
+    void registerCommandLineArgs(cli::Parser* parser);
 
-    void init(ExtensionApi* api) override;
+    void init(ExtensionApi* api);
+
+    void destroy() {}
 
   private:
     [[nodiscard]] bool shouldSkipTest(const Test& test) const;

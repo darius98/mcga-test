@@ -12,7 +12,7 @@ using mcga::proc::WorkerSubprocess;
 
 namespace mcga::test {
 
-enum PipeMessageType : char {
+enum class PipeMessageType : char {
     WARNING,
     DONE,
 };
@@ -36,7 +36,8 @@ void BoxExecutor::finalize() {
 void BoxExecutor::emitWarning(Warning warning, GroupPtr group) {
     if (isActive()) {
         decorateWarningWithCurrentTestNotes(warning, group);
-        currentTestingSubprocessPipe->sendMessage(WARNING, std::move(warning));
+        currentTestingSubprocessPipe->sendMessage(PipeMessageType::WARNING,
+                                                  warning);
     }
 }
 
@@ -44,8 +45,11 @@ void BoxExecutor::executeBoxed(const Test& test,
                                std::unique_ptr<PipeWriter> pipe) {
     currentTestingSubprocessPipe = std::move(pipe);
     Test::ExecutionInfo info = run(test);
-    currentTestingSubprocessPipe->sendMessage(
-      DONE, info.status, info.timeTicks, info.message, info.context);
+    currentTestingSubprocessPipe->sendMessage(PipeMessageType::DONE,
+                                              info.status,
+                                              info.timeTicks,
+                                              info.message,
+                                              info.context);
 }
 
 std::unique_ptr<WorkerSubprocess>
