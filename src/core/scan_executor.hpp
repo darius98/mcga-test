@@ -9,7 +9,7 @@ namespace mcga::test {
 
 class ScanExecutor : public Executor {
   public:
-    explicit ScanExecutor(ExtensionApi* api);
+    ScanExecutor();
 
     MCGA_DISALLOW_COPY_AND_MOVE(ScanExecutor);
 

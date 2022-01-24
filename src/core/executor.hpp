@@ -21,6 +21,8 @@ class Executor {
 
     virtual ~Executor() = default;
 
+    void setApi(ExtensionApi* api);
+
     [[nodiscard]] bool isActive() const;
 
     [[nodiscard]] Type getType() const;
@@ -46,7 +48,7 @@ class Executor {
     void runJob(const Executable& job, Test::ExecutionInfo* info);
 
   protected:
-    Executor(ExtensionApi* api, Type type);
+    explicit Executor(Type type);
 
     void decorateWarningWithCurrentTestNotes(Warning& warning, GroupPtr group);
 
@@ -76,7 +78,7 @@ class Executor {
 
 class SmoothExecutor: public Executor {
   public:
-    explicit SmoothExecutor(ExtensionApi* api);
+    explicit SmoothExecutor();
 };
 
 }  // namespace mcga::test

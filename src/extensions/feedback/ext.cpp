@@ -149,7 +149,7 @@ void ExitCodeExtension::init(ExtensionApi* api) {
         if (test.isFinished() && !test.isOptional()) {
             if (test.isFailed()
                 || (test.isSkipped() && skipIsFail->get_value())) {
-                exitCode = 1;
+                exitCode = EXIT_FAILURE;
             }
         }
         if (test.isFinished() && test.isSkipped()) {
@@ -161,14 +161,14 @@ void ExitCodeExtension::init(ExtensionApi* api) {
     });
     if (!ignoreWarnings->get_value()) {
         api->addHook<ExtensionApi::ON_WARNING>([this](const Warning& warning) {
-            exitCode = 1;
+            exitCode = EXIT_FAILURE;
         });
     }
 }
 
 void ExitCodeExtension::destroy() {
     if (skippedAnyTests && !passedAnyTests) {
-        exitCode = 1;
+        exitCode = EXIT_FAILURE;
     }
 }
 

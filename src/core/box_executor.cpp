@@ -17,8 +17,7 @@ enum PipeMessageType : char {
     DONE,
 };
 
-BoxExecutor::BoxExecutor(ExtensionApi* api, size_t numBoxes)
-        : Executor(api, BOXED), numBoxes(numBoxes) {
+BoxExecutor::BoxExecutor(size_t numBoxes): Executor(BOXED), numBoxes(numBoxes) {
 }
 
 void BoxExecutor::execute(Test test) {

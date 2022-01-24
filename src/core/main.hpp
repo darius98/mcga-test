@@ -1,15 +1,17 @@
 #pragma once
 
-#include <vector>
-
+#include "executor.hpp"
 #include "extension.hpp"
 
 namespace mcga::test {
 
-TestCase* getTestCasesListHead();
+struct EntryPointOptions {
+    Extension* const* extensions = nullptr;
+    std::size_t numExtensions = 0;
 
-void runTests(int argc,
-              char** argv,
-              const std::vector<Extension*>& extensions);
+    int numRuns = 1;
+};
+
+void runTests(Executor* runner, const EntryPointOptions& options);
 
 }  // namespace mcga::test

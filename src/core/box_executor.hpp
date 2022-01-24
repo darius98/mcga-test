@@ -16,7 +16,7 @@ class BoxExecutor : public Executor {
     static constexpr auto loopSleepTime = std::chrono::milliseconds(5);
 
   public:
-    explicit BoxExecutor(ExtensionApi* api, std::size_t numBoxes);
+    explicit BoxExecutor(std::size_t numBoxes);
 
     MCGA_DISALLOW_COPY_AND_MOVE(BoxExecutor);
 

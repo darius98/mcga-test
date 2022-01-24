@@ -2,7 +2,7 @@
 
 namespace mcga::test {
 
-ScanExecutor::ScanExecutor(ExtensionApi* api): Executor(api, SCAN) {
+ScanExecutor::ScanExecutor(): Executor(SCAN) {
 }
 
 void ScanExecutor::discoverGroup(GroupPtr group) {

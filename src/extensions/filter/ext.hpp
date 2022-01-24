@@ -2,6 +2,8 @@
 
 #include <regex>
 
+#include <mcga/cli.hpp>
+
 namespace mcga::test {
 
 class FilterExtension : public Extension {

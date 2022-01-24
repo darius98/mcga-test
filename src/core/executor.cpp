@@ -21,7 +21,11 @@ class Interrupt : public std::exception {
     }
 };
 
-Executor::Executor(ExtensionApi* api, Type type): api(api), type(type) {
+Executor::Executor(Type type): type(type) {
+}
+
+void Executor::setApi(ExtensionApi* api_) {
+    api = api_;
 }
 
 bool Executor::isActive() const {
@@ -203,7 +207,7 @@ void Executor::addHooksExecutions(Test& test) {
     }
 }
 
-SmoothExecutor::SmoothExecutor(ExtensionApi* api): Executor(api, SMOOTH) {
+SmoothExecutor::SmoothExecutor(): Executor(SMOOTH) {
 }
 
 }  // namespace mcga::test

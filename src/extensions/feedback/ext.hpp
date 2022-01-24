@@ -1,5 +1,8 @@
 #pragma once
 
+#include <cstdlib>
+
+#include <mcga/cli.hpp>
 #include <mcga/proc.hpp>
 
 #include "core/extension.hpp"
@@ -42,7 +45,7 @@ class ExitCodeExtension : public Extension {
     void destroy() override;
 
   private:
-    int exitCode = 0;
+    int exitCode = EXIT_SUCCESS;
     bool skippedAnyTests = false;
     bool passedAnyTests = false;
 
