@@ -5,8 +5,13 @@
 
 namespace mcga::test {
 
-template<class T, matchers::MatcherFor<T> M>
-void expect(const T& obj, M matcher, Context context = Context()) {
+namespace internal {
+
+template<class Fail, class T, matchers::MatcherFor<T> M>
+void expectMatches(Fail f,
+                   const T& obj,
+                   M matcher,
+                   Context context = Context("Expectation failed")) {
     if (matcher.matches(obj)) {
         return;
     }
@@ -17,13 +22,23 @@ void expect(const T& obj, M matcher, Context context = Context()) {
     description << obj;
     description.appendRawString("'\nWhich is ");
     matcher.describeFailure(&description);
-    context.verb = "Expectation failed";
-    fail(description.toString(), context);
+    f(description.toString(), context);
+}
+
+}  // namespace internal
+
+template<class T, matchers::MatcherFor<T> M>
+void expect(const T& obj,
+            M matcher,
+            Context context = Context("Expectation failed")) {
+    internal::expectMatches(fail, obj, matcher, context);
 }
 
 template<class T, matchers::EqualityMatchableFor<T> Val>
-void expect(const T& obj, Val expected, Context context = Context()) {
-    expect(obj, matchers::isEqualTo(expected), context);
+void expect(const T& obj,
+            Val expected,
+            Context context = Context("Expectation failed")) {
+    internal::expectMatches(fail, obj, matchers::isEqualTo(expected), context);
 }
 
 }  // namespace mcga::test

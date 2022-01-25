@@ -1,8 +1,5 @@
 #include "test.hpp"
 
-#include <algorithm>
-#include <numeric>
-
 namespace mcga::test {
 
 void Test::ExecutionInfo::fail(const String& failureMessage,

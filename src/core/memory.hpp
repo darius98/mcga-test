@@ -1,7 +1,7 @@
 #pragma once
 
-#include "mcga/test.hpp"
 #include "intrusive_list.hpp"
+#include "mcga/test.hpp"
 
 namespace mcga::test {
 

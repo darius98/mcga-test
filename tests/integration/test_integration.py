@@ -136,32 +136,26 @@ class MCGATestIntegrationSmoothTestCase(MCGATestIntegrationMixin):
         set_up_note = ("While running setUp", 27)
         test_note = ("While running test test", 55)
         notes_inside_set_up = [set_up_note, test_note, group1_note, group_test_case_note]
-        self.check_warning(r"Called setUp\(\) inside a setUp\(\), ignoring\.", 29,
+        self.check_warning(r"Called setUp\(\) inside a test, ignoring\.", 29, notes_inside_set_up)
+        self.check_warning(r"Called tearDown\(\) inside a test, ignoring\.", 32,
                            notes_inside_set_up)
-        self.check_warning(r"Called tearDown\(\) inside a setUp\(\), ignoring\.", 32,
-                           notes_inside_set_up)
-        self.check_warning(r"Called test\(\) inside a setUp\(\), ignoring\.", 35,
-                           notes_inside_set_up)
-        self.check_warning(r"Called group\(\) inside a setUp\(\), ignoring\.", 38,
-                           notes_inside_set_up)
+        self.check_warning(r"Called test\(\) inside a test, ignoring\.", 35, notes_inside_set_up)
+        self.check_warning(r"Called group\(\) inside a test, ignoring\.", 38, notes_inside_set_up)
 
         notes_inside_test = [test_note, group1_note, group_test_case_note]
-        self.check_warning(r"Called setUp\(\) inside a test\(\), ignoring\.", 57, notes_inside_test)
-        self.check_warning(r"Called tearDown\(\) inside a test\(\), ignoring\.", 60,
+        self.check_warning(r"Called setUp\(\) inside a test, ignoring\.", 57, notes_inside_test)
+        self.check_warning(r"Called tearDown\(\) inside a test, ignoring\.", 60,
                            notes_inside_test)
-        self.check_warning(r"Called test\(\) inside a test\(\), ignoring\.", 63, notes_inside_test)
-        self.check_warning(r"Called group\(\) inside a test\(\), ignoring\.", 66, notes_inside_test)
+        self.check_warning(r"Called test\(\) inside a test, ignoring\.", 63, notes_inside_test)
+        self.check_warning(r"Called group\(\) inside a test, ignoring\.", 66, notes_inside_test)
 
         tear_down_note = ("While running tearDown", 41)
         notes_inside_teardown = [tear_down_note, test_note, group1_note, group_test_case_note]
-        self.check_warning(r"Called setUp\(\) inside a tearDown\(\), ignoring\.", 43,
+        self.check_warning(r"Called setUp\(\) inside a test, ignoring\.", 43, notes_inside_teardown)
+        self.check_warning(r"Called tearDown\(\) inside a test, ignoring\.", 46,
                            notes_inside_teardown)
-        self.check_warning(r"Called tearDown\(\) inside a tearDown\(\), ignoring\.", 46,
-                           notes_inside_teardown)
-        self.check_warning(r"Called test\(\) inside a tearDown\(\), ignoring\.", 49,
-                           notes_inside_teardown)
-        self.check_warning(r"Called group\(\) inside a tearDown\(\), ignoring\.", 52,
-                           notes_inside_teardown)
+        self.check_warning(r"Called test\(\) inside a test, ignoring\.", 49, notes_inside_teardown)
+        self.check_warning(r"Called group\(\) inside a test, ignoring\.", 52, notes_inside_teardown)
 
         self.check_warning(
             r"Called test\(\) from a different thread than the main testing thread, ignoring\.",

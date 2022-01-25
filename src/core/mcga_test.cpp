@@ -63,7 +63,6 @@ MCGA_TEST_EXPORT void register_cleanup(Executable exec) {
 
 namespace mcga::test {
 
-// Intentionally not exported, only used internally within the library.
 TestCase* getTestCasesListHead() {
     return registeredTestCasesListHead;
 }

@@ -1,25 +1,13 @@
 #include "executor.hpp"
 
 #include <chrono>
-#include <stdexcept>
-#include <thread>
 
 #include "time_tick.hpp"
 #include "utils.hpp"
 
 namespace mcga::test {
 
-class Interrupt : public std::exception {
-  public:
-    Test::ExecutionInfo info;
-
-    explicit Interrupt(Test::ExecutionInfo info): info(std::move(info)) {
-    }
-
-    [[nodiscard]] const char* what() const noexcept override {
-        return info.message.c_str();
-    }
-};
+struct Interrupt {};
 
 Executor::Executor(Type type): type(type) {
 }
@@ -36,32 +24,21 @@ bool Executor::isActive() const {
     return state != INACTIVE;
 }
 
-std::string Executor::stateAsString() const {
-    switch (state) {
-        case INSIDE_TEST: return "test";
-        case INSIDE_SET_UP: return "setUp";
-        case INSIDE_TEAR_DOWN: return "tearDown";
-        default: return "inactive";
-    }
-}
-
 void Executor::finalize() {
 }
 
 void Executor::addFailure(Test::ExecutionInfo info) {
-    // We only kill the thread on failure if we are in the main testing thread,
-    // and we know we catch this exception.
+    currentExecution.merge(std::move(info));
+    // We kill the thread on failure if we are in the main testing thread, and
+    // we know we catch this exception.
+    // If the user starts his own threads that entertain interruptions, it is
+    // their responsibility to make sure his threads die on failure (we have no
+    // control).
     if (current_thread_id() == currentExecutionThreadId) {
         // TODO: Abort when exceptions are disabled (in non-smooth execution,
         //  inform the test runner process of the failure before aborting).
-        throw Interrupt(std::move(info));
+        throw Interrupt{};
     }
-
-    // If the user starts his own threads that entertain failures, it is his
-    // responsibility to make sure his threads die on failure (we have no
-    // control).
-    std::lock_guard guard(currentExecutionStatusMutex);
-    currentExecution.merge(std::move(info));
 }
 
 void Executor::addCleanup(Executable cleanup) {
@@ -83,62 +60,59 @@ Executor::Type Executor::getType() const {
     return type;
 }
 
-GroupPtr Executor::runSetUps(GroupPtr group, Test::ExecutionInfo* info) {
+GroupPtr Executor::runSetUps(GroupPtr group) {
     if (group == nullptr) {
         return nullptr;
     }
     if (group->hasParentGroup()) {
-        auto ret = runSetUps(group->getParentGroup(), info);
-        if (!info->isPassed()) {
+        auto ret = runSetUps(group->getParentGroup());
+        if (!currentExecution.isPassed()) {
             return ret;
         }
     }
     group->forEachSetUp([&](const Executable& setUp) {
-        currentSetUp = &setUp;
-        runJob(setUp, info);
-        currentSetUp = nullptr;
+        runJob(setUp);
         // If a setUp() fails, do not execute the rest.
-        return info->status == Test::ExecutionInfo::PASSED;
+        return currentExecution.isPassed();
     });
     return group;
 }
 
 Test::ExecutionInfo Executor::run(const Test& test) {
     currentTest = &test;
+    currentExecutionThreadId = current_thread_id();
+
     state = INSIDE_SET_UP;
-    Test::ExecutionInfo info;
     auto startTime = std::chrono::high_resolution_clock::now();
     // Execute setUp()-s, in the order of the group stack.
-    auto lastGroup = runSetUps(test.getGroup(), &info);
+    auto lastGroup = runSetUps(test.getGroup());
     state = INSIDE_TEST;
-    if (info.isPassed()) {
+    if (currentExecution.isPassed()) {
         // Only run the test if all setUp()-s passed without exception.
-        runJob(test.getBody(), &info);
+        runJob(test.getBody());
     }
-    state = INSIDE_TEAR_DOWN;
+    state = INSIDE_CLEANUP;
     for (const auto& cleanup: cleanups) {
-        currentCleanup = &cleanup;
-        runJob(cleanup, &info);
-        currentCleanup = nullptr;
+        runJob(cleanup);
     }
     cleanups.clear();
+    state = INSIDE_TEAR_DOWN;
     // Execute tearDown()-s in reverse order, from where setUp()-s stopped.
     while (lastGroup != nullptr) {
         lastGroup->forEachTearDown([&](const Executable& tearDown) {
-            currentTearDown = &tearDown;
-            runJob(tearDown, &info);
-            currentTearDown = nullptr;
+            runJob(tearDown);
             return true;
         });
         lastGroup = lastGroup->getParentGroup();
     }
     auto endTime = std::chrono::high_resolution_clock::now();
+    auto info = currentExecution.reset();
     info.timeTicks = NanosecondsToTimeTicks(endTime - startTime);
     if (info.timeTicks > test.getTimeTicksLimit()) {
         info.fail("Execution timed out.");
     }
-    state = INACTIVE;
     currentTest = nullptr;
+    state = INACTIVE;
     return info;
 }
 
@@ -146,25 +120,18 @@ void Executor::emitWarning(Warning warning, GroupPtr group) {
     onWarning(std::move(warning), std::move(group));
 }
 
-void Executor::runJob(const Executable& job, Test::ExecutionInfo* info) {
-    currentExecutionThreadId = current_thread_id();
-    currentExecution
-      = Test::ExecutionInfo{.status = Test::ExecutionInfo::PASSED,
-                            .message = "OK",
-                            .context = std::nullopt};
-
+void Executor::runJob(const Executable& job) {
+    currentJob = &job;
     try {
         job();
     } catch (Interrupt& interruption) {
-        info->merge(std::move(interruption.info));
     } catch (const std::exception& e) {
-        info->fail("Uncaught exception: " + std::string(e.what()), job.context);
+        currentExecution.fail("Uncaught exception: " + std::string(e.what()),
+                              job.context);
     } catch (...) {
-        info->fail("Uncaught non-exception type.", job.context);
+        currentExecution.fail("Uncaught non-exception type.", job.context);
     }
-
-    std::lock_guard guard(currentExecutionStatusMutex);
-    info->merge(std::move(currentExecution));
+    currentJob = nullptr;
 }
 
 void Executor::onWarning(Warning warning, GroupPtr group) {
@@ -174,23 +141,23 @@ void Executor::onWarning(Warning warning, GroupPtr group) {
 
 void Executor::decorateWarningWithCurrentTestNotes(Warning& warning,
                                                    GroupPtr group) {
-    if (currentSetUp) {
-        warning.addNote("While running setUp", currentSetUp->context);
+    if (state == INSIDE_SET_UP && currentJob) {
+        warning.addNote(WarningNoteType::SET_UP, "", currentJob->context);
     }
-    if (currentCleanup) {
-        warning.addNote("While running cleanup", currentCleanup->context);
+    if (state == INSIDE_CLEANUP && currentJob) {
+        warning.addNote(WarningNoteType::CLEANUP, "", currentJob->context);
     }
-    if (currentTearDown) {
-        warning.addNote("While running tearDown", currentTearDown->context);
+    if (state == INSIDE_TEAR_DOWN && currentJob) {
+        warning.addNote(WarningNoteType::TEAR_DOWN, "", currentJob->context);
     }
     if (currentTest) {
-        warning.addNote("While running test "
-                          + std::string(currentTest->getDescription().c_str()),
+        warning.addNote(WarningNoteType::TEST,
+                        currentTest->getDescription(),
                         currentTest->getContext());
     }
     while (group != nullptr) {
-        warning.addNote("In group "
-                          + std::string(group->getDescription().c_str()),
+        warning.addNote(WarningNoteType::GROUP,
+                        group->getDescription().c_str(),
                         group->getContext());
         group = group->getParentGroup();
     }

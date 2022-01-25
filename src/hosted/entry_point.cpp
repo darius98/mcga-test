@@ -6,7 +6,6 @@
 
 #include "mcga/cli.hpp"
 
-#include "hosted/box_executor.hpp"
 #include "core/executor.hpp"
 #include "core/export.hpp"
 #include "core/main.hpp"
@@ -14,6 +13,7 @@
 #include "extensions/feedback/socket_streaming_extension.hpp"
 #include "extensions/feedback/stdout_logging_extension.hpp"
 #include "extensions/filter/ext.hpp"
+#include "hosted/box_executor.hpp"
 
 using namespace mcga::cli;
 using namespace mcga::test;

@@ -91,7 +91,31 @@ void TestLogger::printWarning(const Warning& warning) {
                << "\n";
     }
     for (const auto& note: warning.notes) {
-        stream << "\tNote: " << note.message.c_str();
+        stream << "\tNote: ";
+        switch (note.type) {
+            case WarningNoteType::TEST: {
+                stream << "While running test ";
+                break;
+            }
+            case WarningNoteType::GROUP: {
+                stream << "In group ";
+                break;
+            }
+            case WarningNoteType::SET_UP: {
+                stream << "While running setUp";
+                break;
+            }
+            case WarningNoteType::TEAR_DOWN: {
+                stream << "While running tearDown";
+                break;
+            }
+            case WarningNoteType::CLEANUP: {
+                stream << "While running cleanup";
+                break;
+            }
+            default: break;
+        }
+        stream << note.message.c_str();
         if (note.context.has_value()) {
             stream << " at " << note.context->fileName << ":"
                    << note.context->line << ":" << note.context->column;

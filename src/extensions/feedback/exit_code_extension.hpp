@@ -27,4 +27,4 @@ class ExitCodeExtension {
     bool ignoreWarnings;
 };
 
-}
+}  // namespace mcga::test

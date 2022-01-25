@@ -9,6 +9,39 @@
 
 namespace mcga::test {
 
+struct SynchronizedTestExecution {
+    Test::ExecutionInfo info;
+    mutable std::mutex infoLock;
+
+    [[nodiscard]] const char* getMessage() const {
+        std::lock_guard guard(infoLock);
+        return info.message.c_str();
+    }
+
+    [[nodiscard]] bool isPassed() const {
+        std::lock_guard guard(infoLock);
+        return info.isPassed();
+    }
+
+    void merge(Test::ExecutionInfo other) {
+        std::lock_guard guard(infoLock);
+        info.merge(std::move(other));
+    }
+
+    void fail(const String& message,
+              std::optional<Context> context = std::nullopt) {
+        std::lock_guard guard(infoLock);
+        info.fail(message, context);
+    }
+
+    [[nodiscard]] Test::ExecutionInfo reset() {
+        std::lock_guard guard(infoLock);
+        Test::ExecutionInfo out = std::move(info);
+        info = Test::ExecutionInfo{};
+        return out;
+    }
+};
+
 class Executor {
   public:
     enum Type {
@@ -35,19 +68,11 @@ class Executor {
 
     virtual void emitWarning(Warning warning, GroupPtr group);
 
-    [[nodiscard]] std::string stateAsString() const;
-
     void addFailure(Test::ExecutionInfo info);
 
     void addCleanup(Executable cleanup);
 
     Test::ExecutionInfo run(const Test& test);
-
-  private:
-    // Note: Returns the last group for which at least one set-up was executed.
-    GroupPtr runSetUps(GroupPtr group, Test::ExecutionInfo* info);
-
-    void runJob(const Executable& job, Test::ExecutionInfo* info);
 
   protected:
     explicit Executor(Type type);
@@ -60,25 +85,32 @@ class Executor {
 
     ExtensionApi* api;
 
-    const Type type;
-    const Executable* currentSetUp = nullptr;
-    const Executable* currentTearDown = nullptr;
-    const Executable* currentCleanup = nullptr;
-    const Test* currentTest = nullptr;
-
   private:
-    enum State { INACTIVE, INSIDE_TEST, INSIDE_SET_UP, INSIDE_TEAR_DOWN };
+    // Note: Returns the last group for which at least one set-up was executed.
+    GroupPtr runSetUps(GroupPtr group);
 
+    void runJob(const Executable& job);
+
+    const Type type;
+
+    enum State {
+        INACTIVE,
+        INSIDE_TEST,
+        INSIDE_SET_UP,
+        INSIDE_CLEANUP,
+        INSIDE_TEAR_DOWN,
+    };
     State state = INACTIVE;
-    std::size_t currentExecutionThreadId = 0;
 
-    std::mutex currentExecutionStatusMutex;
-    Test::ExecutionInfo currentExecution;
+    std::size_t currentExecutionThreadId = 0;
+    const Executable* currentJob = nullptr;
+    const Test* currentTest = nullptr;
+    SynchronizedTestExecution currentExecution;
 
     CallbackList cleanups;
 };
 
-class SmoothExecutor: public Executor {
+class SmoothExecutor : public Executor {
   public:
     explicit SmoothExecutor();
 };

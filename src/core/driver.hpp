@@ -41,7 +41,7 @@ class Driver {
   private:
     void emitWarning(Warning warning);
 
-    bool checkMainThreadAndInactive(const String& method,
+    bool checkMainThreadAndInactive(WarningNoteType method,
                                     const Context& context);
 };
 

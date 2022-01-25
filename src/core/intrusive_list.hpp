@@ -1,6 +1,7 @@
 #pragma once
 
 #include <compare>
+#include <new>
 #include <type_traits>
 
 namespace mcga::test {
@@ -8,7 +9,6 @@ namespace mcga::test {
 template<class T, class Allocator>
 class IntrusiveList {
     static_assert(std::is_nothrow_move_constructible_v<T>);
-    static_assert(std::is_empty_v<Allocator>);
 
   public:
     struct node {
@@ -72,7 +72,7 @@ class IntrusiveList {
     }
 
     void push_back(T value) {
-        const auto slot = Allocator{}.allocate();
+        const auto slot = Allocator::allocate();
         const auto n = new (slot) node{std::move(value), nullptr};
         if (tail == nullptr) {
             head = tail = n;
@@ -83,7 +83,7 @@ class IntrusiveList {
     }
 
     void push_front(T value) {
-        const auto slot = Allocator{}.allocate();
+        const auto slot = Allocator::allocate();
         head = new (slot) node{std::move(value), head};
     }
 
@@ -92,7 +92,7 @@ class IntrusiveList {
         while (n != nullptr) {
             auto next = n->next;
             n->~node();
-            Allocator{}.deallocate(n);
+            Allocator::deallocate(n);
             n = next;
         }
         head = tail = nullptr;

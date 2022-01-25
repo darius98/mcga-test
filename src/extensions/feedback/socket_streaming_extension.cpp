@@ -1,5 +1,7 @@
 #include "socket_streaming_extension.hpp"
 
+#include "hosted/serialization.hpp"
+
 namespace mcga::test {
 
 void SocketStreamingExtension::registerCommandLineArgs(cli::Parser* parser) {

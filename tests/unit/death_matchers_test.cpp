@@ -20,11 +20,11 @@ static auto t = TestCase{"Death extension: matchers"} + [] {
 
     group("exits matcher", [&] {
         test("matches exiting function with exit code 0", [&] {
-            EXPECT_MATCHER_MATCHES(funcExit0, exits);
+            expect(funcExit0, exits);
         });
 
         test("matches exiting function with exit code 17", [&] {
-            EXPECT_MATCHER_MATCHES(funcExit17, exits);
+            expect(funcExit17, exits);
         });
 
         test("does not match non-exiting function", [&] {
@@ -32,7 +32,7 @@ static auto t = TestCase{"Death extension: matchers"} + [] {
         });
 
         test(".zero matches function with exit code 0", [&] {
-            EXPECT_MATCHER_MATCHES(funcExit0, exits.zero);
+            expect(funcExit0, exits.zero);
         });
 
         test(".zero does not match function with exit code 17", [&] {
@@ -40,7 +40,7 @@ static auto t = TestCase{"Death extension: matchers"} + [] {
         });
 
         test(".nonZero matches function with exit code 17", [&] {
-            EXPECT_MATCHER_MATCHES(funcExit17, exits.nonZero);
+            expect(funcExit17, exits.nonZero);
         });
 
         test(".nonZero does not match function with exit code 0", [&] {
@@ -48,12 +48,12 @@ static auto t = TestCase{"Death extension: matchers"} + [] {
         });
 
         test(".withCode(0) matches function that exits with code 0", [&] {
-            EXPECT_MATCHER_MATCHES(funcExit0, exits.withCode(0));
+            expect(funcExit0, exits.withCode(0));
         });
 
         test(".withCode(matcher) matches function that exits with valid code",
              [&] {
-                 EXPECT_MATCHER_MATCHES(funcExit0, exits.withCode(isZero));
+                 expect(funcExit0, exits.withCode(isZero));
              });
 
         test(".withCode(0) does not match function that exits with non-zero "
@@ -76,12 +76,12 @@ static auto t = TestCase{"Death extension: matchers"} + [] {
     group("hasExited variants", [&] {
         test("hasExited matches status of zero exiting function", [&] {
             auto status = checkDeath(funcExit0);
-            EXPECT_MATCHER_MATCHES(status, hasExited);
+            expect(status, hasExited);
         });
 
         test("hasExited matches status of non-zero exiting function", [&] {
             auto status = checkDeath(funcExit17);
-            EXPECT_MATCHER_MATCHES(status, hasExited);
+            expect(status, hasExited);
         });
 
         test("hasExited does not match status of non-exiting function", [&] {
@@ -92,14 +92,14 @@ static auto t = TestCase{"Death extension: matchers"} + [] {
         test("hasExitedWithCode(0) matches status of zero exiting function",
              [&] {
                  auto status = checkDeath(funcExit0);
-                 EXPECT_MATCHER_MATCHES(status, hasExitedWithCode(0));
+                 expect(status, hasExitedWithCode(0));
              });
 
         test("hasExitedWithCode(matcher) matches status of valid exiting "
              "function",
              [&] {
                  auto status = checkDeath(funcExit0);
-                 EXPECT_MATCHER_MATCHES(status, hasExitedWithCode(isZero));
+                 expect(status, hasExitedWithCode(isZero));
              });
 
         test("hasExitedWithCode(0) does not match status of non-zero exiting "
@@ -118,12 +118,12 @@ static auto t = TestCase{"Death extension: matchers"} + [] {
 
         test("hasExitedWithCodeZero matches zero-exiting function", [&] {
             auto status = checkDeath(funcExit0);
-            EXPECT_MATCHER_MATCHES(status, hasExitedWithCodeZero);
+            expect(status, hasExitedWithCodeZero);
         });
 
         test("hasExitedWithNonZeroCode matches non-zero exiting function", [&] {
             auto status = checkDeath(funcExit17);
-            EXPECT_MATCHER_MATCHES(status, hasExitedWithNonZeroCode);
+            expect(status, hasExitedWithNonZeroCode);
         });
 
         test("hasExitedWithCodeZero does not match non-zero exiting function",

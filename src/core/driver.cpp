@@ -20,59 +20,60 @@ void Driver::Clean() {
     driverInstance = nullptr;
 }
 
-Driver::Driver(Executor* executor): executor(executor) {}
+Driver::Driver(Executor* executor): executor(executor) {
+}
 
 Executor::Type Driver::getExecutorType() const {
     return executor->getType();
 }
 
 void Driver::addGroup(GroupConfig config, Executable body) {
-    if (!checkMainThreadAndInactive("group", body.context)) {
+    if (!checkMainThreadAndInactive(WarningNoteType::GROUP, body.context)) {
         return;
     }
 
     ++currentGroupId;
-    GroupPtr parentGroup = currentGroup;
-    GroupPtr group = Group::make(
-      std::move(config), body.context, parentGroup, currentGroupId);
-
-    currentGroup = group;
-    executor->getExtensionApi()->runHooks<ExtensionApi::ON_GROUP_DISCOVERED>(group);
+    currentGroup = Group::make(
+      std::move(config), body.context, currentGroup, currentGroupId);
+    executor->getExtensionApi()->runHooks<ExtensionApi::ON_GROUP_DISCOVERED>(
+      currentGroup);
     try {
         body();
     } catch (const std::exception& e) {
         emitWarning(
-          Warning("Exception thrown outside a test: " + std::string(e.what()),
-                  std::nullopt)
-            .addNote("Unable to execute remainder of tests in this group.",
-                     std::nullopt));
+          Warning("Exception thrown outside a test: " + std::string(e.what()))
+            .addNote(WarningNoteType::OTHER,
+                     "Unable to execute remainder of tests in this group."));
     } catch (...) {
         emitWarning(
-          Warning("Non-exception object thrown outside a test.", std::nullopt)
-            .addNote("Unable to execute remainder of tests in this group.",
-                     std::nullopt));
+          Warning("Non-exception object thrown outside a test.")
+            .addNote(WarningNoteType::OTHER,
+                     "Unable to execute remainder of tests in this group."));
     }
     currentGroup = currentGroup->getParentGroup();
 }
 
 void Driver::addTest(TestConfig config, Executable body) {
-    if (!checkMainThreadAndInactive("test", body.context)) {
+    if (!checkMainThreadAndInactive(WarningNoteType::TEST, body.context)) {
         return;
     }
-    Test test(std::move(config), std::move(body), currentGroup, ++currentTestId);
-    executor->getExtensionApi()->runHooks<ExtensionApi::ON_TEST_DISCOVERED>(test);
+    Test test(
+      std::move(config), std::move(body), currentGroup, ++currentTestId);
+    executor->getExtensionApi()->runHooks<ExtensionApi::ON_TEST_DISCOVERED>(
+      test);
     executor->execute(std::move(test));
 }
 
 void Driver::addSetUp(Executable setUp) {
-    if (!checkMainThreadAndInactive("setUp", setUp.context)) {
+    if (!checkMainThreadAndInactive(WarningNoteType::SET_UP, setUp.context)) {
         return;
     }
     currentGroup->addSetUp(std::move(setUp));
 }
 
 void Driver::addTearDown(Executable tearDown) {
-    if (!checkMainThreadAndInactive("tearDown", tearDown.context)) {
+    if (!checkMainThreadAndInactive(WarningNoteType::TEAR_DOWN,
+                                    tearDown.context)) {
         return;
     }
     currentGroup->addTearDown(std::move(tearDown));
@@ -102,21 +103,44 @@ void Driver::emitWarning(Warning warning) {
     executor->emitWarning(std::move(warning), currentGroup);
 }
 
-bool Driver::checkMainThreadAndInactive(const String& method,
+bool Driver::checkMainThreadAndInactive(WarningNoteType method,
                                         const Context& context) {
     if (executor->isActive()) {
-        emitWarning(Warning("Called " + std::string(method.c_str())
-                              + "() inside a " + executor->stateAsString()
-                              + "(), ignoring.",
-                            context));
+        const char* warningMessage = [&] {
+            switch (method) {
+                case WarningNoteType::TEST:
+                    return "Called test() inside a test, ignoring.";
+                case WarningNoteType::GROUP:
+                    return "Called group() inside a test, ignoring.";
+                case WarningNoteType::SET_UP:
+                    return "Called setUp() inside a test, ignoring.";
+                case WarningNoteType::TEAR_DOWN:
+                    return "Called tearDown() inside a test, ignoring.";
+                default: return "";
+            }
+        }();
+        emitWarning(Warning(warningMessage, context));
         return false;
     }
     if (testingThreadId != current_thread_id()) {
-        emitWarning(
-          Warning("Called " + std::string(method.c_str())
-                    + "() from a different thread than the main testing "
-                      "thread, ignoring.",
-                  context));
+        const char* warningMessage = [&] {
+            switch (method) {
+                case WarningNoteType::TEST:
+                    return "Called test() from a different thread than the "
+                           "main testing thread, ignoring.";
+                case WarningNoteType::GROUP:
+                    return "Called group() from a different thread than the "
+                           "main testing thread, ignoring.";
+                case WarningNoteType::SET_UP:
+                    return "Called setUp() from a different thread than the "
+                           "main testing thread, ignoring.";
+                case WarningNoteType::TEAR_DOWN:
+                    return "Called tearDown() from a different thread than the "
+                           "main testing thread, ignoring.";
+                default: return "";
+            }
+        }();
+        emitWarning(Warning(warningMessage, context));
         return false;
     }
     return true;

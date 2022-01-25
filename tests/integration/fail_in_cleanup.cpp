@@ -16,12 +16,12 @@ auto testCase = mcga::test::TestCase{"TestCase"} + [] {
     });
 
     mcga::test::group("group", [] {
-         mcga::test::tearDown([] {
-             printf("second-tear-down\n");
-         });
+        mcga::test::tearDown([] {
+            printf("second-tear-down\n");
+        });
 
-         mcga::test::test("test", [] {
-             printf("test-body\n");
-         });
+        mcga::test::test("test", [] {
+            printf("test-body\n");
+        });
     });
 };

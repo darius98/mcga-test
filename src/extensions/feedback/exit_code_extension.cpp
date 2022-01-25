@@ -12,8 +12,7 @@ int ExitCodeExtension::getExitCode() const {
 
 void ExitCodeExtension::afterTestExecution(const Test& test) {
     if (test.isFinished() && !test.isOptional()) {
-        if (test.isFailed()
-            || (test.isSkipped() && skipIsFail)) {
+        if (test.isFailed() || (test.isSkipped() && skipIsFail)) {
             exitCode = EXIT_FAILURE;
         }
     }

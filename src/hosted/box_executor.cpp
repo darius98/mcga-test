@@ -4,6 +4,7 @@
 #include <thread>
 
 #include "core/time_tick.hpp"
+#include "serialization.hpp"
 
 using mcga::proc::Message;
 using mcga::proc::PipeWriter;
@@ -38,6 +39,8 @@ void BoxExecutor::emitWarning(Warning warning, GroupPtr group) {
         decorateWarningWithCurrentTestNotes(warning, group);
         currentTestingSubprocessPipe->sendMessage(PipeMessageType::WARNING,
                                                   warning);
+    } else {
+        onWarning(std::move(warning), group);
     }
 }
 
