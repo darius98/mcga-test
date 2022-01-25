@@ -1,7 +1,5 @@
 #pragma once
 
-#include <utility>
-
 #include "intrusive_list.hpp"
 #include "memory.hpp"
 

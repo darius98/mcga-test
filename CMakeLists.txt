@@ -24,16 +24,12 @@ if (NOT TARGET mcga_proc)
 endif ()
 
 add_library(mcga_test_obj OBJECT
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/entry_point.cpp
-
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/core/box_executor.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/driver.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/executor.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/group.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/main.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/mcga_test.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/memory.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/core/scan_executor.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/time_tick.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/test.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/warning.cpp
@@ -46,7 +42,10 @@ add_library(mcga_test_obj OBJECT
         ${CMAKE_CURRENT_SOURCE_DIR}/src/extensions/feedback/stdout_logging_extension.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/extensions/feedback/test_logger.cpp
 
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/extensions/filter/ext.cpp)
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/extensions/filter/ext.cpp
+
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/hosted/entry_point.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/hosted/box_executor.cpp)
 target_link_libraries(mcga_test_obj PRIVATE mcga_cli PRIVATE mcga_proc)
 target_include_directories(mcga_test_obj
         PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src

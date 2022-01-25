@@ -3,7 +3,7 @@
 #include <algorithm>
 #include <thread>
 
-#include "time_tick.hpp"
+#include "core/time_tick.hpp"
 
 using mcga::proc::Message;
 using mcga::proc::PipeWriter;

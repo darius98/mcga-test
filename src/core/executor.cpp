@@ -24,8 +24,12 @@ class Interrupt : public std::exception {
 Executor::Executor(Type type): type(type) {
 }
 
-void Executor::setApi(ExtensionApi* api_) {
+void Executor::setExtensionApi(ExtensionApi* api_) {
     api = api_;
+}
+
+ExtensionApi* Executor::getExtensionApi() const {
+    return api;
 }
 
 bool Executor::isActive() const {

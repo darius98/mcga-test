@@ -21,7 +21,9 @@ class Executor {
 
     virtual ~Executor() = default;
 
-    void setApi(ExtensionApi* api);
+    void setExtensionApi(ExtensionApi* api);
+
+    [[nodiscard]] ExtensionApi* getExtensionApi() const;
 
     [[nodiscard]] bool isActive() const;
 

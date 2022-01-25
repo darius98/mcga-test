@@ -3,29 +3,27 @@
 #include "mcga/test.hpp"
 #include "utils.hpp"
 
+static mcga::test::Driver* driverInstance = nullptr;
+
 namespace mcga::test {
 
 Driver* Driver::Instance() {
-    return instance;
+    return driverInstance;
 }
 
 void Driver::Init(Driver* _instance) {
-    instance = _instance;
+    driverInstance = _instance;
 }
 
 void Driver::Clean() {
-    instance = nullptr;
+    driverInstance->executor->finalize();
+    driverInstance = nullptr;
 }
+
+Driver::Driver(Executor* executor): executor(executor) {}
 
 Executor::Type Driver::getExecutorType() const {
     return executor->getType();
-}
-
-void Driver::setExecutor(Executor* executor_) {
-    if (executor != nullptr) {
-        executor->finalize();
-    }
-    executor = executor_;
 }
 
 void Driver::addGroup(GroupConfig config, Executable body) {
@@ -39,6 +37,7 @@ void Driver::addGroup(GroupConfig config, Executable body) {
       std::move(config), body.context, parentGroup, currentGroupId);
 
     currentGroup = group;
+    executor->getExtensionApi()->runHooks<ExtensionApi::ON_GROUP_DISCOVERED>(group);
     try {
         body();
     } catch (const std::exception& e) {
@@ -60,8 +59,9 @@ void Driver::addTest(TestConfig config, Executable body) {
     if (!checkMainThreadAndInactive("test", body.context)) {
         return;
     }
-    executor->execute(
-      Test(std::move(config), std::move(body), currentGroup, ++currentTestId));
+    Test test(std::move(config), std::move(body), currentGroup, ++currentTestId);
+    executor->getExtensionApi()->runHooks<ExtensionApi::ON_TEST_DISCOVERED>(test);
+    executor->execute(std::move(test));
 }
 
 void Driver::addSetUp(Executable setUp) {

@@ -3,10 +3,10 @@
 #include <memory>
 #include <vector>
 
-#include <mcga/proc.hpp>
+#include "mcga/proc.hpp"
 
-#include "disallow_copy_and_move.hpp"
-#include "executor.hpp"
+#include "core/disallow_copy_and_move.hpp"
+#include "core/executor.hpp"
 
 namespace mcga::test {
 
