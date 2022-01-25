@@ -12,7 +12,9 @@ class ExitCodeExtension {
 
     [[nodiscard]] int getExitCode() const;
 
-    void init(ExtensionApi* api);
+    void afterTestExecution(const Test& test);
+
+    void onWarning(const Warning&);
 
     void destroy();
 

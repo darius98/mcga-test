@@ -16,12 +16,12 @@ static void run(Driver* driver) {
 }
 
 void runTests(Executor* runner, const EntryPointOptions& options) {
-    ExtensionApi api;
+    ExtensionApi api(options.extensions, options.numExtensions);
     ScanExecutor scanner;
     scanner.setApi(&api);
     runner->setApi(&api);
     for (std::size_t i = 0; i < options.numExtensions; i++) {
-        options.extensions[i].init(options.extensions[i].data, &api);
+        options.extensions[i].init(options.extensions[i].data);
     }
     Driver driver;
     Driver::Init(&driver);

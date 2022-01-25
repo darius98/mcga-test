@@ -163,44 +163,38 @@ void FilterExtension::registerCommandLineArgs(cli::Parser* parser) {
         .set_default_value({}));
 }
 
-void FilterExtension::init(ExtensionApi* api) {
-    if (descriptionFilterArgument->appeared()
-        || descriptionExcludeArgument->appeared()
-        || locationFilterArgument->appeared()
-        || locationExcludeArgument->appeared()) {
+void FilterExtension::init() {
+    parseFilterArray(descriptionFilterArgument,
+                     parseDescriptionFilter,
+                     matchDescriptionFilter,
+                     false,
+                     filters);
+    parseFilterArray(descriptionExcludeArgument,
+                     parseDescriptionFilter,
+                     matchDescriptionFilter,
+                     true,
+                     filters);
+    parseFilterArray(locationFilterArgument,
+                     parseLocationFilter,
+                     matchLocationFilter,
+                     false,
+                     filters);
+    parseFilterArray(locationExcludeArgument,
+                     parseLocationFilter,
+                     matchLocationFilter,
+                     true,
+                     filters);
+}
 
-        parseFilterArray(descriptionFilterArgument,
-                         parseDescriptionFilter,
-                         matchDescriptionFilter,
-                         false,
-                         filters);
-        parseFilterArray(descriptionExcludeArgument,
-                         parseDescriptionFilter,
-                         matchDescriptionFilter,
-                         true,
-                         filters);
-        parseFilterArray(locationFilterArgument,
-                         parseLocationFilter,
-                         matchLocationFilter,
-                         false,
-                         filters);
-        parseFilterArray(locationExcludeArgument,
-                         parseLocationFilter,
-                         matchLocationFilter,
-                         true,
-                         filters);
-
-        api->addHook<ExtensionApi::BEFORE_TEST_EXECUTION>(
-          [this](const Test& test, std::optional<Test::ExecutionInfo>& info) {
-              if (shouldSkipTest(test)) {
-                  info = Test::ExecutionInfo{
-                    .status = Test::ExecutionInfo::SKIPPED,
-                    .timeTicks = -1.0,
-                    .message = "Filtered out by command line arguments.",
-                    .context = std::nullopt,
-                  };
-              }
-          });
+void FilterExtension::beforeTestExecution(
+  const Test& test, std::optional<Test::ExecutionInfo>& info) {
+    if (shouldSkipTest(test)) {
+        info = Test::ExecutionInfo{
+          .status = Test::ExecutionInfo::SKIPPED,
+          .timeTicks = -1.0,
+          .message = "Filtered out by command line arguments.",
+          .context = std::nullopt,
+        };
     }
 }
 

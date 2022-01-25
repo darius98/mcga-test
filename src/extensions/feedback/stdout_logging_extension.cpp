@@ -22,9 +22,28 @@ void StdoutLoggingExtension::registerCommandLineArgs(cli::Parser* parser) {
                          "(that are then removed with '\\r' modifiers."));
 }
 
-void StdoutLoggingExtension::init(ExtensionApi* api) {
+void StdoutLoggingExtension::init() {
     if (!quietFlag->get_value()) {
-        initLogging(api);
+        logger = make_unique<TestLogger>(
+          std::cout, !noLiveLogging->get_value(), printSkipped->get_value());
+    }
+}
+
+void StdoutLoggingExtension::beforeTestExecution(const Test& test) {
+    if (logger != nullptr) {
+        logger->onTestExecutionStart(test);
+    }
+}
+
+void StdoutLoggingExtension::afterTestExecution(const Test& test) {
+    if (logger != nullptr) {
+        logger->onTestExecutionFinish(test);
+    }
+}
+
+void StdoutLoggingExtension::onWarning(const Warning& warning) {
+    if (logger != nullptr) {
+        logger->printWarning(warning);
     }
 }
 
@@ -32,24 +51,6 @@ void StdoutLoggingExtension::destroy() {
     if (logger != nullptr) {
         logger->printFinalInformation();
     }
-}
-
-void StdoutLoggingExtension::initLogging(ExtensionApi* api) {
-    logger = make_unique<TestLogger>(
-      std::cout, !noLiveLogging->get_value(), printSkipped->get_value());
-
-    api->addHook<ExtensionApi::BEFORE_TEST_EXECUTION>(
-      [this](const Test& test, std::optional<Test::ExecutionInfo>&) {
-          logger->onTestExecutionStart(test);
-      });
-
-    api->addHook<ExtensionApi::AFTER_TEST_EXECUTION>([this](const Test& test) {
-        logger->onTestExecutionFinish(test);
-    });
-
-    api->addHook<ExtensionApi::ON_WARNING>([this](const Warning& warning) {
-        logger->printWarning(warning);
-    });
 }
 
 }  // namespace mcga::test

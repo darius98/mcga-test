@@ -11,11 +11,57 @@ void SocketStreamingExtension::registerCommandLineArgs(cli::Parser* parser) {
         .set_default_value(""));
 }
 
-void SocketStreamingExtension::init(ExtensionApi* api) {
+void SocketStreamingExtension::init() {
     if (socketPathArgument->appeared()) {
-        socketWriter = std::unique_ptr<proc::PipeWriter>(
-          proc::createLocalClientSocket(socketPathArgument->get_value()));
-        addPipeHooks(socketWriter.get(), api);
+        socketWriter
+          = proc::createLocalClientSocket(socketPathArgument->get_value());
+    }
+}
+
+void SocketStreamingExtension::onGroupDiscovered(GroupPtr group) {
+    if (socketWriter != nullptr) {
+        socketWriter->sendMessage(PipeMessageType::GROUP_DISCOVERED,
+                                  group->getParentGroup()->getId(),
+                                  group->getId(),
+                                  group->getDescription(),
+                                  group->isOptional());
+    }
+}
+
+void SocketStreamingExtension::onTestDiscovered(const Test& test) {
+    if (socketWriter != nullptr) {
+        socketWriter->sendMessage(PipeMessageType::TEST_DISCOVERED,
+                                  test.getId(),
+                                  test.getGroup()->getId(),
+                                  test.getDescription(),
+                                  test.isOptional(),
+                                  test.getNumAttempts(),
+                                  test.getNumRequiredPassedAttempts());
+    }
+}
+
+void SocketStreamingExtension::beforeTestExecution(const Test& test) {
+    if (socketWriter != nullptr) {
+        socketWriter->sendMessage(PipeMessageType::TEST_EXECUTION_START,
+                                  test.getId());
+    }
+}
+
+void SocketStreamingExtension::afterTestExecution(const Test& test) {
+    if (socketWriter != nullptr) {
+        const Test::ExecutionInfo& lastExecution = test.getLastExecution();
+        socketWriter->sendMessage(PipeMessageType::TEST_EXECUTION_FINISH,
+                                  test.getId(),
+                                  lastExecution.status,
+                                  lastExecution.timeTicks,
+                                  lastExecution.message,
+                                  lastExecution.context);
+    }
+}
+
+void SocketStreamingExtension::onWarning(const Warning& warning) {
+    if (socketWriter != nullptr) {
+        socketWriter->sendMessage(PipeMessageType::WARNING, warning);
     }
 }
 
@@ -23,47 +69,6 @@ void SocketStreamingExtension::destroy() {
     if (socketWriter != nullptr) {
         socketWriter->sendMessage(PipeMessageType::DONE);
     }
-}
-
-void SocketStreamingExtension::addPipeHooks(proc::PipeWriter* pipe,
-                                     ExtensionApi* api) {
-    api->addHook<ExtensionApi::ON_GROUP_DISCOVERED>([pipe](GroupPtr group) {
-        pipe->sendMessage(PipeMessageType::GROUP_DISCOVERED,
-                          group->getParentGroup()->getId(),
-                          group->getId(),
-                          group->getDescription(),
-                          group->isOptional());
-    });
-
-    api->addHook<ExtensionApi::ON_TEST_DISCOVERED>([pipe](const Test& test) {
-        pipe->sendMessage(PipeMessageType::TEST_DISCOVERED,
-                          test.getId(),
-                          test.getGroup()->getId(),
-                          test.getDescription(),
-                          test.isOptional(),
-                          test.getNumAttempts(),
-                          test.getNumRequiredPassedAttempts());
-    });
-
-    api->addHook<ExtensionApi::BEFORE_TEST_EXECUTION>(
-      [pipe](const Test& test, std::optional<Test::ExecutionInfo>&) {
-          pipe->sendMessage(PipeMessageType::TEST_EXECUTION_START,
-                            test.getId());
-      });
-
-    api->addHook<ExtensionApi::AFTER_TEST_EXECUTION>([pipe](const Test& test) {
-        const Test::ExecutionInfo& lastExecution = test.getLastExecution();
-        pipe->sendMessage(PipeMessageType::TEST_EXECUTION_FINISH,
-                          test.getId(),
-                          lastExecution.status,
-                          lastExecution.timeTicks,
-                          lastExecution.message,
-                          lastExecution.context);
-    });
-
-    api->addHook<ExtensionApi::ON_WARNING>([pipe](const Warning& warning) {
-        pipe->sendMessage(PipeMessageType::WARNING, warning);
-    });
 }
 
 }  // namespace mcga::test

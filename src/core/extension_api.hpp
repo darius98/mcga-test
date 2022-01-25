@@ -3,23 +3,18 @@
 #include <cstdint>
 
 #include <optional>
-#include <stdexcept>
-#include <vector>
 
+#include "extension.hpp"
 #include "test.hpp"
 #include "warning.hpp"
 
 namespace mcga::test {
 
 class ExtensionApi {
-  public:
-    using GlobalHook = std::function<void()>;
-    using TestHook = std::function<void(const Test&)>;
-    using TestExecutionHook
-      = std::function<void(const Test&, std::optional<Test::ExecutionInfo>&)>;
-    using GroupHook = std::function<void(GroupPtr)>;
-    using WarningHook = std::function<void(const Warning&)>;
+    Extension* extensions;
+    std::size_t numExtensions;
 
+  public:
     enum Type : std::uint8_t {
         ON_GROUP_DISCOVERED = 0,
         ON_TEST_DISCOVERED = 1,
@@ -28,38 +23,38 @@ class ExtensionApi {
         AFTER_TEST_EXECUTION = 4,
     };
 
-    ExtensionApi() = default;
-    ExtensionApi(const ExtensionApi&) = default;
-    ExtensionApi(ExtensionApi&&) = default;
-
-    ExtensionApi& operator=(const ExtensionApi&) = default;
-    ExtensionApi& operator=(ExtensionApi&&) = default;
-
-    ~ExtensionApi() = default;
-
-    template<Type t, class H>
-    void addHook(H&& hook) {
-        std::get<t>(hooks).push_back(std::forward<H>(hook));
+    ExtensionApi(Extension* extensions, std::size_t numExtensions)
+            : extensions(extensions), numExtensions(numExtensions) {
     }
 
-  private:
     template<Type t, class... Args>
-    void runHooks(Args&&... args) {
-        for (const auto& hook: std::get<t>(hooks)) {
-            hook(std::forward<Args>(args)...);
+    void runHooks(Args&... args) {
+        for (std::size_t i = 0; i < numExtensions; i++) {
+            auto ext = extensions[i];
+
+            // TODO: cleaner?
+
+            if constexpr (t == ON_GROUP_DISCOVERED) {
+                ext.onGroupDiscovered(ext.data, args...);
+            }
+
+            if constexpr (t == ON_TEST_DISCOVERED) {
+                ext.onTestDiscovered(ext.data, args...);
+            }
+
+            if constexpr (t == ON_WARNING) {
+                ext.onWarning(ext.data, args...);
+            }
+
+            if constexpr (t == BEFORE_TEST_EXECUTION) {
+                ext.beforeTestExecution(ext.data, args...);
+            }
+
+            if constexpr (t == AFTER_TEST_EXECUTION) {
+                ext.afterTestExecution(ext.data, args...);
+            }
         }
     }
-
-    std::tuple<std::vector<GroupHook>,
-               std::vector<TestHook>,
-               std::vector<WarningHook>,
-               std::vector<TestExecutionHook>,
-               std::vector<TestHook>>
-      hooks;
-
-    friend class Executor;
-    friend class BoxExecutor;
-    friend class ScanExecutor;
 };
 
 }  // namespace mcga::test

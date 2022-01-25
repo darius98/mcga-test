@@ -22,13 +22,21 @@ class SocketStreamingExtension {
   public:
     void registerCommandLineArgs(cli::Parser* parser);
 
-    void init(ExtensionApi* api);
+    void init();
+
+    void onGroupDiscovered(GroupPtr group);
+
+    void onTestDiscovered(const Test& test);
+
+    void beforeTestExecution(const Test& test);
+
+    void afterTestExecution(const Test& test);
+
+    void onWarning(const Warning& warning);
 
     void destroy();
 
   private:
-    static void addPipeHooks(proc::PipeWriter* pipe, ExtensionApi* api);
-
     std::unique_ptr<proc::PipeWriter> socketWriter = nullptr;
 
     cli::Argument socketPathArgument;

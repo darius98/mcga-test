@@ -10,9 +10,10 @@ class FilterExtension {
   public:
     void registerCommandLineArgs(cli::Parser* parser);
 
-    void init(ExtensionApi* api);
+    void init();
 
-    void destroy() {}
+    void beforeTestExecution(const Test& test,
+                             std::optional<Test::ExecutionInfo>& info);
 
   private:
     [[nodiscard]] bool shouldSkipTest(const Test& test) const;

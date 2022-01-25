@@ -11,13 +11,17 @@ class StdoutLoggingExtension {
   public:
     void registerCommandLineArgs(cli::Parser* parser);
 
-    void init(ExtensionApi* api);
+    void init();
+
+    void beforeTestExecution(const Test& test);
+
+    void afterTestExecution(const Test& test);
+
+    void onWarning(const Warning& warning);
 
     void destroy();
 
   private:
-    void initLogging(ExtensionApi* api);
-
     std::unique_ptr<TestLogger> logger = nullptr;
 
     cli::Flag quietFlag;
