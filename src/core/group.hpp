@@ -1,6 +1,6 @@
 #pragma once
 
-#include "intrusive_list.hpp"
+#include "aa_list.hpp"
 #include "memory.hpp"
 
 namespace mcga::test {
@@ -110,8 +110,8 @@ class Group : private GroupConfig {
     Ptr parentGroup;
 
     Context context;
-    CallbackList setUps;
-    CallbackList tearDowns;
+    ExecutableList setUps;
+    ExecutableList tearDowns;
 
     /** Default constructor from the upgraded GroupConfig and extra metadata
      * received from the testing Driver. Very similar to Test#Test().*/

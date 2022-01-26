@@ -23,7 +23,7 @@ BoxExecutor::BoxExecutor(size_t numBoxes): Executor(BOXED), numBoxes(numBoxes) {
 
 void BoxExecutor::execute(Test test) {
     ensureEmptyBoxes(1);
-    addHooksExecutions(test);
+    beforeTestExecution(test);
     if (!test.isFinished()) {
         auto execProcess = startExecution(test);
         activeBoxes.emplace_back(std::move(test), std::move(execProcess));
@@ -105,10 +105,9 @@ bool BoxExecutor::tryCloseBox(Box* box) {
             break;
         }
     }
-    test.addExecution(info);
-    api->runHooks<ExtensionApi::AFTER_TEST_EXECUTION>(test);
+    test.addExecution(info, api);
     if (!test.isFinished()) {
-        addHooksExecutions(test);
+        beforeTestExecution(test);
         if (!test.isFinished()) {
             box->second = startExecution(test);
             return false;

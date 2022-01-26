@@ -47,12 +47,11 @@ void Executor::addCleanup(Executable cleanup) {
 
 void Executor::execute(Test test) {
     while (true) {
-        addHooksExecutions(test);
+        beforeTestExecution(test);
         if (test.isFinished()) {
             break;
         }
-        test.addExecution(run(test));
-        api->runHooks<ExtensionApi::AFTER_TEST_EXECUTION>(test);
+        test.addExecution(run(test), api);
     }
 }
 
@@ -136,7 +135,7 @@ void Executor::runJob(const Executable& job) {
 
 void Executor::onWarning(Warning warning, GroupPtr group) {
     decorateWarningWithCurrentTestNotes(warning, std::move(group));
-    api->runHooks<ExtensionApi::ON_WARNING>(warning);
+    api->onWarning(warning);
 }
 
 void Executor::decorateWarningWithCurrentTestNotes(Warning& warning,
@@ -163,15 +162,14 @@ void Executor::decorateWarningWithCurrentTestNotes(Warning& warning,
     }
 }
 
-void Executor::addHooksExecutions(Test& test) {
+void Executor::beforeTestExecution(Test& test) {
     while (true) {
         std::optional<Test::ExecutionInfo> execution;
-        api->runHooks<ExtensionApi::BEFORE_TEST_EXECUTION>(test, execution);
+        api->beforeTestExecution(test, execution);
         if (!execution.has_value()) {
             break;
         }
-        test.addExecution(*std::move(execution));
-        api->runHooks<ExtensionApi::AFTER_TEST_EXECUTION>(test);
+        test.addExecution(*std::move(execution), api);
         if (test.isFinished()) {
             break;
         }

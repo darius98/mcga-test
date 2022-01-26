@@ -15,44 +15,21 @@ class ExtensionApi {
     std::size_t numExtensions;
 
   public:
-    enum Type : std::uint8_t {
-        ON_GROUP_DISCOVERED = 0,
-        ON_TEST_DISCOVERED = 1,
-        ON_WARNING = 2,
-        BEFORE_TEST_EXECUTION = 3,
-        AFTER_TEST_EXECUTION = 4,
-    };
+    ExtensionApi(Extension* extensions, std::size_t numExtensions);
 
-    ExtensionApi(Extension* extensions, std::size_t numExtensions)
-            : extensions(extensions), numExtensions(numExtensions) {
-    }
+    void init();
+    void onGroupDiscovered(const GroupPtr& group);
+    void onTestDiscovered(const Test& test);
+    void beforeTestExecution(const Test& test, std::optional<Test::ExecutionInfo>& info);
+    void afterTestExecution(const Test& test);
+    void onWarning(const Warning& warning);
+    void destroy();
 
-    template<Type t, class... Args>
-    void runHooks(Args&... args) {
+  private:
+    template<class Callable>
+    void forEach(Callable callable) {
         for (std::size_t i = 0; i < numExtensions; i++) {
-            auto ext = extensions[i];
-
-            // TODO: cleaner?
-
-            if constexpr (t == ON_GROUP_DISCOVERED) {
-                ext.onGroupDiscovered(ext.data, args...);
-            }
-
-            if constexpr (t == ON_TEST_DISCOVERED) {
-                ext.onTestDiscovered(ext.data, args...);
-            }
-
-            if constexpr (t == ON_WARNING) {
-                ext.onWarning(ext.data, args...);
-            }
-
-            if constexpr (t == BEFORE_TEST_EXECUTION) {
-                ext.beforeTestExecution(ext.data, args...);
-            }
-
-            if constexpr (t == AFTER_TEST_EXECUTION) {
-                ext.afterTestExecution(ext.data, args...);
-            }
+            callable(extensions[i]);
         }
     }
 };

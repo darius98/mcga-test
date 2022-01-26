@@ -7,7 +7,7 @@
 namespace mcga::test {
 
 template<class T, class Allocator>
-class IntrusiveList {
+class List {
     static_assert(std::is_nothrow_move_constructible_v<T>);
 
   public:
@@ -48,20 +48,20 @@ class IntrusiveList {
             return copy;
         }
 
-        friend class IntrusiveList;
+        friend class List;
     };
 
-    IntrusiveList() = default;
-    ~IntrusiveList() {
+    List() = default;
+    ~List() {
         clear();
     }
 
-    IntrusiveList(IntrusiveList&& other) noexcept
+    List(List&& other) noexcept
             : head(other.head), tail(other.tail) {
         other.head = other.tail = nullptr;
     }
 
-    IntrusiveList& operator=(IntrusiveList&& other) noexcept {
+    List& operator=(List&& other) noexcept {
         if (this != &other) {
             clear();
             head = other.head;

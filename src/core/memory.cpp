@@ -54,8 +54,8 @@ template<class T, int N>
 using BufferFor = Buffer<sizeof(T), alignof(T), N>;
 
 static BufferFor<Group, numStaticGroups> staticGroups;
-static BufferFor<CallbackList::node, numStaticCallbacks> staticCallbacks;
-static BufferFor<IntrusiveList<Warning::Note, WarningNoteAllocator>::node,
+static BufferFor<ExecutableList::node, numStaticCallbacks> staticExecutables;
+static BufferFor<List<Warning::Note, WarningNoteAllocator>::node,
                  numStaticWarningNotes>
   staticWarningNotes;
 
@@ -68,11 +68,11 @@ void GroupAllocator::deallocate(void* ptr) {
 }
 
 void* ExecutableAllocator::allocate() {
-    return staticCallbacks.allocate();
+    return staticExecutables.allocate();
 }
 
 void ExecutableAllocator::deallocate(void* ptr) {
-    staticCallbacks.deallocate(ptr);
+    staticExecutables.deallocate(ptr);
 }
 
 void* WarningNoteAllocator::allocate() {

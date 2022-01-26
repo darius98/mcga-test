@@ -26,6 +26,7 @@ endif ()
 add_library(mcga_test_obj OBJECT
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/driver.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/executor.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/core/extension_api.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/group.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/main.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/mcga_test.cpp

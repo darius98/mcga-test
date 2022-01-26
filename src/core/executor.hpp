@@ -79,7 +79,7 @@ class Executor {
 
     void decorateWarningWithCurrentTestNotes(Warning& warning, GroupPtr group);
 
-    void addHooksExecutions(Test& test);
+    void beforeTestExecution(Test& test);
 
     void onWarning(Warning warning, GroupPtr group);
 
@@ -107,7 +107,7 @@ class Executor {
     const Test* currentTest = nullptr;
     SynchronizedTestExecution currentExecution;
 
-    CallbackList cleanups;
+    ExecutableList cleanups;
 };
 
 class SmoothExecutor : public Executor {

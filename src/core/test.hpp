@@ -7,6 +7,8 @@
 
 namespace mcga::test {
 
+struct ExtensionApi;
+
 /** Class holding the internal representation of a test.
  *
  * This class should only be instantiated once for every call to test() from
@@ -145,7 +147,7 @@ class Test : private TestConfig {
       getLastSkippedExecution() const;
 
     /** Add an execution to the test. */
-    void addExecution(ExecutionInfo info);
+    void addExecution(ExecutionInfo info, ExtensionApi* api);
 
   private:
     Executable body;

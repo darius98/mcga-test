@@ -9,7 +9,6 @@
 namespace mcga::test {
 
 enum class WarningNoteType : std::uint8_t {
-    OTHER = 0,
     TEST = 1,
     GROUP = 2,
     SET_UP = 3,
@@ -19,7 +18,7 @@ enum class WarningNoteType : std::uint8_t {
 
 struct Warning {
     struct Note {
-        WarningNoteType type = WarningNoteType::OTHER;
+        WarningNoteType type;
         String message;
         std::optional<Context> context;
 
@@ -31,7 +30,7 @@ struct Warning {
 
     String message;
     std::optional<Context> context;
-    IntrusiveList<Warning::Note, WarningNoteAllocator> notes;
+    List<Warning::Note, WarningNoteAllocator> notes;
 
     Warning() = default;
     explicit Warning(String message, std::optional<Context> context = {});

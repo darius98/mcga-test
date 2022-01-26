@@ -20,7 +20,9 @@ void Driver::Clean() {
     driverInstance = nullptr;
 }
 
-Driver::Driver(Executor* executor): executor(executor) {
+Driver::Driver(ExtensionApi* api, Executor* executor)
+        : api(api), executor(executor) {
+    executor->setExtensionApi(api);
 }
 
 Executor::Type Driver::getExecutorType() const {
@@ -35,20 +37,15 @@ void Driver::addGroup(GroupConfig config, Executable body) {
     ++currentGroupId;
     currentGroup = Group::make(
       std::move(config), body.context, currentGroup, currentGroupId);
-    executor->getExtensionApi()->runHooks<ExtensionApi::ON_GROUP_DISCOVERED>(
-      currentGroup);
+    executor->getExtensionApi()->onGroupDiscovered(currentGroup);
     try {
         body();
     } catch (const std::exception& e) {
-        emitWarning(
-          Warning("Exception thrown outside a test: " + std::string(e.what()))
-            .addNote(WarningNoteType::OTHER,
-                     "Unable to execute remainder of tests in this group."));
+        emitWarning("Exception thrown outside a test: " + std::string(e.what())
+                    + ". Unable to execute remainder of tests in this group.");
     } catch (...) {
-        emitWarning(
-          Warning("Non-exception object thrown outside a test.")
-            .addNote(WarningNoteType::OTHER,
-                     "Unable to execute remainder of tests in this group."));
+        emitWarning("Non-exception object thrown outside a test. Unable to "
+                    "execute remainder of tests in this group.");
     }
     currentGroup = currentGroup->getParentGroup();
 }
@@ -59,8 +56,7 @@ void Driver::addTest(TestConfig config, Executable body) {
     }
     Test test(
       std::move(config), std::move(body), currentGroup, ++currentTestId);
-    executor->getExtensionApi()->runHooks<ExtensionApi::ON_TEST_DISCOVERED>(
-      test);
+    executor->getExtensionApi()->onTestDiscovered(test);
     executor->execute(std::move(test));
 }
 
@@ -81,10 +77,10 @@ void Driver::addTearDown(Executable tearDown) {
 
 void Driver::addFailure(Test::ExecutionInfo info) {
     if (!executor->isActive()) {
-        emitWarning(Warning(info.status == Test::ExecutionInfo::FAILED
-                              ? "Called fail() outside a test, ignoring."
-                              : "Called skip() outside a test, ignoring.",
-                            info.context));
+        emitWarning(info.status == Test::ExecutionInfo::FAILED
+                      ? "Called fail() outside a test, ignoring."
+                      : "Called skip() outside a test, ignoring.",
+                    info.context);
         return;
     }
     executor->addFailure(std::move(info));
@@ -92,15 +88,15 @@ void Driver::addFailure(Test::ExecutionInfo info) {
 
 void Driver::addCleanup(Executable cleanup) {
     if (!executor->isActive()) {
-        emitWarning(Warning("Called cleanup() outside a test, ignoring.",
-                            cleanup.context));
+        emitWarning("Called cleanup() outside a test, ignoring.",
+                    cleanup.context);
         return;
     }
     executor->addCleanup(std::move(cleanup));
 }
 
-void Driver::emitWarning(Warning warning) {
-    executor->emitWarning(std::move(warning), currentGroup);
+void Driver::emitWarning(String message, std::optional<Context> context) {
+    executor->emitWarning(Warning(std::move(message), context), currentGroup);
 }
 
 bool Driver::checkMainThreadAndInactive(WarningNoteType method,
@@ -119,7 +115,7 @@ bool Driver::checkMainThreadAndInactive(WarningNoteType method,
                 default: return "";
             }
         }();
-        emitWarning(Warning(warningMessage, context));
+        emitWarning(warningMessage, context);
         return false;
     }
     if (testingThreadId != current_thread_id()) {
@@ -140,7 +136,7 @@ bool Driver::checkMainThreadAndInactive(WarningNoteType method,
                 default: return "";
             }
         }();
-        emitWarning(Warning(warningMessage, context));
+        emitWarning(warningMessage, context);
         return false;
     }
     return true;

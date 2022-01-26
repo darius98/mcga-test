@@ -1,5 +1,7 @@
 #include "test.hpp"
 
+#include "extension_api.hpp"
+
 namespace mcga::test {
 
 void Test::ExecutionInfo::fail(const String& failureMessage,
@@ -122,7 +124,7 @@ const std::optional<Test::ExecutionInfo>&
     return lastSkippedExecution;
 }
 
-void Test::addExecution(ExecutionInfo info) {
+void Test::addExecution(ExecutionInfo info, ExtensionApi* api) {
     if (info.status == ExecutionInfo::PASSED) {
         numPassedExecutions += 1;
     }
@@ -139,6 +141,7 @@ void Test::addExecution(ExecutionInfo info) {
         trackedExecutionTimeTicks += info.timeTicks;
     }
     lastExecution = std::move(info);
+    api->afterTestExecution(*this);
 }
 
 }  // namespace mcga::test

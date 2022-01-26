@@ -124,14 +124,14 @@ class MCGATestIntegrationSmoothTestCase(MCGATestIntegrationMixin):
                            [group1_note, group_test_case_note])
 
         self.check_warning(
-            r"Exception thrown outside a test: exception-in-group",
-            notes=[(r"Unable to execute remainder of tests in this group\.", 0), group1_note,
-                   group_test_case_note])
+            r"Exception thrown outside a test: exception-in-group\. Unable to execute "
+            r"remainder of tests in this group.",
+            notes=[group1_note, group_test_case_note])
 
         self.check_warning(
-            r"Non-exception object thrown outside a test\.",
-            notes=[(r"Unable to execute remainder of tests in this group\.", 0), group2_note,
-                   group_test_case_note])
+            r"Non-exception object thrown outside a test\. Unable to execute "
+            r"remainder of tests in this group.",
+            notes=[group2_note, group_test_case_note])
 
         set_up_note = ("While running setUp", 27)
         test_note = ("While running test test", 55)
