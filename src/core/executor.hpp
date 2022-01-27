@@ -13,11 +13,6 @@ struct SynchronizedTestExecution {
     Test::ExecutionInfo info;
     mutable std::mutex infoLock;
 
-    [[nodiscard]] const char* getMessage() const {
-        std::lock_guard guard(infoLock);
-        return info.message.c_str();
-    }
-
     [[nodiscard]] bool isPassed() const {
         std::lock_guard guard(infoLock);
         return info.isPassed();

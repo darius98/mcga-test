@@ -125,7 +125,7 @@ void Executor::runJob(const Executable& job) {
         job();
     } catch (Interrupt& interruption) {
     } catch (const std::exception& e) {
-        currentExecution.fail("Uncaught exception: " + std::string(e.what()),
+        currentExecution.fail(String::cat("Uncaught exception: ", e.what()),
                               job.context);
     } catch (...) {
         currentExecution.fail("Uncaught non-exception type.", job.context);

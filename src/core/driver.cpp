@@ -41,8 +41,7 @@ void Driver::addGroup(GroupConfig config, Executable body) {
     try {
         body();
     } catch (const std::exception& e) {
-        emitWarning("Exception thrown outside a test: " + std::string(e.what())
-                    + ". Unable to execute remainder of tests in this group.");
+        emitWarning(String::cat("Exception thrown outside a test: ", e.what(), ". Unable to execute remainder of tests in this group."));
     } catch (...) {
         emitWarning("Non-exception object thrown outside a test. Unable to "
                     "execute remainder of tests in this group.");

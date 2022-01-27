@@ -21,17 +21,20 @@ class List {
     node* tail = nullptr;
 
   public:
-    class iterator {
+    struct iterator
+            : std::iterator<std::forward_iterator_tag, T, std::size_t, T*, T&> {
         node* at;
 
-        explicit iterator(node* at) noexcept: at(at) {
+        bool operator==(const iterator& rhs) const noexcept {
+            return at == rhs.at;
         }
 
-      public:
-        auto operator<=>(const iterator& rhs) const noexcept = default;
+        bool operator!=(const iterator& rhs) const noexcept {
+            return at != rhs.at;
+        }
 
         T* operator->() const noexcept {
-            return &at->value;
+            return std::addressof(at->value);
         }
         T& operator*() const noexcept {
             return at->value;
@@ -47,8 +50,6 @@ class List {
             at = at->next;
             return copy;
         }
-
-        friend class List;
     };
 
     List() = default;
@@ -57,16 +58,15 @@ class List {
     }
 
     List(List&& other) noexcept
-            : head(other.head), tail(other.tail) {
-        other.head = other.tail = nullptr;
+            : head(std::exchange(other.head, nullptr)),
+              tail(std::exchange(other.tail, nullptr)) {
     }
 
     List& operator=(List&& other) noexcept {
         if (this != &other) {
             clear();
-            head = other.head;
-            tail = other.tail;
-            other.head = other.tail = nullptr;
+            head = std::exchange(other.head, nullptr);
+            tail = std::exchange(other.tail, nullptr);
         }
         return *this;
     }
@@ -88,14 +88,13 @@ class List {
     }
 
     void clear() {
-        auto n = head;
-        while (n != nullptr) {
-            auto next = n->next;
-            n->~node();
-            Allocator::deallocate(n);
-            n = next;
+        while (head != nullptr) {
+            auto next = head->next;
+            std::destroy_at(head);
+            Allocator::deallocate(head);
+            head = next;
         }
-        head = tail = nullptr;
+        tail = nullptr;
     }
 
     [[nodiscard]] std::size_t getSizeSlow() const {
@@ -109,11 +108,11 @@ class List {
     }
 
     [[nodiscard]] iterator begin() const {
-        return iterator(head);
+        return iterator{.at = head};
     }
 
     [[nodiscard]] iterator end() const {
-        return iterator(nullptr);
+        return iterator{.at = nullptr};
     }
 };
 

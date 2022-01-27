@@ -23,7 +23,9 @@ concept std_string_like = requires(const T& str) {
     { str.data() } -> same_as<const char*>;
 };
 
-const char* duplicate_str(const char* data);
+const char* duplicate_str(const char* a);
+const char* duplicate_str(const char* a, const char* b);
+const char* duplicate_str(const char* a, const char* b, const char* c);
 
 void delete_str(const char* data);
 
@@ -43,20 +45,30 @@ class String {
     bool isOwned;
     const char* data;
 
+    constexpr String(bool isOwned, const char* data) noexcept
+            : isOwned(isOwned), data(data) {
+    }
+
   public:
+    static String cat(const char* a, const char* b) {
+        return {true, internal::duplicate_str(a, b)};
+    }
+    static String cat(const char* a, const char* b, const char* c) {
+        return {true, internal::duplicate_str(a, b, c)};
+    }
+
     constexpr String() noexcept: String("") {
     }
 
-    constexpr String(const char* data) noexcept: isOwned(false), data(data) {
+    constexpr String(const char* data) noexcept: String(false, data) {
     }
 
     template<int N>
-    constexpr String(const char (&data)[N]) noexcept
-            : isOwned(false), data(data) {
+    constexpr String(const char (&data)[N]) noexcept: String(false, data) {
     }
 
     String(const internal::std_string_like auto& data)
-            : isOwned(true), data(internal::duplicate_str(data.data())) {
+            : String(true, internal::duplicate_str(data.data())) {
     }
 
     constexpr String(const String& other)
