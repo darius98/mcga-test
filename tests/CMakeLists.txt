@@ -1,7 +1,5 @@
 add_custom_target(mcga_test_check COMMAND ${CMAKE_CTEST_COMMAND})
 
-include(FindThreads)
-
 function(add_unit_test TEST_NAME)
     cmake_parse_arguments(P "NO_EXECUTOR_TYPE" "" "" ${ARGN})
     set(UNIT_TEST mcga_test_unit_${TEST_NAME})
@@ -18,9 +16,18 @@ function(add_unit_test TEST_NAME)
 endfunction()
 
 function(add_integration_test TEST_NAME)
-    add_executable(mcga_test_integration_${TEST_NAME} ${ARGN})
+    cmake_parse_arguments(P "FREESTANDING" "" "" ${ARGN})
+
+    add_executable(mcga_test_integration_${TEST_NAME} ${P_UNPARSED_ARGUMENTS})
     set_target_properties(mcga_test_integration_${TEST_NAME} PROPERTIES RUNTIME_OUTPUT_NAME ${TEST_NAME})
-    target_link_libraries(mcga_test_integration_${TEST_NAME} mcga_test_static ${CMAKE_THREAD_LIBS_INIT})
+    if (P_FREESTANDING)
+        target_link_libraries(mcga_test_integration_${TEST_NAME} mcga_test_freestanding)
+        # Freestanding tests will need to implement their own main()
+        # function, and will need access to library internals.
+        target_include_directories(mcga_test_integration_${TEST_NAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../src)
+    else ()
+        target_link_libraries(mcga_test_integration_${TEST_NAME} mcga_test_static)
+    endif ()
     add_dependencies(mcga_test_check mcga_test_integration_${TEST_NAME})
 endfunction()
 
@@ -47,6 +54,8 @@ add_integration_test(fail_in_cleanup integration/fail_in_cleanup.cpp)
 add_integration_test(skip_in_set_up integration/skip_in_set_up.cpp)
 add_integration_test(skip_in_tear_down integration/skip_in_tear_down.cpp)
 add_integration_test(empty integration/empty.cpp)
+# TODO: Enable this after fixing
+# add_integration_test(freestanding integration/freestanding.cpp FREESTANDING)
 
 add_library(mcga_test_integration_multiple_files_lib_1 OBJECT integration/multiple_files.cpp)
 target_compile_definitions(mcga_test_integration_multiple_files_lib_1 PRIVATE MCGA_TEST_INTEGRATION_MULTIPLE_FILES=1)
