@@ -5,6 +5,7 @@
 #include <mcga/test/string.hpp>
 
 namespace mcga::test {
+inline namespace MCGA_TEST_ABI_NS {
 
 /** Structure defining the configuration for a test.
  *
@@ -69,82 +70,30 @@ struct GroupConfig {
     bool optional = false;
 };
 
-namespace MCGA_TEST_ABI_NS {
+void group(Executable body);
+void group(String description, Executable body);
+void group(GroupConfig config, Executable body);
+
+void test(Executable body);
+void test(String description, Executable body);
+void test(TestConfig config, Executable body);
+
+void setUp(Executable body);
+void tearDown(Executable body);
+void cleanup(Executable body);
+
+void fail(String message = String(), Context context = Context());
+void skip(String message = String(), Context context = Context("Skipped"));
+void expect(bool expr, Context context = Context("Expectation failed"));
+
+}  // namespace MCGA_TEST_ABI_NS
+}  // namespace mcga::test
+
+namespace mcga::test::internal {
 
 void register_test_case(const char* name, void (*body)(), Context context);
 
-void register_test(TestConfig config, Executable body);
-
-void register_group(GroupConfig config, Executable body);
-
-void register_set_up(Executable body);
-
-void register_tear_down(Executable body);
-
-void register_interrupt(bool isFail, String message, Context context);
-
-void register_cleanup(Executable exec);
-
-}  // namespace MCGA_TEST_ABI_NS
-
-inline void group(Executable body) {
-    MCGA_TEST_ABI_NS::register_group({}, internal::move(body));
-}
-
-inline void group(String description, Executable body) {
-    MCGA_TEST_ABI_NS::register_group(
-      {.description = internal::move(description)}, internal::move(body));
-}
-
-inline void group(GroupConfig config, Executable body) {
-    MCGA_TEST_ABI_NS::register_group(internal::move(config),
-                                     internal::move(body));
-}
-
-inline void test(Executable body) {
-    MCGA_TEST_ABI_NS::register_test({}, internal::move(body));
-}
-
-inline void test(String description, Executable body) {
-    MCGA_TEST_ABI_NS::register_test(
-      {.description = internal::move(description)}, internal::move(body));
-}
-
-inline void test(TestConfig config, Executable body) {
-    MCGA_TEST_ABI_NS::register_test(internal::move(config),
-                                    internal::move(body));
-}
-
-inline void setUp(Executable body) {
-    MCGA_TEST_ABI_NS::register_set_up(internal::move(body));
-}
-
-inline void cleanup(Executable body) {
-    MCGA_TEST_ABI_NS::register_cleanup(internal::move(body));
-}
-
-inline void tearDown(Executable body) {
-    MCGA_TEST_ABI_NS::register_tear_down(internal::move(body));
-}
-
-inline void fail(String message = String(), Context context = Context()) {
-    MCGA_TEST_ABI_NS::register_interrupt(
-      true, internal::move(message), context);
-}
-
-inline void skip(String message = String(),
-                 Context context = Context("Skipped")) {
-    MCGA_TEST_ABI_NS::register_interrupt(
-      false, internal::move(message), context);
-}
-
-inline void expect(bool expr, Context context = Context("Expectation failed")) {
-    if (!expr) {
-        fail("", context);
-    }
-}
-
-}  // namespace mcga::test
+}  // namespace mcga::test::internal
 
 #define TEST_CASE(name)                                                        \
     namespace {                                                                \
@@ -152,7 +101,7 @@ inline void expect(bool expr, Context context = Context("Expectation failed")) {
         static void run();                                                     \
                                                                                \
         MCGA_TEST_CAT2(mcga_test_case_, __LINE__)() {                          \
-            ::mcga::test::MCGA_TEST_ABI_NS::register_test_case(                \
+            ::mcga::test::internal::register_test_case(                        \
               name, run, ::mcga::test::Context());                             \
         }                                                                      \
     } MCGA_TEST_CAT2(mcga_test_reg_, __LINE__);                                \

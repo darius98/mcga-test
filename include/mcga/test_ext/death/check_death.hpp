@@ -3,27 +3,10 @@
 #include "death_status.hpp"
 #include "mcga/test.hpp"
 
-namespace mcga::test::internal {
-
-void check_death(Executable func,
-                 double timeTicksLimit,
-                 int* exitCode,
-                 int* exitSignal);
-
-}
-
 namespace mcga::test {
+inline namespace MCGA_TEST_ABI_NS {
 
-template<internal::executable_t Callable>
-DeathStatus checkDeath(Callable func,
-                       double timeTicksLimit = 1,
-                       Context context = Context()) {
-    int exitCode, exitSignal;
-    internal::check_death(Executable(std::move(func), context),
-                          timeTicksLimit,
-                          &exitCode,
-                          &exitSignal);
-    return DeathStatus{exitCode, exitSignal};
-}
+DeathStatus checkDeath(Executable func, double timeTicksLimit = 1);
 
+}  // namespace MCGA_TEST_ABI_NS
 }  // namespace mcga::test

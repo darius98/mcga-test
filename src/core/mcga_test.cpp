@@ -3,7 +3,7 @@
 #include "driver.hpp"
 #include "export.hpp"
 
-namespace mcga::test::MCGA_TEST_ABI_NS {
+namespace mcga::test::internal {
 
 static TestCaseList testCases;
 
@@ -12,40 +12,76 @@ MCGA_TEST_EXPORT void
     testCases.push_back(TestCase{name, body, context});
 }
 
-MCGA_TEST_EXPORT void register_test(TestConfig config, Executable body) {
-    Driver::Instance()->addTest(std::move(config), std::move(body));
+}  // namespace mcga::test::internal
+
+namespace mcga::test {
+inline namespace MCGA_TEST_ABI_NS {
+
+MCGA_TEST_EXPORT void group(Executable body) {
+    Driver::Instance()->addGroup({}, std::move(body));
 }
 
-MCGA_TEST_EXPORT void register_group(GroupConfig config, Executable body) {
+MCGA_TEST_EXPORT void group(String description, Executable body) {
+    Driver::Instance()->addGroup({.description = std::move(description)},
+                                 std::move(body));
+}
+
+MCGA_TEST_EXPORT void group(GroupConfig config, Executable body) {
     Driver::Instance()->addGroup(std::move(config), std::move(body));
 }
 
-MCGA_TEST_EXPORT void register_set_up(Executable body) {
+MCGA_TEST_EXPORT void test(Executable body) {
+    Driver::Instance()->addTest({}, std::move(body));
+}
+
+MCGA_TEST_EXPORT void test(String description, Executable body) {
+    Driver::Instance()->addTest({.description = std::move(description)},
+                                std::move(body));
+}
+
+MCGA_TEST_EXPORT void test(TestConfig config, Executable body) {
+    Driver::Instance()->addTest(std::move(config), std::move(body));
+}
+
+MCGA_TEST_EXPORT void setUp(Executable body) {
     Driver::Instance()->addSetUp(std::move(body));
 }
 
-MCGA_TEST_EXPORT void register_tear_down(Executable body) {
+MCGA_TEST_EXPORT void tearDown(Executable body) {
     Driver::Instance()->addTearDown(std::move(body));
 }
 
-MCGA_TEST_EXPORT void
-  register_interrupt(bool isFail, String message, Context context) {
-    const auto status
-      = isFail ? Test::ExecutionInfo::FAILED : Test::ExecutionInfo::SKIPPED;
-    Driver::Instance()->addFailure(Test::ExecutionInfo{
-      .status = status, .message = std::move(message), .context = context});
+MCGA_TEST_EXPORT void cleanup(Executable body) {
+    Driver::Instance()->addCleanup(std::move(body));
 }
 
-MCGA_TEST_EXPORT void register_cleanup(Executable exec) {
-    Driver::Instance()->addCleanup(std::move(exec));
+MCGA_TEST_EXPORT void fail(String message, Context context) {
+    Driver::Instance()->addFailure(
+      Test::ExecutionInfo{.status = Test::ExecutionInfo::FAILED,
+                          .message = std::move(message),
+                          .context = context});
 }
 
-}  // namespace mcga::test::MCGA_TEST_ABI_NS
+MCGA_TEST_EXPORT void skip(String message, Context context) {
+    Driver::Instance()->addFailure(
+      Test::ExecutionInfo{.status = Test::ExecutionInfo::SKIPPED,
+                          .message = std::move(message),
+                          .context = context});
+}
+
+MCGA_TEST_EXPORT void expect(bool expr, Context context) {
+    if (!expr) {
+        fail("", context);
+    }
+}
+
+}  // namespace MCGA_TEST_ABI_NS
+}  // namespace mcga::test
 
 namespace mcga::test {
 
 const TestCaseList* getTestCasesList() {
-    return &MCGA_TEST_ABI_NS::testCases;
+    return &internal::testCases;
 }
 
 }  // namespace mcga::test

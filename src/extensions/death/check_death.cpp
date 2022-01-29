@@ -10,18 +10,15 @@
 
 using namespace mcga::proc;
 
-namespace mcga::test::internal {
+namespace mcga::test {
+inline namespace MCGA_TEST_ABI_NS {
 
-MCGA_TEST_EXPORT void check_death(Executable func,
-                                  double timeTicksLimit,
-                                  int* exitCode,
-                                  int* exitSignal) {
-    *exitCode = *exitSignal = -1;
+MCGA_TEST_EXPORT DeathStatus checkDeath(Executable func,
+                                        double timeTicksLimit) {
     if (Driver::Instance()->getExecutorType() == Executor::SMOOTH) {
-        // TODO: Don't fail() here, implement the skip() functionality instead!
         fail("Death extension matchers & the checkDeath function do not work"
              " when using a smooth executor.");
-        return;
+        return {-1, -1};
     }
 
     WorkerSubprocess proc(
@@ -35,9 +32,10 @@ MCGA_TEST_EXPORT void check_death(Executable func,
         std::this_thread::sleep_for(std::chrono::milliseconds{5});
     }
     if (proc.getNextMessage(1).isInvalid()) {
-        *exitCode = proc.getReturnCode();
-        *exitSignal = proc.getSignal();
+        return {proc.getReturnCode(), proc.getSignal()};
     }
+    return {-1, -1};
 }
 
-}  // namespace mcga::test::internal
+}  // namespace MCGA_TEST_ABI_NS
+}  // namespace mcga::test
