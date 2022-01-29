@@ -36,23 +36,31 @@ void Driver::addGroup(GroupConfig config, Executable body) {
     }
 
     ++currentGroupId;
-    currentGroup = Group::make(
+    auto group = Group::make(
       std::move(config), body.context, currentGroup, currentGroupId);
+    if (group == nullptr) {
+        emitWarning("Failed to allocate storage for group. Increase the number "
+                    "of statically allocated groups by changing the "
+                    "MCGA_TEST_PRE_ALLOCATED_GROUPS build flag.",
+                    body.context);
+        return;
+    }
+    currentGroup = group;
     executor->getExtensionApi()->onGroupDiscovered(currentGroup);
 #if MCGA_TEST_EXCEPTIONS
-        try {
-            body();
-        } catch (const std::exception& e) {
-            emitWarning(String::cat(
-              "Exception thrown outside a test: ",
-              e.what(),
-              ". Unable to execute remainder of tests in this group."));
-        } catch (...) {
-            emitWarning("Non-exception object thrown outside a test. Unable to "
-                        "execute remainder of tests in this group.");
-        }
-#else
+    try {
         body();
+    } catch (const std::exception& e) {
+        emitWarning(
+          String::cat("Exception thrown outside a test: ",
+                      e.what(),
+                      ". Unable to execute remainder of tests in this group."));
+    } catch (...) {
+        emitWarning("Non-exception object thrown outside a test. Unable to "
+                    "execute remainder of tests in this group.");
+    }
+#else
+    body();
 #endif
     currentGroup = currentGroup->getParentGroup();
 }
@@ -68,18 +76,29 @@ void Driver::addTest(TestConfig config, Executable body) {
 }
 
 void Driver::addSetUp(Executable setUp) {
-    if (!checkMainThreadAndInactive(WarningNoteType::SET_UP, setUp.context)) {
+    const auto context = setUp.context;
+    if (!checkMainThreadAndInactive(WarningNoteType::SET_UP, context)) {
         return;
     }
-    currentGroup->addSetUp(std::move(setUp));
+    if (!currentGroup->addSetUp(std::move(setUp))) {
+        emitWarning("Failed to allocate storage for setUp. Increase the "
+                    "number of statically allocated callbacks by changing the "
+                    "MCGA_TEST_PRE_ALLOCATED_CALLBACKS build flag.",
+                    context);
+    }
 }
 
 void Driver::addTearDown(Executable tearDown) {
-    if (!checkMainThreadAndInactive(WarningNoteType::TEAR_DOWN,
-                                    tearDown.context)) {
+    const auto context = tearDown.context;
+    if (!checkMainThreadAndInactive(WarningNoteType::TEAR_DOWN, context)) {
         return;
     }
-    currentGroup->addTearDown(std::move(tearDown));
+    if (!currentGroup->addTearDown(std::move(tearDown))) {
+        emitWarning("Failed to allocate storage for tearDown. Increase the "
+                    "number of statically allocated callbacks by changing the "
+                    "MCGA_TEST_PRE_ALLOCATED_CALLBACKS build flag.",
+                    context);
+    }
 }
 
 void Driver::addFailure(Test::ExecutionInfo info) {
@@ -94,12 +113,18 @@ void Driver::addFailure(Test::ExecutionInfo info) {
 }
 
 void Driver::addCleanup(Executable cleanup) {
+    const auto context = cleanup.context;
+
     if (!executor->isActive()) {
-        emitWarning("Called cleanup() outside a test, ignoring.",
-                    cleanup.context);
+        emitWarning("Called cleanup() outside a test, ignoring.", context);
         return;
     }
-    executor->addCleanup(std::move(cleanup));
+    if (!executor->addCleanup(std::move(cleanup))) {
+        emitWarning("Failed to allocate storage for cleanup. Increase the "
+                    "number of statically allocated callbacks by changing the "
+                    "MCGA_TEST_PRE_ALLOCATED_CALLBACKS build flag.",
+                    context);
+    }
 }
 
 void Driver::emitWarning(String message, std::optional<Context> context) {

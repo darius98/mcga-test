@@ -79,7 +79,7 @@ class Executor {
 
     void addFailure(Test::ExecutionInfo info);
 
-    void addCleanup(Executable cleanup);
+    bool addCleanup(Executable cleanup);
 
     Test::ExecutionInfo run(const Test& test);
 

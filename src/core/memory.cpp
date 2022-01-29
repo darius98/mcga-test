@@ -38,7 +38,6 @@ MCGA_TEST_EXPORT const char* duplicate_str(const char* a, const char* b, const c
 MCGA_TEST_EXPORT void delete_str(const char* data) {
     std::free((void*)data);
 }
-
 #endif
 
 }  // namespace mcga::test::internal
@@ -79,7 +78,6 @@ struct Buffer {
 #if MCGA_TEST_ALLOW_DYNAMIC_MEMORY
         return malloc(element_size);
 #else
-        // TODO: Figure out how to fail fast (generically) in freestanding mode.
         return nullptr;
 #endif
     }

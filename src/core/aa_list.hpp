@@ -71,8 +71,11 @@ class List {
         return *this;
     }
 
-    void push_back(T value) {
+    bool push_back(T value) {
         const auto slot = Allocator::allocate();
+        if (slot == nullptr) {
+            return false;
+        }
         const auto n = new (slot) node{std::move(value), nullptr};
         if (tail == nullptr) {
             head = tail = n;
@@ -80,11 +83,16 @@ class List {
             tail->next = n;
             tail = n;
         }
+        return true;
     }
 
-    void push_front(T value) {
+    bool push_front(T value) {
         const auto slot = Allocator::allocate();
+        if (slot == nullptr) {
+            return false;
+        }
         head = new (slot) node{std::move(value), head};
+        return true;
     }
 
     void clear() {

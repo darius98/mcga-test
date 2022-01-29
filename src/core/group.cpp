@@ -81,6 +81,9 @@ bool Group::Ptr::operator!=(std::nullptr_t) const noexcept {
 Group::Ptr
   Group::make(GroupConfig config, Context context, Ptr parentGroup, int id) {
     const auto storage = GroupAllocator::allocate();
+    if (storage == nullptr) {
+        return Ptr{nullptr};
+    }
     const auto group = new (storage)
       Group(std::move(config), context, std::move(parentGroup), id);
     return Ptr(group);
@@ -125,12 +128,12 @@ bool Group::hasParentGroup() const {
     return parentGroup != nullptr;
 }
 
-void Group::addSetUp(Executable func) {
-    setUps.push_back(std::move(func));
+bool Group::addSetUp(Executable func) {
+    return setUps.push_back(std::move(func));
 }
 
-void Group::addTearDown(Executable func) {
-    tearDowns.push_front(std::move(func));
+bool Group::addTearDown(Executable func) {
+    return tearDowns.push_front(std::move(func));
 }
 
 }  // namespace mcga::test

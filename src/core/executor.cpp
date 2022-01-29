@@ -42,8 +42,8 @@ void Executor::addFailure(Test::ExecutionInfo info) {
 #endif
 }
 
-void Executor::addCleanup(Executable cleanup) {
-    cleanups.push_back(std::move(cleanup));
+bool Executor::addCleanup(Executable cleanup) {
+    return cleanups.push_back(std::move(cleanup));
 }
 
 void Executor::execute(Test test) {

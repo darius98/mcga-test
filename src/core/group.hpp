@@ -75,8 +75,10 @@ class Group : private GroupConfig {
      *
      * This method is called once for every setUp() call from the
      * global API, on the instance that is currently on top of the group
-     * stack. */
-    void addSetUp(Executable func);
+     * stack.
+     *
+     * Returns false on memory allocation failure. */
+    bool addSetUp(Executable func);
 
     template<class Callable>
     void forEachSetUp(Callable callable) const {
@@ -91,8 +93,10 @@ class Group : private GroupConfig {
      *
      * This method is called once for every tearDown() call from the
      * global API, on the instance that is currently on top of the group
-     * stack. */
-    void addTearDown(Executable func);
+     * stack.
+     *
+     * Returns false on memory allocation failure. */
+    bool addTearDown(Executable func);
 
     /** Call the tear-down functions of this group, in reverse order. */
     template<class Callable>
