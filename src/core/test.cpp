@@ -29,6 +29,9 @@ bool Test::ExecutionInfo::isPassed() const {
 Test::Test(TestConfig config, Executable body, GroupPtr group, int id)
         : TestConfig(std::move(config)), body(std::move(body)),
           group(std::move(group)), id(id) {
+    if (requiredPassedAttempts == -1) {
+        requiredPassedAttempts = attempts;
+    }
 }
 
 const String& Test::getDescription() const {
@@ -72,13 +75,12 @@ bool Test::isFinished() const {
 }
 
 bool Test::isPassed() const {
-    return numPassedExecutions >= requiredPassedAttempts;
+    return numPassedAttempts >= requiredPassedAttempts;
 }
 
 bool Test::isSkipped() const {
-    return numPassedExecutions < requiredPassedAttempts
-      && numSkippedExecutions > 0
-      && numPassedExecutions + numSkippedExecutions == attempts;
+    return numPassedAttempts < requiredPassedAttempts && numSkippedAttempts > 0
+      && numPassedAttempts + numSkippedAttempts == attempts;
 }
 
 bool Test::isFailed() const {
@@ -90,22 +92,22 @@ size_t Test::getNumExecutedAttempts() const {
 }
 
 size_t Test::getNumPassedAttempts() const {
-    return numPassedExecutions;
+    return numPassedAttempts;
 }
 
 size_t Test::getNumSkippedAttempts() const {
-    return numSkippedExecutions;
+    return numSkippedAttempts;
 }
 
 double Test::getAvgTimeTicksForExecution() const {
-    if (numTimedExecutions == 0) {
+    if (numTimedAttempts == 0) {
         return -1;
     }
-    return trackedExecutionTimeTicks / numTimedExecutions;
+    return trackedExecutionTimeTicks / numTimedAttempts;
 }
 
 double Test::getTotalTimeTicks() const {
-    if (numTimedExecutions == 0) {
+    if (numTimedAttempts == 0) {
         return -1;
     }
     return trackedExecutionTimeTicks;
@@ -126,18 +128,18 @@ const std::optional<Test::ExecutionInfo>&
 
 void Test::addExecution(ExecutionInfo info, ExtensionApi* api) {
     if (info.status == ExecutionInfo::PASSED) {
-        numPassedExecutions += 1;
+        numPassedAttempts += 1;
     }
     if (info.status == ExecutionInfo::FAILED) {
         lastFailedExecution = info;
     }
     if (info.status == ExecutionInfo::SKIPPED) {
-        numSkippedExecutions += 1;
+        numSkippedAttempts += 1;
         lastSkippedExecution = info;
     }
     numExecutedAttempts += 1;
     if (info.timeTicks != -1) {
-        numTimedExecutions += 1;
+        numTimedAttempts += 1;
         trackedExecutionTimeTicks += info.timeTicks;
     }
     lastExecution = std::move(info);

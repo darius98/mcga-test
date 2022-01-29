@@ -2,9 +2,9 @@
 
 #include <chrono>
 
+#include "config.hpp"
 #include "time_tick.hpp"
 #include "utils.hpp"
-#include "config.hpp"
 
 namespace mcga::test {
 

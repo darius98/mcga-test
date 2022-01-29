@@ -86,8 +86,7 @@ class Executable {
     template<internal::executable_t Callable>
     Executable(Callable callable, const Context& context = Context())
             : vtable(&vtableFor<Callable>),
-              data(new Callable(internal::move(callable))),
-              context(context) {
+              data(new Callable(internal::move(callable))), context(context) {
     }
 #endif
 

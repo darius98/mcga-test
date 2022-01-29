@@ -2,7 +2,7 @@
 
 #include "mcga/test.hpp"
 
-auto testCase = mcga::test::TestCase{"TestCase"} + [] {
+TEST_CASE("TestCase") {
     mcga::test::test("test-1", [] {});
 
     mcga::test::test("test-2", [] {
@@ -12,4 +12,4 @@ auto testCase = mcga::test::TestCase{"TestCase"} + [] {
 
         t.join();
     });
-};
+}

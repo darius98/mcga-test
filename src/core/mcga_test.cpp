@@ -3,18 +3,13 @@
 #include "driver.hpp"
 #include "export.hpp"
 
-static mcga::test::TestCase* registeredTestCasesListHead = nullptr;
-static mcga::test::TestCase* registeredTestCasesListTail = nullptr;
-
 namespace mcga::test::MCGA_TEST_ABI_NS {
 
-MCGA_TEST_EXPORT void register_test_case(TestCase* testCase) noexcept {
-    if (registeredTestCasesListTail != nullptr) {
-        registeredTestCasesListTail->next = testCase;
-    } else {
-        registeredTestCasesListHead = testCase;
-    }
-    registeredTestCasesListTail = testCase;
+static TestCaseList testCases;
+
+MCGA_TEST_EXPORT void
+  register_test_case(const char* name, void (*body)(), Context context) {
+    testCases.push_back(TestCase{name, body, context});
 }
 
 MCGA_TEST_EXPORT void register_test(TestConfig config, Executable body) {
@@ -45,12 +40,12 @@ MCGA_TEST_EXPORT void register_cleanup(Executable exec) {
     Driver::Instance()->addCleanup(std::move(exec));
 }
 
-}  // namespace mcga::test::internal
+}  // namespace mcga::test::MCGA_TEST_ABI_NS
 
 namespace mcga::test {
 
-TestCase* getTestCasesListHead() {
-    return registeredTestCasesListHead;
+const TestCaseList* getTestCasesList() {
+    return &MCGA_TEST_ABI_NS::testCases;
 }
 
 }  // namespace mcga::test

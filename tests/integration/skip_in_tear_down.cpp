@@ -2,7 +2,7 @@
 
 #include <cstdio>
 
-auto testCase = mcga::test::TestCase{"TestCase"} + [] {
+TEST_CASE("TestCase") {
     mcga::test::test("test-1", [] {});
 
     mcga::test::group([] {
@@ -14,4 +14,4 @@ auto testCase = mcga::test::TestCase{"TestCase"} + [] {
             mcga::test::fail("fail-in-test-body");
         });
     });
-};
+}

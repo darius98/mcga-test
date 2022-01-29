@@ -2,7 +2,7 @@
 
 #include <cstdio>
 
-auto testCase = mcga::test::TestCase{"TestCase"} + [] {
+TEST_CASE("TestCase") {
     mcga::test::setUp([] {
         printf("first-set-up\n");
     });
@@ -43,4 +43,4 @@ auto testCase = mcga::test::TestCase{"TestCase"} + [] {
             });
         });
     });
-};
+}

@@ -1,6 +1,6 @@
 #include "mcga/test.hpp"
 
-static auto t = mcga::test::TestCase{"TestCase"} + [] {
+TEST_CASE("TestCase") {
     mcga::test::test("test1", [] {});
 
     mcga::test::test("test2", [] {
@@ -10,4 +10,4 @@ static auto t = mcga::test::TestCase{"TestCase"} + [] {
     mcga::test::test("test3", [] {});
 
     mcga::test::test("test4", [] {});
-};
+}

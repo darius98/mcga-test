@@ -9,7 +9,7 @@
 using namespace mcga::test;
 using namespace mcga::matchers;
 
-static auto t = TestCase{"Death extension: check death"} + [] {
+TEST_CASE("Death extension: check death") {
     test("exit code 0", [] {
         auto func = [] {
             exit(0);
@@ -57,4 +57,4 @@ static auto t = TestCase{"Death extension: check death"} + [] {
         expect(status.killedBySignal(), isTrue);
         expect(status.getSignal(), isEqualTo(SIGUSR1));
     });
-};
+}

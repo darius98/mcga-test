@@ -2,7 +2,7 @@
 
 #include <random>
 
-auto testCase = mcga::test::TestCase{"TestCase"} + [] {
+TEST_CASE("TestCase") {
     mcga::test::test(
       {.description = "test", .attempts = 10, .requiredPassedAttempts = 5}, [] {
           std::random_device device;
@@ -11,4 +11,4 @@ auto testCase = mcga::test::TestCase{"TestCase"} + [] {
               mcga::test::fail("Got 0.");
           }
       });
-};
+}

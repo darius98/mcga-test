@@ -5,7 +5,7 @@
 
 using namespace mcga::test;
 
-const auto t = TestCase{"test case"} + []() {
+TEST_CASE("test case") {
     test("passing-test", [] {
         expect(1 + 1 == 2);
     });

@@ -155,9 +155,9 @@ class Test : private TestConfig {
     int id;
 
     int numExecutedAttempts = 0;
-    int numPassedExecutions = 0;
-    int numSkippedExecutions = 0;
-    int numTimedExecutions = 0;
+    int numPassedAttempts = 0;
+    int numSkippedAttempts = 0;
+    int numTimedAttempts = 0;
     double trackedExecutionTimeTicks = 0;
     ExecutionInfo lastExecution;
     std::optional<Test::ExecutionInfo> lastFailedExecution = std::nullopt;

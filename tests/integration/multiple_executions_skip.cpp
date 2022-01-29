@@ -1,6 +1,6 @@
 #include "mcga/test.hpp"
 
-auto testCase = mcga::test::TestCase{"TestCase"} + [] {
+TEST_CASE("TestCase") {
     mcga::test::test("test-1", [] {});
 
     mcga::test::test(
@@ -8,4 +8,4 @@ auto testCase = mcga::test::TestCase{"TestCase"} + [] {
       [] {
           mcga::test::skip("every-time");
       });
-};
+}

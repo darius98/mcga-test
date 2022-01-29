@@ -20,7 +20,8 @@ class ExtensionApi {
     void init();
     void onGroupDiscovered(const GroupPtr& group);
     void onTestDiscovered(const Test& test);
-    void beforeTestExecution(const Test& test, std::optional<Test::ExecutionInfo>& info);
+    void beforeTestExecution(const Test& test,
+                             std::optional<Test::ExecutionInfo>& info);
     void afterTestExecution(const Test& test);
     void onWarning(const Warning& warning);
     void destroy();

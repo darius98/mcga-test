@@ -46,8 +46,9 @@ struct TestConfig {
     /** The number of attempts that must be passed for the test to be considered
      * passed overall.
      *
-     * This should be at most equal to #attempts. */
-    int requiredPassedAttempts = 1;
+     * This should be at most equal to #attempts, or -1 to automatically take
+     * the same value as #attempts. */
+    int requiredPassedAttempts = -1;
 };
 
 /** Structure defining the configuration for a group.
@@ -68,11 +69,9 @@ struct GroupConfig {
     bool optional = false;
 };
 
-struct TestCase;
-
 namespace MCGA_TEST_ABI_NS {
 
-void register_test_case(TestCase* testCase) noexcept;
+void register_test_case(const char* name, void (*body)(), Context context);
 
 void register_test(TestConfig config, Executable body);
 
@@ -87,35 +86,6 @@ void register_interrupt(bool isFail, String message, Context context);
 void register_cleanup(Executable exec);
 
 }  // namespace MCGA_TEST_ABI_NS
-
-struct TestCase {
-    TestCase* next = nullptr;
-
-    const char* name;
-    void (*body)() = nullptr;
-    Context context;
-
-    explicit TestCase(const char* name, Context context = Context()) noexcept
-            : name(name), body(nullptr), context(context) {
-    }
-
-    explicit TestCase(Context context = Context()) noexcept
-            : name(""), body(nullptr), context(context) {
-    }
-
-    TestCase(TestCase&& other) noexcept
-            : name(other.name), body(other.body), context(other.context) {
-        MCGA_TEST_ABI_NS::register_test_case(this);
-    }
-    TestCase(const TestCase&) = delete;
-    TestCase& operator=(const TestCase&) = delete;
-    TestCase& operator=(TestCase&&) = delete;
-
-    TestCase&& operator+(void (*body_)()) && noexcept {
-        body = body_;
-        return static_cast<TestCase&&>(*this);
-    }
-};
 
 inline void group(Executable body) {
     MCGA_TEST_ABI_NS::register_group({}, internal::move(body));
@@ -175,3 +145,16 @@ inline void expect(bool expr, Context context = Context("Expectation failed")) {
 }
 
 }  // namespace mcga::test
+
+#define TEST_CASE(name)                                                        \
+    namespace {                                                                \
+    struct MCGA_TEST_CAT2(mcga_test_case_, __LINE__) {                         \
+        static void run();                                                     \
+                                                                               \
+        MCGA_TEST_CAT2(mcga_test_case_, __LINE__)() {                          \
+            ::mcga::test::MCGA_TEST_ABI_NS::register_test_case(                \
+              name, run, ::mcga::test::Context());                             \
+        }                                                                      \
+    } MCGA_TEST_CAT2(mcga_test_reg_, __LINE__);                                \
+    }                                                                          \
+    void MCGA_TEST_CAT2(mcga_test_case_, __LINE__)::run()

@@ -26,7 +26,8 @@ MCGA_TEST_EXPORT const char* duplicate_str(const char* a, const char* b) {
     return dup;
 }
 
-MCGA_TEST_EXPORT const char* duplicate_str(const char* a, const char* b, const char* c) {
+MCGA_TEST_EXPORT const char*
+  duplicate_str(const char* a, const char* b, const char* c) {
     const auto len = std::strlen(a) + std::strlen(b) + std::strlen(c);
     const auto dup = static_cast<char*>(std::malloc(len + 1));
     std::strcpy(dup, a);
@@ -92,11 +93,20 @@ struct Buffer {
 template<class T, int N>
 using BufferFor = Buffer<sizeof(T), alignof(T), N>;
 
+static BufferFor<TestCaseList::node, numStaticTestCases> staticTestCases;
 static BufferFor<Group, numStaticGroups> staticGroups;
 static BufferFor<ExecutableList::node, numStaticCallbacks> staticExecutables;
 static BufferFor<List<Warning::Note, WarningNoteAllocator>::node,
                  numStaticWarningNotes>
   staticWarningNotes;
+
+void* TestCaseAllocator::allocate() {
+    return staticTestCases.allocate();
+}
+
+void TestCaseAllocator::deallocate(void* ptr) {
+    staticTestCases.deallocate(ptr);
+}
 
 void* GroupAllocator::allocate() {
     return staticGroups.allocate();

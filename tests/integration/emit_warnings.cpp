@@ -4,7 +4,7 @@
 
 using namespace mcga::test;
 
-static auto t = TestCase{"TestCase"} + [] {
+TEST_CASE("TestCase") {
     // fail() top-level
     fail("fail-top-level");
 
@@ -92,4 +92,4 @@ static auto t = TestCase{"TestCase"} + [] {
     });
 
     t.join();
-};
+}

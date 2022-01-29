@@ -10,6 +10,8 @@ set(MCGA_TEST_PRE_ALLOCATED_GROUPS 8 CACHE STRING
         "How many groups to statically allocate inside the MCGA test library (default is 8).")
 set(MCGA_TEST_PRE_ALLOCATED_CALLBACKS 128 CACHE STRING
         "How many callback to statically allocate inside the MCGA test library (default is 128). Callbacks are used for setUp()s, tearDown()s and cleanup()s.")
+set(MCGA_TEST_PRE_ALLOCATED_TEST_CASES 32 CACHE STRING
+        "How many test cases to statically allocate inside the MCGA test library (default is 32).")
 
 
 if (NOT TARGET mcga_cli)

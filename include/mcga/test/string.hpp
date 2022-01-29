@@ -139,11 +139,11 @@ struct Context {
     int line;
     int column;
 
-    explicit Context(const char* verb = "Failed",
-                     const char* fileName = __builtin_FILE(),
-                     const char* functionName = __builtin_FUNCTION(),
-                     int line = __builtin_LINE(),
-                     int column = __builtin_COLUMN())
+    constexpr explicit Context(const char* verb = "Failed",
+                               const char* fileName = __builtin_FILE(),
+                               const char* functionName = __builtin_FUNCTION(),
+                               int line = __builtin_LINE(),
+                               int column = __builtin_COLUMN())
             : verb(verb), fileName(fileName), functionName(functionName),
               line(line), column(column) {
     }

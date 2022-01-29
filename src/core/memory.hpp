@@ -2,8 +2,15 @@
 
 #include "aa_list.hpp"
 #include "mcga/test.hpp"
+#include "test_case.hpp"
 
 namespace mcga::test {
+
+struct TestCaseAllocator {
+    [[nodiscard]] static void* allocate();
+    static void deallocate(void* ptr);
+};
+using TestCaseList = List<TestCase, TestCaseAllocator>;
 
 struct GroupAllocator {
     [[nodiscard]] static void* allocate();

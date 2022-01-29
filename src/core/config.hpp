@@ -8,6 +8,10 @@
 #define MCGA_TEST_PRE_ALLOCATED_CALLBACKS 128
 #endif
 
+#ifndef MCGA_TEST_PRE_ALLOCATED_TEST_CASES
+#define MCGA_TEST_PRE_ALLOCATED_TEST_CASES 32
+#endif
+
 #ifndef MCGA_TEST_EXCEPTIONS
 #if defined(__EXCEPTIONS)
 #define MCGA_TEST_EXCEPTIONS 1
@@ -30,5 +34,6 @@ inline constexpr auto numStaticGroups = MCGA_TEST_PRE_ALLOCATED_GROUPS;
 inline constexpr auto numStaticCallbacks = MCGA_TEST_PRE_ALLOCATED_CALLBACKS;
 inline constexpr auto numStaticWarningNotes
   = MCGA_TEST_PRE_ALLOCATED_GROUPS + 1;
+inline constexpr auto numStaticTestCases = MCGA_TEST_PRE_ALLOCATED_TEST_CASES;
 
 }  // namespace mcga::test
