@@ -1,180 +1,10 @@
 #pragma once
 
+#include <mcga/test/config.hpp>
+#include <mcga/test/executable.hpp>
+#include <mcga/test/string.hpp>
+
 namespace mcga::test {
-
-namespace internal {
-
-template<class T, class U>
-inline constexpr bool same_as_impl = false;
-
-template<class T>
-inline constexpr bool same_as_impl<T, T> = true;
-
-template<class T, class U>
-concept same_as = same_as_impl<T, U>;
-
-template<class T>
-concept executable_t = requires(const T& obj) {
-    { obj() } -> same_as<void>;
-};
-
-template<class T>
-concept std_string_like = requires(const T& str) {
-    { str.data() } -> same_as<const char*>;
-};
-
-const char* duplicate_str(const char* a);
-const char* duplicate_str(const char* a, const char* b);
-const char* duplicate_str(const char* a, const char* b, const char* c);
-
-void delete_str(const char* data);
-
-template<class T>
-constexpr T&& move(T&& t) noexcept {
-    return static_cast<T&&>(t);
-}
-
-template<class T>
-constexpr T&& move(T& t) noexcept {
-    return static_cast<T&&>(t);
-}
-
-}  // namespace internal
-
-class String {
-    bool isOwned;
-    const char* data;
-
-    constexpr String(bool isOwned, const char* data) noexcept
-            : isOwned(isOwned), data(data) {
-    }
-
-  public:
-    static String cat(const char* a, const char* b) {
-        return {true, internal::duplicate_str(a, b)};
-    }
-    static String cat(const char* a, const char* b, const char* c) {
-        return {true, internal::duplicate_str(a, b, c)};
-    }
-
-    constexpr String() noexcept: String("") {
-    }
-
-    constexpr String(const char* data) noexcept: String(false, data) {
-    }
-
-    template<int N>
-    constexpr String(const char (&data)[N]) noexcept: String(false, data) {
-    }
-
-    String(const internal::std_string_like auto& data)
-            : String(true, internal::duplicate_str(data.data())) {
-    }
-
-    constexpr String(const String& other)
-            : isOwned(other.isOwned),
-              data(isOwned ? internal::duplicate_str(other.data) : other.data) {
-    }
-
-    constexpr String(String&& other) noexcept
-            : isOwned(other.isOwned), data(other.data) {
-        other.isOwned = false;
-    }
-
-    constexpr String& operator=(const String& other) {
-        if (this != &other) {
-            this->~String();
-            isOwned = other.isOwned;
-            data = isOwned ? internal::duplicate_str(other.data) : other.data;
-        }
-        return *this;
-    }
-
-    constexpr String& operator=(String&& other) noexcept {
-        if (this != &other) {
-            this->~String();
-            isOwned = other.isOwned;
-            data = other.data;
-            other.isOwned = false;
-        }
-        return *this;
-    }
-
-    constexpr ~String() {
-        if (isOwned) {
-            internal::delete_str(data);
-        }
-    }
-
-    [[nodiscard]] constexpr const char* c_str() const noexcept {
-        return data;
-    }
-};
-
-struct Context {
-    const char* verb;
-    const char* fileName;
-    const char* functionName;
-    int line;
-    int column;
-
-    explicit Context(const char* verb = "Failed",
-                     const char* fileName = __builtin_FILE(),
-                     const char* functionName = __builtin_FUNCTION(),
-                     int line = __builtin_LINE(),
-                     int column = __builtin_COLUMN())
-            : verb(verb), fileName(fileName), functionName(functionName),
-              line(line), column(column) {
-    }
-};
-
-struct Executable {
-    void (*body)(void*);
-    void (*dtor)(void*);
-    void* data;
-    Context context;
-
-    template<internal::executable_t Callable>
-    Executable(Callable callable, const Context& context)
-            : body([](void* d) {
-                  (*static_cast<Callable*>(d))();
-              }),
-              dtor([](void* d) {
-                  delete static_cast<Callable*>(d);
-              }),
-              data(new Callable(internal::move(callable))), context(context) {
-    }
-
-    Executable(const Executable&) = delete;
-
-    Executable& operator=(const Executable&) = delete;
-
-    Executable(Executable&& other) noexcept
-            : body(other.body), dtor(other.dtor), data(other.data),
-              context(other.context) {
-        other.data = nullptr;
-    }
-
-    Executable& operator=(Executable&& other) noexcept {
-        if (this != &other) {
-            dtor(data);
-            body = other.body;
-            dtor = other.dtor;
-            data = other.data;
-            context = other.context;
-            other.data = nullptr;
-        }
-        return *this;
-    }
-
-    ~Executable() {
-        dtor(data);
-    }
-
-    void operator()() const {
-        body(data);
-    }
-};
 
 /** Structure defining the configuration for a test.
  *
@@ -240,7 +70,7 @@ struct GroupConfig {
 
 struct TestCase;
 
-namespace internal {
+namespace MCGA_TEST_ABI_NS {
 
 void register_test_case(TestCase* testCase) noexcept;
 
@@ -256,7 +86,7 @@ void register_interrupt(bool isFail, String message, Context context);
 
 void register_cleanup(Executable exec);
 
-}  // namespace internal
+}  // namespace MCGA_TEST_ABI_NS
 
 struct TestCase {
     TestCase* next = nullptr;
@@ -275,7 +105,7 @@ struct TestCase {
 
     TestCase(TestCase&& other) noexcept
             : name(other.name), body(other.body), context(other.context) {
-        internal::register_test_case(this);
+        MCGA_TEST_ABI_NS::register_test_case(this);
     }
     TestCase(const TestCase&) = delete;
     TestCase& operator=(const TestCase&) = delete;
@@ -287,61 +117,55 @@ struct TestCase {
     }
 };
 
-void group(internal::executable_t auto body, Context context = Context()) {
-    internal::register_group({}, Executable(internal::move(body), context));
+inline void group(Executable body) {
+    MCGA_TEST_ABI_NS::register_group({}, internal::move(body));
 }
 
-void group(String description,
-           internal::executable_t auto body,
-           Context context = Context()) {
-    internal::register_group({.description = internal::move(description)},
-                             Executable(internal::move(body), context));
+inline void group(String description, Executable body) {
+    MCGA_TEST_ABI_NS::register_group(
+      {.description = internal::move(description)}, internal::move(body));
 }
 
-void group(GroupConfig config,
-           internal::executable_t auto body,
-           Context context = Context()) {
-    internal::register_group(internal::move(config),
-                             Executable(internal::move(body), context));
+inline void group(GroupConfig config, Executable body) {
+    MCGA_TEST_ABI_NS::register_group(internal::move(config),
+                                     internal::move(body));
 }
 
-void test(internal::executable_t auto body, Context context = Context()) {
-    internal::register_test({}, Executable(internal::move(body), context));
+inline void test(Executable body) {
+    MCGA_TEST_ABI_NS::register_test({}, internal::move(body));
 }
 
-void test(String description,
-          internal::executable_t auto body,
-          Context context = Context()) {
-    internal::register_test({.description = internal::move(description)},
-                            Executable(internal::move(body), context));
+inline void test(String description, Executable body) {
+    MCGA_TEST_ABI_NS::register_test(
+      {.description = internal::move(description)}, internal::move(body));
 }
 
-void test(TestConfig config,
-          internal::executable_t auto body,
-          Context context = Context()) {
-    internal::register_test(internal::move(config),
-                            Executable(internal::move(body), context));
+inline void test(TestConfig config, Executable body) {
+    MCGA_TEST_ABI_NS::register_test(internal::move(config),
+                                    internal::move(body));
 }
 
-void setUp(internal::executable_t auto func, Context context = Context()) {
-    internal::register_set_up(Executable(internal::move(func), context));
+inline void setUp(Executable body) {
+    MCGA_TEST_ABI_NS::register_set_up(internal::move(body));
 }
 
-void cleanup(internal::executable_t auto func, Context context = Context()) {
-    internal::register_cleanup(Executable(internal::move(func), context));
+inline void cleanup(Executable body) {
+    MCGA_TEST_ABI_NS::register_cleanup(internal::move(body));
 }
 
-void tearDown(internal::executable_t auto func, Context context = Context()) {
-    internal::register_tear_down(Executable(internal::move(func), context));
+inline void tearDown(Executable body) {
+    MCGA_TEST_ABI_NS::register_tear_down(internal::move(body));
 }
 
 inline void fail(String message = String(), Context context = Context()) {
-    internal::register_interrupt(true, internal::move(message), context);
+    MCGA_TEST_ABI_NS::register_interrupt(
+      true, internal::move(message), context);
 }
 
 inline void skip(String message = String(),
                  Context context = Context("Skipped")) {
-    internal::register_interrupt(false, internal::move(message), context);
+    MCGA_TEST_ABI_NS::register_interrupt(
+      false, internal::move(message), context);
 }
 
 inline void expect(bool expr, Context context = Context("Expectation failed")) {

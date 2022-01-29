@@ -21,8 +21,6 @@ class BoxExecutor : public Executor {
 
     MCGA_DISALLOW_COPY_AND_MOVE(BoxExecutor);
 
-    ~BoxExecutor() override = default;
-
     void execute(Test test) override;
 
     void finalize() override;

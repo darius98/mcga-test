@@ -1,6 +1,10 @@
 #pragma once
 
+#include "config.hpp"
+
+#if MCGA_TEST_THREADING
 #include <mutex>
+#endif
 
 #include "disallow_copy_and_move.hpp"
 #include "extension_api.hpp"
@@ -11,26 +15,36 @@ namespace mcga::test {
 
 struct SynchronizedTestExecution {
     Test::ExecutionInfo info;
+#if MCGA_TEST_THREADING
     mutable std::mutex infoLock;
+#endif
 
     [[nodiscard]] bool isPassed() const {
+#if MCGA_TEST_THREADING
         std::lock_guard guard(infoLock);
+#endif
         return info.isPassed();
     }
 
     void merge(Test::ExecutionInfo other) {
+#if MCGA_TEST_THREADING
         std::lock_guard guard(infoLock);
+#endif
         info.merge(std::move(other));
     }
 
     void fail(const String& message,
               std::optional<Context> context = std::nullopt) {
+#if MCGA_TEST_THREADING
         std::lock_guard guard(infoLock);
+#endif
         info.fail(message, context);
     }
 
     [[nodiscard]] Test::ExecutionInfo reset() {
+#if MCGA_TEST_THREADING
         std::lock_guard guard(infoLock);
+#endif
         Test::ExecutionInfo out = std::move(info);
         info = Test::ExecutionInfo{};
         return out;
@@ -47,7 +61,7 @@ class Executor {
 
     MCGA_DISALLOW_COPY_AND_MOVE(Executor);
 
-    virtual ~Executor() = default;
+    ~Executor() = default;
 
     void setExtensionApi(ExtensionApi* api);
 

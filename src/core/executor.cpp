@@ -4,6 +4,7 @@
 
 #include "time_tick.hpp"
 #include "utils.hpp"
+#include "config.hpp"
 
 namespace mcga::test {
 
@@ -29,16 +30,16 @@ void Executor::finalize() {
 
 void Executor::addFailure(Test::ExecutionInfo info) {
     currentExecution.merge(std::move(info));
+#if MCGA_TEST_EXCEPTIONS
     // We kill the thread on failure if we are in the main testing thread, and
-    // we know we catch this exception.
-    // If the user starts his own threads that entertain interruptions, it is
-    // their responsibility to make sure his threads die on failure (we have no
-    // control).
+    // we know we catch this exception. This only works if exceptions are
+    // enabled. If the user starts his own threads that entertain interruptions,
+    // it is their responsibility to make sure his threads die on failure (we
+    // have no control).
     if (current_thread_id() == currentExecutionThreadId) {
-        // TODO: Abort when exceptions are disabled (in non-smooth execution,
-        //  inform the test runner process of the failure before aborting).
         throw Interrupt{};
     }
+#endif
 }
 
 void Executor::addCleanup(Executable cleanup) {
@@ -82,7 +83,7 @@ Test::ExecutionInfo Executor::run(const Test& test) {
     currentExecutionThreadId = current_thread_id();
 
     state = INSIDE_SET_UP;
-    auto startTime = std::chrono::high_resolution_clock::now();
+    auto startTime = Now();
     // Execute setUp()-s, in the order of the group stack.
     auto lastGroup = runSetUps(test.getGroup());
     state = INSIDE_TEST;
@@ -104,9 +105,9 @@ Test::ExecutionInfo Executor::run(const Test& test) {
         });
         lastGroup = lastGroup->getParentGroup();
     }
-    auto endTime = std::chrono::high_resolution_clock::now();
+    auto timeTicks = TimeTicksSince(startTime);
     auto info = currentExecution.reset();
-    info.timeTicks = NanosecondsToTimeTicks(endTime - startTime);
+    info.timeTicks = timeTicks;
     if (info.timeTicks > test.getTimeTicksLimit()) {
         info.fail("Execution timed out.");
     }
@@ -121,15 +122,18 @@ void Executor::emitWarning(Warning warning, GroupPtr group) {
 
 void Executor::runJob(const Executable& job) {
     currentJob = &job;
+#if MCGA_TEST_EXCEPTIONS
     try {
         job();
     } catch (Interrupt& interruption) {
     } catch (const std::exception& e) {
-        currentExecution.fail(String::cat("Uncaught exception: ", e.what()),
-                              job.context);
+        currentExecution.fail(String::cat("Uncaught exception: ", e.what()));
     } catch (...) {
-        currentExecution.fail("Uncaught non-exception type.", job.context);
+        currentExecution.fail("Uncaught non-exception type.");
     }
+#else
+    job();
+#endif
     currentJob = nullptr;
 }
 

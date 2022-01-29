@@ -68,15 +68,22 @@ target_link_libraries(mcga_test PRIVATE mcga_test_obj)
 add_library(mcga_test_static STATIC $<TARGET_OBJECTS:mcga_test_obj>)
 target_link_libraries(mcga_test_static PRIVATE mcga_test_obj)
 
-add_library(mcga_test_freestanding STATIC ${mcga_test_core_src})
+add_library(mcga_test_freestanding STATIC
+        ${mcga_test_core_src}
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/freestanding/memcpy.cpp)
 target_link_libraries(mcga_test_freestanding PRIVATE mcga_test_interface)
+target_compile_definitions(mcga_test_freestanding
+        PUBLIC MCGA_TEST_THREADING=0
+        PUBLIC MCGA_TEST_TIMING=0)
 target_compile_options(mcga_test_freestanding
         PUBLIC -ffreestanding
-
+        PUBLIC -fno-exceptions
+        PUBLIC -fno-rtti
         PUBLIC -nostdlib)
 target_link_options(mcga_test_freestanding
         PUBLIC -ffreestanding
-        PUBLIC -nostdlib)
+        PUBLIC -nostdlib
+        PUBLIC -static)
 
 add_library(mcga_mock SHARED
         ${CMAKE_CURRENT_SOURCE_DIR}/src/extensions/mock/base.cpp

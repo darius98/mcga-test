@@ -6,7 +6,7 @@
 static mcga::test::TestCase* registeredTestCasesListHead = nullptr;
 static mcga::test::TestCase* registeredTestCasesListTail = nullptr;
 
-namespace mcga::test::internal {
+namespace mcga::test::MCGA_TEST_ABI_NS {
 
 MCGA_TEST_EXPORT void register_test_case(TestCase* testCase) noexcept {
     if (registeredTestCasesListTail != nullptr) {

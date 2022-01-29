@@ -1,6 +1,28 @@
 #include "time_tick.hpp"
 
+#include "config.hpp"
+
+static auto timeTickLength = std::chrono::nanoseconds{0};
+
 namespace mcga::test {
+
+std::chrono::high_resolution_clock::time_point Now() {
+#if MCGA_TEST_TIMING
+    return std::chrono::high_resolution_clock::now();
+#else
+    return std::chrono::high_resolution_clock::time_point{};
+#endif
+}
+
+double
+  TimeTicksSince(std::chrono::high_resolution_clock::time_point startTime) {
+#if MCGA_TEST_TIMING
+    return NanosecondsToTimeTicks(std::chrono::high_resolution_clock::now()
+                                  - startTime);
+#else
+    return -1;
+#endif
+}
 
 std::chrono::nanoseconds ComputeTimeTickLengthFromHardware() {
     // TODO: Don't hard-code this!
@@ -8,7 +30,9 @@ std::chrono::nanoseconds ComputeTimeTickLengthFromHardware() {
 }
 
 std::chrono::nanoseconds GetTimeTickLength() {
-    static const auto timeTickLength = ComputeTimeTickLengthFromHardware();
+    if (timeTickLength.count() == 0) {
+        timeTickLength = ComputeTimeTickLengthFromHardware();
+    }
     return timeTickLength;
 }
 

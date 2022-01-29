@@ -1,5 +1,6 @@
 #include "driver.hpp"
 
+#include "config.hpp"
 #include "mcga/test.hpp"
 #include "utils.hpp"
 
@@ -38,14 +39,21 @@ void Driver::addGroup(GroupConfig config, Executable body) {
     currentGroup = Group::make(
       std::move(config), body.context, currentGroup, currentGroupId);
     executor->getExtensionApi()->onGroupDiscovered(currentGroup);
-    try {
+#if MCGA_TEST_EXCEPTIONS
+        try {
+            body();
+        } catch (const std::exception& e) {
+            emitWarning(String::cat(
+              "Exception thrown outside a test: ",
+              e.what(),
+              ". Unable to execute remainder of tests in this group."));
+        } catch (...) {
+            emitWarning("Non-exception object thrown outside a test. Unable to "
+                        "execute remainder of tests in this group.");
+        }
+#else
         body();
-    } catch (const std::exception& e) {
-        emitWarning(String::cat("Exception thrown outside a test: ", e.what(), ". Unable to execute remainder of tests in this group."));
-    } catch (...) {
-        emitWarning("Non-exception object thrown outside a test. Unable to "
-                    "execute remainder of tests in this group.");
-    }
+#endif
     currentGroup = currentGroup->getParentGroup();
 }
 

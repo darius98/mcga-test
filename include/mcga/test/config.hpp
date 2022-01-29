@@ -1,0 +1,23 @@
+#pragma once
+
+#ifndef MCGA_TEST_ALLOW_DYNAMIC_MEMORY
+#define MCGA_TEST_ALLOW_DYNAMIC_MEMORY __STDC_HOSTED__
+#endif
+
+#ifndef MCGA_TEST_EXECUTABLE_SBO_SIZE
+#if MCGA_TEST_ALLOW_DYNAMIC_MEMORY
+#define MCGA_TEST_EXECUTABLE_SBO_SIZE 16
+#else
+#define MCGA_TEST_EXECUTABLE_SBO_SIZE 48
+#endif
+#endif
+
+#define MCGA_TEST_CAT(A, B) A##B
+#define MCGA_TEST_CAT2(A, B) MCGA_TEST_CAT(A, B)
+
+#if MCGA_TEST_ALLOW_DYNAMIC_MEMORY
+#define MCGA_TEST_ABI_NS MCGA_TEST_CAT(abi_, MCGA_TEST_EXECUTABLE_SBO_SIZE)
+#else
+#define MCGA_TEST_ABI_NS                                                       \
+    MCGA_TEST_CAT2(abi_nomem_, MCGA_TEST_EXECUTABLE_SBO_SIZE)
+#endif

@@ -39,9 +39,9 @@ class Driver {
 
     void addCleanup(Executable cleanup);
 
-  private:
     void emitWarning(String message, std::optional<Context> context = {});
 
+  private:
     bool checkMainThreadAndInactive(WarningNoteType method,
                                     const Context& context);
 };

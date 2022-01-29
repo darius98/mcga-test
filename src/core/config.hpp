@@ -8,6 +8,22 @@
 #define MCGA_TEST_PRE_ALLOCATED_CALLBACKS 128
 #endif
 
+#ifndef MCGA_TEST_EXCEPTIONS
+#if defined(__EXCEPTIONS)
+#define MCGA_TEST_EXCEPTIONS 1
+#else
+#define MCGA_TEST_EXCEPTIONS 0
+#endif
+#endif
+
+#ifndef MCGA_TEST_THREADING
+#define MCGA_TEST_THREADING __STDC_HOSTED__
+#endif
+
+#ifndef MCGA_TEST_TIMING
+#define MCGA_TEST_TIMING __STDC_HOSTED__
+#endif
+
 namespace mcga::test {
 
 inline constexpr auto numStaticGroups = MCGA_TEST_PRE_ALLOCATED_GROUPS;
