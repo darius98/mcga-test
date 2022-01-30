@@ -1,5 +1,7 @@
 #pragma once
 
+#include <type_traits>
+
 #include <mcga/test/config.hpp>
 #include <mcga/test/executable.hpp>
 #include <mcga/test/string.hpp>
@@ -175,20 +177,7 @@ void fixtureTestCaseBody() {
     }                                                                          \
     void MCGA_TEST_INTERNAL_TEST_NAME::MCGA_TEST_BODY()
 
-#define TEST(description)                                                      \
-    namespace {                                                                \
-    struct MCGA_TEST_INTERNAL_TEST_NAME {                                      \
-        static void MCGA_TEST_BODY();                                          \
-    };                                                                         \
-    int MCGA_TEST_INTERNAL_TEST_REG_NAME                                       \
-      = ::mcga::test::internal::register_test_case("", []() -> void {          \
-            ::mcga::test::test(description,                                    \
-                               MCGA_TEST_INTERNAL_TEST_NAME::MCGA_TEST_BODY);  \
-        });                                                                    \
-    }                                                                          \
-    void MCGA_TEST_INTERNAL_TEST_NAME::MCGA_TEST_BODY()
-
-#define TEST_F(fixture, description)                                           \
+#define INTERNAL_TEST_F(fixture_name, fixture, description)                    \
     namespace {                                                                \
     struct MCGA_TEST_INTERNAL_TEST_NAME : fixture {                            \
         static inline constexpr const char* MCGATest_description               \
@@ -197,8 +186,14 @@ void fixtureTestCaseBody() {
     };                                                                         \
     int MCGA_TEST_INTERNAL_TEST_REG_NAME                                       \
       = ::mcga::test::internal::register_test_case(                            \
-        #fixture,                                                              \
+        fixture_name,                                                          \
         &::mcga::test::internal::fixtureTestCaseBody<                          \
           MCGA_TEST_INTERNAL_TEST_NAME>);                                      \
     }                                                                          \
     void MCGA_TEST_INTERNAL_TEST_NAME::MCGA_TEST_BODY()
+
+#define TEST(description)                                                      \
+    INTERNAL_TEST_F("", ::mcga::test::internal::empty_fixture, description)
+
+#define TEST_F(fixture, description)                                           \
+    INTERNAL_TEST_F(#fixture, fixture, description)
