@@ -27,11 +27,7 @@ class Test : private TestConfig {
     struct ExecutionInfo {
         enum Status : char { PASSED = 0, FAILED = 1, SKIPPED = 2 } status = PASSED;
 
-        /** Number of time ticks the execution took.
-         *
-         * Is `-1` by default, signaling that the number of time ticks was not
-         * computable for this execution. */
-        double timeTicks = -1.0;
+        String verb;
 
         /** Human-readable message for the status of the test (explanation for
          * failure or skip etc.). */
@@ -41,6 +37,12 @@ class Test : private TestConfig {
          * when available (e.g. it's not available for tests failed with
          * timeout). */
         std::optional<Context> context = std::nullopt;
+
+        /** Number of time ticks the execution took.
+         *
+         * Is `-1` by default, signaling that the number of time ticks was not
+         * computable for this execution. */
+        double timeTicks = -1.0;
 
         /** Shorthand method for marking the test execution as failed.
          *

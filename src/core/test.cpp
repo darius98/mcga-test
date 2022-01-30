@@ -16,6 +16,7 @@ void Test::ExecutionInfo::fail(const String& failureMessage,
 void Test::ExecutionInfo::merge(ExecutionInfo&& other) {
     if (isPassed() || (status != SKIPPED && other.status == SKIPPED)) {
         status = other.status;
+        verb = std::move(other.verb);
         message = std::move(other.message);
         context = other.context;
         return;

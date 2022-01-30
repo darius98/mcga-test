@@ -11,7 +11,7 @@ template<class Fail, class T, matchers::MatcherFor<T> M>
 void expectMatches(Fail f,
                    const T& obj,
                    M matcher,
-                   Context context = Context("Expectation failed")) {
+                   Context context = Context()) {
     if (matcher.matches(obj)) {
         return;
     }
@@ -22,22 +22,18 @@ void expectMatches(Fail f,
     description << obj;
     description.appendRawString("'\nWhich is ");
     matcher.describeFailure(&description);
-    f(description.toString(), context);
+    f(description.toString(), context, "Expectation failed");
 }
 
 }  // namespace internal
 
 template<class T, matchers::MatcherFor<T> M>
-void expect(const T& obj,
-            M matcher,
-            Context context = Context("Expectation failed")) {
+void expect(const T& obj, M matcher, Context context = Context()) {
     internal::expectMatches(fail, obj, matcher, context);
 }
 
 template<class T, matchers::EqualityMatchableFor<T> Val>
-void expect(const T& obj,
-            Val expected,
-            Context context = Context("Expectation failed")) {
+void expect(const T& obj, Val expected, Context context = Context()) {
     internal::expectMatches(fail, obj, matchers::isEqualTo(expected), context);
 }
 

@@ -22,15 +22,14 @@ inline Message::BytesConsumer&
 
 template<>
 inline Message& Message::operator>>(mcga::test::Context& obj) {
-    (*this) >> obj.verb >> obj.functionName >> obj.fileName >> obj.line
-      >> obj.column;
+    (*this) >> obj.functionName >> obj.fileName >> obj.line >> obj.column;
     return *this;
 }
 
 template<>
 inline Message::BytesConsumer&
   Message::BytesConsumer::add(const mcga::test::Context& obj) {
-    add(obj.verb, obj.functionName, obj.fileName, obj.line, obj.column);
+    add(obj.functionName, obj.fileName, obj.line, obj.column);
     return *this;
 }
 

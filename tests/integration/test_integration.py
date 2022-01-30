@@ -233,10 +233,12 @@ class MCGATestIntegrationSmoothTestCase(MCGATestIntegrationMixin):
         ])
 
     def test_fail(self):
-        self.run_test(expect_fail=True, tests_passed=0, tests_failed=1, output=[
+        self.run_test(expect_fail=True, tests_passed=0, tests_failed=2, output=[
             self.output_test_line("F", "TestCase::test"),
             "Failed at .*tests/integration/fail\\.cpp:5:9",
             "\t1 \\+ 1 == 3 is not true",
+            self.output_test_line("F", "TestCase::test-fail-expect"),
+            "Expectation failed at .*tests/integration/fail\\.cpp:9:9",
         ])
 
     def test_fail_in_thread(self):

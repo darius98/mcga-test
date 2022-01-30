@@ -40,9 +40,10 @@ MCGA_TEST_EXPORT void cleanup(Executable body) {
     Driver::Instance()->addCleanup(std::move(body));
 }
 
-MCGA_TEST_EXPORT void fail(String message, Context context) {
+MCGA_TEST_EXPORT void fail(String message, Context context, String verb) {
     Driver::Instance()->addFailure(
       Test::ExecutionInfo{.status = Test::ExecutionInfo::FAILED,
+                          .verb = std::move(verb),
                           .message = std::move(message),
                           .context = context});
 }
@@ -50,6 +51,7 @@ MCGA_TEST_EXPORT void fail(String message, Context context) {
 MCGA_TEST_EXPORT void skip(String message, Context context) {
     Driver::Instance()->addFailure(
       Test::ExecutionInfo{.status = Test::ExecutionInfo::SKIPPED,
+                          .verb = "Skipped",
                           .message = std::move(message),
                           .context = context});
 }

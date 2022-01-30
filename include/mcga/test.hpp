@@ -90,13 +90,16 @@ void setUp(Executable body);
 void tearDown(Executable body);
 void cleanup(Executable body);
 
-void fail(String message = String(), Context context = Context());
-inline void expect(bool expr, Context context = Context("Expectation failed")) {
+void fail(String message = String(),
+          Context context = Context(),
+          String verb = "Failed");
+inline void expect(bool expr, Context context = Context()) {
     if (!expr) {
-        fail("", context);
+        fail("", context, "Expectation failed");
     }
 }
-void skip(String message = String(), Context context = Context("Skipped"));
+
+void skip(String message = String(), Context context = Context());
 
 }  // namespace MCGA_TEST_INTERNAL_ABI_NS
 }  // namespace mcga::test

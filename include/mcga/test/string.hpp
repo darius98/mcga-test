@@ -133,19 +133,17 @@ class String {
 #endif
 
 struct Context {
-    const char* verb;
     const char* fileName;
     const char* functionName;
     int line;
     int column;
 
-    constexpr explicit Context(const char* verb = "Failed",
-                               const char* fileName = __builtin_FILE(),
+    constexpr explicit Context(const char* fileName = __builtin_FILE(),
                                const char* functionName = __builtin_FUNCTION(),
                                int line = __builtin_LINE(),
                                int column = __builtin_COLUMN())
-            : verb(verb), fileName(fileName), functionName(functionName),
-              line(line), column(column) {
+            : fileName(fileName), functionName(functionName), line(line),
+              column(column) {
     }
 };
 

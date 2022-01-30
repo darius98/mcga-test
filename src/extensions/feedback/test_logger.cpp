@@ -179,10 +179,16 @@ void TestLogger::printTestFailure(const Test::ExecutionInfo& info) {
     }
     stream << (info.status == Test::ExecutionInfo::SKIPPED ? yellow : red);
     if (info.context.has_value()) {
-        stream << info.context->verb << " at " << info.context->fileName << ":"
-               << info.context->line << ":" << info.context->column << "\n";
+        stream << info.verb.c_str() << " at " << info.context->fileName << ":"
+               << info.context->line << ":" << info.context->column;
     }
-    stream << "\t" << message << reset;
+    if (!message.empty()) {
+        if (info.context.has_value()) {
+            stream << "\n";
+        }
+        stream << "\t" << message;
+    }
+    stream << reset;
 }
 
 void TestLogger::printTestMessage(const Test& test) {
