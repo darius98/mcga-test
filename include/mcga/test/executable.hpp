@@ -1,6 +1,7 @@
 #pragma once
 
 #include <new>
+#include <utility>
 
 #include <mcga/test/config.hpp>
 #include <mcga/test/string.hpp>
@@ -14,16 +15,6 @@ concept executable_t = requires(const T& obj) {
     { obj() } -> same_as<void>;
 };
 
-template<class T>
-constexpr T&& move(T&& t) noexcept {
-    return static_cast<T&&>(t);
-}
-
-template<class T>
-constexpr T&& move(T& t) noexcept {
-    return static_cast<T&&>(t);
-}
-
 }  // namespace internal
 
 class Executable {
@@ -34,7 +25,7 @@ class Executable {
 
     template<internal::executable_t Callable>
     static void te_mv_ctor(void* d, void* s) {
-        new (d) Callable(internal::move(*static_cast<Callable*>(s)));
+        new (d) Callable(std::move(*static_cast<Callable*>(s)));
     }
 
     template<internal::executable_t Callable>
@@ -79,14 +70,14 @@ class Executable {
       Executable(Callable callable, const Context& context = Context())
             : vtable(&vtableFor<Callable>), data(sbo.storage),
               context(context) {
-        new (data) Callable(internal::move(callable));
+        new (data) Callable(std::move(callable));
     }
 
 #if MCGA_TEST_ALLOW_DYNAMIC_MEMORY
     template<internal::executable_t Callable>
     Executable(Callable callable, const Context& context = Context())
             : vtable(&vtableFor<Callable>),
-              data(new Callable(internal::move(callable))), context(context) {
+              data(new Callable(std::move(callable))), context(context) {
     }
 #endif
 

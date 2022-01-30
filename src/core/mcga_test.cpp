@@ -20,26 +20,8 @@ MCGA_TEST_EXPORT int
 namespace mcga::test {
 inline namespace MCGA_TEST_INTERNAL_ABI_NS {
 
-MCGA_TEST_EXPORT void group(Executable body) {
-    Driver::Instance()->addGroup({}, std::move(body));
-}
-
-MCGA_TEST_EXPORT void group(String description, Executable body) {
-    Driver::Instance()->addGroup({.description = std::move(description)},
-                                 std::move(body));
-}
-
 MCGA_TEST_EXPORT void group(GroupConfig config, Executable body) {
     Driver::Instance()->addGroup(std::move(config), std::move(body));
-}
-
-MCGA_TEST_EXPORT void test(Executable body) {
-    Driver::Instance()->addTest({}, std::move(body));
-}
-
-MCGA_TEST_EXPORT void test(String description, Executable body) {
-    Driver::Instance()->addTest({.description = std::move(description)},
-                                std::move(body));
 }
 
 MCGA_TEST_EXPORT void test(TestConfig config, Executable body) {
@@ -70,12 +52,6 @@ MCGA_TEST_EXPORT void skip(String message, Context context) {
       Test::ExecutionInfo{.status = Test::ExecutionInfo::SKIPPED,
                           .message = std::move(message),
                           .context = context});
-}
-
-MCGA_TEST_EXPORT void expect(bool expr, Context context) {
-    if (!expr) {
-        fail("", context);
-    }
 }
 
 }  // namespace MCGA_TEST_INTERNAL_ABI_NS

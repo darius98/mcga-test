@@ -70,21 +70,33 @@ struct GroupConfig {
     bool optional = false;
 };
 
-void group(Executable body);
-void group(String description, Executable body);
 void group(GroupConfig config, Executable body);
+inline void group(Executable body) {
+    group(GroupConfig{}, std::move(body));
+}
+inline void group(String description, Executable body) {
+    group(GroupConfig{.description = std::move(description)}, std::move(body));
+}
 
-void test(Executable body);
-void test(String description, Executable body);
 void test(TestConfig config, Executable body);
+inline void test(Executable body) {
+    test(TestConfig{}, std::move(body));
+}
+inline void test(String description, Executable body) {
+    test(TestConfig{.description = std::move(description)}, std::move(body));
+}
 
 void setUp(Executable body);
 void tearDown(Executable body);
 void cleanup(Executable body);
 
 void fail(String message = String(), Context context = Context());
+inline void expect(bool expr, Context context = Context("Expectation failed")) {
+    if (!expr) {
+        fail("", context);
+    }
+}
 void skip(String message = String(), Context context = Context("Skipped"));
-void expect(bool expr, Context context = Context("Expectation failed"));
 
 }  // namespace MCGA_TEST_INTERNAL_ABI_NS
 }  // namespace mcga::test
