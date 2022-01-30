@@ -1,6 +1,6 @@
 #pragma once
 
-#include <mcga/cli.hpp>
+#include "mcga/cli.hpp"
 
 #include "core/extension.hpp"
 #include "test_logger.hpp"

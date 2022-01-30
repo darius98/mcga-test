@@ -2,8 +2,8 @@
 
 #include <memory>
 
-#include <mcga/cli.hpp>
-#include <mcga/proc.hpp>
+#include "mcga/cli.hpp"
+#include "mcga/proc.hpp"
 
 #include "core/extension.hpp"
 

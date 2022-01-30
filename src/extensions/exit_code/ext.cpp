@@ -1,9 +1,12 @@
-#include "exit_code_extension.hpp"
+#include "ext.hpp"
+
+#include <cstdlib>
 
 namespace mcga::test {
 
 ExitCodeExtension::ExitCodeExtension(bool skipIsFail, bool ignoreWarnings)
-        : skipIsFail(skipIsFail), ignoreWarnings(ignoreWarnings) {
+        : exitCode(EXIT_SUCCESS), skipIsFail(skipIsFail),
+          ignoreWarnings(ignoreWarnings) {
 }
 
 int ExitCodeExtension::getExitCode() const {

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <new>
+#include <iterator>
 #include <type_traits>
 
 namespace mcga::test {
@@ -97,7 +98,7 @@ class List {
     void clear() {
         while (head != nullptr) {
             auto next = head->next;
-            std::destroy_at(head);
+            head->~node();
             Allocator::deallocate(head);
             head = next;
         }

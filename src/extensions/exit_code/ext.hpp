@@ -1,7 +1,5 @@
 #pragma once
 
-#include <cstdlib>
-
 #include "core/extension.hpp"
 
 namespace mcga::test {
@@ -19,7 +17,7 @@ class ExitCodeExtension {
     void destroy();
 
   private:
-    int exitCode = EXIT_SUCCESS;
+    int exitCode;
     bool skippedAnyTests = false;
     bool passedAnyTests = false;
 

@@ -9,9 +9,9 @@
 #include "core/executor.hpp"
 #include "core/export.hpp"
 #include "core/main.hpp"
-#include "extensions/feedback/exit_code_extension.hpp"
-#include "extensions/feedback/socket_streaming_extension.hpp"
-#include "extensions/feedback/stdout_logging_extension.hpp"
+#include "extensions/exit_code/ext.hpp"
+#include "extensions/binary_stream/ext.hpp"
+#include "extensions/text_stream/ext.hpp"
 #include "extensions/filter/ext.hpp"
 #include "hosted/box_executor.hpp"
 
