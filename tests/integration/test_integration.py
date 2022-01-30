@@ -3,7 +3,7 @@
 import re
 import subprocess
 import unittest
-from typing import List, Optional
+from typing import List, Optional, Union
 
 
 class MCGATestIntegrationMixin(unittest.TestCase):
@@ -37,7 +37,7 @@ class MCGATestIntegrationMixin(unittest.TestCase):
 
     def run_test(self, name=None, timeout=1, expect_fail=False, tests_passed=0, tests_failed=0,
                  tests_failed_optional=None, tests_skipped=None,
-                 output=None, expect_output_not_contains=None, extra_args=None):
+                 output=None, extra_args=None):
         if name is None:
             name = self._testMethodName[5:]
         test_args = ["./" + name, "--executor=" + self.executor_type]
@@ -63,27 +63,31 @@ class MCGATestIntegrationMixin(unittest.TestCase):
             summary_snippet += "\nTests skipped: " + str(tests_skipped)
         summary_snippet += "\nTotal recorded testing time: [0-9\\.]* ticks \\([0-9\\.]* ms\\)\n"
         if output is not None:
-            if isinstance(output, list):
-                output = "\n".join(output)
-            self.check_output(re.compile("^" + output + "\n\n" + summary_snippet + "$"))
+            output = [output] if not isinstance(output, list) else output
+            self.check_output_lines([*output, "", *summary_snippet.split("\n")])
         else:
             self.check_output(re.compile(summary_snippet))
-            if expect_output_not_contains is not None:
-                self.check_output(expect_output_not_contains, expect_contains=False)
         return output
 
-    def check_output(self, snippet, msg=None, expect_contains=True):
+    def check_output(self, snippet: Union[list, str, re.Pattern], msg=None, expect_contains=True):
         if isinstance(snippet, list):
             for entry in snippet:
                 self.check_output(entry, msg, expect_contains)
             return
 
-        msg = "Test executable command: " + " ".join(self._last_test_args) + "\n"
-        msg += "Output {} {}: \"\"\"{}\"\"\"\nOutput was: \"\"\"{}\"\"\"".format(
-            "did not contain expected" if expect_contains else "contained unexpected",
-            "pattern" if isinstance(snippet, re.Pattern) else "snippet",
-            snippet.pattern if isinstance(snippet, re.Pattern) else snippet,
-            self._last_test_output)
+        msg = ("Test executable command: {cmd}\n"
+               "Output {verb} {snippet_type}: \"\"\"{expected}\"\"\"\n"
+               "Output was: \"\"\"{output}\"\"\"".format(cmd=" ".join(self._last_test_args),
+                                                         verb="did not contain expected"
+                                                         if expect_contains
+                                                         else "contained unexpected",
+                                                         snippet_type="pattern"
+                                                         if isinstance(snippet, re.Pattern)
+                                                         else "snippet",
+                                                         expected=snippet.pattern
+                                                         if isinstance(snippet, re.Pattern)
+                                                         else snippet,
+                                                         output=self._last_test_output))
         if isinstance(snippet, re.Pattern):
             self.assertEqual(bool(snippet.search(self._last_test_output)), expect_contains, msg)
         else:
@@ -92,19 +96,43 @@ class MCGATestIntegrationMixin(unittest.TestCase):
     def check_warning(self, message_pattern, line=0, notes=None):
         self.check_output(re.compile(self.get_warning_pattern(message_pattern, line, notes)))
 
+    def check_output_lines(self, expected_lines):
+        output_lines = self._last_test_output.split("\n")
+        self.assertEqual(
+            len(output_lines), len(expected_lines),
+            msg="Test executable command: {cmd}\n"
+                "Expected output with {expected} lines, got output with {actual} lines instead.\n"
+                "Output was: \"\"\"{output}\"\"\"".format(cmd=" ".join(self._last_test_args),
+                                                          expected=len(expected_lines),
+                                                          actual=len(output_lines),
+                                                          output=self._last_test_output))
+        for i, (output_line, expected_line) in enumerate(zip(output_lines, expected_lines)):
+            if not re.search(expected_line, output_line):
+                numbered_lines = [str(idx) + ": " + line for idx, line in enumerate(output_lines)]
+                self.fail(msg="Test executable command: {cmd}\n"
+                              "Output line {line_number} did not match expected pattern.\n"
+                              "Expected line pattern was: \"\"\"{line_pattern}\"\"\"\n"
+                              "Output line was: \"\"\"{output_line}\"\"\"\n"
+                              "Output was:\n{output}"
+                          .format(cmd=" ".join(self._last_test_args),
+                                  line_number=i,
+                                  line_pattern=expected_line,
+                                  output_line=output_line,
+                                  output="\n".join(numbered_lines)))
+
 
 class MCGATestIntegrationSmoothTestCase(MCGATestIntegrationMixin):
     executor_type = "smooth"
 
     def test_emit_warnings(self):
-        self.run_test(expect_fail=True, tests_passed=1, tests_failed=0,
-                      expect_output_not_contains=[
-                          "test-in-setUp",
-                          "test-in-test",
-                          "test-in-tearDown",
-                          "test-in-thread",
-                          "test-in-group-in-thread",
-                      ])
+        self.run_test(expect_fail=True, tests_passed=1, tests_failed=0)
+        self.check_output([
+            "test-in-setUp",
+            "test-in-test",
+            "test-in-tearDown",
+            "test-in-thread",
+            "test-in-group-in-thread",
+        ], expect_contains=False)
 
         group_test_case_note = ("In group TestCase", 7)
         group1_note = ("In group group", 17)
@@ -172,14 +200,14 @@ class MCGATestIntegrationSmoothTestCase(MCGATestIntegrationMixin):
             [group_test_case_note])
 
         # Doesn't fail with --ignore-warnings enabled
-        self.run_test(tests_passed=1, tests_failed=0, extra_args=["--ignore-warnings"],
-                      expect_output_not_contains=[
-                          "test-in-setUp",
-                          "test-in-test",
-                          "test-in-tearDown",
-                          "test-in-thread",
-                          "test-in-group-in-thread",
-                      ])
+        self.run_test(tests_passed=1, tests_failed=0, extra_args=["--ignore-warnings"])
+        self.check_output([
+            "test-in-setUp",
+            "test-in-test",
+            "test-in-tearDown",
+            "test-in-thread",
+            "test-in-group-in-thread",
+        ], expect_contains=False)
 
     def test_multiple_files(self):
         self.run_test(tests_passed=3, tests_failed=0, output=[
@@ -411,6 +439,56 @@ class MCGATestIntegrationSmoothTestCase(MCGATestIntegrationMixin):
                           self.output_test_line("P", "TestCase::test3"),
                           self.output_test_line("P", "TestCase::test4"),
                       ])
+
+    def test_fixtures_api(self):
+        self.run_test(tests_passed=5, tests_failed=5, expect_fail=True, output=[
+            "passing-test-body",
+            self.output_test_line("P", "passing-test"),
+            "failing-test-body",
+            self.output_test_line("F", "failing-test"),
+            "Failed at .*tests/integration/fixtures_api\\.cpp:11:5",
+            "failure in global",
+            "fixture1-setUp",
+            "fixture1-passing-test-body",
+            "fixture1-tearDown",
+            self.output_test_line("P", "Fixture1::fixture1-passing-test"),
+            "fixture1-setUp",
+            "fixture1-failing-test-body",
+            "fixture1-tearDown",
+            self.output_test_line("F", "Fixture1::fixture1-failing-test"),
+            "Failed at .*tests/integration/fixtures_api\\.cpp:30:5",
+            "\tfailure in fixture1",
+            "fixture2-setUp",
+            "fixture2-passing-test-body",
+            "fixture2-tearDown",
+            self.output_test_line("P", "Fixture2::fixture2-passing-test"),
+            "fixture2-setUp",
+            "fixture2-failing-test-body",
+            "fixture2-tearDown",
+            self.output_test_line("F", "Fixture2::fixture2-failing-test"),
+            "Failed at .*tests/integration/fixtures_api\\.cpp:51:5",
+            "\tfailure in fixture2",
+            "fixture3-setUp",
+            "fixture3-passing-test-body",
+            "fixture3-tearDown",
+            self.output_test_line("P", "Fixture3::fixture3-passing-test"),
+            "fixture3-setUp",
+            "fixture3-failing-test-body",
+            "fixture3-tearDown",
+            self.output_test_line("F", "Fixture3::fixture3-failing-test"),
+            "Failed at .*tests/integration/fixtures_api\\.cpp:72:5",
+            "\tfailure in fixture3",
+            "fixture4-setUp",
+            "fixture4-passing-test-body",
+            "fixture4-tearDown",
+            self.output_test_line("P", "Fixture4::fixture4-passing-test"),
+            "fixture4-setUp",
+            "fixture4-failing-test-body",
+            "fixture4-tearDown",
+            self.output_test_line("F", "Fixture4::fixture4-failing-test"),
+            "Failed at .*tests/integration/fixtures_api\\.cpp:91:5",
+            "\tfailure in fixture4",
+        ])
 
 
 class MCGATestIntegrationBoxedTestCase(MCGATestIntegrationSmoothTestCase):

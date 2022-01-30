@@ -4,9 +4,9 @@
 #include "mcga/test.hpp"
 
 namespace mcga::test {
-inline namespace MCGA_TEST_ABI_NS {
+inline namespace MCGA_TEST_INTERNAL_ABI_NS {
 
 DeathStatus checkDeath(Executable func, double timeTicksLimit = 1);
 
-}  // namespace MCGA_TEST_ABI_NS
+}  // namespace MCGA_TEST_INTERNAL_ABI_NS
 }  // namespace mcga::test

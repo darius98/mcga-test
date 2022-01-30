@@ -11,7 +11,7 @@
 using namespace mcga::proc;
 
 namespace mcga::test {
-inline namespace MCGA_TEST_ABI_NS {
+inline namespace MCGA_TEST_INTERNAL_ABI_NS {
 
 MCGA_TEST_EXPORT DeathStatus checkDeath(Executable func,
                                         double timeTicksLimit) {
@@ -37,5 +37,5 @@ MCGA_TEST_EXPORT DeathStatus checkDeath(Executable func,
     return {-1, -1};
 }
 
-}  // namespace MCGA_TEST_ABI_NS
+}  // namespace MCGA_TEST_INTERNAL_ABI_NS
 }  // namespace mcga::test

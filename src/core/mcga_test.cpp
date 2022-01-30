@@ -7,15 +7,18 @@ namespace mcga::test::internal {
 
 static TestCaseList testCases;
 
-MCGA_TEST_EXPORT void
+MCGA_TEST_EXPORT int
   register_test_case(const char* name, void (*body)(), Context context) {
-    testCases.push_back(TestCase{name, body, context});
+    if (!testCases.push_back(TestCase{name, body, context})) {
+        // TODO: Somehow emit a warning?
+    }
+    return 0;
 }
 
 }  // namespace mcga::test::internal
 
 namespace mcga::test {
-inline namespace MCGA_TEST_ABI_NS {
+inline namespace MCGA_TEST_INTERNAL_ABI_NS {
 
 MCGA_TEST_EXPORT void group(Executable body) {
     Driver::Instance()->addGroup({}, std::move(body));
@@ -75,7 +78,7 @@ MCGA_TEST_EXPORT void expect(bool expr, Context context) {
     }
 }
 
-}  // namespace MCGA_TEST_ABI_NS
+}  // namespace MCGA_TEST_INTERNAL_ABI_NS
 }  // namespace mcga::test
 
 namespace mcga::test {

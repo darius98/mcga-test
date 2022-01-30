@@ -54,6 +54,7 @@ add_integration_test(fail_in_cleanup integration/fail_in_cleanup.cpp)
 add_integration_test(skip_in_set_up integration/skip_in_set_up.cpp)
 add_integration_test(skip_in_tear_down integration/skip_in_tear_down.cpp)
 add_integration_test(empty integration/empty.cpp)
+add_integration_test(fixtures_api integration/fixtures_api.cpp)
 # TODO: Enable this after fixing
 # add_integration_test(freestanding integration/freestanding.cpp FREESTANDING)
 

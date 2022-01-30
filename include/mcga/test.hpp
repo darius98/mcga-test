@@ -5,7 +5,7 @@
 #include <mcga/test/string.hpp>
 
 namespace mcga::test {
-inline namespace MCGA_TEST_ABI_NS {
+inline namespace MCGA_TEST_INTERNAL_ABI_NS {
 
 /** Structure defining the configuration for a test.
  *
@@ -86,24 +86,104 @@ void fail(String message = String(), Context context = Context());
 void skip(String message = String(), Context context = Context("Skipped"));
 void expect(bool expr, Context context = Context("Expectation failed"));
 
-}  // namespace MCGA_TEST_ABI_NS
+}  // namespace MCGA_TEST_INTERNAL_ABI_NS
 }  // namespace mcga::test
 
 namespace mcga::test::internal {
 
-void register_test_case(const char* name, void (*body)(), Context context);
+int register_test_case(const char* name,
+                       void (*body)(),
+                       Context context = Context());
+
+struct empty_fixture {};
+
+template<class F>
+void fixtureTestCaseBody() {
+    alignas(F) unsigned char f_storage[sizeof(F)];
+    F* instance = reinterpret_cast<F*>(f_storage);
+
+    setUp([instance]() {
+        new (instance) F();
+
+        if constexpr (requires { {instance->setUp()}; }) {
+            instance->setUp();
+        }
+        if constexpr (requires { {instance->SetUp()}; }) {
+            instance->SetUp();
+        }
+        if constexpr (requires { {instance->setup()}; }) {
+            instance->setup();
+        }
+        if constexpr (requires { {instance->set_up()}; }) {
+            instance->set_up();
+        }
+    });
+
+    tearDown([instance]() {
+        if constexpr (requires { {instance->tearDown()}; }) {
+            instance->tearDown();
+        }
+        if constexpr (requires { {instance->TearDown()}; }) {
+            instance->TearDown();
+        }
+        if constexpr (requires { {instance->tear_down()}; }) {
+            instance->tear_down();
+        }
+        if constexpr (requires { {instance->teardown()}; }) {
+            instance->teardown();
+        }
+
+        instance->~F();
+    });
+
+    test(F::MCGATest_description, [instance]() {
+        instance->MCGA_TEST_BODY();
+    });
+}
 
 }  // namespace mcga::test::internal
 
+#define MCGA_TEST_INTERNAL_TEST_NAME                                           \
+    MCGA_TEST_INTERNAL_CAT2(MCGA_TEST_, __LINE__)
+
+#define MCGA_TEST_INTERNAL_TEST_REG_NAME                                       \
+    MCGA_TEST_INTERNAL_CAT2(MCGA_TEST_reg_, __LINE__)
+
 #define TEST_CASE(name)                                                        \
     namespace {                                                                \
-    struct MCGA_TEST_CAT2(mcga_test_case_, __LINE__) {                         \
-        static void run();                                                     \
-                                                                               \
-        MCGA_TEST_CAT2(mcga_test_case_, __LINE__)() {                          \
-            ::mcga::test::internal::register_test_case(                        \
-              name, run, ::mcga::test::Context());                             \
-        }                                                                      \
-    } MCGA_TEST_CAT2(mcga_test_reg_, __LINE__);                                \
+    struct MCGA_TEST_INTERNAL_TEST_NAME {                                      \
+        static void MCGA_TEST_BODY();                                          \
+    };                                                                         \
+    int MCGA_TEST_INTERNAL_TEST_REG_NAME                                       \
+      = ::mcga::test::internal::register_test_case(                            \
+        name, &MCGA_TEST_INTERNAL_TEST_NAME::MCGA_TEST_BODY);                  \
     }                                                                          \
-    void MCGA_TEST_CAT2(mcga_test_case_, __LINE__)::run()
+    void MCGA_TEST_INTERNAL_TEST_NAME::MCGA_TEST_BODY()
+
+#define TEST(description)                                                      \
+    namespace {                                                                \
+    struct MCGA_TEST_INTERNAL_TEST_NAME {                                      \
+        static void MCGA_TEST_BODY();                                          \
+    };                                                                         \
+    int MCGA_TEST_INTERNAL_TEST_REG_NAME                                       \
+      = ::mcga::test::internal::register_test_case("", []() -> void {          \
+            ::mcga::test::test(description,                                    \
+                               MCGA_TEST_INTERNAL_TEST_NAME::MCGA_TEST_BODY);  \
+        });                                                                    \
+    }                                                                          \
+    void MCGA_TEST_INTERNAL_TEST_NAME::MCGA_TEST_BODY()
+
+#define TEST_F(fixture, description)                                           \
+    namespace {                                                                \
+    struct MCGA_TEST_INTERNAL_TEST_NAME : fixture {                            \
+        static inline constexpr const char* MCGATest_description               \
+          = description;                                                       \
+        void MCGA_TEST_BODY();                                                 \
+    };                                                                         \
+    int MCGA_TEST_INTERNAL_TEST_REG_NAME                                       \
+      = ::mcga::test::internal::register_test_case(                            \
+        #fixture,                                                              \
+        &::mcga::test::internal::fixtureTestCaseBody<                          \
+          MCGA_TEST_INTERNAL_TEST_NAME>);                                      \
+    }                                                                          \
+    void MCGA_TEST_INTERNAL_TEST_NAME::MCGA_TEST_BODY()
