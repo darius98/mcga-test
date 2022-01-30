@@ -3,7 +3,9 @@
 #include <optional>
 #include <utility>
 
-#include "mcga/test.hpp"
+#include <mcga/test.hpp>
+
+#include "aa_list.hpp"
 #include "memory.hpp"
 
 namespace mcga::test {
@@ -14,6 +16,11 @@ enum class WarningNoteType : std::uint8_t {
     SET_UP = 3,
     TEAR_DOWN = 4,
     CLEANUP = 5,
+};
+
+struct WarningNoteAllocator {
+    [[nodiscard]] static void* allocate();
+    static void deallocate(void* ptr);
 };
 
 struct Warning {

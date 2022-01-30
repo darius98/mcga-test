@@ -1,9 +1,17 @@
 #pragma once
 
+#include <mcga/test.hpp>
+
 #include "aa_list.hpp"
 #include "memory.hpp"
 
 namespace mcga::test {
+
+struct ExecutableAllocator {
+    [[nodiscard]] static void* allocate();
+    static void deallocate(void* ptr);
+};
+using ExecutableList = List<Executable, ExecutableAllocator>;
 
 /** Internal representation of a group.
  *

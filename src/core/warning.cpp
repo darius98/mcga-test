@@ -1,6 +1,20 @@
 #include "warning.hpp"
 
+#include "config.hpp"
+
 namespace mcga::test {
+
+static BufferFor<List<Warning::Note, WarningNoteAllocator>::node,
+                 numStaticWarningNotes>
+  staticWarningNotes;
+
+void* WarningNoteAllocator::allocate() {
+    return staticWarningNotes.allocate();
+}
+
+void WarningNoteAllocator::deallocate(void* ptr) {
+    staticWarningNotes.deallocate(ptr);
+}
 
 Warning::Note::Note(WarningNoteType type,
                     String message,

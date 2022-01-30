@@ -32,9 +32,10 @@ set(mcga_test_core_src
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/group.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/main.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/mcga_test.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/core/memory.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/core/time_tick.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/core/string.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/test.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/core/test_case.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/core/time_tick.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/warning.cpp
 
         ${CMAKE_CURRENT_SOURCE_DIR}/src/extensions/feedback/exit_code_extension.cpp

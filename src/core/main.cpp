@@ -1,6 +1,7 @@
 #include "main.hpp"
 
 #include "driver.hpp"
+#include "test_case.hpp"
 
 namespace mcga::test {
 

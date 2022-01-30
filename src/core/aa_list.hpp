@@ -1,6 +1,5 @@
 #pragma once
 
-#include <compare>
 #include <new>
 #include <type_traits>
 

@@ -1,9 +1,21 @@
 #include "group.hpp"
 #include "memory.hpp"
+#include "config.hpp"
 
 #include <new>
 
 namespace mcga::test {
+
+static BufferFor<Group, numStaticGroups> staticGroups;
+static BufferFor<ExecutableList::node, numStaticCallbacks> staticExecutables;
+
+void* ExecutableAllocator::allocate() {
+    return staticExecutables.allocate();
+}
+
+void ExecutableAllocator::deallocate(void* ptr) {
+    staticExecutables.deallocate(ptr);
+}
 
 Group::Ptr::Ptr(Group* group): raw(group) {
     raw->refCount++;
@@ -13,7 +25,7 @@ void Group::Ptr::del() {
     if (raw != nullptr) {
         if (--raw->refCount == 0) {
             raw->~Group();
-            GroupAllocator::deallocate(raw);
+            staticGroups.deallocate(raw);
         }
     }
 }
@@ -80,7 +92,7 @@ bool Group::Ptr::operator!=(std::nullptr_t) const noexcept {
 
 Group::Ptr
   Group::make(GroupConfig config, Context context, Ptr parentGroup, int id) {
-    const auto storage = GroupAllocator::allocate();
+    const auto storage = staticGroups.allocate();
     if (storage == nullptr) {
         return Ptr{nullptr};
     }

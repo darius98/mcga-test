@@ -2,6 +2,7 @@
 
 #include "driver.hpp"
 #include "export.hpp"
+#include "test_case.hpp"
 
 namespace mcga::test::internal {
 
