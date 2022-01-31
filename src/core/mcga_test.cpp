@@ -4,13 +4,27 @@
 #include "export.hpp"
 #include "test_case.hpp"
 
-namespace mcga::test::internal {
+namespace mcga::test {
 
-static TestCaseList testCases;
+alignas(TestCaseList) static unsigned char testCasesListStorage[sizeof(TestCaseList)];
+static constinit bool testCaseListInit = false;
+
+TestCaseList* getTestCasesList() {
+    auto ptr = reinterpret_cast<TestCaseList*>(testCasesListStorage);
+    if (!testCaseListInit) {
+        new (ptr) TestCaseList();
+        testCaseListInit = true;
+    }
+    return ptr;
+}
+
+}
+
+namespace mcga::test::internal {
 
 MCGA_TEST_EXPORT int
   register_test_case(const char* name, void (*body)(), Context context) {
-    if (!testCases.push_back(TestCase{name, body, context})) {
+    if (!getTestCasesList()->push_back(TestCase{name, body, context})) {
         // TODO: Somehow emit a warning?
     }
     return 0;
@@ -58,12 +72,4 @@ MCGA_TEST_EXPORT void skip(String message, Context context) {
 }
 
 }  // namespace MCGA_TEST_INTERNAL_ABI_NS
-}  // namespace mcga::test
-
-namespace mcga::test {
-
-const TestCaseList* getTestCasesList() {
-    return &internal::testCases;
-}
-
 }  // namespace mcga::test

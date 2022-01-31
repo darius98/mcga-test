@@ -1,7 +1,7 @@
 #include <mcga/test.hpp>
 
 #include "core/main.hpp"
-#include "extensions/feedback/exit_code_extension.hpp"
+#include "extensions/exit_code/ext.hpp"
 
 using namespace mcga::test;
 

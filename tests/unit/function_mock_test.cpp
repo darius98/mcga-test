@@ -4,6 +4,23 @@
 #include "mcga/test_ext/matchers.hpp"
 
 #include "mcga/test_ext/mock.hpp"
+#include "mcga/test_ext/mock_helpers.hpp"
+
+using mcga::test::FunctionMock;
+
+struct LibCMocks {
+    FunctionMock<void()> abort{"abort"};
+    FunctionMock<void*(size_t)> malloc{"malloc"};
+    FunctionMock<int(const char*, va_list)> vprintf{"vprintf"};
+    FunctionMock<int(const char*, ...)> printf{&vprintf};
+};
+
+static constinit LibCMocks libc;
+
+DECLARE_NORETURN_FUNCTION(libc, abort, 0)
+DECLARE_FUNCTION(libc, malloc, 1)
+DECLARE_FUNCTION(libc, vprintf, 2)
+DECLARE_VA_FUNCTION(libc, printf, 1)
 
 using namespace mcga::test;
 using namespace mcga::matchers;

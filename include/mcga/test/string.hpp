@@ -2,6 +2,14 @@
 
 #include <mcga/test/config.hpp>
 
+#if defined(__has_include) && __has_include(<source_location>) && !__clang__
+#define MCGA_TEST_USE_SOURCE_LOCATION
+#endif
+
+#ifdef MCGA_TEST_USE_SOURCE_LOCATION
+#include <source_location>
+#endif
+
 namespace mcga::test {
 
 namespace internal {
@@ -50,13 +58,6 @@ class String {
     }
 
     constexpr String(const char* data) noexcept: String(false, data) {
-    }
-
-    constexpr String(const char (&data)[]) noexcept: String(false, data) {
-    }
-
-    template<int N>
-    constexpr String(const char (&data)[N]) noexcept: String(false, data) {
     }
 
     String(const internal::std_string_like auto& data)
@@ -113,13 +114,6 @@ class String {
     constexpr String(const char* data) noexcept: data(data) {
     }
 
-    constexpr String(const char (&data)[]) noexcept: data(data) {
-    }
-
-    template<int N>
-    constexpr String(const char (&data)[N]) noexcept: data(data) {
-    }
-
     String(const String& other) = default;
     String(String&& other) = default;
     String& operator=(const String& other) = default;
@@ -138,6 +132,13 @@ struct Context {
     int line;
     int column;
 
+#ifdef MCGA_TEST_USE_SOURCE_LOCATION
+    constexpr explicit Context(std::source_location loc
+                               = std::source_location::current())
+            : fileName(loc.file_name()), functionName(loc.function_name()),
+              line(loc.line()), column(loc.column()) {
+    }
+#else
     constexpr explicit Context(const char* fileName = __builtin_FILE(),
                                const char* functionName = __builtin_FUNCTION(),
                                int line = __builtin_LINE(),
@@ -145,6 +146,7 @@ struct Context {
             : fileName(fileName), functionName(functionName), line(line),
               column(column) {
     }
+#endif
 };
 
 }  // namespace mcga::test

@@ -12,7 +12,7 @@ struct element_storage {
     static_assert(element_align >= alignof(freelist_node));
     static_assert(element_align <= alignof(void*));
 
-    alignas(element_align) union {
+    union alignas(element_align) {
         unsigned char storage[element_size];
         freelist_node node;
     };

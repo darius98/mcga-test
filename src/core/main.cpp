@@ -5,7 +5,7 @@
 
 namespace mcga::test {
 
-const TestCaseList* getTestCasesList();
+TestCaseList* getTestCasesList();
 
 void runTests(Executor* runner, const EntryPointOptions& options) {
     ExtensionApi api(options.extensions, options.numExtensions);

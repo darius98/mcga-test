@@ -53,10 +53,11 @@ target_compile_definitions(mcga_test_interface
 add_library(mcga_test_obj OBJECT
         ${mcga_test_core_src}
         ${CMAKE_CURRENT_SOURCE_DIR}/src/extensions/death/check_death.cpp
-        src/extensions/text_stream/color.cpp
-        src/extensions/binary_stream/ext.cpp
-        src/extensions/text_stream/ext.cpp
-        src/extensions/text_stream/test_logger.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/extensions/text_stream/color.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/extensions/binary_stream/ext.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/extensions/text_stream/ext.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/extensions/text_stream/test_logger.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/extensions/mock/base.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/extensions/filter/ext.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/hosted/entry_point.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/hosted/box_executor.cpp)
@@ -73,7 +74,7 @@ target_link_libraries(mcga_test_static PRIVATE mcga_test_obj)
 
 add_library(mcga_test_freestanding STATIC
         ${mcga_test_core_src}
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/freestanding/memcpy.cpp)
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/freestanding/mem.cpp)
 target_link_libraries(mcga_test_freestanding PRIVATE mcga_test_interface)
 target_compile_definitions(mcga_test_freestanding
         PUBLIC MCGA_TEST_THREADING=0
@@ -87,11 +88,6 @@ target_link_options(mcga_test_freestanding
         PUBLIC -ffreestanding
         PUBLIC -nostdlib
         PUBLIC -static)
-
-add_library(mcga_mock SHARED
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/extensions/mock/base.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/extensions/mock/libc.cpp)
-target_link_libraries(mcga_mock PRIVATE mcga_test_interface)
 
 install(TARGETS mcga_test DESTINATION lib)
 install(TARGETS mcga_test_static DESTINATION lib)

@@ -75,6 +75,4 @@ add_test(NAME mcga_test_integration_tests
 
 add_unit_test(check_death NO_EXECUTOR_TYPE unit/check_death_test.cpp)
 add_unit_test(death_matchers NO_EXECUTOR_TYPE unit/death_matchers_test.cpp)
-
 add_unit_test(function_mock unit/function_mock_test.cpp)
-target_link_libraries(mcga_test_unit_function_mock mcga_mock)
