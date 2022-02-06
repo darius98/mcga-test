@@ -13,7 +13,7 @@ TEST_CASE("test case") {
     test("failing-test", [] {
         expect(1 + 1 == 3);
     });
-};
+}
 
 int main() {
     ExitCodeExtension exitCodeExtension(false, false);
@@ -26,4 +26,24 @@ int main() {
     SmoothExecutor executor;
     runTests(&executor, options);
     return exitCodeExtension.getExitCode();
+}
+
+[[noreturn]] void start() asm("start");
+
+void start() {
+    ExitCodeExtension exitCodeExtension(false, false);
+    auto extensions = makeExtensionArray(&exitCodeExtension);
+    const auto options = EntryPointOptions{
+      .extensions = extensions.data(),
+      .numExtensions = extensions.size(),
+      .numRuns = 1,
+    };
+    SmoothExecutor executor;
+    runTests(&executor, options);
+    exit(exitCodeExtension.getExitCode());
+}
+
+extern "C" void exit(int status) {
+    
+    __builtin_unreachable();
 }

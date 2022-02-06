@@ -38,7 +38,7 @@ set(mcga_test_core_src
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/time_tick.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/warning.cpp
 
-        src/extensions/exit_code/ext.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/extensions/exit_code/ext.cpp
         )
 
 add_library(mcga_test_interface INTERFACE)
@@ -72,25 +72,38 @@ target_link_libraries(mcga_test PRIVATE mcga_test_obj)
 add_library(mcga_test_static STATIC $<TARGET_OBJECTS:mcga_test_obj>)
 target_link_libraries(mcga_test_static PRIVATE mcga_test_obj)
 
-add_library(mcga_test_freestanding STATIC
+add_library(mcga_test_freestanding_obj OBJECT
         ${mcga_test_core_src}
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/freestanding/mem.cpp)
-target_link_libraries(mcga_test_freestanding PRIVATE mcga_test_interface)
-target_compile_definitions(mcga_test_freestanding
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/freestanding/mem.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/freestanding/ssp.cpp)
+target_link_libraries(mcga_test_freestanding_obj PRIVATE mcga_test_interface)
+target_compile_definitions(mcga_test_freestanding_obj
         PUBLIC MCGA_TEST_THREADING=0
         PUBLIC MCGA_TEST_TIMING=0)
-target_compile_options(mcga_test_freestanding
+target_compile_options(mcga_test_freestanding_obj
         PUBLIC -ffreestanding
         PUBLIC -fno-exceptions
         PUBLIC -fno-rtti
         PUBLIC -nostdlib)
-target_link_options(mcga_test_freestanding
+target_link_options(mcga_test_freestanding_obj
         PUBLIC -ffreestanding
+        PUBLIC -fno-exceptions
+        PUBLIC -fno-rtti
         PUBLIC -nostdlib
         PUBLIC -static)
 
-install(TARGETS mcga_test DESTINATION lib)
-install(TARGETS mcga_test_static DESTINATION lib)
+add_library(mcga_test_freestanding SHARED $<TARGET_OBJECTS:mcga_test_freestanding_obj>)
+target_link_libraries(mcga_test_freestanding PUBLIC mcga_test_freestanding_obj)
+
+add_library(mcga_test_freestanding_static STATIC $<TARGET_OBJECTS:mcga_test_freestanding_obj>)
+target_link_libraries(mcga_test_freestanding_static PUBLIC mcga_test_freestanding_obj)
+
+install(TARGETS
+        mcga_test
+        mcga_test_static
+        mcga_test_freestanding
+        mcga_test_freestanding_static
+        DESTINATION lib)
 install(DIRECTORY include DESTINATION .)
 
 if (MCGA_test_tests)
