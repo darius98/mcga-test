@@ -13,6 +13,25 @@ using mcga::proc::WorkerSubprocess;
 
 namespace mcga::test {
 
+void mcga_read(proc::binary_reader auto& reader, Test::ExecutionInfo& info) {
+    proc::read_into(reader,
+                    info.status,
+                    info.verb,
+                    info.message,
+                    info.context,
+                    info.timeTicks);
+}
+
+void mcga_write(proc::binary_reader auto& writer,
+                const Test::ExecutionInfo& info) {
+    proc::write_from(writer,
+                     info.status,
+                     info.verb,
+                     info.message,
+                     info.context,
+                     info.timeTicks);
+}
+
 enum class PipeMessageType : char {
     WARNING,
     DONE,
@@ -48,12 +67,7 @@ void BoxExecutor::executeBoxed(const Test& test,
                                std::unique_ptr<PipeWriter> pipe) {
     currentTestingSubprocessPipe = std::move(pipe);
     Test::ExecutionInfo info = run(test);
-    currentTestingSubprocessPipe->sendMessage(PipeMessageType::DONE,
-                                              info.status,
-                                              info.verb,
-                                              info.message,
-                                              info.context,
-                                              info.timeTicks);
+    currentTestingSubprocessPipe->sendMessage(PipeMessageType::DONE, info);
 }
 
 std::unique_ptr<WorkerSubprocess>
@@ -101,8 +115,7 @@ bool BoxExecutor::tryCloseBox(Box* box) {
                 onWarning(message.read<Warning>(), nullptr);
                 continue;
             }
-            message >> info.status >> info.verb >> info.message >> info.context
-              >> info.timeTicks;
+            info = message.read<Test::ExecutionInfo>();
             break;
         }
     }

@@ -4,67 +4,47 @@
 
 #include "core/warning.hpp"
 
-namespace mcga::proc {
+namespace mcga::test {
 
-template<>
-inline Message& Message::operator>>(mcga::test::String& obj) {
-    std::string s;
-    (*this) >> s;
-    obj = mcga::test::String(s);
-    return *this;
+void mcga_read(proc::binary_reader auto& reader, String& obj) {
+    obj = String(proc::read_as<std::string>(reader));
 }
 
-template<>
-inline Message::BytesConsumer&
-  Message::BytesConsumer::add(const mcga::test::String& obj) {
-    return add(std::string(obj.c_str()));
+void mcga_write(proc::binary_writer auto& writer, const String& obj) {
+    proc::write_from(writer, std::string(obj.c_str()));
 }
 
-template<>
-inline Message& Message::operator>>(mcga::test::Context& obj) {
-    (*this) >> obj.functionName >> obj.fileName >> obj.line >> obj.column;
-    return *this;
+void mcga_read(proc::binary_reader auto& reader, Context& obj) {
+    proc::read_into(
+      reader, obj.functionName, obj.fileName, obj.line, obj.column);
 }
 
-template<>
-inline Message::BytesConsumer&
-  Message::BytesConsumer::add(const mcga::test::Context& obj) {
-    add(obj.functionName, obj.fileName, obj.line, obj.column);
-    return *this;
+void mcga_write(proc::binary_writer auto& writer, const Context& obj) {
+    proc::write_from(
+      writer, obj.functionName, obj.fileName, obj.line, obj.column);
 }
 
-template<>
-inline Message& Message::operator>>(mcga::test::Warning::Note& obj) {
-    (*this) >> obj.type >> obj.message >> obj.context;
-    return *this;
+void mcga_read(proc::binary_reader auto& reader, Warning::Note& obj) {
+    proc::read_into(reader, obj.type, obj.message, obj.context);
 }
 
-template<>
-inline Message::BytesConsumer&
-  Message::BytesConsumer::add(const mcga::test::Warning::Note& obj) {
-    add(obj.type, obj.message, obj.context);
-    return *this;
+void mcga_write(proc::binary_writer auto& writer, const Warning::Note& obj) {
+    proc::write_from(writer, obj.type, obj.message, obj.context);
 }
 
-template<>
-inline Message& Message::operator>>(mcga::test::Warning& obj) {
-    (*this) >> obj.message >> obj.context;
-    auto numNotes = read<std::size_t>();
+void mcga_read(proc::binary_reader auto& reader, Warning& obj) {
+    proc::read_into(reader, obj.message, obj.context);
+    auto numNotes = proc::read_as<std::size_t>(reader);
     for (std::size_t i = 0; i < numNotes; i++) {
-        obj.notes.push_back(read<mcga::test::Warning::Note>());
+        obj.notes.push_back(proc::read_as<mcga::test::Warning::Note>(reader));
     }
-    return *this;
 }
 
-template<>
-inline Message::BytesConsumer&
-  Message::BytesConsumer::add(const mcga::test::Warning& obj) {
-    add(obj.message, obj.context);
-    add(obj.notes.getSizeSlow());
+void mcga_write(proc::binary_writer auto& writer, const Warning& obj) {
+    proc::write_from(writer, obj.message, obj.context, obj.notes.getSizeSlow());
     for (const auto& note: obj.notes) {
-        add(note);
+        proc::write_from(writer, note);
     }
-    return *this;
 }
 
-}  // namespace mcga::proc
+}  // namespace mcga::test

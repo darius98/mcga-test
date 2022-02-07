@@ -127,8 +127,8 @@ class String {
 #endif
 
 struct Context {
-    const char* fileName;
-    const char* functionName;
+    String fileName;
+    String functionName;
     int line;
     int column;
 

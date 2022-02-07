@@ -86,7 +86,7 @@ void TestLogger::printWarning(const Warning& warning) {
     clearVolatileLine();
     stream << yellow << "Warning: " << warning.message.c_str() << "\n";
     if (warning.context.has_value()) {
-        stream << "\tat " << warning.context->fileName << ":"
+        stream << "\tat " << warning.context->fileName.c_str() << ":"
                << warning.context->line << ":" << warning.context->column
                << "\n";
     }
@@ -117,7 +117,7 @@ void TestLogger::printWarning(const Warning& warning) {
         }
         stream << note.message.c_str();
         if (note.context.has_value()) {
-            stream << " at " << note.context->fileName << ":"
+            stream << " at " << note.context->fileName.c_str() << ":"
                    << note.context->line << ":" << note.context->column;
         }
         stream << "\n";
@@ -179,8 +179,8 @@ void TestLogger::printTestFailure(const Test::ExecutionInfo& info) {
     }
     stream << (info.status == Test::ExecutionInfo::SKIPPED ? yellow : red);
     if (info.context.has_value()) {
-        stream << info.verb.c_str() << " at " << info.context->fileName << ":"
-               << info.context->line << ":" << info.context->column;
+        stream << info.verb.c_str() << " at " << info.context->fileName.c_str()
+               << ":" << info.context->line << ":" << info.context->column;
     }
     if (!message.empty()) {
         if (info.context.has_value()) {
