@@ -6,11 +6,6 @@
 #include "core/time_tick.hpp"
 #include "serialization.hpp"
 
-using mcga::proc::Message;
-using mcga::proc::PipeWriter;
-using mcga::proc::Subprocess;
-using mcga::proc::WorkerSubprocess;
-
 namespace mcga::test {
 
 void mcga_read(proc::binary_reader auto& reader, Test::ExecutionInfo& info) {
@@ -64,47 +59,47 @@ void BoxExecutor::emitWarning(Warning warning, GroupPtr group) {
 }
 
 void BoxExecutor::executeBoxed(const Test& test,
-                               std::unique_ptr<PipeWriter> pipe) {
+                               std::unique_ptr<proc::PipeWriter> pipe) {
     currentTestingSubprocessPipe = std::move(pipe);
     Test::ExecutionInfo info = run(test);
     currentTestingSubprocessPipe->sendMessage(PipeMessageType::DONE, info);
 }
 
-std::unique_ptr<WorkerSubprocess>
+std::unique_ptr<proc::WorkerSubprocess>
   BoxExecutor::startExecution(const Test& test) {
     auto timeLimit = TimeTicksToNanoseconds(test.getTimeTicksLimit())
       + std::chrono::seconds(1);
-    return make_unique<WorkerSubprocess>(
-      timeLimit, [this, &test](std::unique_ptr<PipeWriter> pipe) {
+    return make_unique<proc::WorkerSubprocess>(
+      timeLimit, [this, &test](std::unique_ptr<proc::PipeWriter> pipe) {
           executeBoxed(test, std::move(pipe));
       });
 }
 
 bool BoxExecutor::tryCloseBox(Box* box) {
     Test& test = box->first;
-    WorkerSubprocess* process = box->second.get();
+    proc::WorkerSubprocess* process = box->second.get();
 
     Test::ExecutionInfo info;
-    Subprocess::FinishStatus finishStatus = process->getFinishStatus();
-    if (finishStatus == Subprocess::NO_EXIT) {
+    proc::Subprocess::FinishStatus finishStatus = process->getFinishStatus();
+    if (finishStatus == proc::Subprocess::NO_EXIT) {
         return false;
     }
 
     info.timeTicks = NanosecondsToTimeTicks(process->elapsedTime());
 
-    if (finishStatus == Subprocess::NON_ZERO_EXIT) {
+    if (finishStatus == proc::Subprocess::NON_ZERO_EXIT) {
         info.fail("Test exited with code "
                     + std::to_string(process->getReturnCode()),
                   std::nullopt);
-    } else if (finishStatus == Subprocess::SIGNAL_EXIT) {
+    } else if (finishStatus == proc::Subprocess::SIGNAL_EXIT) {
         info.fail("Test killed by signal "
                     + std::to_string(process->getSignal()),
                   std::nullopt);
-    } else if (finishStatus == Subprocess::TIMEOUT) {
+    } else if (finishStatus == proc::Subprocess::TIMEOUT) {
         info.fail("Test execution timed out.", std::nullopt);
-    } else if (finishStatus == Subprocess::ZERO_EXIT) {
+    } else if (finishStatus == proc::Subprocess::ZERO_EXIT) {
         while (true) {
-            Message message = process->getNextMessage(1);
+            auto message = process->getNextMessage(1);
             if (message.isInvalid()) {
                 info.fail("Unexpected 0-code exit.", std::nullopt);
                 break;

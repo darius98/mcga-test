@@ -3,27 +3,25 @@
 #include "core/main.hpp"
 #include "extensions/exit_code/ext.hpp"
 
-using namespace mcga::test;
-
 TEST_CASE("test case") {
-    test("passing-test", [] {
-        expect(1 + 1 == 2);
+    mcga::test::test("passing-test", [] {
+        mcga::test::expect(1 + 1 == 2);
     });
 
-    test("failing-test", [] {
-        expect(1 + 1 == 3);
+    mcga::test::test("failing-test", [] {
+        mcga::test::expect(1 + 1 == 3);
     });
 }
 
 int main() {
-    ExitCodeExtension exitCodeExtension(false, false);
+    mcga::test::ExitCodeExtension exitCodeExtension(false, false);
     auto extensions = makeExtensionArray(&exitCodeExtension);
-    const auto options = EntryPointOptions{
+    const auto options = mcga::test::EntryPointOptions{
       .extensions = extensions.data(),
       .numExtensions = extensions.size(),
       .numRuns = 1,
     };
-    SmoothExecutor executor;
+    mcga::test::SmoothExecutor executor;
     runTests(&executor, options);
     return exitCodeExtension.getExitCode();
 }
@@ -31,14 +29,14 @@ int main() {
 [[noreturn]] void start() asm("start");
 
 void start() {
-    ExitCodeExtension exitCodeExtension(false, false);
+    mcga::test::ExitCodeExtension exitCodeExtension(false, false);
     auto extensions = makeExtensionArray(&exitCodeExtension);
-    const auto options = EntryPointOptions{
+    const auto options = mcga::test::EntryPointOptions{
       .extensions = extensions.data(),
       .numExtensions = extensions.size(),
       .numRuns = 1,
     };
-    SmoothExecutor executor;
+    mcga::test::SmoothExecutor executor;
     runTests(&executor, options);
     exit(exitCodeExtension.getExitCode());
 }

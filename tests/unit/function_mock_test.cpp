@@ -6,7 +6,8 @@
 #include "mcga/test_ext/mock.hpp"
 #include "mcga/test_ext/mock_helpers.hpp"
 
-using mcga::test::FunctionMock;
+using namespace mcga::test;
+using namespace mcga::matchers;
 
 struct LibCMocks {
     FunctionMock<void()> abort{"abort"};
@@ -21,9 +22,6 @@ DECLARE_NORETURN_FUNCTION(libc, abort, 0)
 DECLARE_FUNCTION(libc, malloc, 1)
 DECLARE_FUNCTION(libc, vprintf, 2)
 DECLARE_VA_FUNCTION(libc, printf, 1)
-
-using namespace mcga::test;
-using namespace mcga::matchers;
 
 TEST_CASE("mock extension") {
     size_t arg = 0;

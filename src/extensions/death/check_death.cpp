@@ -8,8 +8,6 @@
 #include "core/export.hpp"
 #include "core/time_tick.hpp"
 
-using namespace mcga::proc;
-
 namespace mcga::test {
 inline namespace MCGA_TEST_INTERNAL_ABI_NS {
 
@@ -21,9 +19,9 @@ MCGA_TEST_EXPORT DeathStatus checkDeath(Executable func,
         return {-1, -1};
     }
 
-    WorkerSubprocess proc(
+    proc::WorkerSubprocess proc(
       TimeTicksToNanoseconds(timeTicksLimit),
-      [func = std::move(func)](std::unique_ptr<PipeWriter> writer) {
+      [func = std::move(func)](std::unique_ptr<proc::PipeWriter> writer) {
           func();
           writer->sendMessage(1);
       });
