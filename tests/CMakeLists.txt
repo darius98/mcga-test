@@ -55,8 +55,6 @@ add_integration_test(skip_in_set_up integration/skip_in_set_up.cpp)
 add_integration_test(skip_in_tear_down integration/skip_in_tear_down.cpp)
 add_integration_test(empty integration/empty.cpp)
 add_integration_test(fixtures_api integration/fixtures_api.cpp)
-# TODO: Enable this after fixing
-add_integration_test(freestanding integration/freestanding.cpp FREESTANDING)
 
 add_library(mcga_test_integration_multiple_files_lib_1 OBJECT integration/multiple_files.cpp)
 target_compile_definitions(mcga_test_integration_multiple_files_lib_1 PRIVATE MCGA_TEST_INTEGRATION_MULTIPLE_FILES=1)
