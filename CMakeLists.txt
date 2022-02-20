@@ -29,6 +29,7 @@ set(mcga_test_core_src
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/driver.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/executor.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/extension_api.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/core/fixtures_api.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/group.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/main.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/mcga_test.cpp
@@ -62,7 +63,8 @@ target_link_libraries(mcga_test_obj
 target_include_directories(mcga_test_obj PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
 target_compile_definitions(mcga_test_obj
         PUBLIC MCGA_TEST_PRE_ALLOCATED_GROUPS=${MCGA_TEST_PRE_ALLOCATED_GROUPS}
-        PUBLIC MCGA_TEST_PRE_ALLOCATED_CALLBACKS=${MCGA_TEST_PRE_ALLOCATED_CALLBACKS})
+        PUBLIC MCGA_TEST_PRE_ALLOCATED_CALLBACKS=${MCGA_TEST_PRE_ALLOCATED_CALLBACKS}
+        PUBLIC MCGA_TEST_PRE_ALLOCATED_TEST_CASES=${MCGA_TEST_PRE_ALLOCATED_TEST_CASES})
 if (SANITIZER_COMPILE_OPTIONS)
     target_compile_options(mcga_test_obj PUBLIC ${SANITIZER_COMPILE_OPTIONS})
 endif ()
@@ -82,10 +84,11 @@ add_library(mcga_test_freestanding_obj OBJECT
         ${CMAKE_CURRENT_SOURCE_DIR}/src/freestanding/ssp.cpp)
 target_include_directories(mcga_test_freestanding_obj PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
 target_compile_definitions(mcga_test_freestanding_obj
-        PUBLIC MCGA_TEST_THREADING=0
-        PUBLIC MCGA_TEST_TIMING=0
         PUBLIC MCGA_TEST_PRE_ALLOCATED_GROUPS=${MCGA_TEST_PRE_ALLOCATED_GROUPS}
-        PUBLIC MCGA_TEST_PRE_ALLOCATED_CALLBACKS=${MCGA_TEST_PRE_ALLOCATED_CALLBACKS})
+        PUBLIC MCGA_TEST_PRE_ALLOCATED_CALLBACKS=${MCGA_TEST_PRE_ALLOCATED_CALLBACKS}
+        PUBLIC MCGA_TEST_PRE_ALLOCATED_TEST_CASES=${MCGA_TEST_PRE_ALLOCATED_TEST_CASES}
+        PUBLIC MCGA_TEST_THREADING=0
+        PUBLIC MCGA_TEST_TIMING=0)
 target_link_libraries(mcga_test_freestanding_obj PUBLIC mcga_test_interface)
 target_compile_options(mcga_test_freestanding_obj
         PUBLIC -ffreestanding

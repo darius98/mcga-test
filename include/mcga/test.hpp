@@ -97,7 +97,7 @@ void fail(String message = String(),
           String verb = "Failed");
 inline void expect(bool expr, Context context = Context()) {
     if (!expr) {
-        fail("", context, "Expectation failed");
+        fail("", std::move(context), "Expectation failed");
     }
 }
 
@@ -114,8 +114,26 @@ int register_test_case(const char* name,
 
 struct empty_fixture {};
 
+void* register_fixture(void (*fixture_body)());
+
+void run_fixture_tests(void* registerer, void* fixture);
+
+int register_test_in_fixture(void* registerer,
+                             const char* fixture_name,
+                             void (*test_body)(void*),
+                             const char* test_description,
+                             Context context = Context());
+
 template<class F>
-void fixtureTestCaseBody() {
+extern void* const fixture_registerer;
+
+template<class T>
+void fixture_test_body(void* instance) {
+    static_cast<T*>(instance)->MCGA_TEST_BODY();
+}
+
+template<class F>
+void fixture_test_case_body() {
     alignas(F) unsigned char f_storage[sizeof(F)];
     F* instance = reinterpret_cast<F*>(f_storage);
 
@@ -153,10 +171,12 @@ void fixtureTestCaseBody() {
         instance->~F();
     });
 
-    test(F::MCGATest_description, [instance]() {
-        instance->MCGA_TEST_BODY();
-    });
+    run_fixture_tests(fixture_registerer<F>, instance);
 }
+
+template<class F>
+inline void* const fixture_registerer
+  = register_fixture(&fixture_test_case_body<F>);
 
 }  // namespace mcga::test::internal
 
@@ -180,15 +200,15 @@ void fixtureTestCaseBody() {
 #define INTERNAL_TEST_F(fixture_name, fixture, description)                    \
     namespace {                                                                \
     struct MCGA_TEST_INTERNAL_TEST_NAME : fixture {                            \
-        static inline constexpr const char* MCGATest_description               \
-          = description;                                                       \
         void MCGA_TEST_BODY();                                                 \
     };                                                                         \
     int MCGA_TEST_INTERNAL_TEST_REG_NAME                                       \
-      = ::mcga::test::internal::register_test_case(                            \
+      = ::mcga::test::internal::register_test_in_fixture(                      \
+        ::mcga::test::internal::fixture_registerer<fixture>,                   \
         fixture_name,                                                          \
-        &::mcga::test::internal::fixtureTestCaseBody<                          \
-          MCGA_TEST_INTERNAL_TEST_NAME>);                                      \
+        &::mcga::test::internal::fixture_test_body<                            \
+          MCGA_TEST_INTERNAL_TEST_NAME>,                                       \
+        description);                                                          \
     }                                                                          \
     void MCGA_TEST_INTERNAL_TEST_NAME::MCGA_TEST_BODY()
 
