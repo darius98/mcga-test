@@ -35,7 +35,7 @@ class MCGATestIntegrationMixin(unittest.TestCase):
             pattern += r"\n"
         return pattern
 
-    def run_test(self, name=None, timeout=1, expect_fail=False, tests_passed=0, tests_failed=0,
+    def run_test(self, name=None, timeout=10, expect_fail=False, tests_passed=0, tests_failed=0,
                  tests_failed_optional=None, tests_skipped=None,
                  output=None, extra_args=None):
         if name is None:
@@ -51,7 +51,7 @@ class MCGATestIntegrationMixin(unittest.TestCase):
         test_output = proc.stdout.decode()
         self._last_test_args = test_args
         self._last_test_output = test_output
-        self.assertEqual(proc.returncode != 0, expect_fail,
+        self.assertEqual(proc.returncode, 1 if expect_fail else 0,
                          "Expected process to exit with code {}, but exited with {} instead. "
                          "Output was: \"\"\"{}\"\"\"".format(
                              1 if expect_fail else 0, proc.returncode, test_output))
@@ -279,21 +279,19 @@ class MCGATestIntegrationSmoothTestCase(MCGATestIntegrationMixin):
                       expect_fail=True, extra_args=["--print-skipped", "--fail-on-skip"])
 
     def test_multiple_executions_fail(self):
-        self.run_test(
-            expect_fail=True, timeout=10, tests_passed=0, tests_failed=1,
-            output=[
-                self.output_test_line("F", "TestCase::test", approx=True, approx_fail=True),
-                "Failed at .*tests/integration/multiple_executions_fail\\.cpp:11:15",
-                "\tGot 0\\.",
-            ])
+        self.run_test(expect_fail=True, tests_passed=0, tests_failed=1, output=[
+            self.output_test_line("F", "TestCase::test", approx=True, approx_fail=True),
+            "Failed at .*tests/integration/multiple_executions_fail\\.cpp:11:15",
+            "\tGot 0\\.",
+        ])
 
     def test_multiple_executions_pass(self):
-        self.run_test(timeout=10, tests_passed=1, tests_failed=0,
+        self.run_test(tests_passed=1, tests_failed=0,
                       output=self.output_test_line("P", "TestCase::test", approx=True))
 
     def test_multiple_executions_skip(self):
         # Skipped tests are not printed by default.
-        self.run_test(tests_passed=1, tests_failed=0, tests_skipped=1, timeout=10,
+        self.run_test(tests_passed=1, tests_failed=0, tests_skipped=1,
                       output=self.output_test_line("P", "TestCase::test-1"))
         expected_output = [
             self.output_test_line("P", "TestCase::test-1"),
@@ -302,10 +300,9 @@ class MCGATestIntegrationSmoothTestCase(MCGATestIntegrationMixin):
             "\tevery-time",
         ]
         self.run_test(tests_passed=1, tests_failed=0, tests_skipped=1, output=expected_output,
-                      timeout=10, extra_args=["--print-skipped"])
+                      extra_args=["--print-skipped"])
         self.run_test(tests_passed=1, tests_failed=0, tests_skipped=1, output=expected_output,
-                      timeout=10, expect_fail=True,
-                      extra_args=["--print-skipped", "--fail-on-skip"])
+                      expect_fail=True, extra_args=["--print-skipped", "--fail-on-skip"])
 
     def test_optional_fail(self):
         self.run_test(tests_passed=0, tests_failed=2, tests_failed_optional=2,
@@ -427,11 +424,10 @@ class MCGATestIntegrationSmoothTestCase(MCGATestIntegrationMixin):
         self.run_test(tests_passed=0, tests_failed=0)
 
     def test_repeat(self):
-        self.run_test(name="pass", tests_passed=5, tests_failed=0, timeout=10,
-                      extra_args=["--repeat=5"],
+        self.run_test(name="pass", tests_passed=5, tests_failed=0, extra_args=["--repeat=5"],
                       output=5 * [self.output_test_line("P", "TestCase::test")])
 
-        self.run_test(name="multiple_tests_one_fails", expect_fail=True, timeout=10,
+        self.run_test(name="multiple_tests_one_fails", expect_fail=True,
                       tests_passed=15, tests_failed=5, extra_args=["--repeat=5"],
                       output=5 * [
                           self.output_test_line("P", "TestCase::test1"),
@@ -515,7 +511,7 @@ class MCGATestIntegrationBoxedTestCase(MCGATestIntegrationSmoothTestCase):
         ])
 
     def test_timeout(self):
-        self.run_test(expect_fail=True, timeout=10, tests_passed=0, tests_failed=1, output=[
+        self.run_test(expect_fail=True, tests_passed=0, tests_failed=1, output=[
             self.output_test_line("F", "TestCase::test"),
             "\tTest execution timed out.",
         ])

@@ -42,13 +42,7 @@ set(mcga_test_core_src
         )
 
 add_library(mcga_test_interface INTERFACE)
-target_include_directories(mcga_test_interface
-        INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include
-        INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/src)
-target_compile_definitions(mcga_test_interface
-        INTERFACE MCGA_TEST_PRE_ALLOCATED_GROUPS=${MCGA_TEST_PRE_ALLOCATED_GROUPS}
-        INTERFACE MCGA_TEST_PRE_ALLOCATED_CALLBACKS=${MCGA_TEST_PRE_ALLOCATED_CALLBACKS})
-
+target_include_directories(mcga_test_interface INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 add_library(mcga_test_obj OBJECT
         ${mcga_test_core_src}
@@ -62,24 +56,37 @@ add_library(mcga_test_obj OBJECT
         ${CMAKE_CURRENT_SOURCE_DIR}/src/hosted/entry_point.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/hosted/box_executor.cpp)
 target_link_libraries(mcga_test_obj
-        PRIVATE mcga_cli
-        PRIVATE mcga_proc
+        PUBLIC mcga_cli
+        PUBLIC mcga_proc
         PUBLIC mcga_test_interface)
+target_include_directories(mcga_test_obj PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
+target_compile_definitions(mcga_test_obj
+        PUBLIC MCGA_TEST_PRE_ALLOCATED_GROUPS=${MCGA_TEST_PRE_ALLOCATED_GROUPS}
+        PUBLIC MCGA_TEST_PRE_ALLOCATED_CALLBACKS=${MCGA_TEST_PRE_ALLOCATED_CALLBACKS})
+if (SANITIZER_COMPILE_OPTIONS)
+    target_compile_options(mcga_test_obj PUBLIC ${SANITIZER_COMPILE_OPTIONS})
+endif ()
+if (SANITIZER_LINK_OPTIONS)
+    target_link_options(mcga_test_obj PUBLIC ${SANITIZER_LINK_OPTIONS})
+endif ()
 
 add_library(mcga_test SHARED $<TARGET_OBJECTS:mcga_test_obj>)
-target_link_libraries(mcga_test PRIVATE mcga_test_obj)
+target_link_libraries(mcga_test PRIVATE mcga_test_obj PUBLIC mcga_test_interface)
 
 add_library(mcga_test_static STATIC $<TARGET_OBJECTS:mcga_test_obj>)
-target_link_libraries(mcga_test_static PRIVATE mcga_test_obj)
+target_link_libraries(mcga_test_static PRIVATE mcga_test_obj PUBLIC mcga_test_interface)
 
 add_library(mcga_test_freestanding_obj OBJECT
         ${mcga_test_core_src}
         ${CMAKE_CURRENT_SOURCE_DIR}/src/freestanding/mem.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/freestanding/ssp.cpp)
-target_link_libraries(mcga_test_freestanding_obj PRIVATE mcga_test_interface)
+target_include_directories(mcga_test_freestanding_obj PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
 target_compile_definitions(mcga_test_freestanding_obj
         PUBLIC MCGA_TEST_THREADING=0
-        PUBLIC MCGA_TEST_TIMING=0)
+        PUBLIC MCGA_TEST_TIMING=0
+        PUBLIC MCGA_TEST_PRE_ALLOCATED_GROUPS=${MCGA_TEST_PRE_ALLOCATED_GROUPS}
+        PUBLIC MCGA_TEST_PRE_ALLOCATED_CALLBACKS=${MCGA_TEST_PRE_ALLOCATED_CALLBACKS})
+target_link_libraries(mcga_test_freestanding_obj PUBLIC mcga_test_interface)
 target_compile_options(mcga_test_freestanding_obj
         PUBLIC -ffreestanding
         PUBLIC -fno-exceptions
@@ -93,10 +100,10 @@ target_link_options(mcga_test_freestanding_obj
         PUBLIC -static)
 
 add_library(mcga_test_freestanding SHARED $<TARGET_OBJECTS:mcga_test_freestanding_obj>)
-target_link_libraries(mcga_test_freestanding PUBLIC mcga_test_freestanding_obj)
+target_link_libraries(mcga_test_freestanding PRIVATE mcga_test_freestanding_obj PUBLIC mcga_test_interface)
 
 add_library(mcga_test_freestanding_static STATIC $<TARGET_OBJECTS:mcga_test_freestanding_obj>)
-target_link_libraries(mcga_test_freestanding_static PUBLIC mcga_test_freestanding_obj)
+target_link_libraries(mcga_test_freestanding_static PRIVATE mcga_test_freestanding_obj PUBLIC mcga_test_interface)
 
 install(TARGETS
         mcga_test
