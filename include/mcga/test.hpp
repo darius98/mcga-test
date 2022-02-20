@@ -108,26 +108,39 @@ void skip(String message = String(), Context context = Context());
 
 namespace mcga::test::internal {
 
-int register_test_case(const char* name,
-                       void (*body)(),
-                       Context context = Context());
-
 struct empty_fixture {};
 
+struct TestCase;
 struct FixtureTest;
 struct FixtureData;
 
-template<class F>
-extern FixtureData fixture_registerer;
+void register_test_case(TestCase* test_case);
 
 void register_test_in_fixture(FixtureData* registerer,
                               const char* fixture_name,
                               FixtureTest* fixture_test);
 
+struct TestCase {
+    const char* name = nullptr;
+    void (*body)() = nullptr;
+    Context context;
+    TestCase* next = nullptr;
+
+    explicit TestCase(const char* name,
+                      void (*body)(),
+                      Context context = Context())
+            : name(name), body(body), context(std::move(context)) {
+        register_test_case(this);
+    }
+};
+
 template<class T>
 void fixture_test_body(void* instance) {
     static_cast<T*>(instance)->MCGA_TEST_BODY();
 }
+
+template<class F>
+extern FixtureData fixture_registerer;
 
 template<class F>
 void fixture_test_case_body() {
@@ -174,10 +187,12 @@ void fixture_test_case_body() {
 }
 
 struct FixtureData {
-    void (*body)() = nullptr;
-    const char* name = nullptr;
+    TestCase test_case;
     FixtureTest* head = nullptr;
     FixtureTest* tail = nullptr;
+
+    explicit FixtureData(void (*body)()): test_case(nullptr, body) {
+    }
 };
 
 template<class F>
@@ -221,9 +236,8 @@ struct FixtureTest {
     struct MCGA_TEST_INTERNAL_TEST_NAME {                                      \
         static void MCGA_TEST_BODY();                                          \
     };                                                                         \
-    int MCGA_TEST_INTERNAL_TEST_REG_NAME                                       \
-      = ::mcga::test::internal::register_test_case(                            \
-        name, &MCGA_TEST_INTERNAL_TEST_NAME::MCGA_TEST_BODY);                  \
+    ::mcga::test::internal::TestCase MCGA_TEST_INTERNAL_TEST_REG_NAME(         \
+      name, &MCGA_TEST_INTERNAL_TEST_NAME::MCGA_TEST_BODY);                    \
     }                                                                          \
     void MCGA_TEST_INTERNAL_TEST_NAME::MCGA_TEST_BODY()
 

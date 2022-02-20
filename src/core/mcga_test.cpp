@@ -2,32 +2,25 @@
 
 #include "driver.hpp"
 #include "export.hpp"
-#include "test_case.hpp"
-
-namespace mcga::test {
-
-alignas(TestCaseList) static unsigned char testCasesListStorage[sizeof(TestCaseList)];
-static constinit bool testCaseListInit = false;
-
-TestCaseList* getTestCasesList() {
-    auto ptr = reinterpret_cast<TestCaseList*>(testCasesListStorage);
-    if (!testCaseListInit) {
-        new (ptr) TestCaseList();
-        testCaseListInit = true;
-    }
-    return ptr;
-}
-
-}
 
 namespace mcga::test::internal {
 
-MCGA_TEST_EXPORT int
-  register_test_case(const char* name, void (*body)(), Context context) {
-    if (!getTestCasesList()->push_back(TestCase{name, body, context})) {
-        // TODO: Somehow emit a warning?
-    }
-    return 0;
+static TestCase* testCasesHead = nullptr;
+static TestCase* testCasesTail = nullptr;
+
+TestCase* getTestCasesHead() {
+    return testCasesHead;
+}
+
+MCGA_TEST_EXPORT void register_test_case(TestCase* test_case) {
+    list_push_back(testCasesHead, testCasesTail, test_case);
+}
+
+MCGA_TEST_EXPORT void register_test_in_fixture(FixtureData* fixture,
+                                               const char* fixture_name,
+                                               FixtureTest* fixture_test) {
+    fixture->test_case.name = fixture_name;
+    list_push_back(fixture->head, fixture->tail, fixture_test);
 }
 
 }  // namespace mcga::test::internal

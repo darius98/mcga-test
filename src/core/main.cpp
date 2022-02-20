@@ -1,11 +1,14 @@
 #include "main.hpp"
 
 #include "driver.hpp"
-#include "test_case.hpp"
 
 namespace mcga::test {
 
-TestCaseList* getTestCasesList();
+namespace internal {
+
+TestCase* getTestCasesHead();
+
+}
 
 void runTests(Executor* runner, const EntryPointOptions& options) {
     ExtensionApi api(options.extensions, options.numExtensions);
@@ -13,9 +16,10 @@ void runTests(Executor* runner, const EntryPointOptions& options) {
     api.init();
     for (int i = 0; i < options.numRuns; i++) {
         Driver::Init(&driver);
-        for (const TestCase& t: *getTestCasesList()) {
-            driver.addGroup(GroupConfig{.description = t.name},
-                            Executable(t.body, t.context));
+        for (auto testCase = internal::getTestCasesHead(); testCase != nullptr;
+             testCase = testCase->next) {
+            driver.addGroup(GroupConfig{.description = testCase->name},
+                            Executable(testCase->body, testCase->context));
         }
         Driver::Clean();
     }

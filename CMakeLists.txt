@@ -10,9 +10,6 @@ set(MCGA_TEST_PRE_ALLOCATED_GROUPS 8 CACHE STRING
         "How many groups to statically allocate inside the MCGA test library (default is 8).")
 set(MCGA_TEST_PRE_ALLOCATED_CALLBACKS 128 CACHE STRING
         "How many callback to statically allocate inside the MCGA test library (default is 128). Callbacks are used for setUp()s, tearDown()s and cleanup()s.")
-set(MCGA_TEST_PRE_ALLOCATED_TEST_CASES 32 CACHE STRING
-        "How many test cases to statically allocate inside the MCGA test library (default is 32).")
-
 
 if (NOT TARGET mcga_cli)
     include(FetchContent)
@@ -29,13 +26,11 @@ set(mcga_test_core_src
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/driver.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/executor.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/extension_api.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/core/fixtures_api.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/group.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/main.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/mcga_test.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/string.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/test.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/core/test_case.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/time_tick.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/warning.cpp
 
@@ -63,8 +58,7 @@ target_link_libraries(mcga_test_obj
 target_include_directories(mcga_test_obj PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)
 target_compile_definitions(mcga_test_obj
         PUBLIC MCGA_TEST_PRE_ALLOCATED_GROUPS=${MCGA_TEST_PRE_ALLOCATED_GROUPS}
-        PUBLIC MCGA_TEST_PRE_ALLOCATED_CALLBACKS=${MCGA_TEST_PRE_ALLOCATED_CALLBACKS}
-        PUBLIC MCGA_TEST_PRE_ALLOCATED_TEST_CASES=${MCGA_TEST_PRE_ALLOCATED_TEST_CASES})
+        PUBLIC MCGA_TEST_PRE_ALLOCATED_CALLBACKS=${MCGA_TEST_PRE_ALLOCATED_CALLBACKS})
 if (SANITIZER_COMPILE_OPTIONS)
     target_compile_options(mcga_test_obj PUBLIC ${SANITIZER_COMPILE_OPTIONS})
 endif ()
@@ -86,7 +80,6 @@ target_include_directories(mcga_test_freestanding_obj PUBLIC ${CMAKE_CURRENT_SOU
 target_compile_definitions(mcga_test_freestanding_obj
         PUBLIC MCGA_TEST_PRE_ALLOCATED_GROUPS=${MCGA_TEST_PRE_ALLOCATED_GROUPS}
         PUBLIC MCGA_TEST_PRE_ALLOCATED_CALLBACKS=${MCGA_TEST_PRE_ALLOCATED_CALLBACKS}
-        PUBLIC MCGA_TEST_PRE_ALLOCATED_TEST_CASES=${MCGA_TEST_PRE_ALLOCATED_TEST_CASES}
         PUBLIC MCGA_TEST_THREADING=0
         PUBLIC MCGA_TEST_TIMING=0)
 target_link_libraries(mcga_test_freestanding_obj PUBLIC mcga_test_interface)
