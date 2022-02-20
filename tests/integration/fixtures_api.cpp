@@ -68,6 +68,7 @@ TEST_F(Fixture3, "fixture3-passing-test") {
 }
 
 TEST_F(Fixture3, "fixture3-failing-test") {
+    mcga::test::test("wtf", []{});
     printf("fixture3-failing-test-body\n");
     mcga::test::fail("failure in fixture3");
 }

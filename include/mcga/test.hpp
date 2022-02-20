@@ -114,18 +114,15 @@ int register_test_case(const char* name,
 
 struct empty_fixture {};
 
-void* register_fixture(void (*fixture_body)());
-
-void run_fixture_tests(void* registerer, void* fixture);
-
-int register_test_in_fixture(void* registerer,
-                             const char* fixture_name,
-                             void (*test_body)(void*),
-                             const char* test_description,
-                             Context context = Context());
+struct FixtureTest;
+struct FixtureData;
 
 template<class F>
-extern void* const fixture_registerer;
+extern FixtureData fixture_registerer;
+
+void register_test_in_fixture(FixtureData* registerer,
+                              const char* fixture_name,
+                              FixtureTest* fixture_test);
 
 template<class T>
 void fixture_test_body(void* instance) {
@@ -171,12 +168,45 @@ void fixture_test_case_body() {
         instance->~F();
     });
 
-    run_fixture_tests(fixture_registerer<F>, instance);
+    for (auto t = fixture_registerer<F>.head; t != nullptr; t = t->next) {
+        t->run_test(instance);
+    }
 }
 
+struct FixtureData {
+    void (*body)() = nullptr;
+    const char* name = nullptr;
+    FixtureTest* head = nullptr;
+    FixtureTest* tail = nullptr;
+};
+
 template<class F>
-inline void* const fixture_registerer
-  = register_fixture(&fixture_test_case_body<F>);
+inline FixtureData fixture_registerer{&fixture_test_case_body<F>};
+
+struct FixtureTest {
+    const char* description;
+    void (*body)(void*);
+    Context context;
+    FixtureTest* next = nullptr;
+
+    FixtureTest(FixtureData* registerer,
+                const char* fixture_name,
+                const char* description,
+                void (*body)(void*),
+                Context context = Context())
+            : description(description), body(body),
+              context(std::move(context)) {
+        register_test_in_fixture(registerer, fixture_name, this);
+    }
+
+    void run_test(void* fixture_instance) {
+        test(description,
+             Executable{[fixture_instance, this]() {
+                            body(fixture_instance);
+                        },
+                        context});
+    }
+};
 
 }  // namespace mcga::test::internal
 
@@ -202,13 +232,12 @@ inline void* const fixture_registerer
     struct MCGA_TEST_INTERNAL_TEST_NAME : fixture {                            \
         void MCGA_TEST_BODY();                                                 \
     };                                                                         \
-    int MCGA_TEST_INTERNAL_TEST_REG_NAME                                       \
-      = ::mcga::test::internal::register_test_in_fixture(                      \
-        ::mcga::test::internal::fixture_registerer<fixture>,                   \
-        fixture_name,                                                          \
-        &::mcga::test::internal::fixture_test_body<                            \
-          MCGA_TEST_INTERNAL_TEST_NAME>,                                       \
-        description);                                                          \
+    ::mcga::test::internal::FixtureTest MCGA_TEST_INTERNAL_TEST_REG_NAME{      \
+      &::mcga::test::internal::fixture_registerer<fixture>,                    \
+      fixture_name,                                                            \
+      description,                                                             \
+      &::mcga::test::internal::fixture_test_body<                              \
+        MCGA_TEST_INTERNAL_TEST_NAME>};                                        \
     }                                                                          \
     void MCGA_TEST_INTERNAL_TEST_NAME::MCGA_TEST_BODY()
 

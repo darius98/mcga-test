@@ -7,6 +7,22 @@
 
 namespace mcga::test {
 
+template<class Node>
+void list_push_back(Node*& head, Node*& tail, Node* elem) {
+    if (tail == nullptr) {
+        head = tail = elem;
+    } else {
+        tail->next = elem;
+        tail = elem;
+    }
+}
+
+template<class Node>
+void list_push_front(Node*& head, Node*& tail, Node* elem) {
+    elem->next = head;
+    head = elem;
+}
+
 template<class T, class Allocator>
 class List {
     static_assert(std::is_nothrow_move_constructible_v<T>);
@@ -78,12 +94,7 @@ class List {
             return false;
         }
         const auto n = new (slot) node{std::move(value), nullptr};
-        if (tail == nullptr) {
-            head = tail = n;
-        } else {
-            tail->next = n;
-            tail = n;
-        }
+        list_push_back(head, tail, n);
         return true;
     }
 
@@ -92,7 +103,8 @@ class List {
         if (slot == nullptr) {
             return false;
         }
-        head = new (slot) node{std::move(value), head};
+        const auto n = new (slot) node{std::move(value), nullptr};
+        list_push_front(head, tail, n);
         return true;
     }
 
