@@ -12,81 +12,89 @@ TEST("failing-test") {
 }
 
 struct Fixture1 {
+    const char* name = "fixture1";
+
     void setUp() {
-        printf("fixture1-setUp\n");
+        printf("%s-setUp\n", name);
     }
 
     void tearDown() {
-        printf("fixture1-tearDown\n");
+        printf("%s-tearDown\n", name);
     }
 };
 
 TEST_F(Fixture1, "fixture1-passing-test") {
-    printf("fixture1-passing-test-body\n");
+    printf("%s-passing-test-body\n", this->name);
 }
 
 TEST_F(Fixture1, "fixture1-failing-test") {
-    printf("fixture1-failing-test-body\n");
+    printf("%s-failing-test-body\n", name);
     mcga::test::fail("failure in fixture1");
 }
 
 // Pascal-case methods should also work
 
 struct Fixture2 {
+    const char* name = "fixture2";
+
     void SetUp() {
-        printf("fixture2-setUp\n");
+        printf("%s-setUp\n", name);
     }
 
     void TearDown() {
-        printf("fixture2-tearDown\n");
+        printf("%s-tearDown\n", name);
     }
 };
 
 TEST_F(Fixture2, "fixture2-passing-test") {
-    printf("fixture2-passing-test-body\n");
+    printf("%s-passing-test-body\n", this->name);
 }
 
 TEST_F(Fixture2, "fixture2-failing-test") {
-    printf("fixture2-failing-test-body\n");
+    printf("%s-failing-test-body\n", name);
     mcga::test::fail("failure in fixture2");
 }
 
 // Mix-and-match casing should work
 
 struct Fixture3 {
+    const char* name = "fixture3";
+
     void set_up() {
-        printf("fixture3-setUp\n");
+        printf("%s-setUp\n", name);
     }
 
     void teardown() {
-        printf("fixture3-tearDown\n");
+        printf("%s-tearDown\n", name);
     }
 };
 
 TEST_F(Fixture3, "fixture3-passing-test") {
-    printf("fixture3-passing-test-body\n");
+    printf("%s-passing-test-body\n", this->name);
 }
 
 TEST_F(Fixture3, "fixture3-failing-test") {
-    printf("fixture3-failing-test-body\n");
+    printf("%s-failing-test-body\n", name);
     mcga::test::fail("failure in fixture3");
 }
 
 struct Fixture4 {
+    const char* name = "fixture4";
+
     void setup() {
-        printf("fixture4-setUp\n");
+        printf("%s-setUp\n", name);
     }
 
     void tear_down() {
-        printf("fixture4-tearDown\n");
+        printf("%s-tearDown\n", name);
     }
 };
 
 TEST_F(Fixture4, "fixture4-passing-test") {
-    printf("fixture4-passing-test-body\n");
+    printf("%s-passing-test-body\n", this->name);
 }
 
 TEST_F(Fixture4, "fixture4-failing-test") {
-    printf("fixture4-failing-test-body\n");
+    printf("%s-failing-test-body\n", name);
     mcga::test::fail("failure in fixture4");
 }

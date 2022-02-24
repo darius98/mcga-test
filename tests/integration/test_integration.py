@@ -3,7 +3,59 @@
 import re
 import subprocess
 import unittest
+import os.path
 from typing import List, Optional, Union
+
+
+directory_prefix = os.path.dirname(__file__)
+test_name = ""
+
+
+def flatten_list(data):
+    if not isinstance(data, list):
+        return [data]
+    new_data = []
+    for entry in data:
+        new_data.extend(flatten_list(entry))
+    return new_data
+
+
+def test_line(status, name, approx=False, approx_fail=False):
+    if not approx:
+        return "\\[" + status + "] " + name + " - [0-9.]* ticks \\([0-9.]* ms\\)"
+    approx_tick_pattern = " - \\~ [0-9.]* ticks \\(\\~[0-9.]* ms\\) "
+    if not approx_fail:
+        return "\\[" + status + "] " + name + approx_tick_pattern + "\\(passed: [0-9]*/[0-9]*\\)"
+    return "\\[" + status + "] " + name + approx_tick_pattern + "\\(passed: [0-9]*/[0-9]*\\, required: [0-9]*\\)"
+
+
+def failed_line(line, col, message=None, filestem=None, prefix="Failed at"):
+    if filestem is None:
+        filestem = test_name
+    line = "{} {}/{}\\.cpp:{}:{}".format(prefix, directory_prefix, filestem, line, col)
+    if message is not None:
+        return [line, "\t" + message]
+    return line
+
+
+def expectation_failed_line(line, col, message=None, filestem=None):
+    return failed_line(line, col, message, filestem, "Expectation failed at")
+
+
+def skipped_line(line, col, message=None, filestem=None):
+    return failed_line(line, col, message, filestem, "Skipped at")
+
+
+def warning_line(message_pattern, line=0, notes=None):
+    pattern = r"Warning\: " + message_pattern + r"\n"
+    if line != 0:
+        pattern += r"\tat .*tests/integration/emit_warnings\.cpp\:" + str(line) + r"\:[0-9]*\n"
+    for note in (notes or []):
+        pattern += r"\tNote\: " + note[0]
+        if note[1] != 0:
+            pattern += r" at .*tests/integration/emit_warnings\.cpp\:" + str(note[1]) + r"\:[0-9]*"
+        pattern += r"\n"
+    return pattern
 
 
 class MCGATestIntegrationMixin(unittest.TestCase):
@@ -12,34 +64,16 @@ class MCGATestIntegrationMixin(unittest.TestCase):
     _last_test_args: Optional[List[str]] = None
     _last_test_output: Optional[str] = None
 
-    @staticmethod
-    def output_test_line(status, name, approx=False, approx_fail=False):
-        if not approx:
-            return "\\[" + status + "] " + name + " - [0-9.]* ticks \\([0-9.]* ms\\)"
-        approx_tick_pattern = " - \\~ [0-9.]* ticks \\(\\~[0-9.]* ms\\) "
-        if not approx_fail:
-            return "\\[" + status + "] " + name + approx_tick_pattern + "\\(passed: [0-9]*/[0-9]*\\)"
-        return "\\[" + status + "] " + name + approx_tick_pattern + "\\(passed: [0-9]*/[0-9]*\\, required: [0-9]*\\)"
-
-    @staticmethod
-    def get_warning_pattern(message_pattern, line=0, notes=None):
-        pattern = r"Warning\: " + message_pattern + r"\n"
-        if line != 0:
-            pattern += r"\tat (.*)tests/integration/emit_warnings\.cpp\:" + str(
-                line) + r"\:[0-9]*\n"
-        for note in (notes or []):
-            pattern += r"\tNote\: " + note[0]
-            if note[1] != 0:
-                pattern += r" at (.*)tests/integration/emit_warnings\.cpp\:" + str(
-                    note[1]) + r"\:[0-9]*"
-            pattern += r"\n"
-        return pattern
+    def setUp(self):
+        super().setUp()
+        global test_name
+        test_name = self._testMethodName[5:]
 
     def run_test(self, name=None, timeout=10, expect_fail=False, tests_passed=0, tests_failed=0,
                  tests_failed_optional=None, tests_skipped=None,
                  output=None, extra_args=None):
         if name is None:
-            name = self._testMethodName[5:]
+            name = test_name
         test_args = ["./" + name, "--executor=" + self.executor_type]
         if extra_args is not None:
             test_args += extra_args
@@ -64,7 +98,7 @@ class MCGATestIntegrationMixin(unittest.TestCase):
         summary_snippet += "\nTotal recorded testing time: [0-9\\.]* ticks \\([0-9\\.]* ms\\)\n"
         if output is not None:
             output = [output] if not isinstance(output, list) else output
-            self.check_output_lines([*output, "", *summary_snippet.split("\n")])
+            self.check_output_lines(flatten_list([output, "", summary_snippet.split("\n")]))
         else:
             self.check_output(re.compile(summary_snippet))
         return output
@@ -94,7 +128,7 @@ class MCGATestIntegrationMixin(unittest.TestCase):
             self.assertEqual(bool(snippet in self._last_test_output), expect_contains, msg)
 
     def check_warning(self, message_pattern, line=0, notes=None):
-        self.check_output(re.compile(self.get_warning_pattern(message_pattern, line, notes)))
+        self.check_output(re.compile(warning_line(message_pattern, line, notes)))
 
     def check_output_lines(self, expected_lines):
         output_lines = self._last_test_output.split("\n")
@@ -211,52 +245,48 @@ class MCGATestIntegrationSmoothTestCase(MCGATestIntegrationMixin):
 
     def test_multiple_files(self):
         self.run_test(tests_passed=3, tests_failed=0, output=[
-            self.output_test_line("P", "TestCase1::test"),
-            self.output_test_line("P", "TestCase2::test"),
-            self.output_test_line("P", "TestCase3::test"),
+            test_line("P", "TestCase1::test"),
+            test_line("P", "TestCase2::test"),
+            test_line("P", "TestCase3::test"),
         ])
 
     def test_multiple_tests_one_fails(self):
         self.run_test(expect_fail=True, tests_passed=3, tests_failed=1, output=[
-            self.output_test_line("P", "TestCase::test1"),
-            self.output_test_line("F", "TestCase::test2"),
-            "Failed at .*tests/integration/multiple_tests_one_fails\\.cpp:7:9",
-            "\t1 \\+ 1 == 3 is not true",
-            self.output_test_line("P", "TestCase::test3"),
-            self.output_test_line("P", "TestCase::test4"),
+            test_line("P", "TestCase::test1"),
+            test_line("F", "TestCase::test2"),
+            failed_line(7, 9, "1 \\+ 1 == 3 is not true"),
+            test_line("P", "TestCase::test3"),
+            test_line("P", "TestCase::test4"),
         ])
 
     def test_single_file_multiple_cases(self):
         self.run_test(tests_passed=2, tests_failed=0, output=[
-            self.output_test_line("P", "TestCase1::test"),
-            self.output_test_line("P", "TestCase2::test"),
+            test_line("P", "TestCase1::test"),
+            test_line("P", "TestCase2::test"),
         ])
 
     def test_fail(self):
         self.run_test(expect_fail=True, tests_passed=0, tests_failed=2, output=[
-            self.output_test_line("F", "TestCase::test"),
-            "Failed at .*tests/integration/fail\\.cpp:5:9",
-            "\t1 \\+ 1 == 3 is not true",
-            self.output_test_line("F", "TestCase::test-fail-expect"),
-            "Expectation failed at .*tests/integration/fail\\.cpp:9:9",
+            test_line("F", "TestCase::test"),
+            failed_line(5, 9, "1 \\+ 1 == 3 is not true"),
+            test_line("F", "TestCase::test-fail-expect"),
+            expectation_failed_line(9, 9),
         ])
 
     def test_fail_in_thread(self):
         self.run_test(expect_fail=True, tests_passed=0, tests_failed=1, output=[
-            self.output_test_line("F", "TestCase::test"),
-            "Failed at .*tests/integration/fail_in_thread\\.cpp:8:13",
-            "\tIn a different thread",
+            test_line("F", "TestCase::test"),
+            failed_line(8, 13, "In a different thread"),
         ])
 
     def test_skipped_test(self):
         # Skipped tests are not printed by default.
         self.run_test(tests_passed=1, tests_failed=0, tests_skipped=1,
-                      output=self.output_test_line("P", "TestCase::test-1"))
+                      output=test_line("P", "TestCase::test-1"))
         expected_output = [
-            self.output_test_line("P", "TestCase::test-1"),
-            self.output_test_line("S", "TestCase::test-2"),
-            "Skipped at .*/tests/integration/skipped_test\\.cpp:7:9",
-            "\tskip-this-test",
+            test_line("P", "TestCase::test-1"),
+            test_line("S", "TestCase::test-2"),
+            skipped_line(7, 9, "skip-this-test"),
         ]
         self.run_test(tests_passed=1, tests_failed=0, tests_skipped=1, output=expected_output,
                       extra_args=["--print-skipped"])
@@ -266,12 +296,11 @@ class MCGATestIntegrationSmoothTestCase(MCGATestIntegrationMixin):
     def test_skipped_test_thread(self):
         # Skipped tests are not printed by default.
         self.run_test(tests_passed=1, tests_failed=0, tests_skipped=1,
-                      output=self.output_test_line("P", "TestCase::test-1"))
+                      output=test_line("P", "TestCase::test-1"))
         expected_output = [
-            self.output_test_line("P", "TestCase::test-1"),
-            self.output_test_line("S", "TestCase::test-2"),
-            "Skipped at .*/tests/integration/skipped_test_thread\\.cpp:10:13",
-            "\tIn a different thread",
+            test_line("P", "TestCase::test-1"),
+            test_line("S", "TestCase::test-2"),
+            skipped_line(10, 13, "In a different thread"),
         ]
         self.run_test(tests_passed=1, tests_failed=0, tests_skipped=1, output=expected_output,
                       extra_args=["--print-skipped"])
@@ -280,24 +309,22 @@ class MCGATestIntegrationSmoothTestCase(MCGATestIntegrationMixin):
 
     def test_multiple_executions_fail(self):
         self.run_test(expect_fail=True, tests_passed=0, tests_failed=1, output=[
-            self.output_test_line("F", "TestCase::test", approx=True, approx_fail=True),
-            "Failed at .*tests/integration/multiple_executions_fail\\.cpp:11:15",
-            "\tGot 0\\.",
+            test_line("F", "TestCase::test", approx=True, approx_fail=True),
+            failed_line(11, 15, "Got 0\\."),
         ])
 
     def test_multiple_executions_pass(self):
         self.run_test(tests_passed=1, tests_failed=0,
-                      output=self.output_test_line("P", "TestCase::test", approx=True))
+                      output=test_line("P", "TestCase::test", approx=True))
 
     def test_multiple_executions_skip(self):
         # Skipped tests are not printed by default.
         self.run_test(tests_passed=1, tests_failed=0, tests_skipped=1,
-                      output=self.output_test_line("P", "TestCase::test-1"))
+                      output=test_line("P", "TestCase::test-1"))
         expected_output = [
-            self.output_test_line("P", "TestCase::test-1"),
-            self.output_test_line("S", "TestCase::test-2", approx=True, approx_fail=True),
-            "Skipped at .*/tests/integration/multiple_executions_skip\\.cpp:9:11",
-            "\tevery-time",
+            test_line("P", "TestCase::test-1"),
+            test_line("S", "TestCase::test-2", approx=True, approx_fail=True),
+            skipped_line(9, 11, "every-time"),
         ]
         self.run_test(tests_passed=1, tests_failed=0, tests_skipped=1, output=expected_output,
                       extra_args=["--print-skipped"])
@@ -307,17 +334,15 @@ class MCGATestIntegrationSmoothTestCase(MCGATestIntegrationMixin):
     def test_optional_fail(self):
         self.run_test(tests_passed=0, tests_failed=2, tests_failed_optional=2,
                       output=[
-                          self.output_test_line("F", "TestCase::test"),
-                          "Failed at .*tests/integration/optional_fail\\.cpp:6:9",
-                          "\t1 \\+ 1 == 3 is not true",
-                          self.output_test_line("F", "TestCase::opt-group::non-opt-test"),
-                          "Failed at .*tests/integration/optional_fail\\.cpp:12:13",
-                          "\t1 \\+ 1 == 3 is not true",
+                          test_line("F", "TestCase::test"),
+                          failed_line(6, 9, "1 \\+ 1 == 3 is not true"),
+                          test_line("F", "TestCase::opt-group::non-opt-test"),
+                          failed_line(12, 13, "1 \\+ 1 == 3 is not true"),
                       ])
 
     def test_pass(self):
         self.run_test(tests_passed=1, tests_failed=0,
-                      output=self.output_test_line("P", "TestCase::test"))
+                      output=test_line("P", "TestCase::test"))
 
     def test_set_up_tear_down_order(self):
         self.run_test(tests_passed=2, tests_failed=0, output=[
@@ -331,7 +356,7 @@ class MCGATestIntegrationSmoothTestCase(MCGATestIntegrationMixin):
             "third-tear-down",
             "second-tear-down",
             "first-tear-down",
-            self.output_test_line("P", "TestCase::test1"),
+            test_line("P", "TestCase::test1"),
             "first-set-up",
             "second-set-up",
             "third-set-up",
@@ -340,7 +365,7 @@ class MCGATestIntegrationSmoothTestCase(MCGATestIntegrationMixin):
             "third-tear-down",
             "second-tear-down",
             "first-tear-down",
-            self.output_test_line("P", "TestCase::test2"),
+            test_line("P", "TestCase::test2"),
         ])
 
     def test_fail_in_set_up(self):
@@ -350,9 +375,8 @@ class MCGATestIntegrationSmoothTestCase(MCGATestIntegrationMixin):
             "third-tear-down",
             "second-tear-down",
             "first-tear-down",
-            self.output_test_line("F", "TestCase::test"),
-            "Failed at .*tests/integration/fail_in_set_up\\.cpp:17:13",
-            "\tfail-in-second-setup",
+            test_line("F", "TestCase::test"),
+            failed_line(17, 13, "fail-in-second-setup"),
         ])
 
     def test_fail_in_tear_down(self):
@@ -366,9 +390,8 @@ class MCGATestIntegrationSmoothTestCase(MCGATestIntegrationMixin):
             "third-tear-down",
             "second-tear-down",
             "first-tear-down",
-            self.output_test_line("F", "TestCase::test"),
-            "Failed at .*tests/integration/fail_in_tear_down\\.cpp:25:13",
-            "\tfail-in-third-teardown",
+            test_line("F", "TestCase::test"),
+            failed_line(25, 13, "fail-in-third-teardown"),
         ])
 
     def test_fail_in_cleanup(self):
@@ -378,27 +401,25 @@ class MCGATestIntegrationSmoothTestCase(MCGATestIntegrationMixin):
             "cleanup-in-set-up",
             "second-tear-down",
             "first-tear-down",
-            self.output_test_line("F", "TestCase::group::test"),
-            "Failed at .*tests/integration/fail_in_cleanup\\.cpp:10:13",
-            "\tfail-in-cleanup",
+            test_line("F", "TestCase::group::test"),
+            failed_line(10, 13, "fail-in-cleanup"),
         ])
 
     def test_skip_in_set_up(self):
         # Skipped tests are not printed by default.
         self.run_test(tests_passed=1, tests_failed=0, tests_skipped=1,
                       output=[
-                          self.output_test_line("P", "TestCase::test-1"),
+                          test_line("P", "TestCase::test-1"),
                           "set-up",
                           "tear-down",
                       ])
 
         expected_output = [
-            self.output_test_line("P", "TestCase::test-1"),
+            test_line("P", "TestCase::test-1"),
             "set-up",
             "tear-down",
-            self.output_test_line("S", "TestCase::test-2"),
-            "Skipped at .*/tests/integration/skip_in_set_up\\.cpp:11:13",
-            "\tskip-in-set-up",
+            test_line("S", "TestCase::test-2"),
+            skipped_line(11, 13, "skip-in-set-up"),
         ]
         self.run_test(tests_passed=1, tests_failed=0, tests_skipped=1, output=expected_output,
                       extra_args=["--print-skipped"])
@@ -408,12 +429,11 @@ class MCGATestIntegrationSmoothTestCase(MCGATestIntegrationMixin):
     def test_skip_in_tear_down(self):
         # Skipped tests are not printed by default.
         self.run_test(tests_passed=1, tests_failed=0, tests_skipped=1,
-                      output=self.output_test_line("P", "TestCase::test-1"))
+                      output=test_line("P", "TestCase::test-1"))
         expected_output = [
-            self.output_test_line("P", "TestCase::test-1"),
-            self.output_test_line("S", "TestCase::test-2"),
-            "Skipped at .*/tests/integration/skip_in_tear_down\\.cpp:10:13",
-            "\tskip-in-tear-down",
+            test_line("P", "TestCase::test-1"),
+            test_line("S", "TestCase::test-2"),
+            skipped_line(10, 13, "skip-in-tear-down"),
         ]
         self.run_test(tests_passed=1, tests_failed=0, tests_skipped=1, output=expected_output,
                       extra_args=["--print-skipped"])
@@ -425,67 +445,62 @@ class MCGATestIntegrationSmoothTestCase(MCGATestIntegrationMixin):
 
     def test_repeat(self):
         self.run_test(name="pass", tests_passed=5, tests_failed=0, extra_args=["--repeat=5"],
-                      output=5 * [self.output_test_line("P", "TestCase::test")])
+                      output=5 * [test_line("P", "TestCase::test")])
 
         self.run_test(name="multiple_tests_one_fails", expect_fail=True,
                       tests_passed=15, tests_failed=5, extra_args=["--repeat=5"],
                       output=5 * [
-                          self.output_test_line("P", "TestCase::test1"),
-                          self.output_test_line("F", "TestCase::test2"),
-                          "Failed at .*tests/integration/multiple_tests_one_fails\\.cpp:7:9",
-                          "\t1 \\+ 1 == 3 is not true",
-                          self.output_test_line("P", "TestCase::test3"),
-                          self.output_test_line("P", "TestCase::test4"),
+                          test_line("P", "TestCase::test1"),
+                          test_line("F", "TestCase::test2"),
+                          failed_line(7, 9, "1 \\+ 1 == 3 is not true", filestem="multiple_tests_one_fails"),
+                          test_line("P", "TestCase::test3"),
+                          test_line("P", "TestCase::test4"),
                       ])
 
     def test_fixtures_api(self):
         self.run_test(tests_passed=5, tests_failed=5, expect_fail=True, output=[
             "passing-test-body",
-            self.output_test_line("P", "passing-test"),
+            test_line("P", "passing-test"),
             "failing-test-body",
-            self.output_test_line("F", "failing-test"),
-            "Failed at .*tests/integration/fixtures_api\\.cpp:11:5",
+            test_line("F", "failing-test"),
+            failed_line(11, 5),
             "failure in global",
             "fixture1-setUp",
             "fixture1-passing-test-body",
             "fixture1-tearDown",
-            self.output_test_line("P", "Fixture1::fixture1-passing-test"),
+            test_line("P", "Fixture1::fixture1-passing-test"),
             "fixture1-setUp",
             "fixture1-failing-test-body",
             "fixture1-tearDown",
-            self.output_test_line("F", "Fixture1::fixture1-failing-test"),
-            "Failed at .*tests/integration/fixtures_api\\.cpp:30:5",
-            "\tfailure in fixture1",
+            test_line("F", "Fixture1::fixture1-failing-test"),
+            failed_line(32, 5, "failure in fixture1"),
             "fixture2-setUp",
             "fixture2-passing-test-body",
             "fixture2-tearDown",
-            self.output_test_line("P", "Fixture2::fixture2-passing-test"),
+            test_line("P", "Fixture2::fixture2-passing-test"),
             "fixture2-setUp",
             "fixture2-failing-test-body",
             "fixture2-tearDown",
-            self.output_test_line("F", "Fixture2::fixture2-failing-test"),
-            "Failed at .*tests/integration/fixtures_api\\.cpp:51:5",
-            "\tfailure in fixture2",
+            test_line("F", "Fixture2::fixture2-failing-test"),
+            failed_line(55, 5, "failure in fixture2"),
             "fixture3-setUp",
             "fixture3-passing-test-body",
             "fixture3-tearDown",
-            self.output_test_line("P", "Fixture3::fixture3-passing-test"),
+            test_line("P", "Fixture3::fixture3-passing-test"),
             "fixture3-setUp",
             "fixture3-failing-test-body",
             "fixture3-tearDown",
-            self.output_test_line("F", "Fixture3::fixture3-failing-test"),
-            "Failed at .*tests/integration/fixtures_api\\.cpp:72:5",
-            "\tfailure in fixture3",
+            test_line("F", "Fixture3::fixture3-failing-test"),
+            failed_line(78, 5, "failure in fixture3"),
             "fixture4-setUp",
             "fixture4-passing-test-body",
             "fixture4-tearDown",
-            self.output_test_line("P", "Fixture4::fixture4-passing-test"),
+            test_line("P", "Fixture4::fixture4-passing-test"),
             "fixture4-setUp",
             "fixture4-failing-test-body",
             "fixture4-tearDown",
-            self.output_test_line("F", "Fixture4::fixture4-failing-test"),
-            "Failed at .*tests/integration/fixtures_api\\.cpp:91:5",
-            "\tfailure in fixture4",
+            test_line("F", "Fixture4::fixture4-failing-test"),
+            failed_line(99, 5, "failure in fixture4"),
         ])
 
 
@@ -494,25 +509,25 @@ class MCGATestIntegrationBoxedTestCase(MCGATestIntegrationSmoothTestCase):
 
     def test_exit_0(self):
         self.run_test(expect_fail=True, tests_passed=0, tests_failed=1, output=[
-            self.output_test_line("F", "TestCase::test"),
+            test_line("F", "TestCase::test"),
             "\tUnexpected 0-code exit.",
         ])
 
     def test_exit_1(self):
         self.run_test(expect_fail=True, tests_passed=0, tests_failed=1, output=[
-            self.output_test_line("F", "TestCase::test"),
+            test_line("F", "TestCase::test"),
             "\tTest exited with code 1",
         ])
 
     def test_kbs(self):
         self.run_test(expect_fail=True, tests_passed=0, tests_failed=1, output=[
-            self.output_test_line("F", "TestCase::test"),
+            test_line("F", "TestCase::test"),
             "\tTest killed by signal 15",
         ])
 
     def test_timeout(self):
         self.run_test(expect_fail=True, tests_passed=0, tests_failed=1, output=[
-            self.output_test_line("F", "TestCase::test"),
+            test_line("F", "TestCase::test"),
             "\tTest execution timed out.",
         ])
 
