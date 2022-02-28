@@ -48,6 +48,7 @@ add_integration_test(single_file_multiple_cases integration/multiple_test_cases.
 add_integration_test(multiple_tests_one_fails integration/multiple_tests_one_fails.cpp)
 add_integration_test(emit_warnings integration/emit_warnings.cpp)
 add_integration_test(set_up_tear_down_order integration/set_up_tear_down_order.cpp)
+add_integration_test(set_up_tear_down_proc integration/set_up_tear_down_proc.cpp)
 add_integration_test(fail_in_set_up integration/fail_in_set_up.cpp)
 add_integration_test(fail_in_tear_down integration/fail_in_tear_down.cpp)
 add_integration_test(fail_in_cleanup integration/fail_in_cleanup.cpp)

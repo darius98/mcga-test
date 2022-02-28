@@ -344,6 +344,13 @@ class MCGATestIntegrationSmoothTestCase(MCGATestIntegrationMixin):
         self.run_test(tests_passed=1, tests_failed=0,
                       output=test_line("P", "TestCase::test"))
 
+    def test_set_up_tear_down_proc(self):
+        self.run_test(tests_passed=3, tests_failed=0, output=[
+            test_line("P", "TestFixture::test-fixtures-api-with-fixture"),
+            test_line("P", "test-case::group::"),
+            test_line("P", "test-case::"),
+        ])
+
     def test_set_up_tear_down_order(self):
         self.run_test(tests_passed=2, tests_failed=0, output=[
             "first-set-up",
