@@ -2,7 +2,7 @@
 
 #include <thread>
 
-#include <mcga/proc.hpp>
+#include "mcga/proc.hpp"
 
 #include "core/driver.hpp"
 #include "core/export.hpp"

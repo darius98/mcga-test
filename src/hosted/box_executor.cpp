@@ -4,11 +4,11 @@
 #include <thread>
 
 #include "core/time_tick.hpp"
-#include "serialization.hpp"
+#include "core/serialization.hpp"
 
 namespace mcga::test {
 
-void mcga_read(proc::binary_reader auto& reader, Test::ExecutionInfo& info) {
+void read_custom(proc::binary_reader auto& reader, Test::ExecutionInfo& info) {
     proc::read_into(reader,
                     info.status,
                     info.verb,
@@ -17,7 +17,7 @@ void mcga_read(proc::binary_reader auto& reader, Test::ExecutionInfo& info) {
                     info.timeTicks);
 }
 
-void mcga_write(proc::binary_reader auto& writer,
+void write_custom(proc::binary_reader auto& writer,
                 const Test::ExecutionInfo& info) {
     proc::write_from(writer,
                      info.status,

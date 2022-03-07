@@ -118,7 +118,11 @@ class String {
     String(String&& other) = default;
     String& operator=(const String& other) = default;
     String& operator=(String&& other) = default;
-    ~String() = default;
+
+    // Don't allow String to be trivial, even in this case, as it might get
+    // wrongly de-serialized by mcga::proc.
+    constexpr ~String() {
+    }
 
     [[nodiscard]] constexpr const char* c_str() const noexcept {
         return data;

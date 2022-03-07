@@ -9,11 +9,12 @@
 #include "core/executor.hpp"
 #include "core/export.hpp"
 #include "core/main.hpp"
-#include "extensions/binary_stream/ext.hpp"
-#include "extensions/exit_code/ext.hpp"
+#include "extensions/binary_stream.hpp"
+#include "extensions/exit_code.hpp"
 #include "extensions/filter/ext.hpp"
 #include "extensions/text_stream/ext.hpp"
 #include "hosted/box_executor.hpp"
+#include "hosted/socket_streaming.hpp"
 
 MCGA_TEST_EXPORT_WEAK int main(int argc, char** argv) {
     mcga::cli::Parser parser(
@@ -48,28 +49,34 @@ MCGA_TEST_EXPORT_WEAK int main(int argc, char** argv) {
         .set_description("Repeat the tests multiple times.")
         .set_default_value("1"));
 
-    auto skipIsFail = parser.add_flag(
+    auto skipIsFailArg = parser.add_flag(
       mcga::cli::FlagSpec("fail-on-skip")
         .set_help_group("Feedback")
         .set_description("Consider skipped tests as failed."));
-    auto ignoreWarnings = parser.add_flag(
+    auto ignoreWarningsArg = parser.add_flag(
       mcga::cli::FlagSpec("ignore-warnings")
         .set_help_group("Feedback")
         .set_description(
           "When this flag is set, a test run where all tests pass, but "
           "warnings were generated will exit with code 0 instead of 1."));
 
+    auto streamToSockArg = parser.add_argument(
+      mcga::cli::ArgumentSpec("stream-to-socket")
+        .set_help_group("Feedback")
+        .set_description("A UNIX socket with write access for piping the test "
+                         "results as they become available.")
+        .set_default_value(""));
+
     mcga::test::StdoutLoggingExtension loggingExtension;
-    mcga::test::SocketStreamingExtension streamingExtension;
     mcga::test::FilterExtension filterExtension;
 
     loggingExtension.registerCommandLineArgs(&parser);
-    streamingExtension.registerCommandLineArgs(&parser);
     filterExtension.registerCommandLineArgs(&parser);
     parser.parse(argc, argv);
 
+    auto streamingExtension = mcga::test::makeSocketStreamingExtension(streamToSockArg->get_value_if_exists());
     mcga::test::ExitCodeExtension exitCodeExtension(
-      skipIsFail->get_value(), ignoreWarnings->get_value());
+      skipIsFailArg->get_value(), ignoreWarningsArg->get_value());
 
     auto extensions = makeExtensionArray(&loggingExtension,
                                          &streamingExtension,

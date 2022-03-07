@@ -34,7 +34,7 @@ set(mcga_test_core_src
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/time_tick.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/core/warning.cpp
 
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/extensions/exit_code/ext.cpp
+        src/extensions/exit_code.cpp
         )
 
 add_library(mcga_test_interface INTERFACE)
@@ -42,12 +42,11 @@ target_include_directories(mcga_test_interface INTERFACE ${CMAKE_CURRENT_SOURCE_
 
 add_library(mcga_test_obj OBJECT
         ${mcga_test_core_src}
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/extensions/death/check_death.cpp
+        src/extensions/death.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/extensions/text_stream/color.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/extensions/binary_stream/ext.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/extensions/text_stream/ext.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/extensions/text_stream/test_logger.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/extensions/mock/base.cpp
+        src/extensions/mock.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/extensions/filter/ext.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/hosted/entry_point.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/hosted/box_executor.cpp)
