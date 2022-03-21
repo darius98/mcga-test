@@ -60,6 +60,21 @@ MCGA_TEST_EXPORT_WEAK int main(int argc, char** argv) {
           "When this flag is set, a test run where all tests pass, but "
           "warnings were generated will exit with code 0 instead of 1."));
 
+    auto quietFlag = parser.add_flag(
+      mcga::cli::FlagSpec("quiet")
+        .set_help_group("Feedback")
+        .set_description("Disable STDOUT logging for this test run")
+        .set_short_name("q"));
+    auto printSkipped = parser.add_flag(
+      mcga::cli::FlagSpec("print-skipped")
+        .set_help_group("Feedback")
+        .set_description("Print the information for skipped tests."));
+    auto noLiveLogging = parser.add_flag(
+      mcga::cli::FlagSpec("no-live-logging")
+        .set_help_group("Feedback")
+        .set_description("Disable logging volatile messages "
+                         "(that are then removed with '\\r' modifiers."));
+
     auto streamToSockArg = parser.add_argument(
       mcga::cli::ArgumentSpec("stream-to-socket")
         .set_help_group("Feedback")
@@ -67,16 +82,66 @@ MCGA_TEST_EXPORT_WEAK int main(int argc, char** argv) {
                          "results as they become available.")
         .set_default_value(""));
 
-    mcga::test::StdoutLoggingExtension loggingExtension;
-    mcga::test::FilterExtension filterExtension;
+    auto descriptionFilterArgument = parser.add_list_argument(
+      mcga::cli::ListArgumentSpec{"filter"}
+        .set_short_name("f")
+        .set_help_group("Filtering")
+        .set_description(
+          "Filter tests by their full description "
+          "(e.g. \"TestCaseName::group description::...::test description\")"
+          "You can use the '*' character to match any number of characters. A "
+          "test's description must contain a match, so writing "
+          "\"--filter=*foo*\" is equivalent to writing \"--filter=foo\". If "
+          "multiple filters are provided, at least one of them must match.")
+        .set_default_value({}));
+    auto descriptionExcludeArgument = parser.add_list_argument(
+      mcga::cli::ListArgumentSpec{"exclude"}
+        .set_short_name("e")
+        .set_help_group("Filtering")
+        .set_description("Same as --filter, except matching tests are skipped "
+                         "instead of being executed.")
+        .set_default_value({}));
+    auto locationFilterArgument = parser.add_list_argument(
+      mcga::cli::ListArgumentSpec{"filter-loc"}
+        .set_help_group("Filtering")
+        .set_description(
+          "Filter tests by source code location. "
+          "Expects the format --filter-loc=FILE or --filter-loc=FILE:LINE or "
+          "--filter-loc=FILE:LINE:COLUMN, where the FILE will automatically "
+          "match the suffix of the file. You can use the '*' character "
+          "within "
+          "the FILE portion to match any number of characters. You can also "
+          "use the '*' character instead of LINE or COLUMN (e.g. "
+          "--filter-loc=my_tests.cpp is equivalent to "
+          "--filter-loc=*my_tests.cpp:*:*). If multiple filters are provided, "
+          "at least one of them must match.")
+        .set_default_value({}));
+    auto locationExcludeArgument = parser.add_list_argument(
+      mcga::cli::ListArgumentSpec{"exclude-loc"}
+        .set_help_group("Filtering")
+        .set_description(
+          "Same as --filter-loc, except matching tests are "
+          "skipped instead of being executed. Using '*' for LINE or COLUMN, or "
+          "not including the :LINE or :LINE:COLUMN section means the "
+          "line/column is not considered when filtering.")
+        .set_default_value({}));
 
-    loggingExtension.registerCommandLineArgs(&parser);
-    filterExtension.registerCommandLineArgs(&parser);
     parser.parse(argc, argv);
 
-    auto streamingExtension = mcga::test::makeSocketStreamingExtension(streamToSockArg->get_value_if_exists());
+    mcga::test::StdoutLoggingExtension loggingExtension{
+      quietFlag->get_value(),
+      printSkipped->get_value(),
+      !noLiveLogging->get_value()};
+    auto streamingExtension = mcga::test::makeSocketStreamingExtension(
+      streamToSockArg->get_value_if_exists());
     mcga::test::ExitCodeExtension exitCodeExtension(
       skipIsFailArg->get_value(), ignoreWarningsArg->get_value());
+    mcga::test::FilterExtension filterExtension{
+      descriptionFilterArgument->get_value(),
+      descriptionExcludeArgument->get_value(),
+      locationFilterArgument->get_value(),
+      locationExcludeArgument->get_value(),
+    };
 
     auto extensions = makeExtensionArray(&loggingExtension,
                                          &streamingExtension,

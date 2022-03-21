@@ -3,6 +3,7 @@
 #include "test_description.hpp"
 
 #include <charconv>
+#include <regex>
 
 static bool needs_regex_escape(char ch) {
     return ch == '.' || ch == '[' || ch == '\\' || ch == '^' || ch == '$';
@@ -96,12 +97,11 @@ static bool matchLocationFilter(const std::tuple<std::regex, int, int>& filter,
 
 template<class T>
 static void parseFilterArray(
-  const mcga::cli::ListArgument<>& arg,
+  const std::vector<std::string>& rawValue,
   T (*callback)(std::string_view),
   bool (*match)(const T&, bool, const mcga::test::Test&),
   bool exclude,
   std::vector<std::function<bool(const mcga::test::Test&)>>& out) {
-    const auto rawValue = arg->get_value();
     out.reserve(out.size() + rawValue.size());
     std::transform(rawValue.begin(),
                    rawValue.end(),
@@ -117,73 +117,25 @@ static void parseFilterArray(
 
 namespace mcga::test {
 
-void FilterExtension::registerCommandLineArgs(cli::Parser* parser) {
-    descriptionFilterArgument = parser->add_list_argument(
-      cli::ListArgumentSpec{"filter"}
-        .set_short_name("f")
-        .set_help_group("Filtering")
-        .set_description(
-          "Filter tests by their full description "
-          "(e.g. \"TestCaseName::group description::...::test description\")"
-          "You can use the '*' character to match any number of characters. A "
-          "test's description must contain a match, so writing "
-          "\"--filter=*foo*\" is equivalent to writing \"--filter=foo\". If "
-          "multiple filters are provided, at least one of them must match.")
-        .set_default_value({}));
-    descriptionExcludeArgument = parser->add_list_argument(
-      cli::ListArgumentSpec{"exclude"}
-        .set_short_name("e")
-        .set_help_group("Filtering")
-        .set_description("Same as --filter, except matching tests are skipped "
-                         "instead of being executed.")
-        .set_default_value({}));
-    locationFilterArgument = parser->add_list_argument(
-      cli::ListArgumentSpec{"filter-loc"}
-        .set_help_group("Filtering")
-        .set_description(
-          "Filter tests by source code location. "
-          "Expects the format --filter-loc=FILE or --filter-loc=FILE:LINE or "
-          "--filter-loc=FILE:LINE:COLUMN, where the FILE will automatically "
-          "match the suffix of the file. You can use the '*' character "
-          "within "
-          "the FILE portion to match any number of characters. You can also "
-          "use the '*' character instead of LINE or COLUMN (e.g. "
-          "--filter-loc=my_tests.cpp is equivalent to "
-          "--filter-loc=*my_tests.cpp:*:*). If multiple filters are provided, "
-          "at least one of them must match.")
-        .set_default_value({}));
-    locationExcludeArgument = parser->add_list_argument(
-      cli::ListArgumentSpec{"exclude-loc"}
-        .set_help_group("Filtering")
-        .set_description(
-          "Same as --filter-loc, except matching tests are "
-          "skipped instead of being executed. Using '*' for LINE or COLUMN, or "
-          "not including the :LINE or :LINE:COLUMN section means the "
-          "line/column is not considered when filtering.")
-        .set_default_value({}));
-}
-
-void FilterExtension::init() {
-    parseFilterArray(descriptionFilterArgument,
+FilterExtension::FilterExtension(
+  const std::vector<std::string>& descriptionFilter,
+  const std::vector<std::string>& descriptionExclude,
+  const std::vector<std::string>& locationFilter,
+  const std::vector<std::string>& locationExclude) {
+    parseFilterArray(descriptionFilter,
                      parseDescriptionFilter,
                      matchDescriptionFilter,
                      false,
                      filters);
-    parseFilterArray(descriptionExcludeArgument,
+    parseFilterArray(descriptionExclude,
                      parseDescriptionFilter,
                      matchDescriptionFilter,
                      true,
                      filters);
-    parseFilterArray(locationFilterArgument,
-                     parseLocationFilter,
-                     matchLocationFilter,
-                     false,
-                     filters);
-    parseFilterArray(locationExcludeArgument,
-                     parseLocationFilter,
-                     matchLocationFilter,
-                     true,
-                     filters);
+    parseFilterArray(
+      locationFilter, parseLocationFilter, matchLocationFilter, false, filters);
+    parseFilterArray(
+      locationExclude, parseLocationFilter, matchLocationFilter, true, filters);
 }
 
 void FilterExtension::beforeTestExecution(

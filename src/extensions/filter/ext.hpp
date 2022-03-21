@@ -1,16 +1,17 @@
 #include "core/extension.hpp"
 
-#include <regex>
-
-#include <mcga/cli.hpp>
+#include <functional>
+#include <string>
+#include <vector>
 
 namespace mcga::test {
 
 class FilterExtension {
   public:
-    void registerCommandLineArgs(cli::Parser* parser);
-
-    void init();
+    FilterExtension(const std::vector<std::string>& descriptionFilter,
+                    const std::vector<std::string>& descriptionExclude,
+                    const std::vector<std::string>& locationFilter,
+                    const std::vector<std::string>& locationExclude);
 
     void beforeTestExecution(const Test& test,
                              std::optional<Test::ExecutionInfo>& info);
@@ -19,11 +20,6 @@ class FilterExtension {
     [[nodiscard]] bool shouldSkipTest(const Test& test) const;
 
     std::vector<std::function<bool(const Test&)>> filters;
-
-    cli::ListArgument<> descriptionFilterArgument;
-    cli::ListArgument<> descriptionExcludeArgument;
-    cli::ListArgument<> locationFilterArgument;
-    cli::ListArgument<> locationExcludeArgument;
 };
 
 }  // namespace mcga::test
