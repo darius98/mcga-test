@@ -1,6 +1,6 @@
 #pragma once
 
-#include "mcga/proc/message.hpp"
+#include "mcga/proc/serialization.hpp"
 
 #include "core/extension.hpp"
 #include "core/serialization.hpp"
@@ -17,7 +17,7 @@ enum class PipeMessageType : uint8_t {
 };
 
 template<mcga::proc::binary_writer Writer>
-struct BinaryStreamExtension {
+class BinaryStreamExtension {
     Writer writer;
     void (*flush_cb)(Writer&);
 
@@ -34,47 +34,48 @@ struct BinaryStreamExtension {
     }
 
     void onGroupDiscovered(GroupPtr group) {
-        proc::Message::Write(writer,
-                             PipeMessageType::GROUP_DISCOVERED,
-                             group->hasParentGroup() ? group->getParentGroup()->getId() : 0,
-                             group->getId(),
-                             group->getDescription(),
-                             group->isOptional());
+        proc::write_from(
+          writer,
+          PipeMessageType::GROUP_DISCOVERED,
+          group->hasParentGroup() ? group->getParentGroup()->getId() : 0,
+          group->getId(),
+          group->getDescription(),
+          group->isOptional());
         flush();
     }
 
     void onTestDiscovered(const Test& test) {
-        proc::Message::Write(writer,
-                             PipeMessageType::TEST_DISCOVERED,
-                             test.getId(),
-                             test.getGroup()->getId(),
-                             test.getDescription(),
-                             test.isOptional(),
-                             test.getNumAttempts(),
-                             test.getNumRequiredPassedAttempts());
+        proc::write_from(writer,
+                         PipeMessageType::TEST_DISCOVERED,
+                         test.getId(),
+                         test.getGroup()->getId(),
+                         test.getDescription(),
+                         test.isOptional(),
+                         test.getNumAttempts(),
+                         test.getNumRequiredPassedAttempts());
         flush();
     }
 
     void beforeTestExecution(const Test& test) {
-        proc::Message::Write(
+        proc::write_from(
           writer, PipeMessageType::TEST_EXECUTION_START, test.getId());
         flush();
     }
 
     void afterTestExecution(const Test& test) {
         const Test::ExecutionInfo& lastExecution = test.getLastExecution();
-        proc::Message::Write(writer,
-                             PipeMessageType::TEST_EXECUTION_FINISH,
-                             test.getId(),
-                             lastExecution.status,
-                             lastExecution.timeTicks,
-                             lastExecution.message,
-                             lastExecution.context);
+        proc::write_from(writer,
+                         PipeMessageType::TEST_EXECUTION_FINISH,
+                         test.getId(),
+                         lastExecution.status,
+                         lastExecution.timeTicks,
+                         lastExecution.message,
+                         lastExecution.context);
         flush();
     }
 
     void onWarning(const Warning& warning) {
-        proc::Message::Write(writer, PipeMessageType::WARNING, warning);
+        proc::write_from(writer, PipeMessageType::WARNING, warning);
         flush();
     }
 };

@@ -167,16 +167,13 @@ void Executor::decorateWarningWithCurrentTestNotes(Warning& warning,
 }
 
 void Executor::beforeTestExecution(Test& test) {
-    while (true) {
+    while (!test.isFinished()) {
         std::optional<Test::ExecutionInfo> execution;
         api->beforeTestExecution(test, execution);
         if (!execution.has_value()) {
             break;
         }
         test.addExecution(*std::move(execution), api);
-        if (test.isFinished()) {
-            break;
-        }
     }
 }
 
