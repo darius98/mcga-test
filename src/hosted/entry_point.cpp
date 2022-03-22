@@ -29,8 +29,8 @@ MCGA_TEST_EXPORT_WEAK int main(int argc, char** argv) {
                          "separate process. Using a smooth executor "
                          "means a test killed by signal will not be "
                          "detected and will kill the whole test suite.")
-        .set_options({{"smooth", mcga::test::Executor::SMOOTH},
-                      {"boxed", mcga::test::Executor::BOXED}})
+        .set_options({{"smooth", mcga::test::Executor::Type::SMOOTH},
+                      {"boxed", mcga::test::Executor::Type::BOXED}})
         .set_default_value("boxed"));
     auto maxParallelTestsArg = parser.add_numeric_argument<size_t>(
       mcga::cli::NumericArgumentSpec("max-parallel-tests")
@@ -155,12 +155,12 @@ MCGA_TEST_EXPORT_WEAK int main(int argc, char** argv) {
     };
 
     switch (executorTypeArg->get_value()) {
-        case mcga::test::Executor::SMOOTH: {
+        case mcga::test::Executor::Type::SMOOTH: {
             mcga::test::SmoothExecutor executor;
             runTests(&executor, options);
             break;
         }
-        case mcga::test::Executor::BOXED: {
+        case mcga::test::Executor::Type::BOXED: {
             auto numBoxes = std::max(maxParallelTestsArg->get_value(), 1ul);
             mcga::test::BoxExecutor executor(numBoxes);
             runTests(&executor, options);

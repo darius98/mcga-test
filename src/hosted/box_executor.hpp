@@ -5,7 +5,6 @@
 
 #include "mcga/proc.hpp"
 
-#include "core/disallow_copy_and_move.hpp"
 #include "core/executor.hpp"
 
 namespace mcga::test {
@@ -19,7 +18,10 @@ class BoxExecutor : public Executor {
   public:
     explicit BoxExecutor(std::size_t numBoxes);
 
-    MCGA_DISALLOW_COPY_AND_MOVE(BoxExecutor);
+    BoxExecutor(const BoxExecutor&) = delete;
+    BoxExecutor(BoxExecutor&&) = delete;
+    BoxExecutor& operator=(const BoxExecutor&) = delete;
+    BoxExecutor& operator=(BoxExecutor&&) = delete;
 
     void execute(Test test) override;
 

@@ -13,7 +13,7 @@ inline namespace MCGA_TEST_INTERNAL_ABI_NS {
 
 MCGA_TEST_EXPORT DeathStatus checkDeath(Executable func,
                                         double timeTicksLimit) {
-    if (Driver::Instance()->getExecutorType() == Executor::SMOOTH) {
+    if (Driver::Instance()->getExecutorType() == Executor::Type::SMOOTH) {
         fail("Death extension matchers & the checkDeath function do not work"
              " when using a smooth executor.");
         return {-1, -1};

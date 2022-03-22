@@ -3,8 +3,8 @@
 #include <algorithm>
 #include <thread>
 
-#include "core/time_tick.hpp"
 #include "core/serialization.hpp"
+#include "core/time_tick.hpp"
 
 namespace mcga::test {
 
@@ -18,7 +18,7 @@ void read_custom(proc::binary_reader auto& reader, Test::ExecutionInfo& info) {
 }
 
 void write_custom(proc::binary_reader auto& writer,
-                const Test::ExecutionInfo& info) {
+                  const Test::ExecutionInfo& info) {
     proc::write_from(writer,
                      info.status,
                      info.verb,
@@ -32,7 +32,8 @@ enum class PipeMessageType : char {
     DONE,
 };
 
-BoxExecutor::BoxExecutor(size_t numBoxes): Executor(BOXED), numBoxes(numBoxes) {
+BoxExecutor::BoxExecutor(size_t numBoxes)
+        : Executor(Type::BOXED), numBoxes(numBoxes) {
 }
 
 void BoxExecutor::execute(Test test) {

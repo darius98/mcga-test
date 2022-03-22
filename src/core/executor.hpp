@@ -6,7 +6,6 @@
 #include <mutex>
 #endif
 
-#include "disallow_copy_and_move.hpp"
 #include "extension_api.hpp"
 #include "test.hpp"
 #include "warning.hpp"
@@ -53,14 +52,15 @@ struct SynchronizedTestExecution {
 
 class Executor {
   public:
-    enum Type {
-        SCAN,
-        SMOOTH,
-        BOXED,
+    enum class Type {
+        SMOOTH = 0,
+        BOXED = 1,
     };
 
-    MCGA_DISALLOW_COPY_AND_MOVE(Executor);
-
+    Executor(const Executor&) = delete;
+    Executor(Executor&&) = delete;
+    Executor& operator=(const Executor&) = delete;
+    Executor& operator=(Executor&&) = delete;
     ~Executor() = default;
 
     void setExtensionApi(ExtensionApi* api);

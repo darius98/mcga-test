@@ -1,6 +1,5 @@
 #pragma once
 
-#include "disallow_copy_and_move.hpp"
 #include "executor.hpp"
 #include "utils.hpp"
 
@@ -23,7 +22,10 @@ class Driver {
     static void Clean();
 
     explicit Driver(ExtensionApi* api, Executor* executor);
-    MCGA_DISALLOW_COPY_AND_MOVE(Driver);
+    Driver(const Driver&) = delete;
+    Driver(Driver&&) = delete;
+    Driver& operator=(const Driver&) = delete;
+    Driver& operator=(Driver&&) = delete;
 
     [[nodiscard]] Executor::Type getExecutorType() const;
 

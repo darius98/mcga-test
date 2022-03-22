@@ -177,7 +177,7 @@ void Executor::beforeTestExecution(Test& test) {
     }
 }
 
-SmoothExecutor::SmoothExecutor(): Executor(SMOOTH) {
+SmoothExecutor::SmoothExecutor(): Executor(Type::SMOOTH) {
 }
 
 }  // namespace mcga::test
