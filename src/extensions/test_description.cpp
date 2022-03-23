@@ -1,14 +1,12 @@
-#pragma once
+#include "test_description.hpp"
 
 #include <numeric>
 #include <string>
 #include <vector>
 
-#include "core/test.hpp"
-
 namespace mcga::test {
 
-inline std::string getTestFullDescription(const Test& test) {
+std::string getTestFullDescription(const Test& test) {
     std::vector<std::string> groupDescriptions;
     GroupPtr parent = test.getGroup();
     while (parent != nullptr) {

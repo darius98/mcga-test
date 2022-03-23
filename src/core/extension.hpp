@@ -80,9 +80,9 @@ struct Extension {
     const ExtensionVTable* vtable;
 };
 
-template<class... T>
-auto makeExtensionArray(T*... ext) {
-    return std::array{Extension{ext, &extensionVTableFor<T>}...};
+template<class T>
+auto makeExtension(T* ext) {
+    return Extension{ext, &extensionVTableFor<T>};
 }
 
 }  // namespace mcga::test

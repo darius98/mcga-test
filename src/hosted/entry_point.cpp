@@ -11,8 +11,8 @@
 #include "core/main.hpp"
 #include "extensions/binary_stream.hpp"
 #include "extensions/exit_code.hpp"
-#include "extensions/filter/ext.hpp"
-#include "extensions/text_stream/ext.hpp"
+#include "extensions/filter.hpp"
+#include "extensions/text_stream.hpp"
 #include "hosted/box_executor.hpp"
 #include "hosted/socket_streaming.hpp"
 
@@ -128,12 +128,24 @@ MCGA_TEST_EXPORT_WEAK int main(int argc, char** argv) {
 
     parser.parse(argc, argv);
 
-    mcga::test::StdoutLoggingExtension loggingExtension{
-      quietFlag->get_value(),
-      printSkipped->get_value(),
-      !noLiveLogging->get_value()};
-    auto streamingExtension = mcga::test::makeSocketStreamingExtension(
-      streamToSockArg->get_value_if_exists());
+    std::unique_ptr<mcga::test::StdoutLoggingExtension> loggingExtension;
+    std::unique_ptr<mcga::test::SocketStreamingExtension> streamingExtension;
+    std::vector<mcga::test::Extension> extensions;
+    extensions.reserve(4);
+
+    if (!quietFlag->get_value()) {
+        loggingExtension = std::make_unique<mcga::test::StdoutLoggingExtension>(
+          printSkipped->get_value(), !noLiveLogging->get_value());
+        extensions.push_back(mcga::test::makeExtension(loggingExtension.get()));
+    }
+    if (streamToSockArg->appeared()) {
+        streamingExtension
+          = std::make_unique<mcga::test::SocketStreamingExtension>(
+            mcga::test::makeSocketStreamingExtension(
+              streamToSockArg->get_value()));
+        extensions.push_back(
+          mcga::test::makeExtension(streamingExtension.get()));
+    }
     mcga::test::ExitCodeExtension exitCodeExtension(
       skipIsFailArg->get_value(), ignoreWarningsArg->get_value());
     mcga::test::FilterExtension filterExtension{
@@ -142,11 +154,8 @@ MCGA_TEST_EXPORT_WEAK int main(int argc, char** argv) {
       locationFilterArgument->get_value(),
       locationExcludeArgument->get_value(),
     };
-
-    auto extensions = makeExtensionArray(&loggingExtension,
-                                         &streamingExtension,
-                                         &exitCodeExtension,
-                                         &filterExtension);
+    extensions.push_back(mcga::test::makeExtension(&exitCodeExtension));
+    extensions.push_back(mcga::test::makeExtension(&filterExtension));
 
     const auto options = mcga::test::EntryPointOptions{
       .extensions = extensions.data(),

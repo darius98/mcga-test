@@ -1,8 +1,10 @@
-#include "core/extension.hpp"
+#pragma once
 
 #include <functional>
 #include <string>
 #include <vector>
+
+#include "core/extension.hpp"
 
 namespace mcga::test {
 

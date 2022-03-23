@@ -1,26 +1,23 @@
 #pragma once
 
-#include <ostream>
-#include <set>
+#include "../../../../../../../Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk/usr/include/c++/v1/set"
 
-#include "core/test.hpp"
-#include "core/warning.hpp"
+#include "../core/test.hpp"
+#include "../core/warning.hpp"
 
 namespace mcga::test {
 
-class TestLogger {
+class StdoutLoggingExtension {
   public:
-    explicit TestLogger(std::ostream& stream,
-                        bool liveLogging,
-                        bool printSkipped);
+    StdoutLoggingExtension(bool printSkipped, bool liveLogging);
 
-    void onTestExecutionStart(const Test& test);
+    void beforeTestExecution(const Test& test);
 
-    void onTestExecutionFinish(const Test& test);
+    void afterTestExecution(const Test& test);
 
-    void printWarning(const Warning& warning);
+    void onWarning(const Warning& warning);
 
-    void printFinalInformation();
+    void destroy();
 
   private:
     void clearVolatileLine();

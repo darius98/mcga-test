@@ -1,22 +1,63 @@
-#include "test_logger.hpp"
+#include "extensions/text_stream.hpp"
 
 #include <iomanip>
-#include <numeric>
+#include <iostream>
+#include <memory>
 
-#include "color.hpp"
+#include <unistd.h>
 
 #include "core/time_tick.hpp"
-#include "extensions/filter/test_description.hpp"
+#include "test_description.hpp"
+
+namespace {
+
+bool is_terminal(const std::ostream& stream) {
+    if (&stream == &std::cout) {
+        return isatty(fileno(stdout));
+    }
+    if (&stream == &std::cerr) {
+        return isatty(fileno(stderr));
+    }
+    return false;
+}
+
+void write_if_colorized(std::ostream& stream, const char* ansi_seq) {
+    if (is_terminal(stream)) {
+        stream << ansi_seq;
+    }
+}
+
+std::ostream& reset(std::ostream& stream) {
+    write_if_colorized(stream, "\033[00m");
+    return stream;
+}
+
+std::ostream& red(std::ostream& stream) {
+    write_if_colorized(stream, "\033[31m");
+    return stream;
+}
+
+std::ostream& green(std::ostream& stream) {
+    write_if_colorized(stream, "\033[32m");
+    return stream;
+}
+
+std::ostream& yellow(std::ostream& stream) {
+    write_if_colorized(stream, "\033[33m");
+    return stream;
+}
+
+}  // namespace
 
 namespace mcga::test {
 
-TestLogger::TestLogger(std::ostream& stream,
-                       bool liveLogging,
-                       bool printSkipped)
-        : stream(stream), liveLogging(liveLogging), printSkipped(printSkipped) {
+StdoutLoggingExtension::StdoutLoggingExtension(bool printSkipped,
+                                               bool liveLogging)
+        : stream(std::cout), liveLogging(liveLogging),
+          printSkipped(printSkipped) {
 }
 
-void TestLogger::onTestExecutionStart(const Test& test) {
+void StdoutLoggingExtension::beforeTestExecution(const Test& test) {
     runningTests.insert(test.getId());
     updateVolatileLine(test);
 
@@ -25,7 +66,7 @@ void TestLogger::onTestExecutionStart(const Test& test) {
     std::cout.flush();
 }
 
-void TestLogger::onTestExecutionFinish(const Test& test) {
+void StdoutLoggingExtension::afterTestExecution(const Test& test) {
     runningTests.erase(test.getId());
     updateVolatileLine(test);
 
@@ -53,7 +94,7 @@ void TestLogger::onTestExecutionFinish(const Test& test) {
     }
 }
 
-void TestLogger::printFinalInformation() {
+void StdoutLoggingExtension::destroy() {
     clearVolatileLine();
     if (loggedTests > 0) {
         stream << "\n";
@@ -82,7 +123,7 @@ void TestLogger::printFinalInformation() {
            << " ms)\n";
 }
 
-void TestLogger::printWarning(const Warning& warning) {
+void StdoutLoggingExtension::onWarning(const Warning& warning) {
     clearVolatileLine();
     stream << yellow << "Warning: " << warning.message.c_str() << "\n";
     if (warning.context.has_value()) {
@@ -125,14 +166,14 @@ void TestLogger::printWarning(const Warning& warning) {
     stream << reset;
 }
 
-void TestLogger::clearVolatileLine() {
+void StdoutLoggingExtension::clearVolatileLine() {
     if (isLastLineVolatile) {
         stream << "\r\033[K" << std::flush;
     }
     isLastLineVolatile = false;
 }
 
-void TestLogger::printTestStatus(const Test& test) {
+void StdoutLoggingExtension::printTestStatus(const Test& test) {
     stream << "[";
     if (test.isPassed()) {
         stream << green << "P" << reset;
@@ -144,7 +185,7 @@ void TestLogger::printTestStatus(const Test& test) {
     stream << "]";
 }
 
-void TestLogger::printTestExecutionTime(const Test& test) {
+void StdoutLoggingExtension::printTestExecutionTime(const Test& test) {
     if (test.getAvgTimeTicksForExecution() != -1.0) {
         stream
           << std::fixed << std::setprecision(3)
@@ -159,7 +200,7 @@ void TestLogger::printTestExecutionTime(const Test& test) {
     }
 }
 
-void TestLogger::printTestAttemptsInfo(const Test& test) {
+void StdoutLoggingExtension::printTestAttemptsInfo(const Test& test) {
     stream << "(passed: " << test.getNumPassedAttempts() << "/"
            << test.getNumAttempts();
     if (!test.isPassed()) {
@@ -168,7 +209,7 @@ void TestLogger::printTestAttemptsInfo(const Test& test) {
     stream << ")";
 }
 
-void TestLogger::printTestFailure(const Test::ExecutionInfo& info) {
+void StdoutLoggingExtension::printTestFailure(const Test::ExecutionInfo& info) {
     stream << "\n";
     std::string message = info.message.c_str();
     // TODO: This should be somewhere else (in utils maybe?)
@@ -191,7 +232,7 @@ void TestLogger::printTestFailure(const Test::ExecutionInfo& info) {
     stream << reset;
 }
 
-void TestLogger::printTestMessage(const Test& test) {
+void StdoutLoggingExtension::printTestMessage(const Test& test) {
     clearVolatileLine();
 
     printTestStatus(test);
@@ -209,7 +250,7 @@ void TestLogger::printTestMessage(const Test& test) {
     stream << "\n";
 }
 
-void TestLogger::updateVolatileLine(const Test& test) {
+void StdoutLoggingExtension::updateVolatileLine(const Test& test) {
     if (!liveLogging || !is_terminal(stream)) {
         return;
     }
