@@ -78,8 +78,9 @@ MCGA_TEST_EXPORT_WEAK int main(int argc, char** argv) {
     auto streamToSockArg = parser.add_argument(
       mcga::cli::ArgumentSpec("stream-to-socket")
         .set_help_group("Feedback")
-        .set_description("A UNIX socket with write access for piping the test "
-                         "results as they become available.")
+        .set_description(
+          "A UNIX socket with write access for streaming the test "
+          "results in binary format as they become available.")
         .set_default_value(""));
 
     auto descriptionFilterArgument = parser.add_list_argument(
@@ -128,38 +129,40 @@ MCGA_TEST_EXPORT_WEAK int main(int argc, char** argv) {
 
     parser.parse(argc, argv);
 
-    std::unique_ptr<mcga::test::StdoutLoggingExtension> loggingExtension;
-    std::unique_ptr<mcga::test::SocketStreamingExtension> streamingExtension;
-    std::vector<mcga::test::Extension> extensions;
-    extensions.reserve(4);
+    std::array<mcga::test::Extension, 4> extensions{};
+    std::size_t numExtensions = 0;
 
+    std::optional<mcga::test::StdoutLoggingExtension> loggingExtension;
     if (!quietFlag->get_value()) {
-        loggingExtension = std::make_unique<mcga::test::StdoutLoggingExtension>(
-          printSkipped->get_value(), !noLiveLogging->get_value());
-        extensions.push_back(mcga::test::makeExtension(loggingExtension.get()));
+        loggingExtension.emplace(printSkipped->get_value(),
+                                 !noLiveLogging->get_value());
+        extensions[numExtensions++]
+          = mcga::test::makeExtension(&loggingExtension.value());
     }
+
+    std::optional<mcga::test::SocketStreamingExtension> streamingExtension;
     if (streamToSockArg->appeared()) {
-        streamingExtension
-          = std::make_unique<mcga::test::SocketStreamingExtension>(
-            mcga::test::makeSocketStreamingExtension(
-              streamToSockArg->get_value()));
-        extensions.push_back(
-          mcga::test::makeExtension(streamingExtension.get()));
+        streamingExtension.emplace(mcga::test::makeSocketStreamingExtension(
+          streamToSockArg->get_value()));
+        extensions[numExtensions++]
+          = mcga::test::makeExtension(&streamingExtension.value());
     }
-    mcga::test::ExitCodeExtension exitCodeExtension(
-      skipIsFailArg->get_value(), ignoreWarningsArg->get_value());
-    mcga::test::FilterExtension filterExtension{
+
+    auto exitCodeExtension = mcga::test::ExitCodeExtension{
+      skipIsFailArg->get_value(), ignoreWarningsArg->get_value()};
+    extensions[numExtensions++] = mcga::test::makeExtension(&exitCodeExtension);
+
+    auto filterExtension = mcga::test::FilterExtension{
       descriptionFilterArgument->get_value(),
       descriptionExcludeArgument->get_value(),
       locationFilterArgument->get_value(),
       locationExcludeArgument->get_value(),
     };
-    extensions.push_back(mcga::test::makeExtension(&exitCodeExtension));
-    extensions.push_back(mcga::test::makeExtension(&filterExtension));
+    extensions[numExtensions++] = mcga::test::makeExtension(&filterExtension);
 
     const auto options = mcga::test::EntryPointOptions{
       .extensions = extensions.data(),
-      .numExtensions = extensions.size(),
+      .numExtensions = numExtensions,
       .numRuns = testRepeatMultiplierArg->get_value(),
     };
 
