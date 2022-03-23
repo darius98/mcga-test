@@ -8,25 +8,6 @@
 
 namespace mcga::test {
 
-void read_custom(proc::binary_reader auto& reader, Test::ExecutionInfo& info) {
-    proc::read_into(reader,
-                    info.status,
-                    info.verb,
-                    info.message,
-                    info.context,
-                    info.timeTicks);
-}
-
-void write_custom(proc::binary_reader auto& writer,
-                  const Test::ExecutionInfo& info) {
-    proc::write_from(writer,
-                     info.status,
-                     info.verb,
-                     info.message,
-                     info.context,
-                     info.timeTicks);
-}
-
 enum class PipeMessageType : char {
     WARNING,
     DONE,

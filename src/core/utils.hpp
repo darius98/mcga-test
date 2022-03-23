@@ -14,7 +14,7 @@ inline auto current_thread_id() {
 #if MCGA_TEST_THREADING
     return std::hash<std::thread::id>()(std::this_thread::get_id());
 #else
-    return std::size_t{1};
+    return std::size_t{0};
 #endif
 }
 

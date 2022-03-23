@@ -46,7 +46,7 @@ void Driver::addGroup(GroupConfig config, Executable body) {
         return;
     }
     currentGroup = group;
-    executor->getExtensionApi()->onGroupDiscovered(currentGroup);
+    api->onGroupDiscovered(currentGroup);
 #if MCGA_TEST_EXCEPTIONS
     try {
         body();
@@ -71,7 +71,7 @@ void Driver::addTest(TestConfig config, Executable body) {
     }
     Test test(
       std::move(config), std::move(body), currentGroup, ++currentTestId);
-    executor->getExtensionApi()->onTestDiscovered(test);
+    api->onTestDiscovered(test);
     executor->execute(std::move(test));
 }
 
@@ -128,7 +128,8 @@ void Driver::addCleanup(Executable cleanup) {
 }
 
 void Driver::emitWarning(String message, std::optional<Context> context) {
-    executor->emitWarning(Warning(std::move(message), context), currentGroup);
+    executor->emitWarning(Warning(std::move(message), std::move(context)),
+                          currentGroup);
 }
 
 bool Driver::checkMainThreadAndInactive(WarningNoteType method,

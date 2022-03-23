@@ -28,6 +28,16 @@ void write_custom(proc::binary_writer auto& writer, const Warning& obj) {
     }
 }
 
+void write_custom(proc::binary_reader auto& writer,
+                  const Test::ExecutionInfo& info) {
+    proc::write_from(writer,
+                     info.status,
+                     info.verb,
+                     info.message,
+                     info.context,
+                     info.timeTicks);
+}
+
 // Reading these data structures requires dynamic memory allocation.
 #if MCGA_TEST_ALLOW_DYNAMIC_MEMORY
 void read_custom(proc::binary_reader auto& reader, String& obj) {
@@ -49,6 +59,15 @@ void read_custom(proc::binary_reader auto& reader, Warning& obj) {
     for (std::size_t i = 0; i < numNotes; i++) {
         obj.notes.push_back(proc::read_as<mcga::test::Warning::Note>(reader));
     }
+}
+
+void read_custom(proc::binary_reader auto& reader, Test::ExecutionInfo& info) {
+    proc::read_into(reader,
+                    info.status,
+                    info.verb,
+                    info.message,
+                    info.context,
+                    info.timeTicks);
 }
 #endif
 

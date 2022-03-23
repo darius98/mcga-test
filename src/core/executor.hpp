@@ -65,8 +65,6 @@ class Executor {
 
     void setExtensionApi(ExtensionApi* api);
 
-    [[nodiscard]] ExtensionApi* getExtensionApi() const;
-
     [[nodiscard]] bool isActive() const;
 
     [[nodiscard]] Type getType() const;
@@ -92,7 +90,7 @@ class Executor {
 
     void onWarning(Warning warning, GroupPtr group);
 
-    ExtensionApi* api;
+    ExtensionApi* api = nullptr;
 
   private:
     // Note: Returns the last group for which at least one set-up was executed.

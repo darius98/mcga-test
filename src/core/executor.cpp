@@ -17,10 +17,6 @@ void Executor::setExtensionApi(ExtensionApi* api_) {
     api = api_;
 }
 
-ExtensionApi* Executor::getExtensionApi() const {
-    return api;
-}
-
 bool Executor::isActive() const {
     return state != INACTIVE;
 }
