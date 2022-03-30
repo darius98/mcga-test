@@ -38,8 +38,13 @@ class List {
     node* tail = nullptr;
 
   public:
-    struct iterator
-            : std::iterator<std::forward_iterator_tag, T, std::size_t, T*, T&> {
+    struct iterator {
+        using value_type = T;
+        using difference_type = std::size_t;
+        using pointer = T*;
+        using reference = T&;
+        using iterator_category = std::forward_iterator_tag;
+
         node* at;
 
         bool operator==(const iterator& rhs) const noexcept {
