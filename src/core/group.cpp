@@ -1,6 +1,6 @@
 #include "group.hpp"
-#include "memory.hpp"
 #include "config.hpp"
+#include "memory.hpp"
 
 #include <new>
 
@@ -102,8 +102,8 @@ Group::Ptr
 }
 
 Group::Group(GroupConfig config, Context context, Ptr parentGroup, int id)
-        : GroupConfig(std::move(config)), context(context),
-          parentGroup(std::move(parentGroup)), id(id) {
+        : GroupConfig(std::move(config)), id(id),
+          parentGroup(std::move(parentGroup)), context(std::move(context)) {
 }
 
 const String& Group::getDescription() const {

@@ -41,7 +41,7 @@ struct Buffer {
     }
 
     void deallocate(void* slot) {
-        auto* node = (freelist_node*)slot;
+        auto* node = static_cast<freelist_node*>(slot);
         node->next = head.next;
         head.next = node;
     }

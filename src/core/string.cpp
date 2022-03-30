@@ -34,7 +34,7 @@ MCGA_TEST_EXPORT const char*
 }
 
 MCGA_TEST_EXPORT void delete_str(const char* data) {
-    std::free((void*)data);
+    std::free(const_cast<char*>(data));
 }
 
 }  // namespace mcga::test::internal

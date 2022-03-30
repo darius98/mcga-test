@@ -7,7 +7,7 @@
 
 namespace mcga::test {
 
-struct ExtensionApi;
+class ExtensionApi;
 
 /** Class holding the internal representation of a test.
  *
@@ -84,10 +84,10 @@ class Test : private TestConfig {
     [[nodiscard]] double getTimeTicksLimit() const;
 
     /** See TestConfig#attempts. */
-    [[nodiscard]] std::size_t getNumAttempts() const;
+    [[nodiscard]] int getNumAttempts() const;
 
     /** See TestConfig#numRequiredPassedAttempts. */
-    [[nodiscard]] std::size_t getNumRequiredPassedAttempts() const;
+    [[nodiscard]] int getNumRequiredPassedAttempts() const;
 
     /** The group that contains this test. */
     [[nodiscard]] GroupPtr getGroup() const;
@@ -120,13 +120,13 @@ class Test : private TestConfig {
     [[nodiscard]] bool isFailed() const;
 
     /** The number of attempts executed (passed, failed or skipped). */
-    [[nodiscard]] std::size_t getNumExecutedAttempts() const;
+    [[nodiscard]] int getNumExecutedAttempts() const;
 
     /** The number of attempts passed. */
-    [[nodiscard]] std::size_t getNumPassedAttempts() const;
+    [[nodiscard]] int getNumPassedAttempts() const;
 
     /** The number of attempts skipped. */
-    [[nodiscard]] std::size_t getNumSkippedAttempts() const;
+    [[nodiscard]] int getNumSkippedAttempts() const;
 
     /** The average number of time ticks per execution (only counting executions
      * where the number of time ticks is computable).

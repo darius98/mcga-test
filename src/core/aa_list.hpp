@@ -18,7 +18,7 @@ void list_push_back(Node*& head, Node*& tail, Node* elem) {
 }
 
 template<class Node>
-void list_push_front(Node*& head, Node*& tail, Node* elem) {
+void list_push_front(Node*& head, Node*&, Node* elem) {
     elem->next = head;
     head = elem;
 }

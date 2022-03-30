@@ -51,11 +51,11 @@ double Test::getTimeTicksLimit() const {
     return timeTicksLimit;
 }
 
-std::size_t Test::getNumAttempts() const {
+int Test::getNumAttempts() const {
     return attempts;
 }
 
-std::size_t Test::getNumRequiredPassedAttempts() const {
+int Test::getNumRequiredPassedAttempts() const {
     return requiredPassedAttempts;
 }
 
@@ -88,15 +88,15 @@ bool Test::isFailed() const {
     return !isPassed() && !isSkipped();
 }
 
-size_t Test::getNumExecutedAttempts() const {
+int Test::getNumExecutedAttempts() const {
     return numExecutedAttempts;
 }
 
-size_t Test::getNumPassedAttempts() const {
+int Test::getNumPassedAttempts() const {
     return numPassedAttempts;
 }
 
-size_t Test::getNumSkippedAttempts() const {
+int Test::getNumSkippedAttempts() const {
     return numSkippedAttempts;
 }
 

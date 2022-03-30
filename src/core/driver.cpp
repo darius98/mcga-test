@@ -22,7 +22,7 @@ void Driver::Clean() {
 }
 
 Driver::Driver(ExtensionApi* api, Executor* executor)
-        : api(api), executor(executor) {
+        : executor(executor), api(api) {
     executor->setExtensionApi(api);
 }
 
