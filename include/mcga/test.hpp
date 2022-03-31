@@ -238,7 +238,7 @@ struct FixtureTest {
     struct MCGA_TEST_INTERNAL_TEST_NAME {                                      \
         static void MCGA_TEST_BODY();                                          \
     };                                                                         \
-    internal::TestCase MCGA_TEST_INTERNAL_TEST_REG_NAME(                       \
+    ::mcga::test::internal::TestCase MCGA_TEST_INTERNAL_TEST_REG_NAME(         \
       name, &MCGA_TEST_INTERNAL_TEST_NAME::MCGA_TEST_BODY);                    \
     }                                                                          \
     }                                                                          \
@@ -251,7 +251,7 @@ struct FixtureTest {
     struct MCGA_TEST_INTERNAL_TEST_NAME : fixture {                            \
         void MCGA_TEST_BODY();                                                 \
     };                                                                         \
-    internal::FixtureTest MCGA_TEST_INTERNAL_TEST_REG_NAME{                    \
+    ::mcga::test::internal::FixtureTest MCGA_TEST_INTERNAL_TEST_REG_NAME{      \
       &::mcga::test::internal::fixture_registerer<fixture>,                    \
       fixture_name,                                                            \
       description,                                                             \
@@ -261,7 +261,8 @@ struct FixtureTest {
     void mcga_tests_namespace::MCGA_TEST_INTERNAL_TEST_NAME::MCGA_TEST_BODY()
 
 #define TEST(description)                                                      \
-    MCGA_TEST_INTERNAL_TEST_F("", internal::empty_fixture, description)
+    MCGA_TEST_INTERNAL_TEST_F(                                                 \
+      "", ::mcga::test::internal::empty_fixture, description)
 
 #define TEST_F(fixture, description)                                           \
     MCGA_TEST_INTERNAL_TEST_F(#fixture, fixture, description)
