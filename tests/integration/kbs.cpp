@@ -3,7 +3,7 @@
 #include <csignal>
 
 TEST_CASE("TestCase") {
-    mcga::test::test("test", [] {
+    test("test", [] {
         raise(SIGTERM);
     });
 }

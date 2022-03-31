@@ -7,7 +7,7 @@ TEST_CASE("TestCase") {
         printf("set-up\n");
         mcga::test::cleanup([] {
             printf("cleanup-in-set-up\n");
-            mcga::test::fail("fail-in-cleanup");
+            fail("fail-in-cleanup");
         });
     });
 
@@ -15,12 +15,12 @@ TEST_CASE("TestCase") {
         printf("first-tear-down\n");
     });
 
-    mcga::test::group("group", [] {
+    group("group", [] {
         mcga::test::tearDown([] {
             printf("second-tear-down\n");
         });
 
-        mcga::test::test("test", [] {
+        test("test", [] {
             printf("test-body\n");
         });
     });

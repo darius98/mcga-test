@@ -3,7 +3,7 @@
 #include "mcga/test.hpp"
 
 TEST_CASE("TestCase1") {
-    mcga::test::test("test", [] {});
+    test("test", [] {});
 }
 
 #elif MCGA_TEST_INTEGRATION_MULTIPLE_FILES == 2
@@ -11,7 +11,7 @@ TEST_CASE("TestCase1") {
 #include "mcga/test.hpp"
 
 TEST_CASE("TestCase2") {
-    mcga::test::test("test", [] {});
+    test("test", [] {});
 }
 
 #else
@@ -19,7 +19,7 @@ TEST_CASE("TestCase2") {
 #include "mcga/test.hpp"
 
 TEST_CASE("TestCase3") {
-    mcga::test::test("test", [] {});
+    test("test", [] {});
 }
 
 #endif

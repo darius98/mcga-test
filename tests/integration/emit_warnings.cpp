@@ -2,8 +2,6 @@
 
 #include "mcga/test.hpp"
 
-using namespace mcga::test;
-
 TEST_CASE("TestCase") {
     // fail() top-level
     fail("fail-top-level");

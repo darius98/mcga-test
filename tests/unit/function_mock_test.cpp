@@ -6,14 +6,13 @@
 #include "mcga/test_ext/mock.hpp"
 #include "mcga/test_ext/mock_helpers.hpp"
 
-using namespace mcga::test;
 using namespace mcga::matchers;
 
 struct LibCMocks {
-    FunctionMock<void()> abort{"abort"};
-    FunctionMock<void*(size_t)> malloc{"malloc"};
-    FunctionMock<int(const char*, va_list)> vprintf{"vprintf"};
-    FunctionMock<int(const char*, ...)> printf{&vprintf};
+    mcga::test::FunctionMock<void()> abort{"abort"};
+    mcga::test::FunctionMock<void*(size_t)> malloc{"malloc"};
+    mcga::test::FunctionMock<int(const char*, va_list)> vprintf{"vprintf"};
+    mcga::test::FunctionMock<int(const char*, ...)> printf{&vprintf};
 };
 
 static constinit LibCMocks libc;

@@ -20,6 +20,7 @@ double
     return NanosecondsToTimeTicks(std::chrono::high_resolution_clock::now()
                                   - startTime);
 #else
+    (void)startTime;
     return -1;
 #endif
 }

@@ -1,11 +1,10 @@
 #! /usr/bin/env python3.7
 
+import os.path
 import re
 import subprocess
 import unittest
-import os.path
 from typing import List, Optional, Union
-
 
 directory_prefix = os.path.dirname(__file__)
 test_name = ""
@@ -168,21 +167,21 @@ class MCGATestIntegrationSmoothTestCase(MCGATestIntegrationMixin):
             "test-in-group-in-thread",
         ], expect_contains=False)
 
-        group_test_case_note = ("In group TestCase", 7)
-        group1_note = ("In group group", 17)
-        group2_note = ("In group group2", 73)
+        group_test_case_note = ("In group TestCase", 5)
+        group1_note = ("In group group", 15)
+        group2_note = ("In group group2", 71)
 
-        self.check_warning(r"Called fail\(\) outside a test, ignoring\.", 9,
+        self.check_warning(r"Called fail\(\) outside a test, ignoring\.", 7,
                            [group_test_case_note])
-        self.check_warning(r"Called cleanup\(\) outside a test, ignoring\.", 12,
+        self.check_warning(r"Called cleanup\(\) outside a test, ignoring\.", 10,
                            [group_test_case_note])
-        self.check_warning(r"Called skip\(\) outside a test, ignoring\.", 15,
+        self.check_warning(r"Called skip\(\) outside a test, ignoring\.", 13,
                            [group_test_case_note])
-        self.check_warning(r"Called fail\(\) outside a test, ignoring\.", 19,
+        self.check_warning(r"Called fail\(\) outside a test, ignoring\.", 17,
                            [group1_note, group_test_case_note])
-        self.check_warning(r"Called cleanup\(\) outside a test, ignoring\.", 22,
+        self.check_warning(r"Called cleanup\(\) outside a test, ignoring\.", 20,
                            [group1_note, group_test_case_note])
-        self.check_warning(r"Called skip\(\) outside a test, ignoring\.", 25,
+        self.check_warning(r"Called skip\(\) outside a test, ignoring\.", 23,
                            [group1_note, group_test_case_note])
 
         self.check_warning(
@@ -195,42 +194,42 @@ class MCGATestIntegrationSmoothTestCase(MCGATestIntegrationMixin):
             r"remainder of tests in this group.",
             notes=[group2_note, group_test_case_note])
 
-        set_up_note = ("While running setUp", 27)
-        test_note = ("While running test test", 55)
+        set_up_note = ("While running setUp", 25)
+        test_note = ("While running test test", 53)
         notes_inside_set_up = [set_up_note, test_note, group1_note, group_test_case_note]
-        self.check_warning(r"Called setUp\(\) inside a test, ignoring\.", 29, notes_inside_set_up)
-        self.check_warning(r"Called tearDown\(\) inside a test, ignoring\.", 32,
+        self.check_warning(r"Called setUp\(\) inside a test, ignoring\.", 27, notes_inside_set_up)
+        self.check_warning(r"Called tearDown\(\) inside a test, ignoring\.", 30,
                            notes_inside_set_up)
-        self.check_warning(r"Called test\(\) inside a test, ignoring\.", 35, notes_inside_set_up)
-        self.check_warning(r"Called group\(\) inside a test, ignoring\.", 38, notes_inside_set_up)
+        self.check_warning(r"Called test\(\) inside a test, ignoring\.", 33, notes_inside_set_up)
+        self.check_warning(r"Called group\(\) inside a test, ignoring\.", 36, notes_inside_set_up)
 
         notes_inside_test = [test_note, group1_note, group_test_case_note]
-        self.check_warning(r"Called setUp\(\) inside a test, ignoring\.", 57, notes_inside_test)
-        self.check_warning(r"Called tearDown\(\) inside a test, ignoring\.", 60,
+        self.check_warning(r"Called setUp\(\) inside a test, ignoring\.", 55, notes_inside_test)
+        self.check_warning(r"Called tearDown\(\) inside a test, ignoring\.", 58,
                            notes_inside_test)
-        self.check_warning(r"Called test\(\) inside a test, ignoring\.", 63, notes_inside_test)
-        self.check_warning(r"Called group\(\) inside a test, ignoring\.", 66, notes_inside_test)
+        self.check_warning(r"Called test\(\) inside a test, ignoring\.", 61, notes_inside_test)
+        self.check_warning(r"Called group\(\) inside a test, ignoring\.", 64, notes_inside_test)
 
-        tear_down_note = ("While running tearDown", 41)
+        tear_down_note = ("While running tearDown", 39)
         notes_inside_teardown = [tear_down_note, test_note, group1_note, group_test_case_note]
-        self.check_warning(r"Called setUp\(\) inside a test, ignoring\.", 43, notes_inside_teardown)
-        self.check_warning(r"Called tearDown\(\) inside a test, ignoring\.", 46,
+        self.check_warning(r"Called setUp\(\) inside a test, ignoring\.", 41, notes_inside_teardown)
+        self.check_warning(r"Called tearDown\(\) inside a test, ignoring\.", 44,
                            notes_inside_teardown)
-        self.check_warning(r"Called test\(\) inside a test, ignoring\.", 49, notes_inside_teardown)
-        self.check_warning(r"Called group\(\) inside a test, ignoring\.", 52, notes_inside_teardown)
+        self.check_warning(r"Called test\(\) inside a test, ignoring\.", 47, notes_inside_teardown)
+        self.check_warning(r"Called group\(\) inside a test, ignoring\.", 50, notes_inside_teardown)
 
         self.check_warning(
             r"Called test\(\) from a different thread than the main testing thread, ignoring\.",
-            80, [group_test_case_note])
+            78, [group_test_case_note])
         self.check_warning(
             r"Called group\(\) from a different thread than the main testing thread, ignoring\.",
-            83, [group_test_case_note])
+            81, [group_test_case_note])
         self.check_warning(
             r"Called setUp\(\) from a different thread than the main testing thread, ignoring\.",
-            88, [group_test_case_note])
+            86, [group_test_case_note])
         self.check_warning(
             r"Called tearDown\(\) from a different thread than the main testing thread, ignoring\.",
-            91,
+            89,
             [group_test_case_note])
 
         # Doesn't fail with --ignore-warnings enabled
@@ -310,7 +309,7 @@ class MCGATestIntegrationSmoothTestCase(MCGATestIntegrationMixin):
     def test_multiple_executions_fail(self):
         self.run_test(expect_fail=True, tests_passed=0, tests_failed=1, output=[
             test_line("F", "TestCase::test", approx=True, approx_fail=True),
-            failed_line(11, 15, "Got 0\\."),
+            failed_line(11, 18, "Got 0\\."),
         ])
 
     def test_multiple_executions_pass(self):
@@ -324,7 +323,7 @@ class MCGATestIntegrationSmoothTestCase(MCGATestIntegrationMixin):
         expected_output = [
             test_line("P", "TestCase::test-1"),
             test_line("S", "TestCase::test-2", approx=True, approx_fail=True),
-            skipped_line(9, 11, "every-time"),
+            skipped_line(8, 14, "every-time"),
         ]
         self.run_test(tests_passed=1, tests_failed=0, tests_skipped=1, output=expected_output,
                       extra_args=["--print-skipped"])
@@ -459,7 +458,8 @@ class MCGATestIntegrationSmoothTestCase(MCGATestIntegrationMixin):
                       output=5 * [
                           test_line("P", "TestCase::test1"),
                           test_line("F", "TestCase::test2"),
-                          failed_line(7, 9, "1 \\+ 1 == 3 is not true", filestem="multiple_tests_one_fails"),
+                          failed_line(7, 9, "1 \\+ 1 == 3 is not true",
+                                      filestem="multiple_tests_one_fails"),
                           test_line("P", "TestCase::test3"),
                           test_line("P", "TestCase::test4"),
                       ])

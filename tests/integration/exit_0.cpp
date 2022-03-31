@@ -3,7 +3,7 @@
 #include <cstdlib>
 
 TEST_CASE("TestCase") {
-    mcga::test::test("test", [] {
+    test("test", [] {
         exit(0);
     });
 }

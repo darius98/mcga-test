@@ -3,9 +3,9 @@
 #include <cstdio>
 
 TEST_CASE("TestCase") {
-    mcga::test::test("test-1", [] {});
+    test("test-1", [] {});
 
-    mcga::test::group([] {
+    group([] {
         mcga::test::setUp([] {
             printf("set-up\n");
             mcga::test::skip("skip-in-set-up");
@@ -15,9 +15,9 @@ TEST_CASE("TestCase") {
             printf("tear-down\n");
         });
 
-        mcga::test::test("test-2", [] {
+        test("test-2", [] {
             printf("test-body\n");
-            mcga::test::fail("fail-in-test-body");
+            fail("fail-in-test-body");
         });
     });
 }

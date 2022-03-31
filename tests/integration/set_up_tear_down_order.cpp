@@ -14,7 +14,7 @@ TEST_CASE("TestCase") {
         printf("first-tear-down\n");
     });
 
-    mcga::test::group([] {
+    group([] {
         mcga::test::setUp([] {
             printf("second-set-up\n");
         });
@@ -31,7 +31,7 @@ TEST_CASE("TestCase") {
             printf("third-set-up\n");
         });
 
-        mcga::test::test("test1", [] {
+        test("test1", [] {
             mcga::test::cleanup([] {
                 printf("first-cleanup\n");
             });
@@ -43,7 +43,7 @@ TEST_CASE("TestCase") {
             });
         });
 
-        mcga::test::test("test2", [] {
+        test("test2", [] {
             printf("second-test\n");
         });
     });

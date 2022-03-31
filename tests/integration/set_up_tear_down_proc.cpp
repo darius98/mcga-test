@@ -3,13 +3,6 @@
 #include <thread>
 #include <unistd.h>
 
-using mcga::test::cleanup;
-using mcga::test::expect;
-using mcga::test::group;
-using mcga::test::setUp;
-using mcga::test::tearDown;
-using mcga::test::test;
-
 static std::thread::id outside_test_thread_id = std::this_thread::get_id();
 static pid_t outside_test_proc_id = getpid();
 
@@ -17,18 +10,18 @@ static std::thread::id in_test_thread_id;
 static pid_t in_test_proc_id;
 
 void expect_inside_test() {
-    expect(in_test_proc_id == getpid());
-    expect(in_test_thread_id == std::this_thread::get_id());
+    mcga::test::expect(in_test_proc_id == getpid());
+    mcga::test::expect(in_test_thread_id == std::this_thread::get_id());
 
-    cleanup([] {
-        expect(in_test_proc_id == getpid());
-        expect(in_test_thread_id == std::this_thread::get_id());
+    mcga::test::cleanup([] {
+        mcga::test::expect(in_test_proc_id == getpid());
+        mcga::test::expect(in_test_thread_id == std::this_thread::get_id());
     });
 }
 
 void expect_outside_test_ids() {
-    expect(outside_test_proc_id == getpid());
-    expect(outside_test_thread_id == std::this_thread::get_id());
+    mcga::test::expect(outside_test_proc_id == getpid());
+    mcga::test::expect(outside_test_thread_id == std::this_thread::get_id());
 }
 
 TEST_CASE("test-case") {

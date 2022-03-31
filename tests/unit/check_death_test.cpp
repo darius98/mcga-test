@@ -6,7 +6,6 @@
 
 #include "mcga/test_ext/death/check_death.hpp"
 
-using namespace mcga::test;
 using namespace mcga::matchers;
 
 TEST_CASE("Death extension: check death") {

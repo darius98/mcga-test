@@ -8,7 +8,7 @@ TEST("passing-test") {
 
 TEST("failing-test") {
     printf("failing-test-body\n");
-    mcga::test::fail("failure in global");
+    fail("failure in global");
 }
 
 struct Fixture1 {
@@ -29,7 +29,7 @@ TEST_F(Fixture1, "fixture1-passing-test") {
 
 TEST_F(Fixture1, "fixture1-failing-test") {
     printf("%s-failing-test-body\n", name);
-    mcga::test::fail("failure in fixture1");
+    fail("failure in fixture1");
 }
 
 // Pascal-case methods should also work
@@ -52,7 +52,7 @@ TEST_F(Fixture2, "fixture2-passing-test") {
 
 TEST_F(Fixture2, "fixture2-failing-test") {
     printf("%s-failing-test-body\n", name);
-    mcga::test::fail("failure in fixture2");
+    fail("failure in fixture2");
 }
 
 // Mix-and-match casing should work
@@ -75,7 +75,7 @@ TEST_F(Fixture3, "fixture3-passing-test") {
 
 TEST_F(Fixture3, "fixture3-failing-test") {
     printf("%s-failing-test-body\n", name);
-    mcga::test::fail("failure in fixture3");
+    fail("failure in fixture3");
 }
 
 struct Fixture4 {
@@ -96,5 +96,5 @@ TEST_F(Fixture4, "fixture4-passing-test") {
 
 TEST_F(Fixture4, "fixture4-failing-test") {
     printf("%s-failing-test-body\n", name);
-    mcga::test::fail("failure in fixture4");
+    fail("failure in fixture4");
 }
