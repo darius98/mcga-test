@@ -255,7 +255,8 @@ struct FixtureTest {
       &::mcga::test::internal::fixture_registerer<fixture>,                    \
       fixture_name,                                                            \
       description,                                                             \
-      &internal::fixture_test_body<MCGA_TEST_INTERNAL_TEST_NAME>};             \
+      &::mcga::test::internal::fixture_test_body<                              \
+        MCGA_TEST_INTERNAL_TEST_NAME>};                                        \
     }                                                                          \
     }                                                                          \
     void mcga_tests_namespace::MCGA_TEST_INTERNAL_TEST_NAME::MCGA_TEST_BODY()
