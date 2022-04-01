@@ -29,12 +29,24 @@ void expectMatches(Fail f,
 
 template<class T, matchers::MatcherFor<T> M>
 void expect(const T& obj, M matcher, Context context = Context()) {
-    internal::expectMatches(fail, obj, matcher, context);
+    internal::expectMatches(
+      []<class... Args>(Args && ... args) {
+          fail(std::forward<Args>(args)...);
+      },
+      obj,
+      matcher,
+      context);
 }
 
 template<class T, matchers::EqualityMatchableFor<T> Val>
 void expect(const T& obj, Val expected, Context context = Context()) {
-    internal::expectMatches(fail, obj, matchers::isEqualTo(expected), context);
+    internal::expectMatches(
+      []<class... Args>(Args && ... args) {
+          fail(std::forward<Args>(args)...);
+      },
+      obj,
+      matchers::isEqualTo(expected),
+      context);
 }
 
 }  // namespace mcga::test
