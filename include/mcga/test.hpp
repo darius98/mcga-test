@@ -95,10 +95,13 @@ void cleanup(Executable body);
 void fail(String message = String(),
           Context context = Context(),
           String verb = "Failed");
-inline void expect(bool expr, Context context = Context()) {
+inline void expectMsg(bool expr, String message, Context context = Context()) {
     if (!expr) {
-        fail("", std::move(context), "Expectation failed");
+        fail(std::move(message), std::move(context), "Expectation failed");
     }
+}
+inline void expect(bool expr, Context context = Context()) {
+    expectMsg(expr, "", std::move(context));
 }
 
 void skip(String message = String(), Context context = Context());
