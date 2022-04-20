@@ -118,7 +118,8 @@ void StdoutLoggingExtension::destroy() {
     }
     stream << "Total recorded testing time: " << std::fixed
            << std::setprecision(3) << totalTimeTicks << " ticks ("
-           << TimeTicksToNanoseconds(totalTimeTicks).count() * 1.0
+           << static_cast<double>(
+                TimeTicksToNanoseconds(totalTimeTicks).count())
         * std::milli::den / std::nano::den
            << " ms)\n";
 }
@@ -187,14 +188,15 @@ void StdoutLoggingExtension::printTestStatus(const Test& test) {
 
 void StdoutLoggingExtension::printTestExecutionTime(const Test& test) {
     if (test.getAvgTimeTicksForExecution() != -1.0) {
-        stream
-          << std::fixed << std::setprecision(3)
-          << (test.getNumAttempts() > 1 ? "~ " : "")
-          << test.getAvgTimeTicksForExecution() << " ticks ("
-          << (test.getNumAttempts() > 1 ? "~" : "")
-          << TimeTicksToNanoseconds(test.getAvgTimeTicksForExecution()).count()
-            * 1.0 * std::milli::den / std::nano::den
-          << " ms)";
+        stream << std::fixed << std::setprecision(3)
+               << (test.getNumAttempts() > 1 ? "~ " : "")
+               << test.getAvgTimeTicksForExecution() << " ticks ("
+               << (test.getNumAttempts() > 1 ? "~" : "")
+               << static_cast<double>(
+                    TimeTicksToNanoseconds(test.getAvgTimeTicksForExecution())
+                      .count())
+            * std::milli::den / std::nano::den
+               << " ms)";
     } else {
         stream << "(unknown time)";
     }

@@ -43,7 +43,7 @@ std::chrono::nanoseconds TimeTicksToNanoseconds(double timeTicks) {
 }
 
 double NanosecondsToTimeTicks(std::chrono::nanoseconds ns) {
-    return 1.0 * static_cast<double>(ns.count())
+    return static_cast<double>(ns.count())
       / static_cast<double>(GetTimeTickLength().count());
 }
 
