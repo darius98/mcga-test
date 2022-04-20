@@ -8,7 +8,7 @@
 
 namespace mcga::test {
 
-enum class PipeMessageType : char {
+enum class ExecutorPipeMessageType : char {
     WARNING,
     DONE,
 };
@@ -33,8 +33,8 @@ void BoxExecutor::finalize() {
 void BoxExecutor::emitWarning(Warning warning, GroupPtr group) {
     if (isActive()) {
         decorateWarningWithCurrentTestNotes(warning, group);
-        currentTestingSubprocessPipe->sendMessage(PipeMessageType::WARNING,
-                                                  warning);
+        currentTestingSubprocessPipe->sendMessage(
+          ExecutorPipeMessageType::WARNING, warning);
     } else {
         onWarning(std::move(warning), group);
     }
@@ -44,7 +44,8 @@ void BoxExecutor::executeBoxed(const Test& test,
                                std::unique_ptr<proc::PipeWriter> pipe) {
     currentTestingSubprocessPipe = std::move(pipe);
     Test::ExecutionInfo info = run(test);
-    currentTestingSubprocessPipe->sendMessage(PipeMessageType::DONE, info);
+    currentTestingSubprocessPipe->sendMessage(ExecutorPipeMessageType::DONE,
+                                              info);
 }
 
 std::unique_ptr<proc::WorkerSubprocess>
@@ -86,8 +87,8 @@ bool BoxExecutor::tryCloseBox(Box* box) {
                 info.fail("Unexpected 0-code exit.", std::nullopt);
                 break;
             }
-            auto messageType = message.read<PipeMessageType>();
-            if (messageType != PipeMessageType::DONE) {
+            auto messageType = message.read<ExecutorPipeMessageType>();
+            if (messageType != ExecutorPipeMessageType::DONE) {
                 // It's a warning
                 onWarning(message.read<Warning>(), nullptr);
                 continue;
