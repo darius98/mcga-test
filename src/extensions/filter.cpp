@@ -143,6 +143,7 @@ void FilterExtension::beforeTestExecution(
     if (shouldSkipTest(test)) {
         info = Test::ExecutionInfo{
           .status = Test::ExecutionInfo::SKIPPED,
+          .verb = "",
           .message = "Filtered out by command line arguments.",
           .context = std::nullopt,
           .timeTicks = -1.0,
