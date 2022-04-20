@@ -39,11 +39,12 @@ std::chrono::nanoseconds GetTimeTickLength() {
 
 std::chrono::nanoseconds TimeTicksToNanoseconds(double timeTicks) {
     return std::chrono::nanoseconds(static_cast<std::chrono::nanoseconds::rep>(
-      timeTicks * GetTimeTickLength().count()));
+      timeTicks * static_cast<double>(GetTimeTickLength().count())));
 }
 
 double NanosecondsToTimeTicks(std::chrono::nanoseconds ns) {
-    return 1.0 * ns.count() / GetTimeTickLength().count();
+    return 1.0 * static_cast<double>(ns.count())
+      / static_cast<double>(GetTimeTickLength().count());
 }
 
 }  // namespace mcga::test
