@@ -25,8 +25,8 @@ concept same_as = same_as_impl<T, U>;
 
 template<class T>
 concept std_string_like = requires(const T& str) {
-    { str.data() } -> same_as<const char*>;
-};
+                              { str.data() } -> same_as<const char*>;
+                          };
 
 #if MCGA_TEST_ALLOW_DYNAMIC_MEMORY
 const char* duplicate_str(const char* a);
@@ -133,8 +133,8 @@ class String {
 struct Context {
     String fileName;
     String functionName;
-    int line;
-    int column;
+    std::uint_least32_t line;
+    std::uint_least32_t column;
 
 #ifdef MCGA_TEST_USE_SOURCE_LOCATION
     constexpr explicit Context(std::source_location loc
@@ -145,8 +145,8 @@ struct Context {
 #else
     constexpr explicit Context(const char* fileName = __builtin_FILE(),
                                const char* functionName = __builtin_FUNCTION(),
-                               int line = __builtin_LINE(),
-                               int column = __builtin_COLUMN())
+                               std::uint_least32_t line = __builtin_LINE(),
+                               std::uint_least32_t column = __builtin_COLUMN())
             : fileName(fileName), functionName(functionName), line(line),
               column(column) {
     }
