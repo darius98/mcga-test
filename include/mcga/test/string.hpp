@@ -2,6 +2,8 @@
 
 #include <mcga/test/config.hpp>
 
+#include <cstdint>
+
 #if defined(__has_include) && __has_include(<source_location>) && !__clang__
 #define MCGA_TEST_USE_SOURCE_LOCATION
 #endif
