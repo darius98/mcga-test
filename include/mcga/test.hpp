@@ -143,7 +143,7 @@ void fixture_test_body(void* instance) {
 }
 
 template<class F>
-extern FixtureData fixture_registerer;
+FixtureData& get_fixture_registerer();
 
 template<class F>
 void fixture_test_case_body() {
@@ -184,7 +184,7 @@ void fixture_test_case_body() {
         instance->~F();
     });
 
-    for (auto t = fixture_registerer<F>.head; t != nullptr; t = t->next) {
+    for (auto t = get_fixture_registerer<F>().head; t != nullptr; t = t->next) {
         t->run_test(instance);
     }
 }
@@ -199,7 +199,10 @@ struct FixtureData {
 };
 
 template<class F>
-inline FixtureData fixture_registerer{&fixture_test_case_body<F>};
+FixtureData& get_fixture_registerer() {
+    static FixtureData fixture_registerer{&fixture_test_case_body<F>};
+    return fixture_registerer;
+}
 
 struct FixtureTest {
     const char* description;
@@ -255,7 +258,7 @@ struct FixtureTest {
         void MCGA_TEST_BODY();                                                 \
     };                                                                         \
     ::mcga::test::internal::FixtureTest MCGA_TEST_INTERNAL_TEST_REG_NAME{      \
-      &::mcga::test::internal::fixture_registerer<fixture>,                    \
+      &::mcga::test::internal::get_fixture_registerer<fixture>(),              \
       fixture_name,                                                            \
       description,                                                             \
       &::mcga::test::internal::fixture_test_body<                              \
