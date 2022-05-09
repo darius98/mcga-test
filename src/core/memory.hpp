@@ -25,14 +25,14 @@ struct Buffer {
     freelist_node head{nullptr};
 
     void* allocate() {
-        if (slots_used < N) {
-            return slots[slots_used++].storage;
-        }
-        if (head.next != nullptr) {
-            auto slot = head.next;
-            head.next = slot->next;
-            return slot;
-        }
+//        if (slots_used < N) {
+//            return slots[slots_used++].storage;
+//        }
+//        if (head.next != nullptr) {
+//            auto slot = head.next;
+//            head.next = slot->next;
+//            return slot;
+//        }
 #if MCGA_TEST_ALLOW_DYNAMIC_MEMORY
         return malloc(element_size);
 #else

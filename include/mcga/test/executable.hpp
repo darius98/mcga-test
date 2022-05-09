@@ -12,8 +12,8 @@ namespace internal {
 
 template<class T>
 concept executable_t = requires(const T& obj) {
-    { obj() } -> same_as<void>;
-};
+                           { obj() } -> same_as<void>;
+                       };
 
 }  // namespace internal
 
@@ -48,36 +48,39 @@ class Executable {
     };
 
     template<internal::executable_t Callable>
-    static inline constexpr VTable vtableFor{
-      &te_call<Callable>,
-      &te_mv_ctor<Callable>,
-      &te_destroy<Callable>,
-    };
+    static constexpr VTable vtableFor() {
+      return VTable{
+          &te_call<Callable>,
+          &te_mv_ctor<Callable>,
+          &te_destroy<Callable>,
+        };
+    }
 
     struct alignas(void*) SBO {
         unsigned char storage[MCGA_TEST_EXECUTABLE_SBO_SIZE];
     };
 
   public:
-    const VTable* vtable;
+    VTable vtable;
     void* data;
     Context context;
     SBO sbo;
 
     template<internal::executable_t Callable>
-    requires(sizeof(Callable) <= MCGA_TEST_EXECUTABLE_SBO_SIZE
-             && alignof(Callable) <= alignof(SBO))
-      Executable(Callable callable, const Context& context = Context())
-            : vtable(&vtableFor<Callable>), data(sbo.storage),
-              context(context) {
+        requires(sizeof(Callable) <= MCGA_TEST_EXECUTABLE_SBO_SIZE
+                 && alignof(Callable) <= alignof(SBO))
+    Executable(Callable callable, Context context = Context())
+            : vtable{vtableFor<Callable>()}, data(sbo.storage),
+              context(std::move(context)) {
         new (data) Callable(std::move(callable));
     }
 
 #if MCGA_TEST_ALLOW_DYNAMIC_MEMORY
     template<internal::executable_t Callable>
-    Executable(Callable callable, const Context& context = Context())
-            : vtable(&vtableFor<Callable>),
-              data(new Callable(std::move(callable))), context(context) {
+    Executable(Callable callable, Context context = Context())
+            : vtable{vtableFor<Callable>()},
+              data(new Callable(std::move(callable))),
+              context(std::move(context)) {
     }
 #endif
 
@@ -88,7 +91,7 @@ class Executable {
     Executable(Executable&& other) noexcept
             : vtable(other.vtable), data(other.data), context(other.context) {
         if (other.data == other.sbo.storage) {
-            other.vtable->mv_ctor(sbo.storage, other.sbo.storage);
+            other.vtable.mv_ctor(sbo.storage, other.sbo.storage);
             data = sbo.storage;
         }
         other.data = nullptr;
@@ -97,13 +100,13 @@ class Executable {
     Executable& operator=(Executable&& other) noexcept {
         if (this != &other) {
             if (data != nullptr) {
-                vtable->dtor(data, data != sbo.storage);
+                vtable.dtor(data, data != sbo.storage);
             }
             vtable = other.vtable;
             data = other.data;
             context = other.context;
             if (other.data == other.sbo.storage) {
-                other.vtable->mv_ctor(sbo.storage, other.sbo.storage);
+                other.vtable.mv_ctor(sbo.storage, other.sbo.storage);
                 data = sbo.storage;
             }
             other.data = nullptr;
@@ -113,12 +116,12 @@ class Executable {
 
     ~Executable() {
         if (data != nullptr) {
-            vtable->dtor(data, data != sbo.storage);
+            vtable.dtor(data, data != sbo.storage);
         }
     }
 
     void operator()() const {
-        vtable->body(data);
+        vtable.body(data);
     }
 };
 
