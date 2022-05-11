@@ -48,7 +48,8 @@ add_library(mcga_test_obj OBJECT
         ${CMAKE_CURRENT_SOURCE_DIR}/src/hosted/box_executor.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/hosted/death.cpp
         ${CMAKE_CURRENT_SOURCE_DIR}/src/hosted/entry_point.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/hosted/mock.cpp)
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/hosted/mock.cpp
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/hosted/temp.cpp)
 target_link_libraries(mcga_test_obj
         PUBLIC mcga_cli
         PUBLIC mcga_proc
