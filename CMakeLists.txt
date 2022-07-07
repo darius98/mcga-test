@@ -11,6 +11,10 @@ set(MCGA_TEST_PRE_ALLOCATED_GROUPS 8 CACHE STRING
 set(MCGA_TEST_PRE_ALLOCATED_CALLBACKS 128 CACHE STRING
         "How many callback to statically allocate inside the MCGA test library (default is 128). Callbacks are used for setUp()s, tearDown()s and cleanup()s.")
 
+if (MCGA_test_tests)
+    find_package(Python3 3.7 REQUIRED COMPONENTS Interpreter)
+endif ()
+
 if (NOT TARGET mcga_cli)
     include(FetchContent)
     FetchContent_Declare(mcga_cli URL https://github.com/darius98/mcga-cli/archive/refs/heads/master.zip)
@@ -67,9 +71,11 @@ endif ()
 
 add_library(mcga_test SHARED $<TARGET_OBJECTS:mcga_test_obj>)
 target_link_libraries(mcga_test PRIVATE mcga_test_obj PUBLIC mcga_test_interface)
+install(TARGETS mcga_test DESTINATION lib)
 
 add_library(mcga_test_static STATIC $<TARGET_OBJECTS:mcga_test_obj>)
 target_link_libraries(mcga_test_static PRIVATE mcga_test_obj PUBLIC mcga_test_interface)
+install(TARGETS mcga_test_static DESTINATION lib)
 
 add_library(mcga_test_freestanding_obj OBJECT
         ${mcga_test_core_src}
@@ -94,18 +100,16 @@ target_link_options(mcga_test_freestanding_obj
         PUBLIC -nostdlib
         PUBLIC -static)
 
-add_library(mcga_test_freestanding SHARED $<TARGET_OBJECTS:mcga_test_freestanding_obj>)
-target_link_libraries(mcga_test_freestanding PRIVATE mcga_test_freestanding_obj PUBLIC mcga_test_interface)
-
 add_library(mcga_test_freestanding_static STATIC $<TARGET_OBJECTS:mcga_test_freestanding_obj>)
 target_link_libraries(mcga_test_freestanding_static PRIVATE mcga_test_freestanding_obj PUBLIC mcga_test_interface)
+install(TARGETS mcga_test_freestanding_static DESTINATION lib)
 
-install(TARGETS
-        mcga_test
-        mcga_test_static
-        mcga_test_freestanding
-        mcga_test_freestanding_static
-        DESTINATION lib)
+if (NOT APPLE)
+    add_library(mcga_test_freestanding SHARED $<TARGET_OBJECTS:mcga_test_freestanding_obj>)
+    target_link_libraries(mcga_test_freestanding PRIVATE mcga_test_freestanding_obj PUBLIC mcga_test_interface)
+    install(TARGETS mcga_test_freestanding DESTINATION lib)
+endif ()
+
 install(DIRECTORY include DESTINATION .)
 
 if (MCGA_test_tests)

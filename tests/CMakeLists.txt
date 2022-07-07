@@ -69,7 +69,7 @@ add_integration_test(multiple_files
         $<TARGET_OBJECTS:mcga_test_integration_multiple_files_lib_3>)
 
 add_test(NAME mcga_test_integration_tests
-        COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/integration/test_integration.py
+        COMMAND ${Python3_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/integration/test_integration.py
         WORKING_DIRECTORY ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 
 add_unit_test(check_death NO_EXECUTOR_TYPE unit/check_death_test.cpp)
