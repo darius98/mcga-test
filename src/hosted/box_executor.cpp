@@ -23,6 +23,7 @@ void BoxExecutor::execute(Test test) {
     if (!test.isFinished()) {
         auto execProcess = startExecution(test);
         activeBoxes.emplace_back(std::move(test), std::move(execProcess));
+        tryCloseBoxes();
     }
 }
 
@@ -102,20 +103,25 @@ bool BoxExecutor::tryCloseBox(Box* box) {
         beforeTestExecution(test);
         if (!test.isFinished()) {
             box->second = startExecution(test);
+            tryCloseBoxes();
             return false;
         }
     }
     return true;
 }
 
+void BoxExecutor::tryCloseBoxes() {
+    activeBoxes.erase(remove_if(activeBoxes.begin(),
+                                activeBoxes.end(),
+                                [this](Box& box) {
+                                    return tryCloseBox(&box);
+                                }),
+                      activeBoxes.end());
+}
+
 void BoxExecutor::ensureEmptyBoxes(size_t requiredEmpty) {
     while (activeBoxes.size() > numBoxes - requiredEmpty) {
-        activeBoxes.erase(remove_if(activeBoxes.begin(),
-                                    activeBoxes.end(),
-                                    [this](Box& box) {
-                                        return tryCloseBox(&box);
-                                    }),
-                          activeBoxes.end());
+        tryCloseBoxes();
         std::this_thread::sleep_for(loopSleepTime);
     }
 }

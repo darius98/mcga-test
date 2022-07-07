@@ -257,9 +257,18 @@ void StdoutLoggingExtension::updateVolatileLine(const Test& test) {
         return;
     }
     clearVolatileLine();
+
+    stream << "[ ";
+    if (passedTests + skippedTests == loggedTests) {
+        stream << green << std::setw(4) << loggedTests + 1 << reset;
+    } else {
+        stream << red << std::setw(4) << passedTests + skippedTests << " / "
+               << loggedTests << reset;
+    }
+    stream << " ] ";
+
     if (runningTests.size() == 1 && *runningTests.begin() == test.getId()) {
-        stream << "[" << yellow << "." << reset << "] "
-               << getTestFullDescription(test);
+        stream << getTestFullDescription(test);
         if (test.getNumAttempts() > 1) {
             stream << " - running attempt " << test.getNumExecutedAttempts() + 1
                    << " of " << test.getNumAttempts() << ", passed "

@@ -32,11 +32,13 @@ class BoxExecutor : public Executor {
   private:
     void executeBoxed(const Test& test, std::unique_ptr<proc::PipeWriter> pipe);
 
+    bool tryCloseBox(Box* box);
+
+    void tryCloseBoxes();
+
     void ensureEmptyBoxes(std::size_t numContainers);
 
     std::unique_ptr<proc::WorkerSubprocess> startExecution(const Test& test);
-
-    bool tryCloseBox(Box* box);
 
     std::unique_ptr<proc::PipeWriter> currentTestingSubprocessPipe;
     std::size_t numBoxes;
